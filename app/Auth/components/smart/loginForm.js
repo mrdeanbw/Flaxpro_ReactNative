@@ -10,7 +10,6 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import Hr from 'react-native-hr';
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,6 +17,11 @@ const background = require('../../../Assets/background.png');
 const markIcon = require('../../../Assets/flaxpro_mark.png');
 const userIcon = require('../../../Assets/user.png');
 const lockIcon = require('../../../Assets/lock.png');
+const facebookIcon = require('../../../Assets/facebook.png');
+const twitterIcon = require('../../../Assets/twitter.png');
+const googleIcon = require('../../../Assets/google.png');
+const linkedinIcon = require('../../../Assets/linkedin.png');
+
 
 export default class LoginForm extends Component {
   constructor(props) {
@@ -58,7 +62,7 @@ export default class LoginForm extends Component {
               />
             </View>
             <TouchableOpacity activeOpacity={ .5 }>
-              <View style={ styles.button }>
+              <View style={ styles.loginButton }>
                 <Text style={ styles.buttonText }>Log In</Text>
               </View>
             </TouchableOpacity>
@@ -68,16 +72,40 @@ export default class LoginForm extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          <Hr lineColor="white" text="OR"/>
-          <View style={ styles.container }>
-            <View style={ styles.loginWrap }>
-              <Text style={ styles.accountText }>Don't have an account?</Text>
-              <TouchableOpacity activeOpacity={.5}>
-                <View>
-                  <Text style={ styles.loginLinkText }>Sign Up</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+          <View style={ styles.lineWarp }>
+            <View style={ styles.lineLeft }></View>
+            <Text style={ styles.lineOR }>OR</Text>
+            <View style={ styles.lineRight }></View>
+          </View>
+          <View style={ styles.socialWrap }>
+            <TouchableOpacity activeOpacity={ .5 }>
+              <View style={ styles.socialButton }>
+                <Image source={ facebookIcon } style={ styles.socialIcon } resizeMode="contain" />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={ .5 }>
+              <View style={ styles.socialButton }>
+                <Image source={ twitterIcon } style={ styles.socialIcon } resizeMode="contain" />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={ .5 }>
+              <View style={ styles.socialButton }>
+                <Image source={ googleIcon } style={ styles.socialIcon } resizeMode="contain" />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={ .5 }>
+              <View style={ styles.socialButton }>
+                <Image source={ linkedinIcon } style={ styles.socialIcon } resizeMode="contain" />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={ styles.signupWrap }>
+            <Text style={ styles.accountText }>Don't have an account?</Text>
+            <TouchableOpacity activeOpacity={.5}>
+              <View>
+                <Text style={ styles.signupLinkText }>Sign Up</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </Image>
       </View>
@@ -112,11 +140,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
     height: 50,
     borderBottomWidth: 1,
-    borderBottomColor: '#FFF',
+    borderBottomColor: '#fff',
   },
   iconWrap: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icon: {
     height: 30,
@@ -126,23 +154,23 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
-  button: {
-    backgroundColor: "#ffffff",
+  loginButton: {
+    backgroundColor: '#fff',
     paddingVertical: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 40,
     borderWidth: 4,
-    borderColor: "#ffffff",
+    borderColor: '#fff',
     borderStyle: 'solid',
     shadowOffset: {
       width: 3,
       height: 2,
     },
-    shadowColor: '#000000',
+    shadowColor: '#000',
     shadowOpacity: 0.3,
-    marginTop: 30,
-    marginBottom:30,
+    marginTop: 50,
+    marginBottom:50,
     marginLeft: 40,
     marginRight: 40,
   },
@@ -151,24 +179,67 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   forgotPasswordText: {
-    color: '#ffffff',
+    color: '#fff',
     backgroundColor: 'transparent',
     textDecorationLine : 'underline',
-    fontSize:18,
+    fontSize:16,
     textAlign: 'center',
     justifyContent: 'center',
-    marginBottom:20,
+    marginBottom:30,
   },
-  loginWrap: {
+  lineWarp: {
+    justifyContent:'space-around',
+    flexDirection:'row',
+    marginLeft:20,
+    marginRight:20,
+    marginBottom:30,
+  },
+  lineLeft:{
+    width:width * 0.4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e3e3e3',
+    marginBottom:10,
+  },
+  lineRight:{
+    width:width * 0.4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e3e3e3',
+    marginBottom:10,
+  },
+  lineOR :{
+    textAlign:'center',
     backgroundColor: 'transparent',
+    color:'#fff',
+    fontSize:12,
+    height:20
+  },
+  socialWrap: {
+    justifyContent:'space-around',
+    flexDirection:'row',
+    marginLeft:30,
+    marginRight:30,
+    flex:1,
+  },
+  socialButton: {
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  socialIcon: {
+    height:50,
+    width:50,
+  },
+  signupWrap: {
+    backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    height:60,
   },
   accountText: {
     color: '#272727',
   },
-  loginLinkText: {
+  signupLinkText: {
     color: '#37a1cf',
     marginLeft: 5,
   }
