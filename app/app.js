@@ -5,6 +5,8 @@ import thunk from 'redux-thunk';
 
 import * as reducers from './reducers';
 import Login from './Auth/containers/login';
+// import ClientInfo from './Question/containers/clientInfo';
+
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);

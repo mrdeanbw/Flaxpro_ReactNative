@@ -9,6 +9,7 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
@@ -26,6 +27,61 @@ const linkedinIcon = require('../../../Assets/linkedin.png');
 export default class LoginForm extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      userName : '',
+      password : '',
+    };
+  }
+
+  onLogIn () {
+
+    if (this.state.userName == '') {
+      Alert.alert('Please enter user name.');
+      return;
+    }
+
+    if (this.state.password == '') {
+      Alert.alert('Please enter password.');
+      return;
+    }
+
+    this.props.login(this.state.userName, this.state.password);
+  }
+
+  componentWillReceiveProps(newProps) {
+
+    if (newProps.status == 'loginingIn') {
+
+    } else if (newProps.status == 'loggedIn') {
+
+    } else if (newProps.status == 'logIn failed') {
+
+    }
+  }
+
+  onSignUp() {
+    Alert.alert('Clicked onSignUp');
+  }
+
+  onForgotPassword() {
+    Alert.alert('Clicked onForgotPassword');
+  }
+
+  onFacebook() {
+    Alert.alert('Clicked onFacebook');
+  }
+
+  onTwitter() {
+    Alert.alert('Clicked onTwitter');
+  }
+
+  onGoogle() {
+    Alert.alert('Clicked onGoogle');
+  }
+
+  onLinkedIn () {
+    Alert.alert('Clicked onLinkedIn');
   }
 
   render() {
@@ -47,6 +103,8 @@ export default class LoginForm extends Component {
                 placeholderTextColor="#FFF"
                 color="#FFF"
                 style={ styles.input }
+                value={ this.state.userName }
+                onChangeText={ (text) => this.setState({ userName: text }) }
               />
             </View>
             <View style={ styles.inputWrap }>
@@ -59,14 +117,16 @@ export default class LoginForm extends Component {
                 color="#FFF"
                 secureTextEntry
                 style={ styles.input }
+                value={ this.state.password }
+                onChangeText={ (text) => this.setState({ password: text }) }
               />
             </View>
-            <TouchableOpacity activeOpacity={ .5 }>
+            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onLogIn() }>
               <View style={ styles.loginButton }>
                 <Text style={ styles.buttonText }>Log In</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={ .5 }>
+            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onForgotPassword() }>
               <View>
                 <Text style={ styles.forgotPasswordText }>Forgot Password?</Text>
               </View>
@@ -78,22 +138,22 @@ export default class LoginForm extends Component {
             <View style={ styles.lineRight }></View>
           </View>
           <View style={ styles.socialWrap }>
-            <TouchableOpacity activeOpacity={ .5 }>
+            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onFacebook() }>
               <View style={ styles.socialButton }>
                 <Image source={ facebookIcon } style={ styles.socialIcon } resizeMode="contain" />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={ .5 }>
+            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onTwitter() }>
               <View style={ styles.socialButton }>
                 <Image source={ twitterIcon } style={ styles.socialIcon } resizeMode="contain" />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={ .5 }>
+            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onGoogle() }>
               <View style={ styles.socialButton }>
                 <Image source={ googleIcon } style={ styles.socialIcon } resizeMode="contain" />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={ .5 }>
+            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onLinkedIn() }>
               <View style={ styles.socialButton }>
                 <Image source={ linkedinIcon } style={ styles.socialIcon } resizeMode="contain" />
               </View>
@@ -101,7 +161,7 @@ export default class LoginForm extends Component {
           </View>
           <View style={ styles.signupWrap }>
             <Text style={ styles.accountText }>Don't have an account?</Text>
-            <TouchableOpacity activeOpacity={.5}>
+            <TouchableOpacity activeOpacity={.5} onPress={ () => this.onSignUp() }>
               <View>
                 <Text style={ styles.signupLinkText }>Sign Up</Text>
               </View>
@@ -242,5 +302,5 @@ const styles = StyleSheet.create({
   signupLinkText: {
     color: '#37a1cf',
     marginLeft: 5,
-  }
+  },
 });

@@ -9,17 +9,17 @@ export default function auth(state = initialState, action = {}) {
     case types.LOGIN_REQUEST:
       return {
         ...state,
-        status: 'loading',
+        status: 'loginingIn',
       };
     case types.LOGIN_SUCCESS:
       return {
         ...state,
-        status: 'loggedin',
+        status: 'loggedIn',
       };
     case types.LOGIN_ERROR:
       return {
         ...state,
-        status: 'failed',
+        status: 'logIn failed',
       };
     default:
       return state;
