@@ -93,39 +93,41 @@ export default class LoginForm extends Component {
           <View style={ styles.markWrap }>
             <Image source={ markIcon } style={ styles.mark } resizeMode="contain" />
           </View>
-          <View style={ styles.wrapper }>
-            <View style={ styles.inputWrap }>
-              <View style={ styles.iconWrap }>
-                <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
-              </View>
-              <TextInput
-                placeholder="Username"
-                placeholderTextColor="#FFF"
-                color="#FFF"
-                style={ styles.input }
-                value={ this.state.userName }
-                onChangeText={ (text) => this.setState({ userName: text }) }
-              />
+          <View style={ styles.inputWrap }>
+            <View style={ styles.iconWrap }>
+              <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
             </View>
-            <View style={ styles.inputWrap }>
-              <View style={ styles.iconWrap }>
-                <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
-              </View>
-              <TextInput
-                placeholder="Password"
-                placeholderTextColor="#FFF"
-                color="#FFF"
-                secureTextEntry
-                style={ styles.input }
-                value={ this.state.password }
-                onChangeText={ (text) => this.setState({ password: text }) }
-              />
+            <TextInput
+              placeholder="Username"
+              placeholderTextColor="#FFF"
+              color="#FFF"
+              style={ styles.input }
+              value={ this.state.userName }
+              onChangeText={ (text) => this.setState({ userName: text }) }
+            />
+          </View>
+          <View style={ styles.inputWrap }>
+            <View style={ styles.iconWrap }>
+              <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
             </View>
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor="#FFF"
+              color="#FFF"
+              secureTextEntry
+              style={ styles.input }
+              value={ this.state.password }
+              onChangeText={ (text) => this.setState({ password: text }) }
+            />
+          </View>
+          <View style={ styles.buttonWrapper }>
             <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onLogIn() }>
               <View style={ styles.loginButton }>
                 <Text style={ styles.buttonText }>Log In</Text>
               </View>
             </TouchableOpacity>
+          </View>
+          <View style={ styles.buttonWrapper }>
             <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onForgotPassword() }>
               <View>
                 <Text style={ styles.forgotPasswordText }>Forgot Password?</Text>
@@ -178,8 +180,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   markWrap: {
-    flex: 1,
-    paddingTop: 40,
+    flex: 2,
+    paddingTop: 50,
   },
   mark: {
     flex: 1,
@@ -191,14 +193,12 @@ const styles = StyleSheet.create({
     width,
     height,
   },
-  wrapper: {
-    paddingVertical:10,
-  },
   inputWrap: {
+    flex: 1,
     flexDirection: 'row',
     marginVertical: 10,
     marginHorizontal: 40,
-    height: 50,
+    height: 40,
     borderBottomWidth: 1,
     borderBottomColor: '#fff',
   },
@@ -214,9 +214,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
+  buttonWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   loginButton: {
     backgroundColor: '#fff',
-    paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 40,
@@ -229,10 +232,9 @@ const styles = StyleSheet.create({
     },
     shadowColor: '#000',
     shadowOpacity: 0.3,
-    marginTop: 50,
-    marginBottom:50,
-    marginLeft: 40,
-    marginRight: 40,
+    marginVertical: 10,
+    marginHorizontal: 40,
+    height: 50,
   },
   buttonText: {
     color: '#73d3fd',
@@ -241,60 +243,55 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     color: '#fff',
     backgroundColor: 'transparent',
-    textDecorationLine : 'underline',
-    fontSize:16,
+    textDecorationLine: 'underline',
+    fontSize: 16,
     textAlign: 'center',
-    justifyContent: 'center',
-    marginBottom:30,
   },
   lineWarp: {
-    justifyContent:'space-around',
-    flexDirection:'row',
-    marginLeft:20,
-    marginRight:20,
-    marginBottom:30,
+    flex: 1,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
   lineLeft:{
-    width:width * 0.4,
+    width: width * 0.4,
     borderBottomWidth: 1,
     borderBottomColor: '#e3e3e3',
-    marginBottom:10,
   },
   lineRight:{
-    width:width * 0.4,
+    width: width * 0.4,
     borderBottomWidth: 1,
     borderBottomColor: '#e3e3e3',
-    marginBottom:10,
   },
   lineOR :{
     textAlign:'center',
     backgroundColor: 'transparent',
     color:'#fff',
     fontSize:12,
-    height:20
   },
   socialWrap: {
+    flex: 1,
     justifyContent:'space-around',
+    alignItems: 'center',
     flexDirection:'row',
-    marginLeft:30,
-    marginRight:30,
-    flex:1,
+    marginHorizontal: 30,
+    paddingVertical: 10,
   },
   socialButton: {
     backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   socialIcon: {
     height:50,
     width:50,
   },
   signupWrap: {
+    flex: 1,
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height:60,
+    height: 60,
   },
   accountText: {
     color: '#272727',

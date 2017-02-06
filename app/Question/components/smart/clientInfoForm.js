@@ -13,6 +13,9 @@ import {
   Alert,
 } from 'react-native';
 
+import DatePicker from 'react-native-datepicker';
+import ModalDropdown from 'react-native-modal-dropdown';
+
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
@@ -61,28 +64,45 @@ export default class LoginForm extends Component {
           </View>
           <View style={ styles.columnWrapper }>
             <View style={ styles.oneColumn }>
-              <Text style={ styles.text }> Date of Birthday </Text>
+              <Text style={ styles.text }> Date of Birth </Text>
               <View style={ styles.inputWrap }>
-                <TextInput
+                <DatePicker
+                    date={ this.state.birthday }
+                    mode="date"
                     placeholder="10/10/1990"
-                    placeholderTextColor="#a2e2fe"
-                    color="#fff"
-                    style={ styles.input }
-                    value={ this.state.birthday }
-                    onChangeText={ (text) => this.setState({ birthday: text }) }
+                    format="MM/DD/YYYY"
+                    minDate="01/01/1900"
+                    maxDate="12/31/2100"
+                    confirmBtnText="Done"
+                    cancelBtnText="Cancel"
+                    showIcon={ false }
+                    customStyles={{
+                      dateInput: {
+                        height: 20,
+                        borderColor: "transparent",
+                        alignItems: "flex-start",
+                        justifyContent: "flex-start",
+                        marginBottom: 20,
+                      },
+                      dateText: {
+                        color: "#fff",
+                      },
+                      placeholderText: {
+                        color: "#a2e2fe",
+                      },
+                    }}
+                    onDateChange={ (date) => { this.setState({ birthday: date }) } }
                 />
               </View>
             </View>
             <View style={ styles.oneColumn }>
               <Text style={ styles.text }> Gender </Text>
               <View style={ styles.inputWrap }>
-                <TextInput
-                    placeholder="Male"
-                    placeholderTextColor="#fff"
-                    color="#fff"
-                    style={ styles.input }
-                    value={ this.state.gender }
-                    onChangeText={ (text) => this.setState({ gender: text }) }
+                <ModalDropdown options={['Male', 'Female']}
+                               defaultValue="Male"
+                               style={ styles.dropdown }
+                               textStyle ={ styles.text }
+                               dropdownStyle={ styles.dropdownStyle }
                 />
               </View>
             </View>
@@ -137,7 +157,7 @@ export default class LoginForm extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-            <Slider
+            <Slider style={ styles.slider }
                 minimumTrackTintColor={ 'white' }
                 maximumTrackTintColor={ 'white' }
                 minimumValue={0}
@@ -199,9 +219,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   markWrap: {
-    flex: 1,
-    paddingTop: 30,
-    paddingBottom: 30,
+    flex: 2,
   },
   mark: {
     flex: 1,
@@ -238,19 +256,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   inputWrap: {
-    height: 30,
+    height: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#fff',
   },
   text: {
-    height: 30,
+    height: 20,
     color: '#fff',
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: 'transparent',
     fontSize: 15,
   },
   input: {
-    height: 30,
+    height: 20,
     color: '#fff',
     backgroundColor: 'transparent',
   },
@@ -284,8 +303,7 @@ const styles = StyleSheet.create({
     },
     shadowColor: '#000',
     shadowOpacity: 0.3,
-    marginLeft: 30,
-    marginRight: 30,
+    marginHorizontal: 20,
   },
   buttonTextHealthKit: {
     color: '#19b8ff',
@@ -306,12 +324,21 @@ const styles = StyleSheet.create({
     },
     shadowColor: '#000',
     shadowOpacity: 0.3,
-    marginLeft: 30,
-    marginRight: 30,
+    marginHorizontal: 20,
   },
   buttonTextContinue: {
     color: '#fff',
     fontSize: 20,
   },
-
+  slider: {
+      flex: 1,
+      alignItems: 'center',
+      marginTop: 10,
+  },
+  dropdown: {
+    width : 100,
+  },
+  dropdownStyle: {
+    height: 70,
+  },
 });
