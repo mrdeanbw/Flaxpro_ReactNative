@@ -6,6 +6,8 @@ import thunk from 'redux-thunk';
 import * as reducers from './reducers';
 import Login from './Auth/containers/login';
 import ClientInfo from './Question/containers/clientInfo';
+import WhoAreYou from './Question/containers/whoAreYou';
+
 
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -16,7 +18,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <ClientInfo />
+        <WhoAreYou />
       </Provider>
     );
   }

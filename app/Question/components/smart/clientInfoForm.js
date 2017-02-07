@@ -22,7 +22,7 @@ const background = require('../../../Assets/background.png');
 const markIcon = require('../../../Assets/flaxpro_mark.png');
 
 
-export default class LoginForm extends Component {
+export default class ClientInfoForm extends Component {
   constructor(props) {
     super(props);
 
