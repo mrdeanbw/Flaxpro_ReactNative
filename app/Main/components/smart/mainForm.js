@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 
 import TabNavigator from 'react-native-tab-navigator';
+// import ExploreForm from '../../../Explore/components/smart/exploreForm';
+import Explore from '../../../Explore/containers/explore';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -47,6 +50,7 @@ export default class MainForm extends Component {
               renderIcon={ () => <Image source={ exploreIcon } style={ styles.iconTabbar1 }/> }
               renderSelectedIcon={ () => <Image source={ exploreSelectedIcon } style={ styles.iconTabbar1 }/> }
               onPress={ () => this.setState({ selectedTab: 'explore' }) }>
+              <Explore/>
           </TabNavigator.Item>
           <TabNavigator.Item
               selected={ this.state.selectedTab === 'coaches' }
