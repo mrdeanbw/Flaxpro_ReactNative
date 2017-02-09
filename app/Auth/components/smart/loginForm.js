@@ -95,7 +95,7 @@ export default class LoginForm extends Component {
           </View>
           <View style={ styles.inputWrap }>
             <View style={ styles.iconWrap }>
-              <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
+              <Image source={ userIcon } style={ styles.icon } resizeMode="contain" />
             </View>
             <TextInput
               placeholder="Username"

@@ -7,6 +7,7 @@ import * as reducers from './reducers';
 import Login from './Auth/containers/login';
 import ClientInfo from './Question/containers/clientInfo';
 import WhoAreYou from './Question/containers/whoAreYou';
+import Main from './Main/containers/main';
 
 
 
@@ -17,8 +18,8 @@ const store = createStoreWithMiddleware(reducer);
 export default class App extends Component {
   render() {
     return (
-      <Provider store={store}>
-        <WhoAreYou />
+      <Provider store={ store }>
+        <Main />
       </Provider>
     );
   }

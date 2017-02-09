@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import WhoAreYouForm from '../components/smart/whoAreYouForm';
-import * as whoAreYouActions from '../actions';
 import { connect } from 'react-redux';
 
 class WhoAreYou extends Component {
@@ -12,17 +11,14 @@ class WhoAreYou extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
     return (
-      <WhoAreYouForm { ...actions } status/>
+      <WhoAreYouForm/>
     );
   }
 }
 
 export default connect(state => ({
-    status: state.question.status
   }),
   (dispatch) => ({
-    actions: bindActionCreators(whoAreYouActions, dispatch)
   })
 )(WhoAreYou);
