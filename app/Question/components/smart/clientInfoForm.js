@@ -111,12 +111,12 @@ export default class ClientInfoForm extends Component {
             <Text style={ styles.text }> Phone Number </Text>
             <View style={ styles.inputWrap }>
               <TextInput
-                  placeholder="+1"
-                  placeholderTextColor="#fff"
-                  color="#fff"
-                  style={ styles.input }
-                  value={ this.state.phoneNumber }
-                  onChangeText={ (text) => this.setState({ phoneNumber: text }) }
+                placeholder="+1"
+                placeholderTextColor="#fff"
+                color="#fff"
+                style={ styles.input }
+                value={ this.state.phoneNumber }
+                onChangeText={ (text) => this.setState({ phoneNumber: text }) }
               />
             </View>
           </View>
@@ -125,12 +125,12 @@ export default class ClientInfoForm extends Component {
               <Text style={ styles.text }> Current Weight </Text>
               <View style={ styles.inputWrap }>
                 <TextInput
-                    placeholder="lbs"
-                    placeholderTextColor="#fff"
-                    color="#fff"
-                    style={ styles.input }
-                    value={ this.state.weight }
-                    onChangeText={ (text) => this.setState({ weight: text }) }
+                  placeholder="lbs"
+                  placeholderTextColor="#fff"
+                  color="#fff"
+                  style={ styles.input }
+                  value={ this.state.weight }
+                  onChangeText={ (text) => this.setState({ weight: text }) }
                 />
               </View>
             </View>
@@ -138,12 +138,12 @@ export default class ClientInfoForm extends Component {
               <Text style={ styles.text }> Height </Text>
               <View style={ styles.inputWrap }>
                 <TextInput
-                    placeholder="ft"
-                    placeholderTextColor="#fff"
-                    color="#fff"
-                    style={ styles.input }
-                    value={ this.state.height }
-                    onChangeText={ (text) => this.setState({ height: text }) }
+                  placeholder="ft"
+                  placeholderTextColor="#fff"
+                  color="#fff"
+                  style={ styles.input }
+                  value={ this.state.height }
+                  onChangeText={ (text) => this.setState({ height: text }) }
                 />
               </View>
             </View>
@@ -158,24 +158,24 @@ export default class ClientInfoForm extends Component {
               </TouchableOpacity>
             </View>
             <Slider style={ styles.slider }
-                minimumTrackTintColor={ 'white' }
-                maximumTrackTintColor={ 'white' }
-                minimumValue={0}
-                maximumValue={10}
-                step={1}
-                onValueChange={ (value) => this.setState({ fitnessLevel: value }) }
+              minimumTrackTintColor={ 'white' }
+              maximumTrackTintColor={ 'white' }
+              minimumValue={0}
+              maximumValue={10}
+              step={1}
+              onValueChange={ (value) => this.setState({ fitnessLevel: value }) }
             />
           </View>
           <View style={ styles.rowWrapper }>
             <Text style={ styles.text }> Known Allergies </Text>
             <View style={ styles.inputWrap }>
               <TextInput
-                  placeholder="None Listed"
-                  placeholderTextColor="#fff"
-                  color="#fff"
-                  style={ styles.input }
-                  value={ this.state.allergies }
-                  onChangeText={ (text) => this.setState({ allergies: text }) }
+                placeholder="None Listed"
+                placeholderTextColor="#fff"
+                color="#fff"
+                style={ styles.input }
+                value={ this.state.allergies }
+                onChangeText={ (text) => this.setState({ allergies: text }) }
               />
             </View>
           </View>
@@ -183,12 +183,12 @@ export default class ClientInfoForm extends Component {
             <Text style={ styles.text }> Previous/Current Injuries </Text>
             <View style={ styles.inputWrap }>
               <TextInput
-                  placeholder="None Listed"
-                  placeholderTextColor="#fff"
-                  color="#fff"
-                  style={ styles.input }
-                  value={ this.state.injuries }
-                  onChangeText={ (text) => this.setState({ injuries: text }) }
+                placeholder="None Listed"
+                placeholderTextColor="#fff"
+                color="#fff"
+                style={ styles.input }
+                value={ this.state.injuries }
+                onChangeText={ (text) => this.setState({ injuries: text }) }
               />
             </View>
           </View>
@@ -206,8 +206,6 @@ export default class ClientInfoForm extends Component {
               </View>
             </TouchableOpacity>
           </View>
-
-
         </Image>
       </View>
     );

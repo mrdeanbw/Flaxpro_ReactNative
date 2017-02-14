@@ -12,6 +12,12 @@ import {
   Alert,
 } from 'react-native';
 
+import MapView from 'react-native-maps';
+import DatePicker from 'react-native-datepicker';
+import Icon from 'react-native-vector-icons/EvilIcons';
+import { SegmentedControls } from 'react-native-radio-buttons';
+import SearchBar from './searchBar';
+
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
@@ -22,6 +28,7 @@ export default class ExploreForm extends Component {
     super(props);
 
     this.state = {
+      selectedSegmented : 'ALL',
     };
   }
 
@@ -50,6 +57,78 @@ export default class ExploreForm extends Component {
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
+          <View style={ styles.searchBarWrap }>
+            <SearchBar
+              onSearchChange={() => console.log('On Focus')}
+              height={25}
+              autoCorrect={ false }
+              returnKeyType={ "search" }
+              iconColor={ "#ffffff99" }
+              placeholderColor="#ffffff99"
+              paddingTop={20}
+            />
+          </View>
+          <View style={ styles.calendarBarWrap } >
+            <Icon
+              name="calendar"  size={ 35 }
+              color="#fff"
+            />
+            <DatePicker
+              date={ this.state.birthday }
+              mode="date"
+              placeholder="Tuesday, SEP 05, 2016"
+              format="dddd, MMM DD, YYYY"
+              minDate="01/01/1900"
+              maxDate="12/31/2100"
+              confirmBtnText="Done"
+              cancelBtnText="Cancel"
+              showIcon={ false }
+              style = { styles.calendar }
+              customStyles={{
+                dateInput: {
+                  borderColor: "transparent",
+                  alignItems: "flex-start",
+                  height: 25,
+                },
+                dateText: {
+                  color: "#fff",
+                },
+                placeholderText: {
+                  color: "#a2e2fe",
+                },
+              }}
+              onDateChange={ (date) => { this.setState({ birthday: date }) } }
+            />
+          </View>
+          <View style={ styles.segmentedControlsWrap }>
+            <SegmentedControls
+              tint={ "#fff" }
+              selectedTint= { "#41c3fd" }
+              backTint= { "#41c3fd" }
+              options={ ["ALL", "NEARBY", "NEW", "EXPERIENCED"] }
+              onSelection={ option => this.setState({ selectedSegmented: option }) }
+              selectedOption={ this.state.selectedSegmented }
+              allowFontScaling={ true }
+              optionStyle={{
+                fontSize: 12,
+                height: 25,
+              }}
+              containerStyle= {{
+                height: 30,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            />
+          </View>
+          <MapView
+            style={ styles.map }
+            initialRegion={{
+              latitude: 37.78825,
+              longitude: -122.4324,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          />
 
         </Image>
       </View>
@@ -65,4 +144,32 @@ const styles = StyleSheet.create({
     width,
     height,
   },
+  searchBarWrap: {
+    backgroundColor: 'transparent',
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
+  calendarBarWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#86d5f9',
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
+  calendar: {
+    width : width - 55,
+    height: 35,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  segmentedControlsWrap: {
+    backgroundColor: 'transparent',
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  }
+
 });

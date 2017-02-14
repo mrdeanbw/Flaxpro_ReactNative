@@ -7,10 +7,11 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  StatusBar,
+  Platform,
 } from 'react-native';
 
 import TabNavigator from 'react-native-tab-navigator';
-// import ExploreForm from '../../../Explore/components/smart/exploreForm';
 import Explore from '../../../Explore/containers/explore';
 
 
@@ -36,6 +37,10 @@ export default class MainForm extends Component {
       selectedTab: 'explore',
       badge: 0,
     };
+
+    if (Platform.OS === 'ios') {
+      StatusBar.setBarStyle('light-content', false);
+    }
   }
 
   render() {
