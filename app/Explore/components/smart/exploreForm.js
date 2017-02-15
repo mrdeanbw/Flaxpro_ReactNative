@@ -18,9 +18,17 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import SearchBar from './searchBar';
 
+const ASPECT_RATIO = width / height;
+const LATITUDE = 37.78825;
+const LONGITUDE = -122.4324;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA;
+const SPACE = 0.01;
+
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
+const pin_gym = require('../../../Assets/gym.png');
 
 
 export default class ExploreForm extends Component {
@@ -123,13 +131,33 @@ export default class ExploreForm extends Component {
           <MapView
             style={ styles.map }
             initialRegion={{
-              latitude: 37.78825,
-              longitude: -122.4324,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
+              latitude: LATITUDE,
+              longitude: LONGITUDE,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
             }}
-          />
+          >
+            <MapView.Marker
+              image={ pin_gym }
+              coordinate={{
+                latitude: LATITUDE,
+                longitude: LONGITUDE,
+              }}
+              >
 
+            </MapView.Marker>
+
+            <MapView.Marker
+              image={ pin_gym }
+              coordinate={{
+                latitude: LATITUDE - SPACE * 2,
+                longitude: LONGITUDE + SPACE,
+              }}
+            >
+
+            </MapView.Marker>
+
+          </MapView>
         </Image>
       </View>
     );
@@ -169,7 +197,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   map: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 1,
   }
 
 });
