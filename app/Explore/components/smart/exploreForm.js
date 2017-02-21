@@ -12,27 +12,19 @@ import {
   Alert,
 } from 'react-native';
 
-import MapView from 'react-native-maps';
 import DatePicker from 'react-native-datepicker';
-import Icon from 'react-native-vector-icons/EvilIcons';
-import PopupDialog from 'react-native-popup-dialog';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 import { SegmentedControls } from 'react-native-radio-buttons';
 import SearchBar from './searchBar';
-
-
-const ASPECT_RATIO = width / height;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA;
-const SPACE = 0.01;
+import ExploreMapView from './exploreMapView'
 
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
-const pin_gym = require('../../../Assets/gym.png');
-
+const avatar = require('../../../Assets/avatar.png');
+const list = require('../../../Assets/list.png');
+const filter = require('../../../Assets/filter.png');
 
 export default class ExploreForm extends Component {
   constructor(props) {
@@ -40,35 +32,7 @@ export default class ExploreForm extends Component {
 
     this.state = {
       selectedSegmented : 'ALL',
-      region: {
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-      },
-      markers: [
-        {
-          coordinate: {
-            latitude: LATITUDE + SPACE,
-            longitude: LONGITUDE + SPACE,
-          },
-          key: 0,
-        },
-        {
-          coordinate: {
-            latitude: LATITUDE + SPACE,
-            longitude: LONGITUDE - SPACE,
-          },
-          key: 1,
-        },
-        {
-          coordinate: {
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
-          },
-          key: 2,
-        },
-      ],
+      mapStandardMode: true,
     };
   }
 
@@ -84,141 +48,128 @@ export default class ExploreForm extends Component {
   }
 
   onList() {
+
     Alert.alert('Clicked onList');
   }
 
   onFilter() {
+
     Alert.alert('Clicked onFilter');
   }
 
-  onPressPin(key) {
-    this.popupDialog.openDialog();
+  get showBottomBar () {
+    return (
+      <View style={ styles.bottomBarContainer }>
+        <TouchableOpacity
+          onPress={ () => this.onList() }
+          style={ styles.bottomBarButtonContainer }
+        >
+          <Text style={ styles.textListFilter }>List</Text>
+          <Image source={ list } style={ styles.imageListFilter }/>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={ () => this.onList() }
+          style={ styles.bottomBarButtonContainer }
+        >
+          <Text style={ styles.textListFilter }>Filter</Text>
+          <Image source={ filter } style={ styles.imageListFilter }/>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
-  onCloseGym () {
+  get showTopBar () {
 
-    this.popupDialog.closeDialog();
-  }
-  onSetGym () {
-
-    this.popupDialog.closeDialog();
+    return (
+      <View style={ styles.navContainer }>
+        <View style={ styles.searchBarWrap }>
+          <SearchBar
+            onSearchChange={ () => console.log('On Focus') }
+            height={ 25 }
+            autoCorrect={ false }
+            returnKeyType={ "search" }
+            iconColor={ "#ffffff99" }
+            placeholderColor="#ffffff99"
+            paddingTop={ 20 }
+          />
+        </View>
+        <View style={ styles.calendarBarWrap } >
+          <EvilIcons
+            name="calendar"  size={ 35 }
+            color="#fff"
+          />
+          <DatePicker
+            date={ this.state.birthday }
+            mode="date"
+            placeholder="Tuesday, SEP 05, 2016"
+            format="dddd, MMM DD, YYYY"
+            minDate="01/01/1900"
+            maxDate="12/31/2100"
+            confirmBtnText="Done"
+            cancelBtnText="Cancel"
+            showIcon={ false }
+            style = { styles.calendar }
+            customStyles={{
+              dateInput: {
+                borderColor: "transparent",
+                alignItems: "flex-start",
+                height: 25,
+              },
+              dateText: {
+                color: "#fff",
+              },
+              placeholderText: {
+                color: "#a2e2fe",
+              },
+            }}
+            onDateChange={ (date) => { this.setState({ birthday: date }) } }
+          />
+        </View>
+        <View style={ styles.segmentedControlsWrap }>
+          <SegmentedControls
+            tint={ "#fff" }
+            selectedTint= { "#41c3fd" }
+            backTint= { "#41c3fd" }
+            options={ ["ALL", "NEARBY", "NEW", "EXPERIENCED"] }
+            onSelection={ option => this.setState({ selectedSegmented: option }) }
+            selectedOption={ this.state.selectedSegmented }
+            allowFontScaling={ true }
+            optionStyle={{
+              fontSize: 12,
+              height: 25,
+            }}
+            containerStyle= {{
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          />
+        </View>
+      </View>
+    );
   }
 
   render() {
     const { status } = this.props;
-    const { region, markers } = this.state;
+
+    let bottomPosition = 60;
+    if (this.state.mapStandardMode == false)
+      bottomPosition = 190;
 
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
-          <View style={ styles.searchBarWrap }>
-            <SearchBar
-              onSearchChange={() => console.log('On Focus')}
-              height={ 25 }
-              autoCorrect={ false }
-              returnKeyType={ "search" }
-              iconColor={ "#ffffff99" }
-              placeholderColor="#ffffff99"
-              paddingTop={ 20 }
-            />
-          </View>
-          <View style={ styles.calendarBarWrap } >
-            <Icon
-              name="calendar"  size={ 35 }
-              color="#fff"
-            />
-            <DatePicker
-              date={ this.state.birthday }
-              mode="date"
-              placeholder="Tuesday, SEP 05, 2016"
-              format="dddd, MMM DD, YYYY"
-              minDate="01/01/1900"
-              maxDate="12/31/2100"
-              confirmBtnText="Done"
-              cancelBtnText="Cancel"
-              showIcon={ false }
-              style = { styles.calendar }
-              customStyles={{
-                dateInput: {
-                  borderColor: "transparent",
-                  alignItems: "flex-start",
-                  height: 25,
-                },
-                dateText: {
-                  color: "#fff",
-                },
-                placeholderText: {
-                  color: "#a2e2fe",
-                },
-              }}
-              onDateChange={ (date) => { this.setState({ birthday: date }) } }
-            />
-          </View>
-          <View style={ styles.segmentedControlsWrap }>
-            <SegmentedControls
-              tint={ "#fff" }
-              selectedTint= { "#41c3fd" }
-              backTint= { "#41c3fd" }
-              options={ ["ALL", "NEARBY", "NEW", "EXPERIENCED"] }
-              onSelection={ option => this.setState({ selectedSegmented: option }) }
-              selectedOption={ this.state.selectedSegmented }
-              allowFontScaling={ true }
-              optionStyle={{
-                fontSize: 12,
-                height: 25,
-              }}
-              containerStyle= {{
-                height: 30,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            />
-          </View>
 
-          <MapView
-            style={ styles.map }
-            initialRegion={ region }
-          >
-            {
-              this.state.markers.map(marker => (
-                <MapView.Marker
-                  image={ pin_gym }
-                  key={ marker.key }
-                  coordinate={ marker.coordinate }
-                  calloutOffset={{ x: 0, y: 28 }}
-                  calloutAnchor={{ x: 0.5, y: 0.4 }}
-                  onPress={ () => this.onPressPin(marker.key) }
-                >
-                </MapView.Marker>
-              ))
-            }
-          </MapView>
-          <PopupDialog
-            ref={(popupDialog) => { this.popupDialog = popupDialog; }}
-            width={ width * 0.8 }
-            dialogStyle={ styles.dialogContainer }
-          >
-            <View style={ styles.dialogMainContentContainer }>
-              <View style={ styles.dialogContentContainer }>
-                <Text style={ styles.dialogText }>Do you want to set this Gym as the prefered workout location?</Text>
-                <View style={ styles.dialogBottomContainer }>
-                  <View style={ styles.leftButtonWrapper }>
-                    <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onCloseGym() }>
-                      <Text style={ styles.button }>NO</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={ styles.rightButtonWrapper }>
-                    <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSetGym() }>
-                      <Text style={ styles.button }>YES</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              <View style={ styles.dialogTopContainer}>
-                <Image source={ pin_gym } style={ styles.gymBanner } />
-              </View>
-            </View>
-          </PopupDialog>
+          { this.showTopBar }
+
+          <ExploreMapView
+            mapStandardMode={ this.state.mapStandardMode}
+            onTapMap={ () => this.setState({ mapStandardMode:false }) }
+          />
+
+          <View style={ [styles.mainContentContainer, { bottom: bottomPosition }]}>
+            { this.showBottomBar }
+          </View>
 
         </Image>
       </View>
@@ -233,6 +184,9 @@ const styles = StyleSheet.create({
   background: {
     width,
     height,
+  },
+  navContainer: {
+
   },
   searchBarWrap: {
     backgroundColor: 'transparent',
@@ -258,65 +212,37 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 5,
   },
-  map: {
-    flex: 1,
-  },
-  dialogContainer: {
-    backgroundColor: 'transparent',
-    marginTop: 150,
-  },
-  dialogMainContentContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
+  mainContentContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  dialogTopContainer: {
-    width: width * 0.8,
     position: 'absolute',
-    top: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
+    left: 0,
+    right: 0,
+    bottom: 60,
+
   },
-  gymBanner: {
-    width: 44,
-    height: 44,
-  },
-  dialogContentContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    paddingTop: 22,
-    position: 'absolute',
-    top: 22,
-    width: width * 0.8,
-    borderRadius: 20,
-  },
-  dialogText: {
-    paddingHorizontal: 30,
-    paddingVertical: 20,
-  },
-  dialogBottomContainer: {
+  bottomBarContainer: {
     flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: '#e6e6e6',
-  },
-
-  leftButtonWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  rightButtonWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderLeftWidth: 1,
-    borderLeftColor: '#e6e6e6',
-    height: 40,
+    backgroundColor: '#fff',
+    borderRadius: 20,
 
   },
-  button: {
-    textAlign: 'center',
+  bottomBarButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
   },
+  imageListFilter: {
+    height: 15,
+    width: 17,
+  },
+  textListFilter: {
+    backgroundColor: 'transparent',
+    color: '#464646',
+    alignSelf: 'center',
+    paddingRight: 10,
+  },
+
 });

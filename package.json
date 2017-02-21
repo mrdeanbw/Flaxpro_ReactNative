@@ -16,6 +16,7 @@
     "react-native-modal-dropdown": "^0.4.1",
     "react-native-popup-dialog": "^0.5.19",
     "react-native-radio-buttons": "^0.14.0",
+    "react-native-router-flux": "^3.37.0",
     "react-native-stars-rating": "^0.1.5",
     "react-native-tab-navigator": "^0.3.3",
     "react-native-vector-icons": "^4.0.0",
