@@ -7,21 +7,24 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  Alert,
 
 } from 'react-native';
 
 import MapView from 'react-native-maps';
-import PanController from './PanController';
+import PanController from './panController';
 import AnimatedCoachMarker from './animatedCoachMarker';
 import AnimatedViewCell from './animatedViewCell';
 import PopupDialog from 'react-native-popup-dialog';
 import Stars from 'react-native-stars-rating';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import BottomBar from './bottomBar';
+
 
 const { width, height } = Dimensions.get('window');
-const avatar = require('../../../Assets/avatar.png');
 const pin_gym = require('../../../Assets/gym.png');
+const avatar = require('../../../Assets/avatar.png');
 
 
 const ASPECT_RATIO = width / height;
@@ -264,6 +267,8 @@ class ExploreMapView extends Component {
     };
 
     this.onTapMap = this.onTapMap.bind(this);
+    this.onList = this.onList.bind(this);
+    this.onFilter = this.onFilter.bind(this);
   }
 
   componentDidMount() {
@@ -408,6 +413,20 @@ class ExploreMapView extends Component {
   onTapMap () {
     if (this.props.onTapMap) {
       this.props.onTapMap();
+    }
+  }
+
+  onList() {
+
+    if (this.props.onList) {
+      this.props.onList();
+    }
+  }
+
+  onFilter() {
+
+    if (this.props.onFilter) {
+      this.props.onFilter();
     }
   }
 
@@ -586,10 +605,30 @@ class ExploreMapView extends Component {
                 </MapView.Marker>
               );
             })}
+
+            {
+              this.props.mapStandardMode ?
+
+                  <View style={ [styles.mainContentContainer, { bottom: 60 }] }>
+                    <BottomBar
+                      onList={ () => this.onList() }
+                      onFilter={ () => this.onFilter() }
+                    />
+                  </View>
+
+                :
+                  <View style={ [styles.mainContentContainer, { bottom: 60 + ITEM_PREVIEW_HEIGHT + 20}] }>
+                    <BottomBar
+                      onList={ () => this.onList() }
+                      onFilter={ () => this.onFilter() }
+                    />
+                  </View>
+            }
+
           </MapView.Animated>
           {
             this.props.mapStandardMode ?
-              <View style={ [styles.itemContainer, { height:0}] }/>
+              <View style={ [styles.itemContainer, { height: 0 }] }/>
             :
               <View style={ styles.itemContainer }>
                 {
@@ -639,11 +678,15 @@ ExploreMapView.propTypes = {
   provider: MapView.ProviderPropType,
   mapStandardMode: PropTypes.bool,
   onTapMap: PropTypes.func,
+  onFilter: PropTypes.func,
+  onList: PropTypes.func,
 };
 
-AnimatedCoachMarker.defaultProps = {
+ExploreMapView.defaultProps = {
   mapStandardMode: true,
   onTapMap: () => {},
+  onFilter: () => {},
+  onList: () => {},
 
 };
 
@@ -806,6 +849,14 @@ const styles = StyleSheet.create({
   },
   coachButton: {
     color: '#272727',
+  },
+  mainContentContainer: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 60,
   },
 });
 

@@ -12,6 +12,8 @@ import {
   Alert,
 } from 'react-native';
 
+import { Actions } from 'react-native-router-flux';
+
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
@@ -29,12 +31,12 @@ export default class WhoAReYouForm extends Component {
 
   onSelectClient () {
 
-    Alert.alert('Clicked onSelectClient');
+    Actions.ClientInfo();
   }
 
   onSelectProfessional () {
 
-    Alert.alert('Clicked onSelectProfessional');
+    Actions.Main();
   }
 
   render() {

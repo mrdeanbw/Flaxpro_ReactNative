@@ -10,6 +10,7 @@ import ClientInfo from './Question/containers/clientInfo';
 import WhoAreYou from './Question/containers/whoAreYou';
 import Main from './Main/containers/main';
 import ExploreMapView from './Explore/components/smart/exploreMapView';
+import FilterForm from './Explore/components/smart/filterForm';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
@@ -17,11 +18,13 @@ const store = createStoreWithMiddleware(reducer);
 
 const scenes = Actions.create(
   <Scene key="root">
-    <Scene key="Login" component={ Login }/>
+    <Scene key="Login" component={ Login } initial={ true }/>
     <Scene key="ClientInfo" component={ ClientInfo } />
     <Scene key="WhoAreYou" component={ WhoAreYou } />
-    <Scene key="Main" component={ Main } initial={ true }/>
+    <Scene key="Main" component={ Main } />
     <Scene key="ExploreMapView" component={ ExploreMapView } />
+    <Scene key="FilterForm" component={ FilterForm } direction="vertical" />
+
   </Scene>
 );
 

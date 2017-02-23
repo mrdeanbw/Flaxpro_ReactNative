@@ -12,19 +12,21 @@ import {
   Alert,
 } from 'react-native';
 
+import { Actions } from 'react-native-router-flux';
+
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 import { SegmentedControls } from 'react-native-radio-buttons';
 import SearchBar from './searchBar';
-import ExploreMapView from './exploreMapView'
+import ExploreMapView from './exploreMapView';
+import ExploreListView from './exploreListView';
+
 
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
 const avatar = require('../../../Assets/avatar.png');
-const list = require('../../../Assets/list.png');
-const filter = require('../../../Assets/filter.png');
 
 export default class ExploreForm extends Component {
   constructor(props) {
@@ -33,6 +35,7 @@ export default class ExploreForm extends Component {
     this.state = {
       selectedSegmented : 'ALL',
       mapStandardMode: true,
+      showContentMode: 0,
     };
   }
 
@@ -47,38 +50,48 @@ export default class ExploreForm extends Component {
     }
   }
 
-  onList() {
+  onList () {
 
-    Alert.alert('Clicked onList');
+    this.setState({ showContentMode: 1 });
+    this.setState({ mapStandardMode:true });
   }
 
-  onFilter() {
+  onFilter () {
 
-    Alert.alert('Clicked onFilter');
+    Actions.FilterForm();
   }
 
-  get showBottomBar () {
+  onMap () {
+    this.setState({ showContentMode: 0 });
+    this.setState({ mapStandardMode:true });
+  }
+
+  onClose () {
+    this.setState({ mapStandardMode:true });
+  }
+
+  get showCloseTopBar () {
+
     return (
-      <View style={ styles.bottomBarContainer }>
+      <View style={ styles.navBarContainer }>
         <TouchableOpacity
-          onPress={ () => this.onList() }
-          style={ styles.bottomBarButtonContainer }
+          onPress={ () => this.onClose() }
+          style={ styles.closeButtonWrapper }
         >
-          <Text style={ styles.textListFilter }>List</Text>
-          <Image source={ list } style={ styles.imageListFilter }/>
+          <EvilIcons
+            name="close"  size={ 35 }
+            color="#fff"
+          />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={ () => this.onList() }
-          style={ styles.bottomBarButtonContainer }
-        >
-          <Text style={ styles.textListFilter }>Filter</Text>
-          <Image source={ filter } style={ styles.imageListFilter }/>
-        </TouchableOpacity>
+        <Text style={ styles.textTitle }>MAP</Text>
+
+        <View style={ styles.closeButtonWrapper } />
+
       </View>
     );
   }
 
-  get showTopBar () {
+  get showFullTopBar () {
 
     return (
       <View style={ styles.navContainer }>
@@ -125,26 +138,26 @@ export default class ExploreForm extends Component {
             onDateChange={ (date) => { this.setState({ birthday: date }) } }
           />
         </View>
-        <View style={ styles.segmentedControlsWrap }>
-          <SegmentedControls
-            tint={ "#fff" }
-            selectedTint= { "#41c3fd" }
-            backTint= { "#41c3fd" }
-            options={ ["ALL", "NEARBY", "NEW", "EXPERIENCED"] }
-            onSelection={ option => this.setState({ selectedSegmented: option }) }
-            selectedOption={ this.state.selectedSegmented }
-            allowFontScaling={ true }
-            optionStyle={{
-              fontSize: 12,
-              height: 25,
-            }}
-            containerStyle= {{
-              height: 30,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          />
-        </View>
+        <SegmentedControls
+          tint={ "#fff" }
+          selectedTint= { "#41c3fd" }
+          backTint= { "#41c3fd" }
+          options={ ["ALL", "NEARBY", "NEW", "EXPERIENCED"] }
+          onSelection={ option => this.setState({ selectedSegmented: option }) }
+          selectedOption={ this.state.selectedSegmented }
+          allowFontScaling={ true }
+          optionStyle={{
+            fontSize: 12,
+            height: 25,
+          }}
+          containerStyle= {{
+            height: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginHorizontal: 10,
+            marginVertical: 5,
+          }}
+        />
       </View>
     );
   }
@@ -152,24 +165,30 @@ export default class ExploreForm extends Component {
   render() {
     const { status } = this.props;
 
-    let bottomPosition = 60;
-    if (this.state.mapStandardMode == false)
-      bottomPosition = 190;
-
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
 
-          { this.showTopBar }
-
-          <ExploreMapView
-            mapStandardMode={ this.state.mapStandardMode}
-            onTapMap={ () => this.setState({ mapStandardMode:false }) }
-          />
-
-          <View style={ [styles.mainContentContainer, { bottom: bottomPosition }]}>
-            { this.showBottomBar }
-          </View>
+          {
+            this.state.mapStandardMode ?
+              this.showFullTopBar
+              :
+              this.showCloseTopBar
+          }
+          {
+            this.state.showContentMode == 0 ?
+              <ExploreMapView
+                mapStandardMode={ this.state.mapStandardMode}
+                onTapMap={ () => this.setState({ mapStandardMode:false }) }
+                onFilter={ () => this.onFilter() }
+                onList={ () => this.onList() }
+              />
+              :
+              <ExploreListView
+                onFilter={ () => this.onFilter() }
+                onList={ () => this.onMap() }
+              />
+          }
 
         </Image>
       </View>
@@ -186,7 +205,6 @@ const styles = StyleSheet.create({
     height,
   },
   navContainer: {
-
   },
   searchBarWrap: {
     backgroundColor: 'transparent',
@@ -208,41 +226,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   segmentedControlsWrap: {
-    backgroundColor: 'transparent',
     marginHorizontal: 10,
     marginVertical: 5,
   },
-  mainContentContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 60,
-
-  },
-  bottomBarContainer: {
+  navBarContainer: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-
-  },
-  bottomBarButtonContainer: {
-    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    paddingTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 8,
+
+  },
+  closeButtonWrapper: {
+    flex: 1,
+    paddingVertical: 5,
     paddingHorizontal: 15,
   },
-  imageListFilter: {
-    height: 15,
-    width: 17,
+  textTitle: {
+    flex: 10,
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 22
   },
-  textListFilter: {
-    backgroundColor: 'transparent',
-    color: '#464646',
-    alignSelf: 'center',
-    paddingRight: 10,
-  },
-
 });

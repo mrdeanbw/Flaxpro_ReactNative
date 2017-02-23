@@ -32,7 +32,7 @@ class AnimatedViewCell extends Component {
       <Animated.View
         style={ this.props.style }>
         <View style={ styles.mainContainer }>
-          <Image source={ avatar } style={ [{ width: width * 0.36 }, { height: height * 0.36 }, { borderRadius:height * 0.18 }] } />
+          <Image source={ avatar } style={ [{ width: width * 0.36 }, { height: height * 0.36 }, { borderRadius: height * 0.18 }] } />
           <Text style={ styles.textName }>{ name }</Text>
           <Text style={ styles.textDescription }>{ description }</Text>
         </View>
@@ -74,11 +74,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
   },
-  // avatar: {
-  //   width: 40,
-  //   height: 40,
-  //   borderRadius: 20,
-  // },
   textTitle: {
     fontSize: 13,
     color: '#1c1c1c',
