@@ -68,42 +68,43 @@ export default class ClientInfoForm extends Component {
               <Text style={ styles.text }> Date of Birth </Text>
               <View style={ styles.inputWrap }>
                 <DatePicker
-                    date={ this.state.birthday }
-                    mode="date"
-                    placeholder="10/10/1990"
-                    format="MM/DD/YYYY"
-                    minDate="01/01/1900"
-                    maxDate="12/31/2100"
-                    confirmBtnText="Done"
-                    cancelBtnText="Cancel"
-                    showIcon={ false }
-                    customStyles={{
-                      dateInput: {
-                        height: 20,
-                        borderColor: "transparent",
-                        alignItems: "flex-start",
-                        justifyContent: "flex-start",
-                        marginBottom: 20,
-                      },
-                      dateText: {
-                        color: "#fff",
-                      },
-                      placeholderText: {
-                        color: "#a2e2fe",
-                      },
-                    }}
-                    onDateChange={ (date) => { this.setState({ birthday: date }) } }
+                  date={ this.state.birthday }
+                  mode="date"
+                  placeholder="10/10/1990"
+                  format="MM/DD/YYYY"
+                  minDate="01/01/1900"
+                  maxDate="12/31/2100"
+                  confirmBtnText="Done"
+                  cancelBtnText="Cancel"
+                  showIcon={ false }
+                  customStyles={{
+                    dateInput: {
+                      height: 20,
+                      borderColor: "transparent",
+                      alignItems: "flex-start",
+                      justifyContent: "flex-start",
+                      marginBottom: 20,
+                    },
+                    dateText: {
+                      color: "#fff",
+                    },
+                    placeholderText: {
+                      color: "#a2e2fe",
+                    },
+                  }}
+                  onDateChange={ (date) => { this.setState({ birthday: date }) } }
                 />
               </View>
             </View>
             <View style={ styles.oneColumn }>
               <Text style={ styles.text }> Gender </Text>
               <View style={ styles.inputWrap }>
-                <ModalDropdown options={['Male', 'Female']}
-                               defaultValue="Male"
-                               style={ styles.dropdown }
-                               textStyle ={ styles.text }
-                               dropdownStyle={ styles.dropdownStyle }
+                <ModalDropdown
+                  options={['Male', 'Female']}
+                  defaultValue="Male"
+                  style={ styles.dropdown }
+                  textStyle ={ styles.text }
+                  dropdownStyle={ styles.dropdownStyle }
                 />
               </View>
             </View>
@@ -161,9 +162,9 @@ export default class ClientInfoForm extends Component {
             <Slider style={ styles.slider }
               minimumTrackTintColor={ 'white' }
               maximumTrackTintColor={ 'white' }
-              minimumValue={0}
-              maximumValue={10}
-              step={1}
+              minimumValue={ 0 }
+              maximumValue={ 10 }
+              step={ 1 }
               onValueChange={ (value) => this.setState({ fitnessLevel: value }) }
             />
           </View>
@@ -330,9 +331,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   slider: {
-      flex: 1,
-      alignItems: 'center',
-      marginTop: 10,
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 10,
   },
   dropdown: {
     width : 100,

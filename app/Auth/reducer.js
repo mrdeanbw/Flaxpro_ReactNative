@@ -21,6 +21,22 @@ export default function auth(state = initialState, action = {}) {
         ...state,
         status: 'logIn failed',
       };
+    case types.SIGNUP_REQUEST:
+      return {
+        ...state,
+        status: 'signup_request',
+      };
+    case types.SIGNUP_SUCCESS:
+      return {
+        ...state,
+        status: 'signup_success',
+      };
+    case types.SIGNUP_ERROR:
+      return {
+        ...state,
+        status: 'signup_error',
+      };
+
     default:
       return state;
   }

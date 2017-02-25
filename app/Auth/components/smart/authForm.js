@@ -27,7 +27,7 @@ const arrow = require('../../../Assets/right_arrow.png');
 const triangle = require('../../../Assets/triangle.png');
 
 
-export default class LoginForm extends Component {
+export default class AuthForm extends Component {
   constructor(props) {
     super(props);
 
@@ -396,27 +396,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     padding: 5,
-  },
-
-
-
-
-
-
-
-  signupWrap: {
-    flex: 1,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 60,
-  },
-  accountText: {
-    color: '#272727',
-  },
-  signupLinkText: {
-    color: '#37a1cf',
-    marginLeft: 5,
   },
 });

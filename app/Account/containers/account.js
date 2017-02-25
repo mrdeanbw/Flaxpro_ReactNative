@@ -2,11 +2,11 @@
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import LoginForm from '../components/smart/loginForm';
-import * as authActions from '../actions';
+import AccountForm from '../components/smart/accountForm';
+import * as accountActions from '../actions';
 import { connect } from 'react-redux';
 
-class Login extends Component {
+class Account extends Component {
   constructor(props) {
     super(props);
   }
@@ -14,15 +14,15 @@ class Login extends Component {
   render() {
     const { actions, status } = this.props;
     return (
-      <LoginForm { ...actions } status/>
+      <AccountForm { ...actions } status/>
     );
   }
 }
 
 export default connect(state => ({
-    status: state.auth.status
+    status: state.hire.status
   }),
   (dispatch) => ({
-    actions: bindActionCreators(authActions, dispatch)
+    actions: bindActionCreators(accountActions, dispatch)
   })
-)(Login);
+)(Account);

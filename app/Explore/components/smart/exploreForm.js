@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
     flex: 10,
     textAlign: 'center',
     color: '#fff',
-    fontSize: 22
+    fontSize: 22,
+    paddingVertical: 10,
   },
 });

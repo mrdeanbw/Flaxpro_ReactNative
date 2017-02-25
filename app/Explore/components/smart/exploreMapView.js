@@ -11,6 +11,8 @@ import {
 
 } from 'react-native';
 
+import { Actions } from 'react-native-router-flux';
+
 import MapView from 'react-native-maps';
 import PanController from './panController';
 import AnimatedCoachMarker from './animatedCoachMarker';
@@ -402,7 +404,7 @@ class ExploreMapView extends Component {
 
   onMakeOfferCoach ( key ) {
 
-    this.popupDialogCoach.closeDialog ();
+    Actions.ProposeTerms();
   }
 
   onExpandCoach ( key ) {

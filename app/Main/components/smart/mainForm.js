@@ -12,12 +12,14 @@ import {
 } from 'react-native';
 
 import TabNavigator from 'react-native-tab-navigator';
+
 import Explore from '../../../Explore/containers/explore';
+import Account from '../../../Account/containers/account';
+
 
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
 const exploreIcon = require('../../../Assets/explore.png');
 const exploreSelectedIcon = require('../../../Assets/selected_explore.png');
 const coachesIcon = require('../../../Assets/coaches.png');
@@ -34,7 +36,7 @@ export default class MainForm extends Component {
     super(props);
 
     this.state = {
-      selectedTab: 'explore',
+      selectedTab: 'account',
       badge: 0,
     };
 
@@ -50,41 +52,42 @@ export default class MainForm extends Component {
       <View style={ styles.container }>
         <TabNavigator>
           <TabNavigator.Item
-              selected={ this.state.selectedTab === 'explore' }
-              title="EXPLORE"
-              renderIcon={ () => <Image source={ exploreIcon } style={ styles.iconTabbar1 }/> }
-              renderSelectedIcon={ () => <Image source={ exploreSelectedIcon } style={ styles.iconTabbar1 }/> }
-              onPress={ () => this.setState({ selectedTab: 'explore' }) }>
-              <Explore/>
+            selected={ this.state.selectedTab === 'explore' }
+            title="EXPLORE"
+            renderIcon={ () => <Image source={ exploreIcon } style={ styles.iconTabbar1 }/> }
+            renderSelectedIcon={ () => <Image source={ exploreSelectedIcon } style={ styles.iconTabbar1 }/> }
+            onPress={ () => this.setState({ selectedTab: 'explore' }) }>
+            <Explore/>
           </TabNavigator.Item>
           <TabNavigator.Item
-              selected={ this.state.selectedTab === 'coaches' }
-              title="COACHES"
-              renderIcon={ () => <Image source={ coachesIcon } style={ styles.iconTabbar2 }/> }
-              renderSelectedIcon={ () => <Image source={ coachesSelectedIcon } style={ styles.iconTabbar2 }/> }
-              onPress={ () => this.setState({selectedTab: 'coaches' }) }>
+            selected={ this.state.selectedTab === 'coaches' }
+            title="COACHES"
+            renderIcon={ () => <Image source={ coachesIcon } style={ styles.iconTabbar2 }/> }
+            renderSelectedIcon={ () => <Image source={ coachesSelectedIcon } style={ styles.iconTabbar2 }/> }
+            onPress={ () => this.setState({selectedTab: 'coaches' }) }>
           </TabNavigator.Item>
           <TabNavigator.Item
-              selected={ this.state.selectedTab === 'inbox' }
-              title="INBOX"
-              renderIcon={ () => <Image source={ inboxIcon } style={ styles.iconTabbar1 }/> }
-              renderSelectedIcon={ () => <Image source={ inboxSelectedIcon } style={ styles.iconTabbar1 }/> }
-              badgeText={ this.state.badge }
-              onPress={ () => this.setState({selectedTab: 'inbox' }) }>
+            selected={ this.state.selectedTab === 'inbox' }
+            title="INBOX"
+            renderIcon={ () => <Image source={ inboxIcon } style={ styles.iconTabbar1 }/> }
+            renderSelectedIcon={ () => <Image source={ inboxSelectedIcon } style={ styles.iconTabbar1 }/> }
+            badgeText={ this.state.badge }
+            onPress={ () => this.setState({selectedTab: 'inbox' }) }>
           </TabNavigator.Item>
           <TabNavigator.Item
-              selected={ this.state.selectedTab === 'profile' }
-              title="PROFILE"
-              renderIcon={ () => <Image source={ profileIcon } style={ styles.iconTabbar3 }/> }
-              renderSelectedIcon={ () => <Image source={ profileSelectedIcon } style={ styles.iconTabbar3 }/> }
-              onPress={ () => this.setState({selectedTab: 'profile' }) }>
+            selected={ this.state.selectedTab === 'profile' }
+            title="PROFILE"
+            renderIcon={ () => <Image source={ profileIcon } style={ styles.iconTabbar3 }/> }
+            renderSelectedIcon={ () => <Image source={ profileSelectedIcon } style={ styles.iconTabbar3 }/> }
+            onPress={ () => this.setState({selectedTab: 'profile' }) }>
           </TabNavigator.Item>
           <TabNavigator.Item
-              selected={ this.state.selectedTab === 'account' }
-              title="ACCOUNT"
-              renderIcon={ () => <Image source={ accountIcon } style={ styles.iconTabbar1 }/> }
-              renderSelectedIcon={ () => <Image source={ accountSelectedIcon } style={ styles.iconTabbar1 }/> }
-              onPress={ () => this.setState({selectedTab: 'account' }) }>
+            selected={ this.state.selectedTab === 'account' }
+            title="ACCOUNT"
+            renderIcon={ () => <Image source={ accountIcon } style={ styles.iconTabbar1 }/> }
+            renderSelectedIcon={ () => <Image source={ accountSelectedIcon } style={ styles.iconTabbar1 }/> }
+            onPress={ () => this.setState({selectedTab: 'account' }) }>
+            <Account/>
           </TabNavigator.Item>
         </TabNavigator>
       </View>

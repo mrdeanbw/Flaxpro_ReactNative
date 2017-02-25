@@ -1,9 +1,13 @@
 import auth from './Auth/reducer';
 import question from './Question/reducer';
-import expore from './Explore/reducer';
+import explore from './Explore/reducer';
+import hire from './Hire/reducer';
+import account from './Account/reducer';
 
 export {
   auth,
   question,
-  expore,
+  explore,
+  hire,
+  account,
 };
