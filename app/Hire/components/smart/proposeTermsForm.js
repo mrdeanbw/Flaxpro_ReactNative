@@ -44,7 +44,7 @@ export default class ProposeTermsForm extends Component {
 
   onNext () {
 
-    Actions.Main();
+    Actions.Payment();
   }
 
   render() {

@@ -4,7 +4,7 @@ const initialState = {
   status: null,
 };
 
-export default function accountInfo(state = initialState, action = {}) {
+export default function account(state = initialState, action = {}) {
   switch (action.type) {
     case types.ACCOUNT_REQUEST:
       return {

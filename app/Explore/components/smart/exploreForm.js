@@ -18,7 +18,7 @@ import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 import { SegmentedControls } from 'react-native-radio-buttons';
-import SearchBar from './searchBar';
+import SearchBar from '../../../Components/searchBar';
 import ExploreMapView from './exploreMapView';
 import ExploreListView from './exploreListView';
 

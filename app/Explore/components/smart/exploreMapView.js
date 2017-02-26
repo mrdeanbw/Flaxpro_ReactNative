@@ -400,6 +400,7 @@ class ExploreMapView extends Component {
   onHireCoach ( key ) {
 
     this.popupDialogCoach.closeDialog ();
+    Actions.Payment();
   }
 
   onMakeOfferCoach ( key ) {

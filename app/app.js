@@ -12,6 +12,8 @@ import Main from './Main/containers/main';
 import ExploreMapView from './Explore/components/smart/exploreMapView';
 import FilterForm from './Explore/components/smart/filterForm';
 import ProposeTerms from './Hire/containers/proposeTerms';
+import Payment from './Hire/containers/payment';
+import Clients_Coaches from './Clients_Coaches/containers/clients_coaches';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
@@ -26,6 +28,8 @@ const scenes = Actions.create(
     <Scene key="ExploreMapView" component={ ExploreMapView } />
     <Scene key="FilterForm" component={ FilterForm } direction="vertical" />
     <Scene key="ProposeTerms" component={ ProposeTerms } />
+    <Scene key="Payment" component={ Payment } />
+    <Scene key="Clients_Coaches" component={ Clients_Coaches } />
 
   </Scene>
 );

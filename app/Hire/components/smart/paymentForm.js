@@ -6,45 +6,53 @@ import {
   View,
   Image,
   Dimensions,
-  Switch,
-  ScrollView,
+  TextInput,
   TouchableOpacity,
+  ScrollView,
   Alert,
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import ModalDropdown from 'react-native-modal-dropdown';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
 
-export default class AccountForm extends Component {
+const duration = ['1 Months', '2 Months', '3 Months'];
+
+export default class Payment extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      bNotification: true,
+      numberOfSessions: 3,
     };
   }
 
   componentWillReceiveProps(newProps) {
 
-    if (newProps.status == 'ProposeTermsRequest') {
+    if (newProps.status == 'PaymentRequest') {
 
-    } else if (newProps.status == 'ProposeTermsSuccess') {
+    } else if (newProps.status == 'PaymentSuccess') {
 
-    } else if (newProps.status == 'ProposeTermsError') {
+    } else if (newProps.status == 'PaymentError') {
 
     }
   }
 
-  onNext() {
+  onClose () {
 
     Actions.Main();
   }
 
-  onProfileInfo() {
+  onSelectPaymentMethod(key) {
+    Alert.alert('onSelectPaymentMethod');
+  }
 
+  onAddPaymentMethod() {
+    Alert.alert('onAddPaymentMethod');
   }
 
   render() {
@@ -54,58 +62,49 @@ export default class AccountForm extends Component {
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
           <View style={ styles.navBarContainer }>
-            <Text style={ styles.textTitle }>Account</Text>
+            <TouchableOpacity
+              onPress={ () => this.onClose() }
+              style={ styles.closeButtonWrapper }
+            >
+              <EvilIcons
+                name="close"  size={ 35 }
+                color="#fff"
+              />
+            </TouchableOpacity>
+            <Text style={ styles.textTitle }>PAYMENT</Text>
+            <View style={ styles.closeButtonWrapper } />
           </View>
           <View style={ styles.mainContainer }>
             <ScrollView>
               <View style={ styles.sectionContainer }>
-                <Text style={ styles.textSectionTitle }>PROFILE</Text>
+                <Text style={ styles.textSectionTitle }>Payment Methods</Text>
               </View>
               <TouchableOpacity
-                onPress={ () => this.onProfileInfo() }
+                onPress={ () => this.onSelectPaymentMethod(0) }
                 style={ styles.cellContainer }
               >
-                <Text style={ styles.textCellTitle }>Profile info</Text>
+                <Text style={ styles.textCellTitle }>Payment Card</Text>
                 <EntypoIcons
                   name="chevron-thin-right"  size={ 15 }
                   color="#707070"
                 />
               </TouchableOpacity>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Email</Text>
-                <Text style={ styles.textCellValue }>username@gmail.com</Text>
-              </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Password</Text>
-              </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Payment</Text>
-              </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Integrations</Text>
-              </View>
+              <TouchableOpacity
+                onPress={ () => this.onAddPaymentMethod() }
+                style={ styles.cellContainer }
+              >
+                <Text style={ styles.textCellAddValue }>Add Payment Method</Text>
+              </TouchableOpacity>
+
               <View style={ styles.sectionContainer }>
-                <Text style={ styles.textSectionTitle }>APP PREFERENCES</Text>
+                <Text style={ styles.textSectionTitle }>Promotions</Text>
               </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Language</Text>
-                <Text style={ styles.textCellValue }>English</Text>
-              </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Notification</Text>
-                <Switch
-                  onValueChange={(value) => this.setState({ bNotification: value })}
-                  value={ this.state.bNotification } />
-
-              </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Units</Text>
-                <Text style={ styles.textCellValue }>Pounds, feet and inches</Text>
-              </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Sounds</Text>
-              </View>
-
+              <TouchableOpacity
+                onPress={ () => this.onAddPaymentMethod() }
+                style={ styles.cellContainer }
+              >
+                <Text style={ styles.textCellAddValue }>Add Promo/Gift Code</Text>
+              </TouchableOpacity>
             </ScrollView>
           </View>
         </Image>
@@ -130,6 +129,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
+  closeButtonWrapper: {
+    flex: 1,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+  },
   textTitle: {
     flex: 10,
     textAlign: 'center',
@@ -139,7 +143,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    backgroundColor: '#f6f8f9',
+    backgroundColor: '#efefef',
   },
   sectionContainer: {
     flexDirection: 'row',
@@ -164,7 +168,7 @@ const styles = StyleSheet.create({
   },
   textSectionTitle: {
     color: '#6b6b6b',
-    fontSize: 12,
+    fontSize: 14,
   },
   textCellTitle: {
     color: '#1e1e1e',
@@ -174,4 +178,9 @@ const styles = StyleSheet.create({
     color: '#707070',
     fontSize: 14,
   },
+  textCellAddValue: {
+    color: '#10c7f9',
+    fontSize: 14,
+  },
+
 });

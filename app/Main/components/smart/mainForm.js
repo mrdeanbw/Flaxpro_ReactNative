@@ -15,8 +15,7 @@ import TabNavigator from 'react-native-tab-navigator';
 
 import Explore from '../../../Explore/containers/explore';
 import Account from '../../../Account/containers/account';
-
-
+import Clients_Coaches from '../../../Clients_Coaches/containers/clients_coaches';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,7 +35,7 @@ export default class MainForm extends Component {
     super(props);
 
     this.state = {
-      selectedTab: 'account',
+      selectedTab: 'explore',
       badge: 0,
     };
 
@@ -50,7 +49,9 @@ export default class MainForm extends Component {
 
     return (
       <View style={ styles.container }>
-        <TabNavigator>
+        <TabNavigator
+          tabBarStyle={ styles.tab }
+        >
           <TabNavigator.Item
             selected={ this.state.selectedTab === 'explore' }
             title="EXPLORE"
@@ -65,6 +66,7 @@ export default class MainForm extends Component {
             renderIcon={ () => <Image source={ coachesIcon } style={ styles.iconTabbar2 }/> }
             renderSelectedIcon={ () => <Image source={ coachesSelectedIcon } style={ styles.iconTabbar2 }/> }
             onPress={ () => this.setState({selectedTab: 'coaches' }) }>
+            <Clients_Coaches/>
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={ this.state.selectedTab === 'inbox' }
@@ -115,5 +117,9 @@ const styles = StyleSheet.create({
     height: 29,
     width: 25,
   },
-
+  tab: {
+    borderStyle: 'solid',
+    borderTopWidth: 2,
+    borderTopColor: '#d7d7d7',
+  },
 });

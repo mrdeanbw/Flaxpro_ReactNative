@@ -21,6 +21,22 @@ export default function hire(state = initialState, action = {}) {
         ...state,
         status: 'ProposeTermsError',
       };
+    case types.PAMENT_REQUEST:
+      return {
+        ...state,
+        status: 'PaymentRequest',
+      };
+    case types.PAYMENT_SUCCESS:
+      return {
+        ...state,
+        status: 'PaymentSuccess',
+      };
+    case types.PAYMENT_ERROR:
+      return {
+        ...state,
+        status: 'PaymentError',
+      };
+
     default:
       return state;
   }
