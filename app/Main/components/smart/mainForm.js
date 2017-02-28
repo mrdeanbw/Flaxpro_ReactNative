@@ -16,6 +16,7 @@ import TabNavigator from 'react-native-tab-navigator';
 import Explore from '../../../Explore/containers/explore';
 import Account from '../../../Account/containers/account';
 import Clients_Coaches from '../../../Clients_Coaches/containers/clients_coaches';
+import ClientProfile from '../../../Profile/containers/clientProfile';
 
 const { width, height } = Dimensions.get('window');
 
@@ -82,6 +83,7 @@ export default class MainForm extends Component {
             renderIcon={ () => <Image source={ profileIcon } style={ styles.iconTabbar3 }/> }
             renderSelectedIcon={ () => <Image source={ profileSelectedIcon } style={ styles.iconTabbar3 }/> }
             onPress={ () => this.setState({selectedTab: 'profile' }) }>
+            <ClientProfile/>
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={ this.state.selectedTab === 'account' }

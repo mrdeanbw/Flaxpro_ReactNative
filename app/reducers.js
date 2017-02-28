@@ -4,6 +4,7 @@ import explore from './Explore/reducer';
 import hire from './Hire/reducer';
 import account from './Account/reducer';
 import clients_coaches from './Clients_Coaches/reducer';
+import profile from './Profile/reducer';
 
 export {
   auth,
@@ -12,4 +13,5 @@ export {
   hire,
   account,
   clients_coaches,
+  profile,
 };
