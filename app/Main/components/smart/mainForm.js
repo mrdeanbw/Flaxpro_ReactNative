@@ -36,7 +36,7 @@ export default class MainForm extends Component {
     super(props);
 
     this.state = {
-      selectedTab: 'explore',
+      selectedTab: 'profile',
       badge: 0,
     };
 
