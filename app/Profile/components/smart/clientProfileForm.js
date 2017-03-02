@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   TextInput,
+  ScrollView,
   TouchableOpacity,
   Alert,
 } from 'react-native';
@@ -14,7 +15,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
-
+import Calendar from 'react-native-calendar';
 
 const { width, height } = Dimensions.get('window');
 
@@ -56,13 +57,16 @@ export default class ClientProfileForm extends Component {
 
   }
 
+  onDateSelect(date) {
+
+  }
+
   render() {
     const { status } = this.props;
 
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
-
           <View style={ styles.navBarContainer }>
             <TouchableOpacity
               onPress={ () => this.onSchdule() }
@@ -80,86 +84,151 @@ export default class ClientProfileForm extends Component {
               <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
             </TouchableOpacity>
           </View>
-          <View style={ styles.avatarContainer }>
-            <View style={ styles.avatarTopBackground }>
+          <View style={ styles.contentContainer }>
+            <View style={ styles.avatarContainer }>
+              <View style={ styles.avatarTopBackground }>
+              </View>
+              <View style={ styles.avatarBottomBackground }>
+              </View>
+              <View style={ styles.avatarWrapper }>
+                <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+              </View>
             </View>
-            <View style={ styles.avatarBottomBackground }>
-            </View>
-            <View style={ styles.avatarWrapper }>
-              <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+            <View style={ styles.contentMainContainer }>
+              <View style={ styles.workoutContainer }>
+                <View style={ styles.workoutCell }>
+                  <Image source={ strengthTraining } style={ styles.imageWorkout } />
+                  <Text style={ styles.textWorkoutTitle }>Strength Training</Text>
+                  <Text style={ [styles.textWorkoutValue, { color: '#41ce59'}] }>89 WORKOUTS</Text>
+                </View>
+                <View style={ styles.workoutCell }>
+                  <Image source={ pilates } style={ styles.imageWorkout } />
+                  <Text style={ styles.textWorkoutTitle }>Pilates</Text>
+                  <Text style={ [styles.textWorkoutValue, { color: '#ffb21c'}] }>36 WORKOUTS</Text>
+                </View>
+                <View style={ styles.workoutCell }>
+                  <Image source={ yoga } style={ styles.imageWorkout } />
+                  <Text style={ styles.textWorkoutTitle }>Yoga</Text>
+                  <Text style={ [styles.textWorkoutValue, { color: '#a94df0'}] }>25 WORKOUTS</Text>
+                </View>
+                <View style={ styles.workoutCell }>
+                  <Image source={ totalWorkout } style={ styles.imageWorkout } />
+                  <Text style={ styles.textWorkoutTitle }>Total Workout</Text>
+                  <Text style={ [styles.textWorkoutValue, { color: '#0fc8fb'}] }>150</Text>
+                </View>
+              </View>
+              <ScrollView>
+                <View style={ styles.infoContainer }>
+                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
+                  <Text style={ styles.textInfoValue }>25 years / Male</Text>
+                  <Text style={ styles.textInfoValue }>Mississauge</Text>
+                </View>
+                <View style={ styles.infoContainer }>
+                  <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
+                  <Text style={ styles.textInfoValue }>O trained for many years, and I'm very confident about the skullset I developed over the years.</Text>
+                </View>
+
+                <Text style={ [styles.textInfoTitle, { paddingHorizontal: 10 }] }>REVIEWS</Text>
+
+                <View style={ styles.infoContainer }>
+                  <View style={ styles.starContainer }>
+                    <Text style={ styles.textTrainerName }>Mark</Text>
+                    <Stars
+                      isActive={ false }
+                      rateMax={ 5 }
+                      isHalfStarEnabled={ false }
+                      onStarPress={ (rating) => console.log(rating) }
+                      rate={ 5 }
+                      size={ 16 }
+                    />
+                  </View>
+                  <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
+                  <Text style={ styles.textGray }>SEP 18, 2016</Text>
+                </View>
+              </ScrollView>
+
+              <View style={ styles.showContainer }>
+                <TouchableOpacity
+                  onPress={ () => this.onShowMoreLess() }
+                  style={ styles.showButtonWrapper }
+                >
+                  <Text style={ styles.textGray }>Show More</Text>
+                  <EntypoIcons
+                    name="chevron-thin-down"  size={ 15 }
+                    color="#7e7e7e"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <Calendar
+                customStyle={ customStyle }
+                dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
+                eventDates={ ['2017-03-15'] }
+                nextButtonText={ '>' }
+                onSwipeNext={ this.onSwipeNext }    // Callback for forward swipe event
+                onSwipePrev={ this.onSwipePrev }    // Callback for back swipe event
+                onTouchNext={ this.onTouchNext }    // Callback for next touch event
+                onTouchPrev={ this.onTouchPrev }    // Callback for prev touch event
+                prevButtonText={'<'}           // Text for previous button. Default: 'Prev'
+                onDateSelect={ (date) => this.onDateSelect(date) }
+                selectedDate={ '2017-03-17' }       // Day to be selected
+                showControls={ true }               // False hides prev/next buttons. Default: False
+                showEventIndicators={ true }        // False hides event indicators. Default:False
+              />
             </View>
           </View>
-          <View style={ styles.mainContainer }>
-            <View style={ styles.workoutContainer }>
-              <View style={ styles.workoutCell }>
-                <Image source={ strengthTraining } style={ styles.imageWorkout } />
-                <Text style={ styles.textWorkoutTitle }>Strength Training</Text>
-                <Text style={ [styles.textWorkoutValue, { color: '#41ce59'}] }>89 WORKOUTS</Text>
-              </View>
-              <View style={ styles.workoutCell }>
-                <Image source={ pilates } style={ styles.imageWorkout } />
-                <Text style={ styles.textWorkoutTitle }>Pilates</Text>
-                <Text style={ [styles.textWorkoutValue, { color: '#ffb21c'}] }>36 WORKOUTS</Text>
-              </View>
-              <View style={ styles.workoutCell }>
-                <Image source={ yoga } style={ styles.imageWorkout } />
-                <Text style={ styles.textWorkoutTitle }>Yoga</Text>
-                <Text style={ [styles.textWorkoutValue, { color: '#a94df0'}] }>25 WORKOUTS</Text>
-              </View>
-              <View style={ styles.workoutCell }>
-                <Image source={ totalWorkout } style={ styles.imageWorkout } />
-                <Text style={ styles.textWorkoutTitle }>Total Workout</Text>
-                <Text style={ [styles.textWorkoutValue, { color: '#0fc8fb'}] }>150</Text>
-              </View>
-            </View>
-            <View style={ styles.infoContainer }>
-              <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
-              <Text style={ styles.textInfoValue }>25 years / Male</Text>
-              <Text style={ styles.textInfoValue }>Mississauge</Text>
-            </View>
-            <View style={ styles.infoContainer }>
-              <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-              <Text style={ styles.textInfoValue }>O trained for many years, and I'm very confident about the skullset I developed over the years.</Text>
-            </View>
-
-            <Text style={ [styles.textInfoTitle, { paddingHorizontal: 10 }] }>REVIEWS</Text>
-
-            <View style={ styles.infoContainer }>
-              <View style={ styles.starContainer }>
-                <Text style={ styles.textTrainerName }>Mark</Text>
-                <Stars
-                  isActive={ false }
-                  rateMax={ 5 }
-                  isHalfStarEnabled={ false }
-                  onStarPress={ (rating) => console.log(rating) }
-                  rate={ 5 }
-                  size={ 16 }
-                />
-              </View>
-              <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-              <Text style={ styles.textGray }>SEP 18, 2016</Text>
-            </View>
-
-            <View style={ styles.showContainer }>
-              <TouchableOpacity
-                onPress={ () => this.onShowMoreLess() }
-                style={ styles.showButtonWrapper }
-              >
-                <Text style={ styles.textGray }>Show More</Text>
-                <EntypoIcons
-                  name="chevron-thin-down"  size={ 15 }
-                  color="#7e7e7e"
-                />
-
-              </TouchableOpacity>
-            </View>
-
-          </View>
-          <View style={ [{flex: 10}, { backgroundColor: '#fff' }] } />
         </Image>
       </View>
     );
   }
+}
+
+const customStyle = {
+  title: {
+    color: '#2e343b',
+  },
+  calendarContainer: {
+    backgroundColor: '#fff',
+  },
+  calendarControls: {
+    backgroundColor: '#f3f3f3',
+  },
+  controlButtonText: {
+    color: '#8e9296',
+  },
+  currentDayCircle: {
+    backgroundColor: '#fff',
+  },
+  currentDayText: {
+    color: '#c6ccd2',
+  },
+  day: {
+    color: '#c6ccd2',
+  },
+  dayHeading: {
+    color: '#2e343b',
+  },
+  hasEventCircle: {
+    backgroundColor: '#45c7f1',
+  },
+  hasEventText: {
+    color: '#fff',
+  },
+  selectedDayCircle: {
+    backgroundColor: '#fff',
+  },
+  selectedDayText: {
+    color: '#c6ccd2',
+  },
+  weekendDayText: {
+    color: '#c6ccd2',
+  },
+  weekendHeading: {
+    color: '#2e343b',
+  },
+  weekRow: {
+    backgroundColor: '#fff',
+  },
 }
 
 const styles = StyleSheet.create({
@@ -171,7 +240,7 @@ const styles = StyleSheet.create({
     height,
   },
   navBarContainer: {
-    flex: 1,
+    flex: 0.7,
     flexDirection: 'row',
     backgroundColor: 'transparent',
     paddingTop: 20,
@@ -198,17 +267,18 @@ const styles = StyleSheet.create({
     height: 24,
   },
   avatarContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarTopBackground: {
     width: width,
-    height: 30,
+    height: 32,
     backgroundColor: 'transparent',
   },
   avatarBottomBackground: {
     width: width,
-    height: 30,
+    height: 32,
     backgroundColor: '#fff',
   },
   imageAvatar: {
@@ -226,8 +296,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  mainContainer: {
+  contentContainer: {
+    flex: 8.5,
+    backgroundColor: 'transparent',
+  },
+  contentMainContainer: {
+    flex: 8.5,
     backgroundColor: '#fff',
+    paddingBottom: 50,
   },
   workoutContainer: {
     alignSelf: 'stretch',
@@ -290,5 +366,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
 });
