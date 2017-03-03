@@ -15,7 +15,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
-import Calendar from 'react-native-calendar';
+import Calendar from './calendar/Calendar';
 
 const { width, height } = Dimensions.get('window');
 
@@ -32,6 +32,11 @@ export default class ClientProfileForm extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      showMoreOrLess: true,
+      profileShowMode: true,
+    };
+
   }
 
   componentWillReceiveProps(newProps) {
@@ -46,19 +51,93 @@ export default class ClientProfileForm extends Component {
   }
 
   onSchdule() {
-
+    Actions.ScheduleForm(); 
   }
 
   onEdit() {
 
   }
 
-  onShowMoreLess() {
-
+  onShowMoreLess(showMode) {
+    this.setState({ showMoreOrLess: showMode });
   }
 
-  onDateSelect(date) {
+  get showMoreOrLessButton() {
+    return (
+      this.state.showMoreOrLess ?
+        <View style={ styles.showContainer }>
+          <TouchableOpacity
+            onPress={ () => this.onShowMoreLess( false ) }
+            style={ styles.showButtonWrapper }
+          >
+            <Text style={ styles.textGray }>Show More</Text>
+            <EntypoIcons
+              name="chevron-thin-down"  size={ 15 }
+              color="#7e7e7e"
+            />
+          </TouchableOpacity>
+        </View>
+        :
+        <View style={ styles.showContainer }>
+          <TouchableOpacity
+            onPress={ () => this.onShowMoreLess( true ) }
+            style={ styles.showButtonWrapper }
+          >
+            <EntypoIcons
+              name="chevron-thin-up"  size={ 15 }
+              color="#7e7e7e"
+            />
+            <Text style={ styles.textGray }>Show Less</Text>
+          </TouchableOpacity>
+        </View>
+    );
+  }
 
+  get showCalendar() {
+    return (
+      this.state.showMoreOrLess ?
+        <Calendar
+          customStyle={ customStyle }
+          dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
+          eventDates={ ['2017-03-15', '2017-03-25', '2017-03-08'] }
+          nextButtonText={ '>' }
+          prevButtonText={'<'}
+          showControls={ true }
+          showEventIndicators={ true }
+          isSelectableDay={ false }
+        />
+      :
+        null
+    );
+  }
+
+  get getShowNavBar() {
+    return (
+      this.state.profileShowMode ?
+        <View style={ styles.navBarContainer }>
+          <TouchableOpacity
+            onPress={ () => this.onSchdule() }
+            style={ styles.navButtonWrapper }
+          >
+            <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
+          </TouchableOpacity>
+
+          <Text style={ styles.textTitle }>SARA CLINTON</Text>
+
+          <TouchableOpacity
+            onPress={ () => this.onEdit() }
+            style={ styles.navButtonWrapper }
+          >
+            <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
+          </TouchableOpacity>
+        </View>
+        :
+        <View style={ styles.navBarContainer }>
+          <View style={ styles.navButtonWrapper }/>
+          <Text style={ styles.textTitle }>SARA CLINTON</Text>
+          <View style={ styles.navButtonWrapper }/>          
+        </View>
+    );
   }
 
   render() {
@@ -67,23 +146,9 @@ export default class ClientProfileForm extends Component {
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
-          <View style={ styles.navBarContainer }>
-            <TouchableOpacity
-              onPress={ () => this.onSchdule() }
-              style={ styles.navButtonWrapper }
-            >
-              <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
-            </TouchableOpacity>
+          
+          { this.getShowNavBar }
 
-            <Text style={ styles.textTitle }>SARA CLINTON</Text>
-
-            <TouchableOpacity
-              onPress={ () => this.onEdit() }
-              style={ styles.navButtonWrapper }
-            >
-              <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
-            </TouchableOpacity>
-          </View>
           <View style={ styles.contentContainer }>
             <View style={ styles.avatarContainer }>
               <View style={ styles.avatarTopBackground }>
@@ -145,36 +210,28 @@ export default class ClientProfileForm extends Component {
                   <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
                   <Text style={ styles.textGray }>SEP 18, 2016</Text>
                 </View>
+
+                <View style={ styles.infoContainer }>
+                  <View style={ styles.starContainer }>
+                    <Text style={ styles.textTrainerName }>Alex</Text>
+                    <Stars
+                      isActive={ false }
+                      rateMax={ 5 }
+                      isHalfStarEnabled={ false }
+                      onStarPress={ (rating) => console.log(rating) }
+                      rate={ 5 }
+                      size={ 16 }
+                    />
+                  </View>
+                  <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
+                  <Text style={ styles.textGray }>SEP 18, 2016</Text>
+                </View>
+
               </ScrollView>
 
-              <View style={ styles.showContainer }>
-                <TouchableOpacity
-                  onPress={ () => this.onShowMoreLess() }
-                  style={ styles.showButtonWrapper }
-                >
-                  <Text style={ styles.textGray }>Show More</Text>
-                  <EntypoIcons
-                    name="chevron-thin-down"  size={ 15 }
-                    color="#7e7e7e"
-                  />
-                </TouchableOpacity>
-              </View>
+              { this.showMoreOrLessButton }
+              { this.showCalendar }
 
-              <Calendar
-                customStyle={ customStyle }
-                dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-                eventDates={ ['2017-03-15'] }
-                nextButtonText={ '>' }
-                onSwipeNext={ this.onSwipeNext }    // Callback for forward swipe event
-                onSwipePrev={ this.onSwipePrev }    // Callback for back swipe event
-                onTouchNext={ this.onTouchNext }    // Callback for next touch event
-                onTouchPrev={ this.onTouchPrev }    // Callback for prev touch event
-                prevButtonText={'<'}           // Text for previous button. Default: 'Prev'
-                onDateSelect={ (date) => this.onDateSelect(date) }
-                selectedDate={ '2017-03-17' }       // Day to be selected
-                showControls={ true }               // False hides prev/next buttons. Default: False
-                showEventIndicators={ true }        // False hides event indicators. Default:False
-              />
             </View>
           </View>
         </Image>
@@ -200,16 +257,18 @@ const customStyle = {
     backgroundColor: '#fff',
   },
   currentDayText: {
-    color: '#c6ccd2',
+    color: '#8d99a6',
   },
   day: {
-    color: '#c6ccd2',
+    color: '#8d99a6',
   },
   dayHeading: {
     color: '#2e343b',
   },
   hasEventCircle: {
     backgroundColor: '#45c7f1',
+    borderWidth: 1,
+    borderColor: '#34aadc',
   },
   hasEventText: {
     color: '#fff',
@@ -218,10 +277,10 @@ const customStyle = {
     backgroundColor: '#fff',
   },
   selectedDayText: {
-    color: '#c6ccd2',
+    color: '#8d99a6',
   },
   weekendDayText: {
-    color: '#c6ccd2',
+    color: '#8d99a6',
   },
   weekendHeading: {
     color: '#2e343b',
@@ -356,11 +415,11 @@ const styles = StyleSheet.create({
   textGray: {
     fontSize: 11,
     color: '#7e7e7e',
-    paddingTop: 5,
   },
   showContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 5,
   },
   showButtonWrapper: {
     justifyContent: 'center',

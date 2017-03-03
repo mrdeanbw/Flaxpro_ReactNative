@@ -14,6 +14,7 @@ import FilterForm from './Explore/components/smart/filterForm';
 import ProposeTerms from './Hire/containers/proposeTerms';
 import Payment from './Hire/containers/payment';
 import Clients_Coaches from './Clients_Coaches/containers/clients_coaches';
+import ScheduleForm from './Profile/components/smart/scheduleForm';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
@@ -24,12 +25,13 @@ const scenes = Actions.create(
     <Scene key="Auth" component={ Auth } />
     <Scene key="ClientInfo" component={ ClientInfo } />
     <Scene key="WhoAreYou" component={ WhoAreYou } />
-    <Scene key="Main" component={ Main } initial={ true }/>
+    <Scene key="Main" component={ Main } initial/>
     <Scene key="ExploreMapView" component={ ExploreMapView } />
     <Scene key="FilterForm" component={ FilterForm } direction="vertical" />
     <Scene key="ProposeTerms" component={ ProposeTerms } />
     <Scene key="Payment" component={ Payment } />
     <Scene key="Clients_Coaches" component={ Clients_Coaches } />
+    <Scene key="ScheduleForm" component={ ScheduleForm } />
 
   </Scene>
 );
