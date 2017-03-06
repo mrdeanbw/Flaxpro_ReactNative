@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "class-autobind": "^0.1.4",
+    "moment": "^2.17.1",
+    "ramda": "^0.23.0",
     "react": "15.4.2",
     "react-native": "0.40.0",
     "react-native-calendar": "^0.10.0",

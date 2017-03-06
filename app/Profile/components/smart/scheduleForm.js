@@ -17,18 +17,71 @@ import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import DatePicker from 'react-native-datepicker';
 
 import Calendar from './calendar/Calendar';
+
+import Ramda from 'ramda';
+import Moment from 'moment';
+
+
 
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
+const downArrow = require('../../../Assets/down_arrow.png');
+
+const schedules = [
+  {
+    date: '2017-03-10',
+    times: [
+      {
+        start: '08:00 AM',
+        end: '10:00 AM',
+      },
+      {
+        start: '08:10 AM',
+        end: '10:10 AM',
+      },
+    ],
+  },
+  {
+    date: '2017-03-15',
+    times: [
+      {
+        start: '08:30 AM',
+        end: '10:30 AM',
+      },
+      {
+        start: '08:40 AM',
+        end: '10:40 AM',
+      },
+    ],
+  },
+  {
+    date: '2017-03-20',
+    times: [
+      {
+        start: '08:20 AM',
+        end: '10:20 AM',
+      },
+      {
+        start: '08:30 AM',
+        end: '10:30 AM',
+      },
+    ],
+  },
+  
+];
+
 
 export default class ScheduleForm extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      schedules: schedules,
+      selectedDate: schedules[0].date,
     };
   }
 
@@ -43,16 +96,52 @@ export default class ScheduleForm extends Component {
     }
   }
 
-  onSetSchedule() {
-    
-  }
-
   onAddTime() {
+    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
 
+    const { schedules } = this.state;
+      
+    if (index == -1 ) {
+      const data = {
+        date: this.state.selectedDate,
+        times: [
+          {
+            start: '08:00 AM',
+            end: '09:00 AM',
+          }
+        ]
+      };
+      schedules.push( data );
+    } else {
+      schedules[index].times.push({ start: '08:00 AM', end: '09:00 AM' });
+    }
+
+    this.setState({ schdules: schedules });
   }
 
   onSelectDate(date) {
+    let day = Moment(date).format('YYYY-MM-DD');
+    this.setState({ selectedDate: day });
+  }
 
+  onChangeStartTime(time, entryIndex) {
+    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
+
+    const { schedules } = this.state;
+    schedules[index].times[entryIndex].start = time;
+    this.setState({ schdules: schedules });
+  }
+
+  onChangeEndTime(time, entryIndex) {
+    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
+
+    const { schedules } = this.state;
+    schedules[index].times[entryIndex].end = time;
+    this.setState({ schdules: schedules });
+  }
+
+  onSetSchedule() {
+    Actions.pop();
   }
 
   onBack() {
@@ -79,6 +168,73 @@ export default class ScheduleForm extends Component {
     );
   }
 
+  showSchedule() {
+    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules)
+    
+    if (index == -1)
+      return null;
+
+    return this.state.schedules[index].times.map((entry, index) => {
+      return (
+        <View key={ index } style={ styles.timeRowContainer }>
+          <DatePicker
+            date={ entry.start }
+            mode="time"
+            format="hh:mm A"
+            confirmBtnText="Done"
+            cancelBtnText="Cancel"
+            is24Hour={ false }
+            iconSource={ downArrow }
+            style = { styles.calendarTime }
+            customStyles={{
+              dateInput: {
+                borderColor: "transparent",
+                alignItems: "center",
+                height: 25,
+              },
+              dateText: {
+                color: "#4d4d4d",
+                fontSize: 20,
+              },
+              dateIcon: {
+                width: 18,
+                height: 10,
+              },
+            }}
+            onDateChange={ (time) => this.onChangeStartTime(time, index) }
+          />
+          <Text style={ styles.textTimeTo }>To</Text>
+          <DatePicker
+            date={ entry.end }
+            mode="time"
+            format="hh:mm A"
+            confirmBtnText="Done"
+            cancelBtnText="Cancel"
+            is24Hour={ false }
+            iconSource={ downArrow }
+            style = { styles.calendarTime }
+            customStyles={{
+              dateInput: {
+                borderColor: "transparent",
+                alignItems: "center",
+                height: 25,
+              },
+              dateText: {
+                color: "#4d4d4d",
+                fontSize: 20,
+              },
+              dateIcon: {
+                width: 18,
+                height: 10,
+              },
+            }}
+            onDateChange={ (time) => this.onChangeEndTime(time, index) }
+          />
+        </View>
+      );
+    });    
+  }
+
   render() {
     const { status } = this.props;
 
@@ -99,12 +255,13 @@ export default class ScheduleForm extends Component {
             <Calendar
               customStyle={ customStyle }
               dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-              eventDates={ ['2017-03-15', '2017-03-25', '2017-03-08'] }
+              eventDates={ Ramda.pluck('date')(this.state.schedules) }
               nextButtonText={ '>' }
               prevButtonText={'<'}
               showControls={ true }
               showEventIndicators={ true }
               isSelectableDay={ true }
+              onDateSelect={ (date) => this.onSelectDate(date) }
             />
             <View style={ styles.sectionTitleContainer }>
               <Ionicons                
@@ -116,21 +273,33 @@ export default class ScheduleForm extends Component {
               <Text style={ styles.textSectionTitle }>Select Time</Text>
             </View>
 
-            <ScrollView>
-              <View style={ styles.timeMainContainer }>
-                <TouchableOpacity
-                  onPress={ () => this.onAddTime() }                
-                >
-                  <Ionicons                
-                    name="ios-add-circle-outline"  
-                    size={ 50 }
-                    color="#717171"
-                    style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
-                  />
-                </TouchableOpacity>  
+            <View style={ styles.timeMainContainer }>
+              <ScrollView>
+                { this.showSchedule() }
 
-              </View>
-            </ScrollView>
+                <View style={ styles.buttonWrapper }>
+                  <TouchableOpacity
+                      onPress={ () => this.onAddTime() }                
+                  >
+                    <Ionicons                
+                      name="ios-add-circle-outline"  
+                      size={ 40 }
+                      color="#717171"
+                      style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>  
+            </View>
+
+            <View style={ styles.buttonWrapper }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSetSchedule() }>
+                <View style={ styles.scheduleButton }>
+                  <Text style={ styles.buttonText }>Set Schedule</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
           </View>
         </Image>
       </View>
@@ -223,7 +392,6 @@ const styles = StyleSheet.create({
   },
   sectionTitleContainer: {
     flexDirection: 'row',
-    paddingVertical: 5,
     paddingHorizontal: 10,
     alignItems: 'center',
     borderColor: '#d9d9d9',
@@ -236,9 +404,57 @@ const styles = StyleSheet.create({
     color: '#565656',
   },
   timeMainContainer: {
+    flex: 3,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+  },
+  scheduleButton: {
+    width: width - 100,
+    backgroundColor: '#14c2f7',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: 4,
+    borderColor: '#14c2f7',
+    borderStyle: 'solid',
+    shadowOffset: {
+      width: 3,
+      height: 2,
+    },
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    height: 40,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20,
+  },
+  calendarTime: {
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: '#d7d7d7',
+    borderStyle: 'solid',
+  },
+  timeRowContainer: {
+    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textTimeTo: {
+    paddingHorizontal: 20,
+    textAlign: 'center',
+    color: '#565656',
   },
 
 });
