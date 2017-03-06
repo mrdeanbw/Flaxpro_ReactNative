@@ -23,12 +23,20 @@ const background = require('../../../Assets/background.png');
 const schedule = require('../../../Assets/schedule.png');
 const edit = require('../../../Assets/edit.png');
 const avatar = require('../../../Assets/avatar.png');
+const call = require('../../../Assets/call.png');
+const message = require('../../../Assets/message.png');
+const refer = require('../../../Assets/refer.png');
+const hire = require('../../../Assets/hire.png');
+const offer = require('../../../Assets/offer.png');
+const verified = require('../../../Assets/verified.png');
+
+
 const strengthTraining = require('../../../Assets/strength_training.png');
 const pilates = require('../../../Assets/pilates.png');
 const yoga = require('../../../Assets/yoga.png');
 const totalWorkout = require('../../../Assets/total_workout.png');
 
-export default class ClientProfileForm extends Component {
+export default class TrainerProfileForm extends Component {
 
   constructor(props) {
     super(props);
@@ -60,6 +68,26 @@ export default class ClientProfileForm extends Component {
 
   onShowMoreLess(showMode) {
     this.setState({ showMoreOrLess: showMode });
+  }
+
+  onCall() {
+    alert( 'Tapped onCall!');
+  }
+
+  onMessage() {
+    alert( 'Tapped onMessage!');
+  }
+
+  onReferToFriend() {
+    alert( 'Tapped onReferToFriend!');
+  }
+
+  onHire() {
+    alert( 'Tapped onHire!');
+  }
+
+  onMakeAnOffer() {
+    alert( 'Tapped onMakeAnOffer!');
   }
 
   get showMoreOrLessButton() {
@@ -101,7 +129,7 @@ export default class ClientProfileForm extends Component {
           dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
           eventDates={ ['2017-03-15', '2017-03-25', '2017-03-08'] }
           nextButtonText={ '>' }
-          prevButtonText={ '<' }
+          prevButtonText={'<'}
           showControls={ true }
           showEventIndicators={ true }
           isSelectableDay={ false }
@@ -121,9 +149,10 @@ export default class ClientProfileForm extends Component {
           >
             <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
           </TouchableOpacity>
-
-          <Text style={ styles.textTitle }>SARA CLINTON</Text>
-
+          <View style={ styles.navBarTitleContainer }>
+            <Text style={ styles.textTitle }>ADAM LIPSKI</Text>
+            <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
+          </View>
           <TouchableOpacity
             onPress={ () => this.onEdit() }
             style={ styles.navButtonWrapper }
@@ -155,36 +184,82 @@ export default class ClientProfileForm extends Component {
               <View style={ styles.avatarBottomBackground }/>
               <View style={ styles.avatarWrapper }>
                 <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+                <Image source={ verified } style={ styles.imageVerified }/>
               </View>
             </View>
             <View style={ styles.contentMainContainer }>
-              <View style={ styles.workoutContainer }>
-                <View style={ styles.workoutCell }>
-                  <Image source={ strengthTraining } style={ styles.imageWorkout } />
-                  <Text style={ styles.textWorkoutTitle }>Strength Training</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#41ce59'}] }>89 WORKOUTS</Text>
+              <View style={ styles.actionContainer }>
+                <View style={ styles.actionCell }>
+                  <TouchableOpacity
+                    onPress={ () => this.onCall() }
+                  >
+                    <Image source={ call } style={ styles.imageButton } />
+                  </TouchableOpacity>
                 </View>
-                <View style={ styles.workoutCell }>
-                  <Image source={ pilates } style={ styles.imageWorkout } />
-                  <Text style={ styles.textWorkoutTitle }>Pilates</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#ffb21c'}] }>36 WORKOUTS</Text>
+                
+                <View style={ styles.actionCell }>
+                  <TouchableOpacity
+                    onPress={ () => this.onMessage() }
+                  >
+                    <Image source={ message } style={ styles.imageButton } />
+                  </TouchableOpacity>
                 </View>
-                <View style={ styles.workoutCell }>
-                  <Image source={ yoga } style={ styles.imageWorkout } />
-                  <Text style={ styles.textWorkoutTitle }>Yoga</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#a94df0'}] }>25 WORKOUTS</Text>
+                
+                <View style={ styles.actionCell }>
+                  <TouchableOpacity
+                    onPress={ () => this.onReferToFriend() }
+                  >
+                    <Image source={ refer } style={ styles.imageButton }>
+                      <Text style={ styles.textActionMiddle }>REFER TO FRIEND</Text>
+                    </Image>
+                  </TouchableOpacity>
                 </View>
-                <View style={ styles.workoutCell }>
-                  <Image source={ totalWorkout } style={ styles.imageWorkout } />
-                  <Text style={ styles.textWorkoutTitle }>Total Workout</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#0fc8fb'}] }>150</Text>
+
+                <View style={ styles.actionCell }>
+                  <TouchableOpacity
+                    onPress={ () => this.onHire() }
+                  >
+                    <Image source={ hire } style={ styles.imageButton }>
+                      <Text style={ styles.textActionSmall }>HIRE NOW</Text>
+                      <Text style={ styles.textActionLarge }>$250</Text>
+                    </Image>  
+                  </TouchableOpacity>
                 </View>
+
+                <View style={ styles.actionCell }>
+                  <TouchableOpacity
+                    onPress={ () => this.onMakeAnOffer() }
+                  >
+                    <Image source={ offer } style={ styles.imageButton }>
+                      <Text style={ styles.textActionMiddle }>MAKE AN OFFER</Text>
+                    </Image>  
+                  </TouchableOpacity>
+                </View>
+
               </View>
               <ScrollView>
                 <View style={ styles.infoContainer }>
-                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
-                  <Text style={ styles.textInfoValue }>25 years / Male</Text>
-                  <Text style={ styles.textInfoValue }>Mississauge</Text>
+                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>                  
+                  <View style={ styles.infoRowContainer }>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ styles.textInfoField }>Sex : </Text>
+                      <Text style={ styles.textInfoValue }>Male</Text>
+                    </View>
+                    <View style={ styles.infoRowRightContainer }>
+                      <Text style={ styles.textInfoField }>Year of experience : </Text>
+                      <Text style={ styles.textInfoValue }>2004</Text>
+                    </View>
+                  </View>
+                  <View style={ styles.infoRowContainer }>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ styles.textInfoField }>Affiliation : </Text>
+                      <Text style={ styles.textInfoValue }>Gym</Text>
+                    </View>
+                    <View style={ styles.infoRowRightContainer }>
+                      <Text style={ styles.textInfoField }>Certification : </Text>
+                      <Text style={ styles.textInfoValue }>Certified Personal Trainer</Text>
+                    </View>
+                  </View>
                 </View>
                 <View style={ styles.infoContainer }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
@@ -309,11 +384,21 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 15,
   },
-  textTitle: {
+  navBarTitleContainer: {
     flex: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textTitle: {    
     textAlign: 'center',
     color: '#fff',
     fontSize: 20
+  },
+  textSubTitle: {
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 10,
+    paddingVertical: 5,
   },
   imageSchedule: {
     width: 26,
@@ -324,9 +409,9 @@ const styles = StyleSheet.create({
     height: 24,
   },
   avatarContainer: {
-    height: 64,
     justifyContent: 'center',
     alignItems: 'center',
+    height: 64,
   },
   avatarTopBackground: {
     width: width,
@@ -342,6 +427,13 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
     borderRadius: 30,
+  },
+  imageVerified: {
+    height: 20,
+    width: 20,
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
   },
   avatarWrapper: {
     backgroundColor: '#fff',
@@ -362,45 +454,81 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingBottom: 50,
   },
-  workoutContainer: {
-    alignSelf: 'stretch',
+  actionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+    paddingVertical: 5,    
   },
-  workoutCell: {
+  actionCell: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: (width - 40) / 4,
-    marginHorizontal: 5,
+    width: (width - 40) / 5,
   },
-  imageWorkout: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
+  imageButton: {
+    width: (width - 40) / 5,
+    height: (width - 40) / 5 * 0.34,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  textWorkoutTitle: {
-    color: '#000',
+  textActionLarge: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor: 'transparent',
+    paddingHorizontal: 10,
+  },
+  textActionMiddle: {
+    color: '#fff',
     fontSize: 8,
-    paddingVertical: 5,
     textAlign: 'center',
+    backgroundColor: 'transparent',
+    paddingHorizontal: 10,
   },
-  textWorkoutValue: {
-    fontSize: 11,
+  textActionSmall: {
+    color: '#fff',
+    fontSize: 6,
     textAlign: 'center',
+    backgroundColor: 'transparent',
+    paddingHorizontal: 10,
   },
   infoContainer: {
     paddingVertical: 5,
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
+  infoRowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 5,
+  },
+  infoRowLeftContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  infoRowRightContainer: {
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
   textInfoTitle: {
     fontSize: 12,
     fontWeight: 'bold',
     paddingVertical: 5,
   },
+  textInfoField: {
+    fontSize: 12,
+    color: '#11c6f8',
+  },
   textInfoValue: {
-    fontSize: 10,
+    fontSize: 12,
   },
   starContainer: {
     flexDirection: 'row',

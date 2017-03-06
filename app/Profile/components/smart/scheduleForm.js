@@ -74,7 +74,6 @@ const schedules = [
   
 ];
 
-
 export default class ScheduleForm extends Component {
 
   constructor(props) {

@@ -21,6 +21,22 @@ export default function profile(state = initialState, action = {}) {
         ...state,
         status: 'ClientProfileError',
       };
+    case types.TRAINER_PROFILE_REQUEST:
+      return {
+        ...state,
+        status: 'TrainerProfileRequest',
+      };
+    case types.TRAINER_PROFILE_SUCCESS:
+      return {
+        ...state,
+        status: 'TrainerProfileSuccess',
+      };
+    case types.TRAINER_PROFILE_ERROR:
+      return {
+        ...state,
+        status: 'TrainerProfileError',
+      };
+  
     default:
       return state;
   }
