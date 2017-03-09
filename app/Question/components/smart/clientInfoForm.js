@@ -16,6 +16,8 @@ import {
 import DatePicker from 'react-native-datepicker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { Actions } from 'react-native-router-flux';
+import localStorage from 'react-native-local-storage';
+import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,8 +52,7 @@ export default class ClientInfoForm extends Component {
   }
 
   onContinue () {
-
-    Actions.Main();
+     Actions.Main({ user_mode: CommonConstant.user_client });
   }
 
   render() {

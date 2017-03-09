@@ -12,9 +12,10 @@ class Main extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
+    const { actions, status, user_mode } = this.props;
+
     return (
-      <MainForm { ...actions } status/>
+      <MainForm { ...actions } status={ status } user_mode={ user_mode }/>
     );
   }
 }

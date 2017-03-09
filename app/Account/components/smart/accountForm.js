@@ -38,11 +38,6 @@ export default class AccountForm extends Component {
     }
   }
 
-  onNext() {
-
-    Actions.Main();
-  }
-
   onProfileInfo() {
 
   }

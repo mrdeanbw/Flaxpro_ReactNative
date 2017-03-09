@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
+import localStorage from 'react-native-local-storage';
+import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 
@@ -32,7 +34,7 @@ export default class AuthForm extends Component {
     super(props);
 
     this.state = {
-      userName : '',
+      email : '',
       password : '',
       confirmPassword: '',
       selectedButton: 2,
@@ -52,23 +54,22 @@ export default class AuthForm extends Component {
 
   onShowLogIn() {
     this.setState({ selectedButton: 2 });
-    this.setState({ userName : '' });
+    this.setState({ email : '' });
     this.setState({ password : '' });
     this.setState({ confirmPassword : '' });
   }
 
   onShowSignUp() {
     this.setState({ selectedButton: 1 });
-    this.setState({ userName : '' });
+    this.setState({ email : '' });
     this.setState({ password : '' });
     this.setState({ confirmPassword : '' });
   }
 
   onLogIn () {
 
-
-    if (this.state.userName == '') {
-      Alert.alert('Please enter user name.');
+    if (this.state.email == '') {
+      Alert.alert('Please enter email address.');
       return;
     }
 
@@ -77,9 +78,17 @@ export default class AuthForm extends Component {
       return;
     }
 
-    // this.props.login(this.state.userName, this.state.password);
+    // this.props.login(this.state.email, this.state.password);
 
-    Actions.Main();
+    localStorage.get(CommonConstant.user_mode)
+      .then((data) => {
+        if ((data == CommonConstant.user_client) || (data == CommonConstant.user_trainer)) {
+          Actions.Main({ user_mode: data });
+          return;
+        }
+        
+        Actions.WhoAreYou();
+      });    
   }
 
   onSignUp() {
@@ -119,8 +128,8 @@ export default class AuthForm extends Component {
             placeholderTextColor="#9e9e9e"
             color="#000"
             style={ styles.textInput }
-            value={ this.state.userName }
-            onChangeText={ (text) => this.setState({ userName: text }) }
+            value={ this.state.email }
+            onChangeText={ (text) => this.setState({ email: text }) }
           />
         </View>
         <View style={ styles.inputWrap }>
@@ -175,8 +184,8 @@ export default class AuthForm extends Component {
             placeholderTextColor="#9e9e9e"
             color="#000"
             style={ styles.textInput }
-            value={ this.state.userName }
-            onChangeText={ (text) => this.setState({ userName: text }) }
+            value={ this.state.email }
+            onChangeText={ (text) => this.setState({ email: text }) }
           />
         </View>
         <View style={ styles.inputWrap }>

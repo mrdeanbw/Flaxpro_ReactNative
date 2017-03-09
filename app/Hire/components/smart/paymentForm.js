@@ -16,6 +16,7 @@ import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
+import localStorage from 'react-native-local-storage';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
@@ -44,7 +45,10 @@ export default class Payment extends Component {
 
   onClose () {
 
-    Actions.Main();
+    localStorage.get(CommonConstant.user_mode)
+      .then((data) => {
+        ({ user_mode: data });
+      });    
   }
 
   onSelectPaymentMethod(key) {
