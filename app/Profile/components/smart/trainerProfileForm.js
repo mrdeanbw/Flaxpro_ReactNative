@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -38,15 +38,21 @@ const totalWorkout = require('../../../Assets/total_workout.png');
 
 export default class TrainerProfileForm extends Component {
 
+  static propTypes = {
+    editable: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    editable: true,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       showMoreOrLess: true,
-      profileShowMode: true,
     };
-
-  }
-
+  }  
+  
   componentWillReceiveProps(newProps) {
 
     if (newProps.status == 'ClientProfileRequest') {
@@ -88,6 +94,10 @@ export default class TrainerProfileForm extends Component {
 
   onMakeAnOffer() {
     alert( 'Tapped onMakeAnOffer!');
+  }
+
+  onBack() {
+    Actions.pop();
   }
 
   get showMoreOrLessButton() {
@@ -139,9 +149,11 @@ export default class TrainerProfileForm extends Component {
     );
   }
 
-  get getShowNavBar() {
+  get showNavBar() {
+    const { editable } = this.props;
+
     return (
-      this.state.profileShowMode ?
+      editable ?
         <View style={ styles.navBarContainer }>
           <TouchableOpacity
             onPress={ () => this.onSchdule() }
@@ -162,21 +174,85 @@ export default class TrainerProfileForm extends Component {
         </View>
         :
         <View style={ styles.navBarContainer }>
-          <View style={ styles.navButtonWrapper }/>
-          <Text style={ styles.textTitle }>SARA CLINTON</Text>
+          <TouchableOpacity
+            onPress={ () => this.onBack() }
+            style={ styles.navButtonWrapper }
+          >
+            <EntypoIcons
+              name="chevron-thin-left"  size={ 25 }
+              color="#fff"
+            />
+          </TouchableOpacity>
+          <View style={ styles.navBarTitleContainer }>
+            <Text style={ styles.textTitle }>ADAM LIPSKI</Text>
+            <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
+          </View>
           <View style={ styles.navButtonWrapper }/>          
         </View>
     );
   }
 
+  get showActions() {
+    return (
+      <View style={ styles.actionContainer }>
+        <View style={ styles.actionCell }>
+          <TouchableOpacity
+            onPress={ () => this.onCall() }
+          >
+            <Image source={ call } style={ styles.imageButton } />
+          </TouchableOpacity>
+        </View>
+        
+        <View style={ styles.actionCell }>
+          <TouchableOpacity
+            onPress={ () => this.onMessage() }
+          >
+            <Image source={ message } style={ styles.imageButton } />
+          </TouchableOpacity>
+        </View>
+        
+        <View style={ styles.actionCell }>
+          <TouchableOpacity
+            onPress={ () => this.onReferToFriend() }
+          >
+            <Image source={ refer } style={ styles.imageButton }>
+              <Text style={ styles.textActionMiddle }>REFER TO FRIEND</Text>
+            </Image>
+          </TouchableOpacity>
+        </View>
+
+        <View style={ styles.actionCell }>
+          <TouchableOpacity
+            onPress={ () => this.onHire() }
+          >
+            <Image source={ hire } style={ styles.imageButton }>
+              <Text style={ styles.textActionSmall }>HIRE NOW</Text>
+              <Text style={ styles.textActionLarge }>$250</Text>
+            </Image>  
+          </TouchableOpacity>
+        </View>
+
+        <View style={ styles.actionCell }>
+          <TouchableOpacity
+            onPress={ () => this.onMakeAnOffer() }
+          >
+            <Image source={ offer } style={ styles.imageButton }>
+              <Text style={ styles.textActionMiddle }>MAKE AN OFFER</Text>
+            </Image>  
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
   render() {
-    const { status } = this.props;
+    const { status, editable } = this.props;
 
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
           
-          { this.getShowNavBar }
+          { this.showNavBar }
 
           <View style={ styles.contentContainer }>
             <View style={ styles.avatarContainer }>
@@ -187,56 +263,10 @@ export default class TrainerProfileForm extends Component {
                 <Image source={ verified } style={ styles.imageVerified }/>
               </View>
             </View>
-            <View style={ styles.contentMainContainer }>
-              <View style={ styles.actionContainer }>
-                <View style={ styles.actionCell }>
-                  <TouchableOpacity
-                    onPress={ () => this.onCall() }
-                  >
-                    <Image source={ call } style={ styles.imageButton } />
-                  </TouchableOpacity>
-                </View>
-                
-                <View style={ styles.actionCell }>
-                  <TouchableOpacity
-                    onPress={ () => this.onMessage() }
-                  >
-                    <Image source={ message } style={ styles.imageButton } />
-                  </TouchableOpacity>
-                </View>
-                
-                <View style={ styles.actionCell }>
-                  <TouchableOpacity
-                    onPress={ () => this.onReferToFriend() }
-                  >
-                    <Image source={ refer } style={ styles.imageButton }>
-                      <Text style={ styles.textActionMiddle }>REFER TO FRIEND</Text>
-                    </Image>
-                  </TouchableOpacity>
-                </View>
-
-                <View style={ styles.actionCell }>
-                  <TouchableOpacity
-                    onPress={ () => this.onHire() }
-                  >
-                    <Image source={ hire } style={ styles.imageButton }>
-                      <Text style={ styles.textActionSmall }>HIRE NOW</Text>
-                      <Text style={ styles.textActionLarge }>$250</Text>
-                    </Image>  
-                  </TouchableOpacity>
-                </View>
-
-                <View style={ styles.actionCell }>
-                  <TouchableOpacity
-                    onPress={ () => this.onMakeAnOffer() }
-                  >
-                    <Image source={ offer } style={ styles.imageButton }>
-                      <Text style={ styles.textActionMiddle }>MAKE AN OFFER</Text>
-                    </Image>  
-                  </TouchableOpacity>
-                </View>
-
-              </View>
+            <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
+              {
+                editable ? <View style={ styles.actionContainer }/> : this.showActions
+              }
               <ScrollView>
                 <View style={ styles.infoContainer }>
                   <Text style={ styles.textInfoTitle }>BASIC INFO</Text>                  
@@ -452,7 +482,6 @@ const styles = StyleSheet.create({
   contentMainContainer: {
     flex: 8.5,
     backgroundColor: '#fff',
-    paddingBottom: 50,
   },
   actionContainer: {
     flexDirection: 'row',

@@ -13,8 +13,12 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
+import localStorage from 'react-native-local-storage';
+import * as CommonConstant from '../../../Components/commonConstant';
 import SearchBar from '../../../Components/searchBar';
 import Clients_CoachesListCell from './clients_coachesListCell';
+import ClientProfile from '../../../Profile/containers/clientProfile';
+import TrainerProfile from '../../../Profile/containers/trainerProfile';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
@@ -54,7 +58,16 @@ export default class Clients_CoachesForm extends Component {
 
   onCellPressed (rowID) {
 
-    alert("Tapped cell - " + rowID);
+    localStorage.get(CommonConstant.user_mode)
+      .then((data) => {
+        if (data == CommonConstant.user_client) {
+          Actions.TrainerProfile({ editable: false });
+          return;
+        } else if (data == CommonConstant.user_trainer){
+          Actions.ClientProfile({ editable: false });
+          return;
+        }
+      });
   }
 
   onAllDays() {

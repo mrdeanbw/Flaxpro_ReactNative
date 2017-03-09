@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -30,13 +30,19 @@ const totalWorkout = require('../../../Assets/total_workout.png');
 
 export default class ClientProfileForm extends Component {
 
+  static propTypes = {
+    editable: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    editable: true,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       showMoreOrLess: true,
-      profileShowMode: true,
     };
-
   }
 
   componentWillReceiveProps(newProps) {
@@ -62,6 +68,9 @@ export default class ClientProfileForm extends Component {
     this.setState({ showMoreOrLess: showMode });
   }
 
+  onBack() {
+    Actions.pop();
+  }
   get showMoreOrLessButton() {
     return (
       this.state.showMoreOrLess ?
@@ -112,8 +121,10 @@ export default class ClientProfileForm extends Component {
   }
 
   get getShowNavBar() {
+    const { editable } = this.props;
+
     return (
-      this.state.profileShowMode ?
+      editable ?
         <View style={ styles.navBarContainer }>
           <TouchableOpacity
             onPress={ () => this.onSchdule() }
@@ -133,7 +144,15 @@ export default class ClientProfileForm extends Component {
         </View>
         :
         <View style={ styles.navBarContainer }>
-          <View style={ styles.navButtonWrapper }/>
+          <TouchableOpacity
+            onPress={ () => this.onBack() }
+            style={ styles.navButtonWrapper }
+          >
+            <EntypoIcons
+              name="chevron-thin-left"  size={ 25 }
+              color="#fff"
+            />
+          </TouchableOpacity>
           <Text style={ styles.textTitle }>SARA CLINTON</Text>
           <View style={ styles.navButtonWrapper }/>          
         </View>
@@ -141,7 +160,7 @@ export default class ClientProfileForm extends Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { status, editable } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -157,7 +176,7 @@ export default class ClientProfileForm extends Component {
                 <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
               </View>
             </View>
-            <View style={ styles.contentMainContainer }>
+            <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
               <View style={ styles.workoutContainer }>
                 <View style={ styles.workoutCell }>
                   <Image source={ strengthTraining } style={ styles.imageWorkout } />
@@ -360,7 +379,6 @@ const styles = StyleSheet.create({
   contentMainContainer: {
     flex: 8.5,
     backgroundColor: '#fff',
-    paddingBottom: 50,
   },
   workoutContainer: {
     alignSelf: 'stretch',

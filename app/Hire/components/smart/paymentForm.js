@@ -17,6 +17,7 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
 import localStorage from 'react-native-local-storage';
+import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
@@ -47,7 +48,7 @@ export default class Payment extends Component {
 
     localStorage.get(CommonConstant.user_mode)
       .then((data) => {
-        ({ user_mode: data });
+        Actions.Main({ user_mode: data });
       });    
   }
 

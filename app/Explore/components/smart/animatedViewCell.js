@@ -5,6 +5,7 @@ import {
   Text,
   Animated,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 
 import Stars from 'react-native-stars-rating';
@@ -18,6 +19,7 @@ const propTypes = {
   description: PropTypes.string,
   rating: PropTypes.number,
   amount: PropTypes.number,
+  onPress: PropTypes.func,
 };
 
 class AnimatedViewCell extends Component {
@@ -26,28 +28,37 @@ class AnimatedViewCell extends Component {
     super(props);
   }
 
+  onClick() {
+
+    this.props.onPress();
+  }
+
   render() {
     const { width, height, avatar, name, description, rating, amount } = this.props;
     return (
-      <Animated.View
-        style={ this.props.style }>
-        <View style={ styles.mainContainer }>
-          <Image source={ avatar } style={ [{ width: width * 0.36 }, { height: height * 0.36 }, { borderRadius: height * 0.18 }] } />
-          <Text style={ styles.textName }>{ name }</Text>
-          <Text style={ styles.textDescription }>{ description }</Text>
-        </View>
-        <View style={ styles.ratingContainer }>
-          <Stars
-            isActive={ false }
-            rateMax={ 5 }
-            isHalfStarEnabled={ false }
-            onStarPress={ (rating) => console.log(rating) }
-            rate={ rating }
-            size={ 12 }
-            color="white"
-          />
-          <Text style={ styles.textPrice }>${ amount }</Text>
-        </View>
+      <Animated.View style={ this.props.style }>
+        <TouchableOpacity 
+          onPress={ () => this.onClick() }
+          style={ [{ width: width }, { height: height }] }
+        >
+          <View style={ styles.topContainer }>
+            <Image source={ avatar } style={ [{ width: width * 0.36 }, { height: height * 0.36 }, { borderRadius: height * 0.18 }] } />
+            <Text style={ styles.textName }>{ name }</Text>
+            <Text style={ styles.textDescription }>{ description }</Text>
+          </View>
+          <View style={ styles.ratingContainer }>
+            <Stars
+              isActive={ false }
+              rateMax={ 5 }
+              isHalfStarEnabled={ false }
+              onStarPress={ (rating) => console.log(rating) }
+              rate={ rating }
+              size={ 12 }
+              color="white"
+            />
+            <Text style={ styles.textPrice }>${ amount }</Text>
+          </View>
+        </TouchableOpacity>
       </Animated.View>
     );
   }
@@ -59,7 +70,7 @@ module.exports = AnimatedViewCell;
 
 const styles = StyleSheet.create({
 
-  mainContainer: {
+  topContainer: {
     flex: 4.5,
     alignItems: 'center',
     justifyContent: 'center',

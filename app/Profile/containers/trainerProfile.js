@@ -12,9 +12,9 @@ class TrainerProfile extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
+    const { actions, status, editable } = this.props;
     return (
-      <TrainerProfileForm { ...actions } status/>
+      <TrainerProfileForm { ...actions } status={ status } editable={ editable }/>
     );
   }
 }

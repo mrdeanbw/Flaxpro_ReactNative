@@ -213,6 +213,7 @@ export default class ExploreListView extends Component {
         name={ rowData.name }
         description={ rowData.description }
         amount={ rowData.amount }
+        onPress={ () => this.onClickAnimatedViewCell() }
       />
     );
   }
@@ -228,6 +229,11 @@ export default class ExploreListView extends Component {
     if (this.props.onFilter) {
       this.props.onFilter();
     }
+  }
+
+  onClickAnimatedViewCell() {
+    
+    // alert("onClickCell");
   }
 
   render() {

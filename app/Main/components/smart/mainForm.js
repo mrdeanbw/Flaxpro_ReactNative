@@ -43,22 +43,23 @@ export default class MainForm extends Component {
     this.state = {
       selectedTab: 'explore',
       badge: 0,
-      userMode: '',
     };
 
     if (Platform.OS === 'ios') {
       StatusBar.setBarStyle('light-content', false);
     }
   }
-
+  
   render() {
-    const { status, user_mode } = this.props;
+    // const { status, user_mode } = this.props;
+    const user_mode = CommonConstant.user_trainer;
 
     return (
       <View style={ styles.container }>
         <TabNavigator
           tabBarStyle={ styles.tab }
         >
+          {/* Explore */}
           <TabNavigator.Item
             selected={ this.state.selectedTab === 'explore' }
             title="EXPLORE"
@@ -67,14 +68,18 @@ export default class MainForm extends Component {
             onPress={ () => this.setState({ selectedTab: 'explore' }) }>
             <Explore/>
           </TabNavigator.Item>
+
+          {/* Clients or Coaches */}
           <TabNavigator.Item
             selected={ this.state.selectedTab === 'clients_coaches' }
-            title={ this.state.userMode === CommonConstant.user_client ? "COACHES" : "CLIENTS" }
-            renderIcon={ () => <Image source={ coachesIcon } style={ styles.iconTabbarCoaches }/> }
-            renderSelectedIcon={ () => <Image source={ coachesSelectedIcon } style={ styles.iconTabbarCoaches }/> }
+            title={ user_mode === CommonConstant.user_client ? "COACHES" : "CLIENTS" }
+            renderIcon={ () => <Image source={ user_mode === CommonConstant.user_client ? coachesIcon : clientsIcon } style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/> }
+            renderSelectedIcon={ () => <Image source={ user_mode === CommonConstant.user_client ? coachesSelectedIcon : clientsSelectedIcon } style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/> }
             onPress={ () => this.setState({ selectedTab: 'clients_coaches' }) }>
             <Clients_Coaches/>
           </TabNavigator.Item>
+
+          {/* Inbox */}
           <TabNavigator.Item
             selected={ this.state.selectedTab === 'inbox' }
             title="INBOX"
@@ -83,14 +88,18 @@ export default class MainForm extends Component {
             badgeText={ this.state.badge }
             onPress={ () => this.setState({ selectedTab: 'inbox' }) }>
           </TabNavigator.Item>
+
+          {/* Profile */}
           <TabNavigator.Item
             selected={ this.state.selectedTab === 'profile' }
             title="PROFILE"
             renderIcon={ () => <Image source={ profileIcon } style={ styles.iconTabbarProfile }/> }
             renderSelectedIcon={ () => <Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/> }
             onPress={ () => this.setState({ selectedTab: 'profile' }) }>
-            <TrainerProfile/>
+            { user_mode === CommonConstant.user_client ? <ClientProfile/> : <TrainerProfile/> }
           </TabNavigator.Item>
+
+          {/* Account */}
           <TabNavigator.Item
             selected={ this.state.selectedTab === 'account' }
             title="ACCOUNT"
@@ -99,6 +108,7 @@ export default class MainForm extends Component {
             onPress={ () => this.setState({ selectedTab: 'account' }) }>
             <Account/>
           </TabNavigator.Item>
+
         </TabNavigator>
       </View>
     );
@@ -121,9 +131,13 @@ const styles = StyleSheet.create({
     height: 25,
     width: 33,
   },
+  iconTabbarClients: {
+    height: 24,
+    width: 43,
+  },
   iconTabbarProfile: {
-    height: 29,
-    width: 25,
+    height: 26,
+    width: 22,
   },
   tab: {
     borderStyle: 'solid',

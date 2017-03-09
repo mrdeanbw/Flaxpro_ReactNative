@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
+import localStorage from 'react-native-local-storage';
+import * as CommonConstant from '../../../Components/commonConstant';
 
 import MapView from 'react-native-maps';
 import PanController from './panController';
@@ -409,8 +411,19 @@ class ExploreMapView extends Component {
   }
 
   onExpandCoach ( key ) {
-
     this.popupDialogCoach.closeDialog ();
+
+    localStorage.get(CommonConstant.user_mode)
+      .then((data) => {
+        if (data == CommonConstant.user_client) {
+          Actions.TrainerProfile({ editable: false });
+          return;
+        } else if (data == CommonConstant.user_trainer){
+          Actions.ClientProfile({ editable: false });
+          return;
+        }
+      });
+
   }
 
   onTapMap () {
@@ -431,6 +444,11 @@ class ExploreMapView extends Component {
     if (this.props.onFilter) {
       this.props.onFilter();
     }
+  }
+
+  onClickAnimatedViewCell () {
+
+    this.popupDialogCoach.openDialog ();
   }
 
   get dialogGymPreferedWorkoutLocation () {
@@ -471,7 +489,7 @@ class ExploreMapView extends Component {
   get dialogSelectCoach () {
     return (
       <PopupDialog
-        ref={ (popupDialogCoach) => { this.popupDialogCoach = popupDialogCoach; } }
+        ref={ (popupDialogCoach) => { this.popupDialogCoach = popupDialogCoach; }}
         width={ width * 0.8 }
         dialogStyle={ styles.dialogContainer }
       >
@@ -649,9 +667,9 @@ class ExploreMapView extends Component {
                         style={ [styles.item, {
                           opacity,
                           transform: [
-                            {translateY},
-                            {translateX},
-                            {scale},
+                            { translateY },
+                            { translateX },
+                            { scale },
                           ],
                         }]}
                         avatar={ marker.avatar }
@@ -661,6 +679,7 @@ class ExploreMapView extends Component {
                         name={ marker.name }
                         description={ marker.description }
                         amount={ marker.amount }
+                        onPress={ () => this.onClickAnimatedViewCell() }
                       />
                     );
                   })}

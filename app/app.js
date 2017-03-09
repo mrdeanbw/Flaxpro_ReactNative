@@ -15,6 +15,9 @@ import ProposeTerms from './Hire/containers/proposeTerms';
 import Payment from './Hire/containers/payment';
 import Clients_Coaches from './Clients_Coaches/containers/clients_coaches';
 import ScheduleForm from './Profile/components/smart/scheduleForm';
+import ClientProfile from './Profile/containers/clientProfile';
+import TrainerProfile from './Profile/containers/trainerProfile';
+
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
@@ -32,7 +35,8 @@ const scenes = Actions.create(
     <Scene key="Payment" component={ Payment } />
     <Scene key="Clients_Coaches" component={ Clients_Coaches } />
     <Scene key="ScheduleForm" component={ ScheduleForm } />
-
+    <Scene key="ClientProfile" component={ ClientProfile } />
+    <Scene key="TrainerProfile" component={ TrainerProfile } />
   </Scene>
 );
 
