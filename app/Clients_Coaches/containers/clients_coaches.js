@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import Clients_CoachesForm from '../components/smart/clients_coachesForm';
+import MainClientsCoachesForm from '../components/smart/mainClientsCoachesForm';
 import * as clients_coachesActions from '../actions';
 import { connect } from 'react-redux';
 
@@ -14,7 +14,7 @@ class Clients_Coaches extends Component {
   render() {
     const { actions, status } = this.props;
     return (
-      <Clients_CoachesForm { ...actions } status/>
+      <MainClientsCoachesForm { ...actions } status/>
     );
   }
 }

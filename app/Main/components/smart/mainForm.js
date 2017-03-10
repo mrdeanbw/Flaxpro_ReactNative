@@ -41,7 +41,7 @@ export default class MainForm extends Component {
     super(props);
 
     this.state = {
-      selectedTab: 'explore',
+      selectedTab: 'clients_coaches',
       badge: 0,
     };
 
@@ -51,9 +51,7 @@ export default class MainForm extends Component {
   }
   
   render() {
-    // const { status, user_mode } = this.props;
-    const user_mode = CommonConstant.user_trainer;
-
+    const { status, user_mode } = this.props;
     return (
       <View style={ styles.container }>
         <TabNavigator

@@ -14,6 +14,7 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 import localStorage from 'react-native-local-storage';
+import Icons from 'react-native-vector-icons/MaterialIcons';
 import * as CommonConstant from '../../../Components/commonConstant';
 import SearchBar from '../../../Components/searchBar';
 import Clients_CoachesListCell from './clients_coachesListCell';
@@ -21,7 +22,6 @@ import ClientProfile from '../../../Profile/containers/clientProfile';
 import TrainerProfile from '../../../Profile/containers/trainerProfile';
 
 const { width, height } = Dimensions.get('window');
-const background = require('../../../Assets/background.png');
 
 const weeks = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -36,6 +36,7 @@ export default class Clients_CoachesForm extends Component {
 
     this.state = {
       dataSourceClients_Coaches: dataSourceClients_Coaches.cloneWithRows(dataEntries),
+
     };
   }
 
@@ -113,112 +114,96 @@ export default class Clients_CoachesForm extends Component {
 
     return (
       <View style={ styles.container }>
-        <Image source={ background } style={ styles.background } resizeMode="cover">
-          <View style={ styles.navContainer }>
-            <View style={ styles.searchBarWrap }>
-              <SearchBar
-                onSearchChange={ () => console.log('On Focus') }
-                height={ 25 }
-                autoCorrect={ false }
-                returnKeyType={ "search" }
-                iconColor={ "#ffffff99" }
-                placeholderColor="#ffffff99"
-                paddingTop={ 20 }
-              />
-            </View>
-          </View>
-          <View style={ styles.clients_coachesContainer }>
-            <ListView
-              dataSource={ this.state.dataSourceClients_Coaches}
-              renderRow={ this.renderClients_CoachesRow.bind(this) }
-              contentContainerStyle={ styles.clients_coachesListView}
-            />
-          </View>
-          <View style={ styles.filterContainer }>
-            <View style={ styles.filterRowContainer }>
-              <View style={ styles.buttonWrapper }>
-                <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onAllDays() }>
-                  <View style={ styles.allButton }>
-                    <Text style={ styles.buttonText }>All Days</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <ScrollView
-                horizontal={ true }
-                showsHorizontalScrollIndicator={ false }
-              >
-                <View style={ styles.cellContainer }>
-                  {
-                    weeks.map((day, index) => (
-                      <View key={index} style={ styles.buttonWrapper }>
-                        <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSelectDay(index) }>
-                          <View style={ styles.cellButton }>
-                            <Text style={ styles.cellText }>{ day }</Text>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                    ))
-                  }
+        <View style={ styles.clients_coachesContainer }>
+          <ListView
+            dataSource={ this.state.dataSourceClients_Coaches}
+            renderRow={ this.renderClients_CoachesRow.bind(this) }
+            contentContainerStyle={ styles.clients_coachesListView}
+          />
+        </View>
+        <View style={ styles.filterContainer }>
+          <View style={ styles.filterRowContainer }>
+            <View style={ styles.buttonWrapper }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onAllDays() }>
+                <View style={ styles.allButton }>
+                  <Text style={ styles.buttonText }>All Days</Text>
                 </View>
-              </ScrollView>
+              </TouchableOpacity>
             </View>
-            <View style={ styles.filterRowContainer }>
-              <View style={ styles.buttonWrapper }>
-                <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onAllMonths() }>
-                  <View style={ styles.allButton }>
-                    <Text style={ styles.buttonText }>All Months</Text>
-                  </View>
-                </TouchableOpacity>
+            <ScrollView
+              horizontal={ true }
+              showsHorizontalScrollIndicator={ false }
+            >
+              <View style={ styles.cellContainer }>
+                {
+                  weeks.map((day, index) => (
+                    <View key={index} style={ styles.buttonWrapper }>
+                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSelectDay(index) }>
+                        <View style={ styles.cellButton }>
+                          <Text style={ styles.cellText }>{ day }</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  ))
+                }
               </View>
-              <ScrollView
-                horizontal={ true }
-                showsHorizontalScrollIndicator={ false }
-              >
-                <View style={ styles.cellContainer }>
-                  {
-                    months.map((month, index) => (
-                      <View key={index} style={ styles.buttonWrapper }>
-                        <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSelectMonth(index) }>
-                          <View style={ styles.cellButton }>
-                            <Text style={ styles.cellText }>{ month }</Text>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                    ))
-                  }
-                </View>
-              </ScrollView>
-            </View>
-            <View style={ styles.filterRowContainer }>
-              <View style={ styles.buttonWrapper }>
-                <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onAllYears() }>
-                  <View style={ styles.allButton }>
-                    <Text style={ styles.buttonText }>All Years</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <ScrollView
-                horizontal={ true }
-                showsHorizontalScrollIndicator={ false }
-              >
-                <View style={ styles.cellContainer }>
-                  {
-                    years.map((year, index) => (
-                      <View key={index} style={ styles.buttonWrapper }>
-                        <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSelectYear(index) }>
-                          <View style={ styles.cellButton }>
-                            <Text style={ styles.cellText }>{ year }</Text>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                    ))
-                  }
-                </View>
-              </ScrollView>
-            </View>
-
+            </ScrollView>
           </View>
-        </Image>
+          <View style={ styles.filterRowContainer }>
+            <View style={ styles.buttonWrapper }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onAllMonths() }>
+                <View style={ styles.allButton }>
+                  <Text style={ styles.buttonText }>All Months</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <ScrollView
+              horizontal={ true }
+              showsHorizontalScrollIndicator={ false }
+            >
+              <View style={ styles.cellContainer }>
+                {
+                  months.map((month, index) => (
+                    <View key={index} style={ styles.buttonWrapper }>
+                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSelectMonth(index) }>
+                        <View style={ styles.cellButton }>
+                          <Text style={ styles.cellText }>{ month }</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  ))
+                }
+              </View>
+            </ScrollView>
+          </View>
+          <View style={ styles.filterRowContainer }>
+            <View style={ styles.buttonWrapper }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onAllYears() }>
+                <View style={ styles.allButton }>
+                  <Text style={ styles.buttonText }>All Years</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <ScrollView
+              horizontal={ true }
+              showsHorizontalScrollIndicator={ false }
+            >
+              <View style={ styles.cellContainer }>
+                {
+                  years.map((year, index) => (
+                    <View key={index} style={ styles.buttonWrapper }>
+                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSelectYear(index) }>
+                        <View style={ styles.cellButton }>
+                          <Text style={ styles.cellText }>{ year }</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  ))
+                }
+              </View>
+            </ScrollView>
+          </View>
+        </View>
       </View>
     );
   }
@@ -227,22 +212,6 @@ export default class Clients_CoachesForm extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  background: {
-    width,
-    height,
-  },
-  navBarContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    paddingTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  searchBarWrap: {
-    backgroundColor: 'transparent',
-    marginHorizontal: 10,
-    marginVertical: 6,
   },
   clients_coachesContainer: {
     flex: 1,
