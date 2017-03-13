@@ -18,6 +18,9 @@ import Account from '../../../Account/containers/account';
 import Clients_Coaches from '../../../Clients_Coaches/containers/clients_coaches';
 import ClientProfile from '../../../Profile/containers/clientProfile';
 import TrainerProfile from '../../../Profile/containers/trainerProfile';
+import Inbox from '../../../Inbox/containers/inbox';
+
+
 import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
 
@@ -41,7 +44,7 @@ export default class MainForm extends Component {
     super(props);
 
     this.state = {
-      selectedTab: 'clients_coaches',
+      selectedTab: 'inbox',
       badge: 0,
     };
 
@@ -85,6 +88,7 @@ export default class MainForm extends Component {
             renderSelectedIcon={ () => <Image source={ inboxSelectedIcon } style={ styles.iconTabbarGeneral }/> }
             badgeText={ this.state.badge }
             onPress={ () => this.setState({ selectedTab: 'inbox' }) }>
+            <Inbox/>
           </TabNavigator.Item>
 
           {/* Profile */}

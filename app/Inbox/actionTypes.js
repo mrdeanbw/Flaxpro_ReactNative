@@ -1,0 +1,3 @@
+export const INBOX_REQUEST = 'INBOX_REQUEST';
+export const INBOX_SUCCESS = 'INBOX_SUCCESS';
+export const INBOX_ERROR = 'INBOX_ERROR';

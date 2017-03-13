@@ -27,6 +27,45 @@ const weeks = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const years = ['2017', '2018', '2019', '2020'];
 
+const dataEntries = [
+  {
+    name: 'Emily Carter',
+    date: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    avatar: require('../../../Assets/avatar.png'),
+  },
+  {
+    name: 'Mark Deo',
+    date: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    avatar: require('../../../Assets/avatar.png'),
+  },
+  {
+    name: 'John Smith',
+    date: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    avatar: require('../../../Assets/avatar.png'),
+  },
+  {
+    name: 'Sara Clinton',
+    date: 'DEC 13 18:45PM',
+    location: 'Toronto, ON',
+    avatar: require('../../../Assets/avatar.png'),
+  },
+  {
+    name: 'Steven Besoz',
+    date: 'DEC 13 18:45PM',
+    location: 'Toronto, ON',
+    avatar: require('../../../Assets/avatar.png'),
+  },
+  {
+    name: 'Jeff Nelson',
+    date: 'DEC 13 18:45PM',
+    location: 'Toronto, ON',
+    avatar: require('../../../Assets/avatar.png'),
+  },
+];
+
 export default class Clients_CoachesForm extends Component {
   constructor(props) {
     super(props);
@@ -55,6 +94,20 @@ export default class Clients_CoachesForm extends Component {
     } else if (newProps.status == 'CoachesError') {
 
     }
+  }
+
+  renderClients_CoachesRow(rowData, sectionID, rowID) {
+
+    return (
+      <Clients_CoachesListCell
+        index={ Number(rowID) + 1 }
+        name={ rowData.name }
+        date={ rowData.date }
+        location= { rowData.location }
+        avatar={ rowData.avatar }
+        onClick={ () => this.onCellPressed(rowID) }
+      />
+    );
   }
 
   onCellPressed (rowID) {
@@ -93,20 +146,6 @@ export default class Clients_CoachesForm extends Component {
 
   onSelectYear() {
     alert("Tapped onSelectYear");
-  }
-
-  renderClients_CoachesRow(rowData, sectionID, rowID) {
-
-    return (
-      <Clients_CoachesListCell
-        index={ Number(rowID) + 1 }
-        name={ rowData.name }
-        date={ rowData.date }
-        location= { rowData.location }
-        avatar={ rowData.avatar }
-        onClick={ () => this.onCellPressed(rowID) }
-      />
-    );
   }
 
   render() {
@@ -269,41 +308,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const dataEntries = [
-  {
-    name: 'Emily Carter',
-    date: 'DEC 13 18:45PM',
-    location: 'St Tropez',
-    avatar: require('../../../Assets/avatar.png'),
-  },
-  {
-    name: 'Mark Deo',
-    date: 'DEC 13 18:45PM',
-    location: 'St Tropez',
-    avatar: require('../../../Assets/avatar.png'),
-  },
-  {
-    name: 'John Smith',
-    date: 'DEC 13 18:45PM',
-    location: 'St Tropez',
-    avatar: require('../../../Assets/avatar.png'),
-  },
-  {
-    name: 'Sara Clinton',
-    date: 'DEC 13 18:45PM',
-    location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar.png'),
-  },
-  {
-    name: 'Steven Besoz',
-    date: 'DEC 13 18:45PM',
-    location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar.png'),
-  },
-  {
-    name: 'Jeff Nelson',
-    date: 'DEC 13 18:45PM',
-    location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar.png'),
-  },
-];
