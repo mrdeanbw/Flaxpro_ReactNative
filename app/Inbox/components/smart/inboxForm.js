@@ -159,7 +159,7 @@ export default class InboxForm extends Component {
   }
 
   onCellPressed(index) {
-    alert( 'tapped onCellPressed!');
+    Actions.ChatForm({ userName: dataEntries[index].name });
   }
 
   onEdit() {
