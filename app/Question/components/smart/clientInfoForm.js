@@ -18,6 +18,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import { Actions } from 'react-native-router-flux';
 import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const { width, height } = Dimensions.get('window');
 
@@ -60,156 +61,160 @@ export default class ClientInfoForm extends Component {
 
     return (
       <View style={ styles.container }>
-        <Image source={ background } style={ styles.background } resizeMode="cover">
-          <View style={ styles.markWrap }>
-            <Image source={ markIcon } style={ styles.mark } resizeMode="contain" />
-          </View>
-          <View style={ styles.columnWrapper }>
-            <View style={ styles.oneColumn }>
-              <Text style={ styles.text }> Date of Birth </Text>
+        <KeyboardAwareScrollView
+          showsVerticalScrollIndicator={ false }
+        >
+          <Image source={ background } style={ styles.background } resizeMode="cover">
+            <View style={ styles.markWrap }>
+              <Image source={ markIcon } style={ styles.mark } resizeMode="contain" />
+            </View>
+            <View style={ styles.columnWrapper }>
+              <View style={ styles.oneColumn }>
+                <Text style={ styles.text }> Date of Birth </Text>
+                <View style={ styles.inputWrap }>
+                  <DatePicker
+                    date={ this.state.birthday }
+                    mode="date"
+                    placeholder="10/10/1990"
+                    format="MM/DD/YYYY"
+                    minDate="01/01/1900"
+                    maxDate="12/31/2100"
+                    confirmBtnText="Done"
+                    cancelBtnText="Cancel"
+                    showIcon={ false }
+                    customStyles={{
+                      dateInput: {
+                        height: 20,
+                        borderColor: "transparent",
+                        alignItems: "flex-start",
+                        justifyContent: "flex-start",
+                        marginBottom: 20,
+                      },
+                      dateText: {
+                        color: "#fff",
+                      },
+                      placeholderText: {
+                        color: "#a2e2fe",
+                      },
+                    }}
+                    onDateChange={ (date) => { this.setState({ birthday: date }) } }
+                  />
+                </View>
+              </View>
+              <View style={ styles.oneColumn }>
+                <Text style={ styles.text }> Gender </Text>
+                <View style={ styles.inputWrap }>
+                  <ModalDropdown
+                    options={['Male', 'Female']}
+                    defaultValue="Male"
+                    style={ styles.dropdown }
+                    textStyle ={ styles.text }
+                    dropdownStyle={ styles.dropdownStyle }
+                  />
+                </View>
+              </View>
+            </View>
+            <View style={ styles.rowWrapper }>
+              <Text style={ styles.text }> Phone Number </Text>
               <View style={ styles.inputWrap }>
-                <DatePicker
-                  date={ this.state.birthday }
-                  mode="date"
-                  placeholder="10/10/1990"
-                  format="MM/DD/YYYY"
-                  minDate="01/01/1900"
-                  maxDate="12/31/2100"
-                  confirmBtnText="Done"
-                  cancelBtnText="Cancel"
-                  showIcon={ false }
-                  customStyles={{
-                    dateInput: {
-                      height: 20,
-                      borderColor: "transparent",
-                      alignItems: "flex-start",
-                      justifyContent: "flex-start",
-                      marginBottom: 20,
-                    },
-                    dateText: {
-                      color: "#fff",
-                    },
-                    placeholderText: {
-                      color: "#a2e2fe",
-                    },
-                  }}
-                  onDateChange={ (date) => { this.setState({ birthday: date }) } }
+                <TextInput
+                  placeholder="+1"
+                  placeholderTextColor="#fff"
+                  color="#fff"
+                  style={ styles.input }
+                  value={ this.state.phoneNumber }
+                  onChangeText={ (text) => this.setState({ phoneNumber: text }) }
                 />
               </View>
             </View>
-            <View style={ styles.oneColumn }>
-              <Text style={ styles.text }> Gender </Text>
-              <View style={ styles.inputWrap }>
-                <ModalDropdown
-                  options={['Male', 'Female']}
-                  defaultValue="Male"
-                  style={ styles.dropdown }
-                  textStyle ={ styles.text }
-                  dropdownStyle={ styles.dropdownStyle }
-                />
+            <View style={ styles.columnWrapper }>
+              <View style={ styles.oneColumn }>
+                <Text style={ styles.text }> Current Weight </Text>
+                <View style={ styles.inputWrap }>
+                  <TextInput
+                    placeholder="lbs"
+                    placeholderTextColor="#fff"
+                    color="#fff"
+                    style={ styles.input }
+                    value={ this.state.weight }
+                    onChangeText={ (text) => this.setState({ weight: text }) }
+                  />
+                </View>
+              </View>
+              <View style={ styles.oneColumn }>
+                <Text style={ styles.text }> Height </Text>
+                <View style={ styles.inputWrap }>
+                  <TextInput
+                    placeholder="ft"
+                    placeholderTextColor="#fff"
+                    color="#fff"
+                    style={ styles.input }
+                    value={ this.state.height }
+                    onChangeText={ (text) => this.setState({ height: text }) }
+                  />
+                </View>
               </View>
             </View>
-          </View>
-          <View style={ styles.rowWrapper }>
-            <Text style={ styles.text }> Phone Number </Text>
-            <View style={ styles.inputWrap }>
-              <TextInput
-                placeholder="+1"
-                placeholderTextColor="#fff"
-                color="#fff"
-                style={ styles.input }
-                value={ this.state.phoneNumber }
-                onChangeText={ (text) => this.setState({ phoneNumber: text }) }
+            <View style={ styles.rowWrapper }>
+              <View style={ styles.columnActivityWrapper }>
+                <Text style={ styles.text }> Activity/Fitness Level </Text>
+                <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onVeryActive() }>
+                  <View style={ styles.veryActiveButton }>
+                    <Text style={ styles.buttonActiveText }>Very Active</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <Slider style={ styles.slider }
+                minimumTrackTintColor={ 'white' }
+                maximumTrackTintColor={ 'white' }
+                minimumValue={ 0 }
+                maximumValue={ 10 }
+                step={ 1 }
+                onValueChange={ (value) => this.setState({ fitnessLevel: value }) }
               />
             </View>
-          </View>
-          <View style={ styles.columnWrapper }>
-            <View style={ styles.oneColumn }>
-              <Text style={ styles.text }> Current Weight </Text>
+            <View style={ styles.rowWrapper }>
+              <Text style={ styles.text }> Known Allergies </Text>
               <View style={ styles.inputWrap }>
                 <TextInput
-                  placeholder="lbs"
+                  placeholder="None Listed"
                   placeholderTextColor="#fff"
                   color="#fff"
                   style={ styles.input }
-                  value={ this.state.weight }
-                  onChangeText={ (text) => this.setState({ weight: text }) }
+                  value={ this.state.allergies }
+                  onChangeText={ (text) => this.setState({ allergies: text }) }
                 />
               </View>
             </View>
-            <View style={ styles.oneColumn }>
-              <Text style={ styles.text }> Height </Text>
+            <View style={ styles.rowWrapper }>
+              <Text style={ styles.text }> Previous/Current Injuries </Text>
               <View style={ styles.inputWrap }>
                 <TextInput
-                  placeholder="ft"
+                  placeholder="None Listed"
                   placeholderTextColor="#fff"
                   color="#fff"
                   style={ styles.input }
-                  value={ this.state.height }
-                  onChangeText={ (text) => this.setState({ height: text }) }
+                  value={ this.state.injuries }
+                  onChangeText={ (text) => this.setState({ injuries: text }) }
                 />
               </View>
             </View>
-          </View>
-          <View style={ styles.rowWrapper }>
-            <View style={ styles.columnActivityWrapper }>
-              <Text style={ styles.text }> Activity/Fitness Level </Text>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onVeryActive() }>
-                <View style={ styles.veryActiveButton }>
-                  <Text style={ styles.buttonActiveText }>Very Active</Text>
+            <View style={ styles.rowWrapper }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onImportHealthKitData() }>
+                <View style={ styles.healthKitButton }>
+                  <Text style={ styles.buttonTextHealthKit }>Import Health Kit Data</Text>
                 </View>
               </TouchableOpacity>
             </View>
-            <Slider style={ styles.slider }
-              minimumTrackTintColor={ 'white' }
-              maximumTrackTintColor={ 'white' }
-              minimumValue={ 0 }
-              maximumValue={ 10 }
-              step={ 1 }
-              onValueChange={ (value) => this.setState({ fitnessLevel: value }) }
-            />
-          </View>
-          <View style={ styles.rowWrapper }>
-            <Text style={ styles.text }> Known Allergies </Text>
-            <View style={ styles.inputWrap }>
-              <TextInput
-                placeholder="None Listed"
-                placeholderTextColor="#fff"
-                color="#fff"
-                style={ styles.input }
-                value={ this.state.allergies }
-                onChangeText={ (text) => this.setState({ allergies: text }) }
-              />
+            <View style={ styles.rowWrapper }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onContinue() }>
+                <View style={ styles.continueButton }>
+                  <Text style={ styles.buttonTextContinue }>Continue</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </View>
-          <View style={ styles.rowWrapper }>
-            <Text style={ styles.text }> Previous/Current Injuries </Text>
-            <View style={ styles.inputWrap }>
-              <TextInput
-                placeholder="None Listed"
-                placeholderTextColor="#fff"
-                color="#fff"
-                style={ styles.input }
-                value={ this.state.injuries }
-                onChangeText={ (text) => this.setState({ injuries: text }) }
-              />
-            </View>
-          </View>
-          <View style={ styles.rowWrapper }>
-            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onImportHealthKitData() }>
-              <View style={ styles.healthKitButton }>
-                <Text style={ styles.buttonTextHealthKit }>Import Health Kit Data</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={ styles.rowWrapper }>
-            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onContinue() }>
-              <View style={ styles.continueButton }>
-                <Text style={ styles.buttonTextContinue }>Continue</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Image>
+          </Image>
+        </KeyboardAwareScrollView>
       </View>
     );
   }

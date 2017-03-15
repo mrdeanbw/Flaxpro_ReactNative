@@ -25,10 +25,10 @@ const store = createStoreWithMiddleware(reducer);
 
 const scenes = Actions.create(
   <Scene key="root">
-    <Scene key="Auth" component={ Auth } />
+    <Scene key="Auth" component={ Auth } initial/>
     <Scene key="ClientInfo" component={ ClientInfo } />
     <Scene key="WhoAreYou" component={ WhoAreYou } />
-    <Scene key="Main" component={ Main } initial/>
+    <Scene key="Main" component={ Main } />
     <Scene key="ExploreMapView" component={ ExploreMapView } />
     <Scene key="FilterForm" component={ FilterForm } direction="vertical" />
     <Scene key="ProposeTerms" component={ ProposeTerms } />

@@ -12,6 +12,8 @@ import {
   Alert,
 } from 'react-native';
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 import { Actions } from 'react-native-router-flux';
 import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
@@ -129,6 +131,7 @@ export default class AuthForm extends Component {
             color="#000"
             style={ styles.textInput }
             value={ this.state.email }
+            keyboardType='email-address'
             onChangeText={ (text) => this.setState({ email: text }) }
           />
         </View>
@@ -185,6 +188,7 @@ export default class AuthForm extends Component {
             color="#000"
             style={ styles.textInput }
             value={ this.state.email }
+            keyboardType='email-address'
             onChangeText={ (text) => this.setState({ email: text }) }
           />
         </View>
@@ -248,49 +252,53 @@ export default class AuthForm extends Component {
 
     return (
       <View style={ styles.container }>
-        <View style={ styles.topContainer }>
-          <Image source={ background } style={ styles.background } resizeMode="cover">
-            <View style={ styles.authContainer }>
-              <View style={ styles.authButtonContainer }>
-                <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowSignUp() }>
-                  <View style={ styles.authButton }>
-                    <Text style={ styles.buttonText }>SIGNUP</Text>
-                    {
-                      this.state.selectedButton == 1 ?
-                        <Image source={ triangle } style={ styles.imageTriangle } />
-                        :
-                        <View style={ styles.buttonPaddingView } />
-                    }
-                  </View>
-                </TouchableOpacity>
+        <KeyboardAwareScrollView
+          showsVerticalScrollIndicator={ false }
+        >
+          <View style={ styles.topContainer }>
+            <Image source={ background } style={ styles.background } resizeMode="cover">
+              <View style={ styles.authContainer }>
+                <View style={ styles.authButtonContainer }>
+                  <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowSignUp() }>
+                    <View style={ styles.authButton }>
+                      <Text style={ styles.buttonText }>SIGNUP</Text>
+                      {
+                        this.state.selectedButton == 1 ?
+                          <Image source={ triangle } style={ styles.imageTriangle } />
+                          :
+                          <View style={ styles.buttonPaddingView } />
+                      }
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={ styles.authButtonContainer }>
+                  <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowLogIn() }>
+                    <View style={ styles.authButton }>
+                      <Text style={ styles.buttonText }>LOGIN</Text>
+                      {
+                        this.state.selectedButton == 2 ?
+                          <Image source={ triangle } style={ styles.imageTriangle } />
+                          :
+                          <View style={ styles.buttonPaddingView } />
+                      }
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
               </View>
-              <View style={ styles.authButtonContainer }>
-                <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowLogIn() }>
-                  <View style={ styles.authButton }>
-                    <Text style={ styles.buttonText }>LOGIN</Text>
-                    {
-                      this.state.selectedButton == 2 ?
-                        <Image source={ triangle } style={ styles.imageTriangle } />
-                        :
-                        <View style={ styles.buttonPaddingView } />
-                    }
-                  </View>
-                </TouchableOpacity>
-              </View>
+          </Image>
+          </View>
+          <View style={ styles.bottomContainer }>
 
-            </View>
-         </Image>
-        </View>
-        <View style={ styles.bottomContainer }>
+            {
+              this.state.selectedButton == 1 ?
+                this.showSignUp
+                :
+                this.showLogin
+            }
 
-          {
-            this.state.selectedButton == 1 ?
-              this.showSignUp
-              :
-              this.showLogin
-          }
-
-        </View>
+          </View>
+        </KeyboardAwareScrollView>
       </View>
     );
   }
