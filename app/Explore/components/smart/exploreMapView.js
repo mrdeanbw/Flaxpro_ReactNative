@@ -25,10 +25,12 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomBar from './bottomBar';
 
+import { CoachesClients, GymLocations } from '../../../Components/dummyEntries';
+
 
 const { width, height } = Dimensions.get('window');
 const pin_gym = require('../../../Assets/gym.png');
-const avatar = require('../../../Assets/avatar.png');
+const avatar = require('../../../Assets/avatar1.png');
 
 
 const ASPECT_RATIO = width / height;
@@ -49,6 +51,7 @@ const ONE = new Animated.Value(1);
 const SPACE = 0.014;
 
 function getMarkerState(panX, panY, scrollY, i) {
+  
   const xLeft = (-SNAP_WIDTH * i) + (SNAP_WIDTH / 2);
   const xRight = (-SNAP_WIDTH * i) - (SNAP_WIDTH / 2);
   const xPos = -SNAP_WIDTH * i;
@@ -164,91 +167,9 @@ class ExploreMapView extends Component {
       extrapolate: 'clamp',
     });
 
-    const pin_markers = [
-      {
-        coordinate: {
-          latitude: LATITUDE - SPACE * 2,
-          longitude: LONGITUDE + SPACE * 2,
-        },
-        key: 0,
-      },
-      {
-        coordinate: {
-          latitude: LATITUDE - SPACE,
-          longitude: LONGITUDE - SPACE * 2,
-        },
-        key: 1,
-      },
-      {
-        coordinate: {
-          latitude: LATITUDE - SPACE * 2,
-          longitude: LONGITUDE - SPACE * 2,
-        },
-        key: 2,
-      },
-    ];
-
-    const coach_markers = [
-      {
-        id: 0,
-        amount: 99,
-        coordinate: {
-          latitude: LATITUDE,
-          longitude: LONGITUDE,
-        },
-        avatar: avatar,
-        width: ITEM_WIDTH,
-        height: ITEM_PREVIEW_HEIGHT,
-        rating: 4,
-        name: "Emily Joe",
-        description: "4 years experience independent",
-      },
-      {
-        id: 1,
-        amount: 199,
-        coordinate: {
-          latitude: LATITUDE + SPACE,
-          longitude: LONGITUDE - SPACE,
-        },
-        avatar: avatar,
-        width: ITEM_WIDTH,
-        height: ITEM_PREVIEW_HEIGHT,
-        rating: 5,
-        name: "Mark Carter",
-        description: "5 years experience independent",
-      },
-      {
-        id: 2,
-        amount: 285,
-        coordinate: {
-          latitude: LATITUDE - SPACE,
-          longitude: LONGITUDE - SPACE,
-        },
-        avatar: avatar,
-        width: ITEM_WIDTH,
-        height: ITEM_PREVIEW_HEIGHT,
-        rating: 5,
-        name: "John Smith",
-        description: "8 years experience independent",
-      },
-      {
-        id: 3,
-        amount: 385,
-        coordinate: {
-          latitude: LATITUDE + SPACE,
-          longitude: LONGITUDE + SPACE,
-        },
-        avatar: avatar,
-        width: ITEM_WIDTH,
-        height: ITEM_PREVIEW_HEIGHT,
-        rating: 4,
-        name: "John Smith",
-        description: "15 years experience independent",
-      },
-    ];
-
-    const animations = coach_markers.map((m, i) =>
-      getMarkerState(panX, panY, scrollY, i));
+    const animations = CoachesClients.map( (item, index) =>
+      getMarkerState(panX, panY, scrollY, index)
+    );
 
     this.state = {
       panX,
@@ -260,8 +181,8 @@ class ExploreMapView extends Component {
       scrollX,
       scale,
       translateY,
-      coach_markers,
-      pin_markers,
+      coach_clients: CoachesClients,
+      gymLocations: GymLocations,
       region: new MapView.AnimatedRegion({
         latitude: LATITUDE,
         longitude: LONGITUDE,
@@ -276,7 +197,13 @@ class ExploreMapView extends Component {
   }
 
   componentDidMount() {
-    const { region, panX, panY, scrollX, coach_markers } = this.state;
+    const { 
+      region, 
+      panX, 
+      panY, 
+      scrollX, 
+      coach_clients 
+    } = this.state;
 
     panX.addListener(this.onPanXChange);
     panY.addListener(this.onPanYChange);
@@ -284,12 +211,12 @@ class ExploreMapView extends Component {
     region.stopAnimation();
     region.timing({
       latitude: scrollX.interpolate({
-        inputRange: coach_markers.map((m, i) => i * SNAP_WIDTH),
-        outputRange: coach_markers.map(m => m.coordinate.latitude),
+        inputRange: coach_clients.map( (item, index) => index * SNAP_WIDTH),
+        outputRange: coach_clients.map(item => item.coordinate.latitude),
       }),
       longitude: scrollX.interpolate({
-        inputRange: coach_markers.map((m, i) => i * SNAP_WIDTH),
-        outputRange: coach_markers.map(m => m.coordinate.longitude),
+        inputRange: coach_clients.map( (item, index) => index * SNAP_WIDTH),
+        outputRange: coach_clients.map( item => item.coordinate.longitude),
       }),
       duration: 0,
     }).start();
@@ -329,12 +256,20 @@ class ExploreMapView extends Component {
 
   onPanYChange = ({ value }) => {
 
-    const { canMoveHorizontal, region, scrollY, scrollX, coach_markers, index } = this.state;
+    const { 
+      canMoveHorizontal, 
+      region, 
+      scrollY, 
+      scrollX, 
+      coach_clients, 
+      index,
+    } = this.state;
+
     const shouldBeMovable = Math.abs(value) < 2;
     if (shouldBeMovable !== canMoveHorizontal) {
       this.setState({ canMoveHorizontal: shouldBeMovable });
       if (!shouldBeMovable) {
-        const { coordinate } = coach_markers[index];
+        const { coordinate } = coach_clients[index];
         region.stopAnimation();
         region.timing({
           latitude: scrollY.interpolate({
@@ -361,12 +296,12 @@ class ExploreMapView extends Component {
         region.stopAnimation();
         region.timing({
           latitude: scrollX.interpolate({
-            inputRange: coach_markers.map((m, i) => i * SNAP_WIDTH),
-            outputRange: coach_markers.map(m => m.coordinate.latitude),
+            inputRange: coach_clients.map( (item, index) => index * SNAP_WIDTH),
+            outputRange: coach_clients.map(item => item.coordinate.latitude),
           }),
           longitude: scrollX.interpolate({
-            inputRange: coach_markers.map((m, i) => i * SNAP_WIDTH),
-            outputRange: coach_markers.map(m => m.coordinate.longitude),
+            inputRange: coach_clients.map( (item, index) => index * SNAP_WIDTH),
+            outputRange: coach_clients.map(item => item.coordinate.longitude),
           }),
           duration: 0,
         }).start();
@@ -377,7 +312,6 @@ class ExploreMapView extends Component {
   onRegionChange(/* region */) {
     // this.state.region.setValue(region);
   }
-
 
   onPressPin ( key ) {
 
@@ -559,9 +493,9 @@ class ExploreMapView extends Component {
       panY,
       animations,
       canMoveHorizontal,
-      coach_markers,
+      coach_clients,
       region,
-      pin_markers,
+      gymLocations,
     } = this.state;
 
     return (
@@ -571,7 +505,7 @@ class ExploreMapView extends Component {
           horizontal={ canMoveHorizontal }
           xMode="snap"
           snapSpacingX={ SNAP_WIDTH }
-          xBounds={ [-(ITEM_WIDTH + ITEM_SPACING) * (coach_markers.length - 1), 0] }
+          xBounds={ [-(ITEM_WIDTH + ITEM_SPACING) * (coach_clients.length - 1), 0] }
           panY={ panY }
           panX={ panX }
           onStartShouldSetPanResponder={ this.onStartShouldSetPanResponder }
@@ -585,47 +519,49 @@ class ExploreMapView extends Component {
             onLongPress={ () => this.onTapMap() }
           >
             {
-              pin_markers.map(marker => (
+              gymLocations.map( (marker, index) => (
                 <MapView.Marker
                   image={ pin_gym }
-                  key={ marker.key }
+                  key={ index }
                   coordinate={ marker.coordinate }
                   calloutOffset={{ x: 0, y: 28 }}
                   calloutAnchor={{ x: 0.5, y: 0.4 }}
-                  onPress={ () => this.onPressPin(marker.key) }
+                  onPress={ () => this.onPressPin(index) }
                 >
                 </MapView.Marker>
               ))
             }
 
             {
-              coach_markers.map((marker, i) => {
-              const {
-                selected,
-                markerOpacity,
-                markerScale,
-              } = animations[i];
+              coach_clients.map( (marker, index) => {
 
-              return (
-                <MapView.Marker
-                  key={ marker.id }
-                  coordinate={ marker.coordinate }
-                  onPress={ () => this.onPressCoach(marker.key) }
-                >
-                  <AnimatedCoachMarker
-                    style={{
-                      opacity: markerOpacity,
-                      transform: [
-                        { scale: markerScale },
-                      ],
-                    }}
-                    amount={ marker.amount }
-                    rating={ marker.rating }
-                    selected={ selected }
-                  />
-                </MapView.Marker>
-              );
-            })}
+                const {
+                  selected,
+                  markerOpacity,
+                  markerScale,
+                } = animations[index];
+
+                return (
+                  <MapView.Marker
+                    key={ index }
+                    coordinate={ marker.coordinate }
+                    onPress={ () => this.onPressCoach(index) }
+                  >
+                    <AnimatedCoachMarker
+                      style={{
+                        opacity: markerOpacity,
+                        transform: [
+                          { scale: markerScale },
+                        ],
+                      }}
+                      amount={ marker.amount }
+                      rating={ marker.rating }
+                      selected={ selected }
+                    />
+                  </MapView.Marker>
+                );
+              })
+            }
 
             {
               this.props.mapStandardMode ?
@@ -653,17 +589,17 @@ class ExploreMapView extends Component {
             :
               <View style={ styles.itemContainer }>
                 {
-                  coach_markers.map((marker, i) => {
+                  coach_clients.map( (marker, index) => {
                     const {
                       translateY,
                       translateX,
                       scale,
                       opacity,
-                    } = animations[i];
+                    } = animations[index];
 
                     return (
                       <AnimatedViewCell
-                        key={ marker.id }
+                        key={ index }
                         style={ [styles.item, {
                           opacity,
                           transform: [
@@ -673,8 +609,8 @@ class ExploreMapView extends Component {
                           ],
                         }]}
                         avatar={ marker.avatar }
-                        width={ marker.width }
-                        height={ marker.height }
+                        width={ ITEM_WIDTH }
+                        height={ ITEM_PREVIEW_HEIGHT }
                         rating={ marker.rating }
                         name={ marker.name }
                         description={ marker.description }
@@ -682,7 +618,8 @@ class ExploreMapView extends Component {
                         onPress={ () => this.onClickAnimatedViewCell() }
                       />
                     );
-                  })}
+                  })
+                }
               </View>
           }
 
@@ -696,7 +633,6 @@ class ExploreMapView extends Component {
 }
 
 ExploreMapView.propTypes = {
-
   provider: MapView.ProviderPropType,
   mapStandardMode: PropTypes.bool,
   onTapMap: PropTypes.func,
@@ -709,7 +645,6 @@ ExploreMapView.defaultProps = {
   onTapMap: () => {},
   onFilter: () => {},
   onList: () => {},
-
 };
 
 const styles = StyleSheet.create({
@@ -717,7 +652,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
-
   },
   map: {
     ...StyleSheet.absoluteFillObject,

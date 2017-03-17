@@ -26,7 +26,7 @@ import ExploreListView from './exploreListView';
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
-const avatar = require('../../../Assets/avatar.png');
+const avatar = require('../../../Assets/avatar1.png');
 
 export default class ExploreForm extends Component {
   constructor(props) {

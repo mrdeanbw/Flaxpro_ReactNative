@@ -32,37 +32,37 @@ const dataEntries = [
     name: 'Emily Carter',
     date: 'DEC 13 18:45PM',
     location: 'St Tropez',
-    avatar: require('../../../Assets/avatar.png'),
+    avatar: require('../../../Assets/avatar1.png'),
   },
   {
     name: 'Mark Deo',
     date: 'DEC 13 18:45PM',
     location: 'St Tropez',
-    avatar: require('../../../Assets/avatar.png'),
+    avatar: require('../../../Assets/avatar1.png'),
   },
   {
     name: 'John Smith',
     date: 'DEC 13 18:45PM',
     location: 'St Tropez',
-    avatar: require('../../../Assets/avatar.png'),
+    avatar: require('../../../Assets/avatar1.png'),
   },
   {
     name: 'Sara Clinton',
     date: 'DEC 13 18:45PM',
     location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar.png'),
+    avatar: require('../../../Assets/avatar1.png'),
   },
   {
     name: 'Steven Besoz',
     date: 'DEC 13 18:45PM',
     location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar.png'),
+    avatar: require('../../../Assets/avatar1.png'),
   },
   {
     name: 'Jeff Nelson',
     date: 'DEC 13 18:45PM',
     location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar.png'),
+    avatar: require('../../../Assets/avatar1.png'),
   },
 ];
 

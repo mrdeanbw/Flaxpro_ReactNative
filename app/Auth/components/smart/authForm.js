@@ -94,6 +94,29 @@ export default class AuthForm extends Component {
   }
 
   onSignUp() {
+
+    if (this.state.email == '') {
+      Alert.alert('Please enter email address.');
+      return;
+    }
+
+    if (this.state.password == '') {
+      Alert.alert('Please enter password.');
+      return;
+    }
+
+    if (this.state.confirmPassword == '') {
+      Alert.alert('Please enter confirm password.');
+      return;
+    }
+
+    if (this.state.password != this.state.confirmPassword) {
+      Alert.alert('The password is not matched.');
+      this.setState({ password: '' });
+      this.setState({ confirmPassword: '' });
+      return;
+    }
+
     Actions.WhoAreYou();
   }
 
@@ -126,6 +149,8 @@ export default class AuthForm extends Component {
             <Image source={ userIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            autoCapitalize="none"
+            autoCorrect={ false }
             placeholder="Enter your Email"
             placeholderTextColor="#9e9e9e"
             color="#000"
@@ -140,6 +165,8 @@ export default class AuthForm extends Component {
             <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            autoCapitalize="none"
+            autoCorrect={ false }
             placeholder="Password"
             placeholderTextColor="#9e9e9e"
             color="#000"
@@ -154,6 +181,8 @@ export default class AuthForm extends Component {
             <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            autoCapitalize="none"
+            autoCorrect={ false }
             placeholder="Repeat Password"
             placeholderTextColor="#9e9e9e"
             color="#000"
@@ -183,6 +212,8 @@ export default class AuthForm extends Component {
             <Image source={ userIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            autoCapitalize="none"
+            autoCorrect={ false }
             placeholder="Enter your Email"
             placeholderTextColor="#9e9e9e"
             color="#000"
@@ -197,6 +228,8 @@ export default class AuthForm extends Component {
             <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            autoCapitalize="none"
+            autoCorrect={ false }
             placeholder="Password"
             placeholderTextColor="#9e9e9e"
             color="#000"

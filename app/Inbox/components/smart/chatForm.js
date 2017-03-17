@@ -22,7 +22,7 @@ import * as CommonConstant from '../../../Components/commonConstant';
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/background.png');
-// const avatar = require('../../Assets/avatar.png');
+// const avatar = require('../../Assets/avatar1.png');
 
 
 export default class ChatForm extends Component {

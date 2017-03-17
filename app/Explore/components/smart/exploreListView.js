@@ -14,167 +14,15 @@ import {
 import AnimatedViewCell from './animatedViewCell';
 import BottomBar from './bottomBar';
 
+import { CoachesClients } from '../../../Components/dummyEntries';
+
 const { width, height } = Dimensions.get('window');
+
 const ITEM_SPACING = 10;
-const ITEM_PREVIEW = 10;
-const ITEM_WIDTH = (width - (2 * ITEM_SPACING) - (2 * ITEM_PREVIEW)) / 3;
+const ITEM_WIDTH = (width - (2 * ITEM_SPACING) - (2 * ITEM_SPACING)) / 3;
 
-const avatar = require('../../../Assets/avatar.png');
+class ExploreListView extends Component {
 
-const coach_markers = [
-  {
-    id: 0,
-    amount: 99,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 4,
-    name: "Emily Joe",
-    description: "4 years experience independent",
-  },
-  {
-    id: 1,
-    amount: 199,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 5,
-    name: "Mark Carter",
-    description: "5 years experience independent",
-  },
-  {
-    id: 2,
-    amount: 285,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 5,
-    name: "John Smith",
-    description: "8 years experience independent",
-  },
-  {
-    id: 3,
-    amount: 390,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 4,
-    name: "John Smith",
-    description: "15 years experience independent",
-  },
-  {
-    id: 5,
-    amount: 99,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 4,
-    name: "Emily Joe",
-    description: "4 years experience independent",
-  },
-  {
-    id: 6,
-    amount: 199,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 5,
-    name: "Mark Carter",
-    description: "5 years experience independent",
-  },
-  {
-    id: 7,
-    amount: 285,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 5,
-    name: "John Smith",
-    description: "8 years experience independent",
-  },
-  {
-    id: 8,
-    amount: 390,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 4,
-    name: "John Smith",
-    description: "15 years experience independent",
-  },
-  {
-    id: 9,
-    amount: 99,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 4,
-    name: "Emily Joe",
-    description: "4 years experience independent",
-  },
-  {
-    id: 10,
-    amount: 199,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 5,
-    name: "Mark Carter",
-    description: "5 years experience independent",
-  },
-  {
-    id: 11,
-    amount: 285,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 5,
-    name: "John Smith",
-    description: "8 years experience independent",
-  },
-  {
-    id: 12,
-    amount: 390,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 4,
-    name: "John Smith",
-    description: "15 years experience independent",
-  },
-  {
-    id: 13,
-    amount: 199,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 5,
-    name: "Mark Carter",
-    description: "5 years experience independent",
-  },
-  {
-    id: 14,
-    amount: 285,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 5,
-    name: "John Smith",
-    description: "8 years experience independent",
-  },
-  {
-    id: 15,
-    amount: 390,
-    avatar: avatar,
-    width: ITEM_WIDTH,
-    height: ITEM_WIDTH,
-    rating: 4,
-    name: "John Smith",
-    description: "15 years experience independent",
-  },
-];
-
-export default class ExploreListView extends Component {
   constructor(props) {
     super(props);
 
@@ -182,7 +30,7 @@ export default class ExploreListView extends Component {
       { rowHasChanged: (r1, r2) => r1 !== r2 });
 
     this.state = {
-      dataSource: dataSource.cloneWithRows(coach_markers),
+      dataSource: dataSource.cloneWithRows(CoachesClients),
     };
 
     this.onList = this.onList.bind(this);
@@ -207,8 +55,8 @@ export default class ExploreListView extends Component {
         key={ rowData.id }
         style={ [styles.item, ] }
         avatar={ rowData.avatar }
-        width={ rowData.width }
-        height={ rowData.height }
+        width={ ITEM_WIDTH }
+        height={ ITEM_WIDTH }
         rating={ rowData.rating }
         name={ rowData.name }
         description={ rowData.description }
@@ -217,6 +65,7 @@ export default class ExploreListView extends Component {
       />
     );
   }
+
   onList() {
 
     if ( this.props.onList ) {
@@ -242,7 +91,7 @@ export default class ExploreListView extends Component {
     return (
       <View style={ styles.container }>
         <ListView
-          pageSize = { coach_markers.length }
+          pageSize = { CoachesClients.length }
           dataSource={ this.state.dataSource }
           renderRow={ this.renderRow.bind(this) }
           contentContainerStyle={ styles.list }
@@ -262,17 +111,17 @@ export default class ExploreListView extends Component {
 }
 
 ExploreListView.propTypes = {
-
   onFilter: PropTypes.func,
   onList: PropTypes.func,
 };
 
-ExploreListView.defaultProps = {
+ExploreListView.defaultProps = {  
   mapStandardMode: true,
   onFilter: () => {},
   onList: () => {},
-
 };
+
+module.exports = ExploreListView;
 
 const styles = StyleSheet.create({
   container: {
@@ -304,6 +153,4 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 60,
   },
-
-
 });

@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     flex: 4.5,
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  },  
   ratingContainer: {
     flex: 1,
     flexDirection: 'row',

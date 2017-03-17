@@ -118,11 +118,14 @@ export default class ClientInfoForm extends Component {
               <Text style={ styles.text }> Phone Number </Text>
               <View style={ styles.inputWrap }>
                 <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={ false }
                   placeholder="+1"
                   placeholderTextColor="#fff"
                   color="#fff"
                   style={ styles.input }
                   value={ this.state.phoneNumber }
+                  keyboardType='numeric'
                   onChangeText={ (text) => this.setState({ phoneNumber: text }) }
                 />
               </View>
@@ -137,6 +140,7 @@ export default class ClientInfoForm extends Component {
                     color="#fff"
                     style={ styles.input }
                     value={ this.state.weight }
+                    keyboardType='numeric'
                     onChangeText={ (text) => this.setState({ weight: text }) }
                   />
                 </View>
@@ -150,6 +154,7 @@ export default class ClientInfoForm extends Component {
                     color="#fff"
                     style={ styles.input }
                     value={ this.state.height }
+                    keyboardType='numeric'
                     onChangeText={ (text) => this.setState({ height: text }) }
                   />
                 </View>
@@ -177,6 +182,8 @@ export default class ClientInfoForm extends Component {
               <Text style={ styles.text }> Known Allergies </Text>
               <View style={ styles.inputWrap }>
                 <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={ false }                  
                   placeholder="None Listed"
                   placeholderTextColor="#fff"
                   color="#fff"
@@ -190,6 +197,8 @@ export default class ClientInfoForm extends Component {
               <Text style={ styles.text }> Previous/Current Injuries </Text>
               <View style={ styles.inputWrap }>
                 <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={ false }
                   placeholder="None Listed"
                   placeholderTextColor="#fff"
                   color="#fff"
