@@ -20,9 +20,9 @@ import ClientProfile from '../../../Profile/containers/clientProfile';
 import TrainerProfile from '../../../Profile/containers/trainerProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 
-
 import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
+import { CoachesClients } from '../../../Components/dummyEntries';
 
 const { width, height } = Dimensions.get('window');
 
@@ -44,7 +44,7 @@ export default class MainForm extends Component {
     super(props);
 
     this.state = {
-      selectedTab: 'explore',
+      selectedTab: 'home',
       badge: 0,
     };
 
@@ -98,7 +98,7 @@ export default class MainForm extends Component {
             renderIcon={ () => <Image source={ profileIcon } style={ styles.iconTabbarProfile }/> }
             renderSelectedIcon={ () => <Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/> }
             onPress={ () => this.setState({ selectedTab: 'profile' }) }>
-            { user_mode === CommonConstant.user_client ? <ClientProfile/> : <TrainerProfile/> }
+            { user_mode === CommonConstant.user_client ? <ClientProfile user={ CoachesClients[0] }/> : <TrainerProfile user={ CoachesClients[0] }/> }
           </TabNavigator.Item>
 
           {/* Account */}

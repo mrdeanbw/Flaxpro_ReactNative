@@ -14,8 +14,6 @@ import {
 import AnimatedViewCell from './animatedViewCell';
 import BottomBar from './bottomBar';
 
-import { CoachesClients } from '../../../Components/dummyEntries';
-
 const { width, height } = Dimensions.get('window');
 
 const ITEM_SPACING = 10;
@@ -26,12 +24,8 @@ class ExploreListView extends Component {
   constructor(props) {
     super(props);
 
-    var dataSource = new ListView.DataSource(
+    this.dataSource = new ListView.DataSource(
       { rowHasChanged: (r1, r2) => r1 !== r2 });
-
-    this.state = {
-      dataSource: dataSource.cloneWithRows(CoachesClients),
-    };
 
     this.onList = this.onList.bind(this);
     this.onFilter = this.onFilter.bind(this);
@@ -88,10 +82,14 @@ class ExploreListView extends Component {
   render() {
     const { status } = this.props;
 
+    this.state = {
+      dataSource: this.dataSource.cloneWithRows(this.props.coachesClients),
+    };
+
     return (
       <View style={ styles.container }>
         <ListView
-          pageSize = { CoachesClients.length }
+          pageSize = { this.props.coachesClients.length }
           dataSource={ this.state.dataSource }
           renderRow={ this.renderRow.bind(this) }
           contentContainerStyle={ styles.list }

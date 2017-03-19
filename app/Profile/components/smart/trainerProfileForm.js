@@ -22,7 +22,6 @@ const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
 const schedule = require('../../../Assets/schedule.png');
 const edit = require('../../../Assets/edit.png');
-const avatar = require('../../../Assets/avatar1.png');
 const call = require('../../../Assets/call.png');
 const message = require('../../../Assets/message.png');
 const refer = require('../../../Assets/refer.png');
@@ -89,11 +88,11 @@ export default class TrainerProfileForm extends Component {
   }
 
   onHire() {
-    alert( 'Tapped onHire!');
+    Actions.Payment();
   }
 
   onMakeAnOffer() {
-    alert( 'Tapped onMakeAnOffer!');
+    Actions.ProposeTerms({ user: this.user });
   }
 
   onBack() {
@@ -162,7 +161,7 @@ export default class TrainerProfileForm extends Component {
             <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
           </TouchableOpacity>
           <View style={ styles.navBarTitleContainer }>
-            <Text style={ styles.textTitle }>ADAM LIPSKI</Text>
+            <Text style={ styles.textTitle }>{ this.user.name.toUpperCase() }</Text>
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
           <TouchableOpacity
@@ -184,7 +183,7 @@ export default class TrainerProfileForm extends Component {
             />
           </TouchableOpacity>
           <View style={ styles.navBarTitleContainer }>
-            <Text style={ styles.textTitle }>ADAM LIPSKI</Text>
+            <Text style={ styles.textTitle }>{ this.user.name.toUpperCase() }</Text>
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
           <View style={ styles.navButtonWrapper }/>          
@@ -227,7 +226,7 @@ export default class TrainerProfileForm extends Component {
           >
             <Image source={ hire } style={ styles.imageButton }>
               <Text style={ styles.textActionSmall }>HIRE NOW</Text>
-              <Text style={ styles.textActionLarge }>$250</Text>
+              <Text style={ styles.textActionLarge }>${ this.user.amount }</Text>
             </Image>  
           </TouchableOpacity>
         </View>
@@ -246,7 +245,8 @@ export default class TrainerProfileForm extends Component {
   }
 
   render() {
-    const { status, editable } = this.props;
+    const { status, editable, user } = this.props;
+    this.user = user;
 
     return (
       <View style={ styles.container }>
@@ -259,7 +259,7 @@ export default class TrainerProfileForm extends Component {
               <View style={ styles.avatarTopBackground }/>
               <View style={ styles.avatarBottomBackground }/>
               <View style={ styles.avatarWrapper }>
-                <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+                <Image source={ this.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
                 <Image source={ verified } style={ styles.imageVerified }/>
               </View>
             </View>

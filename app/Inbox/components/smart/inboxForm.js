@@ -26,69 +26,9 @@ const edit = require('../../../Assets/edit.png');
 const call = require('../../../Assets/inbox_call.png');
 const remove = require('../../../Assets/inbox_delete.png');
 
-const dataEntries = [
-  {
-    name: 'Emily Carter',
-    time: '18:45PM',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-    avatar: require('../../../Assets/avatar1.png'),
-    read: true,
-    group: [],    
-  },
-  {
-    name: 'Mark Deo',
-    time: '18:45PM',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-    avatar: require('../../../Assets/avatar1.png'),    
-    read: true,
-    group: [],
-  },
-  {
-    name: 'John Smith',
-    time: '18:45PM',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-    avatar: require('../../../Assets/avatar1.png'),    
-    read: false,
-    group: [],
-  },
-  {
-    name: 'Sara Clinton',
-    time: '18:45PM',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-    avatar: require('../../../Assets/avatar1.png'),    
-    read: false,
-    group: [],
-  },
-  {
-    name: 'Steven Besoz',
-    time: '18:45PM',
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-    avatar: require('../../../Assets/avatar1.png'),    
-    read: true,
-    group: [],
-  },
-  {
-    name: 'Group',
-    time: '18:45PM',
-    message: 'Friends group',
-    avatar: 0,    
-    read: true,
-    group: [
-      {
-        name: 'Steven Besoz',
-        avatar: require('../../../Assets/avatar1.png'),
-      },
-      {
-        name: 'Steven Besoz',
-        avatar: require('../../../Assets/avatar1.png'),
-      },
-      {
-        name: 'Steven Besoz',
-        avatar: require('../../../Assets/avatar1.png'),
-      },
-    ],
-  },
-];
+
+import { Messages } from '../../../Components/dummyEntries';
+
 
 export default class InboxForm extends Component {
   constructor(props) {
@@ -98,7 +38,7 @@ export default class InboxForm extends Component {
       { rowHasChanged: (r1, r2) => r1 !== r2 });
 
     this.state = {
-      dataSourceInbox: dataEntries,
+      dataSourceInbox: Messages,
     };
   }
 
@@ -159,7 +99,13 @@ export default class InboxForm extends Component {
   }
 
   onCellPressed(index) {
-    Actions.ChatForm({ userName: dataEntries[index].name });
+    
+    this.setState ((state) => {
+      state.dataSourceInbox[index].read = true;
+      return state;
+    });
+
+    Actions.ChatForm({ userName: this.state.dataSourceInbox[index].name });
   }
 
   onEdit() {

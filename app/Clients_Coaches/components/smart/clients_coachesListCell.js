@@ -17,7 +17,7 @@ export default class ClientCoachesListCell extends Component {
     width: PropTypes.number,
     index: PropTypes.number,
     name: PropTypes.string.isRequired,
-    date: PropTypes.string.isRequired,
+    time: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
     avatar: PropTypes.number.isRequired,
     onClick: PropTypes.func,
@@ -48,7 +48,7 @@ export default class ClientCoachesListCell extends Component {
       width,
       index,
       name,
-      date,
+      time,
       location,
       avatar,
       onClick,
@@ -61,7 +61,7 @@ export default class ClientCoachesListCell extends Component {
             <Image style={ styles.avatar } source={ avatar }/>
             <Text style={ styles.textName }>{ name }</Text>
           </View>
-          <Text style={ styles.textDate }>{ date }</Text>
+          <Text style={ styles.textDate }>{ time }</Text>
           <Text style={ styles.textLocation }>{ location }</Text>
         </View>
       </TouchableHighlight>

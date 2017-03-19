@@ -27,7 +27,7 @@ export default class ProposeTermsForm extends Component {
     super(props);
 
     this.state = {
-      numberOfSessions: 3,
+      numberOfSessions: 1,
     };
   }
 
@@ -47,8 +47,11 @@ export default class ProposeTermsForm extends Component {
     Actions.Payment();
   }
 
+  onYearOfExperience (data) {
+
+  }
   render() {
-    const { status } = this.props;
+    const { status, user } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -70,14 +73,14 @@ export default class ProposeTermsForm extends Component {
             <View style={ styles.topContainer }>
               <View style={ styles.rowContainer }>
                 <Text style={ styles.textDescription }>Number of sessions per week</Text>
-                <Text style={ styles.textHours }>5:00 h</Text>
+                <Text style={ styles.textHours }>{ this.state.numberOfSessions }:00 h</Text>
               </View>
               <View style={ styles.rowContainer }>
                 <Slider style={ styles.slider }
                   minimumTrackTintColor={ '10c7fa' }
                   maximumTrackTintColor={ 'a1a1a1' }
                   minimumValue={ 0 }
-                  maximumValue={ 10 }
+                  maximumValue={ 30 }
                   step={ 1 }
                   value = { this.state.numberOfSessions }
                   onValueChange={ (value) => this.setState({ numberOfSessions: value }) }
@@ -88,7 +91,7 @@ export default class ProposeTermsForm extends Component {
               <View style={ styles.rowContainer }>
                 <Text style={ styles.textDescription }>You'll earn</Text>
                 <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textValue }>$ 250.00</Text>
+                  <Text style={ styles.textValue }>$ { this.state.numberOfSessions * user.amount }</Text>
                 </View>
               </View>
               <View style={ styles.rowContainer }>
@@ -112,7 +115,7 @@ export default class ProposeTermsForm extends Component {
               <View style={ styles.rowContainer }>
                 <Text style={ styles.textDescription }>Hourly Rate</Text>
                 <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textValue }>$ 30.00</Text>
+                  <Text style={ styles.textValue }>$ { user.amount }</Text>
                 </View>
               </View>
               <View style={ styles.locationBorderContainer }>
@@ -127,7 +130,7 @@ export default class ProposeTermsForm extends Component {
               <Text style={ styles.textBidTitle }>Your Bid</Text>
               <View style={ styles.bidBorderContainer }>
                 <Text style={ styles.textBidDescription }>This is what the Clients Sees</Text>
-                <Text style={ styles.textBidValue }>$ 250.00</Text>
+                <Text style={ styles.textBidValue }>$ { this.state.numberOfSessions * user.amount }</Text>
               </View>
             </View>
           </View>

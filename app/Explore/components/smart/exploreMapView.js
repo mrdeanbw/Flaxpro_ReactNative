@@ -25,9 +25,6 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomBar from './bottomBar';
 
-import { CoachesClients, GymLocations } from '../../../Components/dummyEntries';
-
-
 const { width, height } = Dimensions.get('window');
 const pin_gym = require('../../../Assets/gym.png');
 const avatar = require('../../../Assets/avatar1.png');
@@ -167,59 +164,33 @@ class ExploreMapView extends Component {
       extrapolate: 'clamp',
     });
 
-    const animations = CoachesClients.map( (item, index) =>
-      getMarkerState(panX, panY, scrollY, index)
-    );
-
     this.state = {
       panX,
       panY,
-      animations,
       index: 0,
       canMoveHorizontal: false,
       scrollY,
       scrollX,
       scale,
       translateY,
-      coach_clients: CoachesClients,
-      gymLocations: GymLocations,
-      region: new MapView.AnimatedRegion({
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-      }),
+      selectedGymIndex: 0,
+      selectedCoacheClientIndex: 0,
     };
+
+    // this.region = new MapView.AnimatedRegion({
+    //   latitude: LATITUDE,
+    //   longitude: LONGITUDE,
+    //   latitudeDelta: LATITUDE_DELTA,
+    //   longitudeDelta: LONGITUDE_DELTA,
+    // });
 
     this.onTapMap = this.onTapMap.bind(this);
     this.onList = this.onList.bind(this);
     this.onFilter = this.onFilter.bind(this);
   }
 
-  componentDidMount() {
-    const { 
-      region, 
-      panX, 
-      panY, 
-      scrollX, 
-      coach_clients 
-    } = this.state;
-
-    panX.addListener(this.onPanXChange);
-    panY.addListener(this.onPanYChange);
-
-    region.stopAnimation();
-    region.timing({
-      latitude: scrollX.interpolate({
-        inputRange: coach_clients.map( (item, index) => index * SNAP_WIDTH),
-        outputRange: coach_clients.map(item => item.coordinate.latitude),
-      }),
-      longitude: scrollX.interpolate({
-        inputRange: coach_clients.map( (item, index) => index * SNAP_WIDTH),
-        outputRange: coach_clients.map( item => item.coordinate.longitude),
-      }),
-      duration: 0,
-    }).start();
+  componentWillReceiveProps(newProps) {
+     this.setState({ selectedCoacheClientIndex: 0 });    
   }
 
   onStartShouldSetPanResponder = (e) => {
@@ -258,20 +229,20 @@ class ExploreMapView extends Component {
 
     const { 
       canMoveHorizontal, 
-      region, 
       scrollY, 
       scrollX, 
-      coach_clients, 
       index,
     } = this.state;
+
+    const coachesClients = this.props.coachesClients;
 
     const shouldBeMovable = Math.abs(value) < 2;
     if (shouldBeMovable !== canMoveHorizontal) {
       this.setState({ canMoveHorizontal: shouldBeMovable });
       if (!shouldBeMovable) {
-        const { coordinate } = coach_clients[index];
-        region.stopAnimation();
-        region.timing({
+        const { coordinate } = coachesClients[index];
+        this.region.stopAnimation();
+        this.region.timing({
           latitude: scrollY.interpolate({
             inputRange: [0, BREAKPOINT1],
             outputRange: [
@@ -293,15 +264,15 @@ class ExploreMapView extends Component {
           duration: 0,
         }).start();
       } else {
-        region.stopAnimation();
-        region.timing({
+        this.region.stopAnimation();
+        this.region.timing({
           latitude: scrollX.interpolate({
-            inputRange: coach_clients.map( (item, index) => index * SNAP_WIDTH),
-            outputRange: coach_clients.map(item => item.coordinate.latitude),
+            inputRange: coachesClients.map( (item, index) => index * SNAP_WIDTH),
+            outputRange: coachesClients.map(item => item.coordinate.latitude),
           }),
           longitude: scrollX.interpolate({
-            inputRange: coach_clients.map( (item, index) => index * SNAP_WIDTH),
-            outputRange: coach_clients.map(item => item.coordinate.longitude),
+            inputRange: coachesClients.map( (item, index) => index * SNAP_WIDTH),
+            outputRange: coachesClients.map(item => item.coordinate.longitude),
           }),
           duration: 0,
         }).start();
@@ -313,8 +284,9 @@ class ExploreMapView extends Component {
     // this.state.region.setValue(region);
   }
 
-  onPressPin ( key ) {
+  onPressPin ( index ) {
 
+    this.setState({ selectedGymIndex: index });
     this.popupDialogGym.openDialog ();
   }
 
@@ -324,12 +296,12 @@ class ExploreMapView extends Component {
   }
 
   onSetGym () {
-
     this.popupDialogGym.closeDialog ();
   }
 
-  onPressCoach ( key ) {
+  onPressCoachClient ( index ) {
 
+    this.setState({ selectedCoacheClientIndex: index });
     this.popupDialogCoach.openDialog ();
   }
 
@@ -339,9 +311,9 @@ class ExploreMapView extends Component {
     Actions.Payment();
   }
 
-  onMakeOfferCoach ( key ) {
+  onMakeOfferCoach ( ) {
 
-    Actions.ProposeTerms();
+    Actions.ProposeTerms({ user: this.props.coachesClients[this.state.selectedCoacheClientIndex] });
   }
 
   onExpandCoach ( key ) {
@@ -350,14 +322,13 @@ class ExploreMapView extends Component {
     localStorage.get(CommonConstant.user_mode)
       .then((data) => {
         if (data == CommonConstant.user_client) {
-          Actions.TrainerProfile({ editable: false });
+          Actions.TrainerProfile({ editable: false, user: this.props.coachesClients[this.state.selectedCoacheClientIndex] });
           return;
         } else if (data == CommonConstant.user_trainer){
-          Actions.ClientProfile({ editable: false });
+          Actions.ClientProfile({ editable: false, user: this.props.coachesClients[this.state.selectedCoacheClientIndex] });
           return;
         }
       });
-
   }
 
   onTapMap () {
@@ -380,8 +351,9 @@ class ExploreMapView extends Component {
     }
   }
 
-  onClickAnimatedViewCell () {
+  onClickAnimatedViewCell (index) {
 
+    this.setState({ selectedCoacheClientIndex: index });
     this.popupDialogCoach.openDialog ();
   }
 
@@ -420,7 +392,10 @@ class ExploreMapView extends Component {
     );
   }
 
-  get dialogSelectCoach () {
+  get dialogSelectCoachClient () {
+
+    const coachesClients = this.props.coachesClients
+
     return (
       <PopupDialog
         ref={ (popupDialogCoach) => { this.popupDialogCoach = popupDialogCoach; }}
@@ -429,20 +404,19 @@ class ExploreMapView extends Component {
       >
         <View style={ styles.coachDialogContentContainer }>
           <View style={ styles.coachDialogTopContainer }>
-            <Image source={ avatar } style={ styles.avatar } />
+            <Image source={ coachesClients[this.state.selectedCoacheClientIndex].avatar } style={ styles.avatar } />
             <View style={ styles.coachTopSubContainer }>
               <View style={ styles.coachNameRatingContainer }>
-                <Text style={ styles.textName }>Sara Doe</Text>
+                <Text style={ styles.textName }>{ coachesClients[this.state.selectedCoacheClientIndex].name }</Text>
                 <Stars
                   isActive={ false }
                   rateMax={ 5 }
-                  isHalfStarEnabled={ false }
-                  onStarPress={ (rating) => console.log(rating) }
-                  rate={ 4 }
+                  isHalfStarEnabled={ true }
+                  rate={ coachesClients[this.state.selectedCoacheClientIndex].rating }
                   size={ 20 }
                 />
               </View>
-              <Text style={ styles.dialogText2 }>I have 12 years of experience in kinisology and bootcamp</Text>
+              <Text style={ styles.dialogText2 }>{ coachesClients[this.state.selectedCoacheClientIndex].description }</Text>
             </View>
           </View>
           <View style = { styles.coachMiddleContainer }>
@@ -451,15 +425,15 @@ class ExploreMapView extends Component {
                 name="calendar"  size={ 30 }
                 color="#41c3fd"
               />
-              <Text style={ styles.textDate }>SEP 3, 2016</Text>
+              <Text style={ styles.textDate }>{ coachesClients[this.state.selectedCoacheClientIndex].date }</Text>
             </View>
-            <Text>09:00 AM - 12:00 PM</Text>
+            <Text>{ coachesClients[this.state.selectedCoacheClientIndex].duration }</Text>
           </View>
           <View style={ styles.dialogBottomContainer }>
             <View style={ styles.leftButtonContainer }>
               <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onHireCoach() }>
                 <View style={ styles.buttonWrapper }>
-                  <Text style={ styles.coachButton }>HIRE $50/HR</Text>
+                  <Text style={ styles.coachButton }>HIRE ${ coachesClients[this.state.selectedCoacheClientIndex].amount }/HR</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -491,12 +465,41 @@ class ExploreMapView extends Component {
     const {
       panX,
       panY,
-      animations,
       canMoveHorizontal,
-      coach_clients,
-      region,
-      gymLocations,
+      scrollX,
+      scrollY,
     } = this.state;
+
+    const coachesClients = this.props.coachesClients;
+    const gymLocations = this.props.gymLocations;
+
+    this.region = new MapView.AnimatedRegion({
+      latitude: coachesClients[0].coordinate.latitude,
+      longitude: coachesClients[0].coordinate.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
+    });
+    
+    const animations = coachesClients.map( (item, index) =>
+      getMarkerState(panX, panY, scrollY, index)
+    );
+
+    panX.addListener(this.onPanXChange);
+    panY.addListener(this.onPanYChange);
+
+    this.region.stopAnimation();
+    this.region.timing({
+      latitude: scrollX.interpolate({
+        inputRange: coachesClients.map( (item, index) => index * SNAP_WIDTH),
+        outputRange: coachesClients.map(item => item.coordinate.latitude),
+      }),
+      longitude: scrollX.interpolate({
+        inputRange: coachesClients.map( (item, index) => index * SNAP_WIDTH),
+        outputRange: coachesClients.map( item => item.coordinate.longitude),
+      }),
+      duration: 0,
+    }).start();
+
 
     return (
       <View style={ styles.container }>
@@ -505,7 +508,7 @@ class ExploreMapView extends Component {
           horizontal={ canMoveHorizontal }
           xMode="snap"
           snapSpacingX={ SNAP_WIDTH }
-          xBounds={ [-(ITEM_WIDTH + ITEM_SPACING) * (coach_clients.length - 1), 0] }
+          xBounds={ [-(ITEM_WIDTH + ITEM_SPACING) * (coachesClients.length - 1), 0] }
           panY={ panY }
           panX={ panX }
           onStartShouldSetPanResponder={ this.onStartShouldSetPanResponder }
@@ -514,12 +517,12 @@ class ExploreMapView extends Component {
           <MapView.Animated
             provider={ this.props.provider }
             style={ styles.map }
-            region={ region }
+            region={ this.region }
             onRegionChange={ this.onRegionChange }
             onLongPress={ () => this.onTapMap() }
           >
             {
-              gymLocations.map( (marker, index) => (
+              gymLocations && gymLocations.map( (marker, index) => (
                 <MapView.Marker
                   image={ pin_gym }
                   key={ index }
@@ -533,7 +536,7 @@ class ExploreMapView extends Component {
             }
 
             {
-              coach_clients.map( (marker, index) => {
+              coachesClients.map( (marker, index) => {
 
                 const {
                   selected,
@@ -545,7 +548,7 @@ class ExploreMapView extends Component {
                   <MapView.Marker
                     key={ index }
                     coordinate={ marker.coordinate }
-                    onPress={ () => this.onPressCoach(index) }
+                    onPress={ () => this.onPressCoachClient(index) }
                   >
                     <AnimatedCoachMarker
                       style={{
@@ -589,7 +592,7 @@ class ExploreMapView extends Component {
             :
               <View style={ styles.itemContainer }>
                 {
-                  coach_clients.map( (marker, index) => {
+                  coachesClients.map( (marker, index) => {
                     const {
                       translateY,
                       translateX,
@@ -615,7 +618,7 @@ class ExploreMapView extends Component {
                         name={ marker.name }
                         description={ marker.description }
                         amount={ marker.amount }
-                        onPress={ () => this.onClickAnimatedViewCell() }
+                        onPress={ () => this.onClickAnimatedViewCell(index) }
                       />
                     );
                   })
@@ -624,7 +627,7 @@ class ExploreMapView extends Component {
           }
 
           { this.dialogGymPreferedWorkoutLocation }
-          { this.dialogSelectCoach }
+          { this.dialogSelectCoachClient }
 
         </PanController>
       </View>
@@ -676,6 +679,7 @@ const styles = StyleSheet.create({
   },
   dialogContainer: {
     backgroundColor: 'transparent',
+    marginBottom: 100,
   },
   gymDialogMainContentContainer: {
     flex: 1,
@@ -763,7 +767,6 @@ const styles = StyleSheet.create({
     color: '#585858'
   },
   dialogText2: {
-    alignSelf: 'center',
     color: '#585858',
     paddingVertical: 10,
   },

@@ -12,9 +12,10 @@ class ProposeTerms extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
+    const { actions, status, user } = this.props;
+
     return (
-      <ProposeTermsForm { ...actions } status/>
+      <ProposeTermsForm { ...actions } status={ status } user={ user }/>
     );
   }
 }

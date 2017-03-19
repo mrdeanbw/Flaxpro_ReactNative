@@ -20,6 +20,7 @@ import SearchBar from '../../../Components/searchBar';
 import Clients_CoachesListCell from './clients_coachesListCell';
 import ClientProfile from '../../../Profile/containers/clientProfile';
 import TrainerProfile from '../../../Profile/containers/trainerProfile';
+import R from 'ramda';
 
 const { width, height } = Dimensions.get('window');
 
@@ -27,44 +28,7 @@ const weeks = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const years = ['2017', '2018', '2019', '2020'];
 
-const dataEntries = [
-  {
-    name: 'Emily Carter',
-    date: 'DEC 13 18:45PM',
-    location: 'St Tropez',
-    avatar: require('../../../Assets/avatar1.png'),
-  },
-  {
-    name: 'Mark Deo',
-    date: 'DEC 13 18:45PM',
-    location: 'St Tropez',
-    avatar: require('../../../Assets/avatar1.png'),
-  },
-  {
-    name: 'John Smith',
-    date: 'DEC 13 18:45PM',
-    location: 'St Tropez',
-    avatar: require('../../../Assets/avatar1.png'),
-  },
-  {
-    name: 'Sara Clinton',
-    date: 'DEC 13 18:45PM',
-    location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar1.png'),
-  },
-  {
-    name: 'Steven Besoz',
-    date: 'DEC 13 18:45PM',
-    location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar1.png'),
-  },
-  {
-    name: 'Jeff Nelson',
-    date: 'DEC 13 18:45PM',
-    location: 'Toronto, ON',
-    avatar: require('../../../Assets/avatar1.png'),
-  },
-];
+import { CoachesClients } from '../../../Components/dummyEntries';
 
 export default class Clients_CoachesForm extends Component {
   constructor(props) {
@@ -73,8 +37,11 @@ export default class Clients_CoachesForm extends Component {
     var dataSourceClients_Coaches = new ListView.DataSource(
       { rowHasChanged: (r1, r2) => r1 !== r2 });
 
+    isEven = item => item.myGuest === true;
+    this.filterValue = R.filter(isEven, CoachesClients);
+
     this.state = {
-      dataSourceClients_Coaches: dataSourceClients_Coaches.cloneWithRows(dataEntries),
+      dataSourceClients_Coaches: dataSourceClients_Coaches.cloneWithRows(this.filterValue),
 
     };
   }
@@ -102,7 +69,7 @@ export default class Clients_CoachesForm extends Component {
       <Clients_CoachesListCell
         index={ Number(rowID) + 1 }
         name={ rowData.name }
-        date={ rowData.date }
+        time={ rowData.time }
         location= { rowData.location }
         avatar={ rowData.avatar }
         onClick={ () => this.onCellPressed(rowID) }
@@ -111,14 +78,13 @@ export default class Clients_CoachesForm extends Component {
   }
 
   onCellPressed (rowID) {
-
     localStorage.get(CommonConstant.user_mode)
       .then((data) => {
         if (data == CommonConstant.user_client) {
-          Actions.TrainerProfile({ editable: false });
+          Actions.TrainerProfile({ editable: false, user: this.filterValue[rowID] });
           return;
         } else if (data == CommonConstant.user_trainer){
-          Actions.ClientProfile({ editable: false });
+          Actions.ClientProfile({ editable: false, user: this.filterValue[rowID] });
           return;
         }
       });

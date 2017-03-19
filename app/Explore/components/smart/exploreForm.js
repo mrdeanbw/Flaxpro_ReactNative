@@ -17,11 +17,14 @@ import { Actions } from 'react-native-router-flux';
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
+import R from 'ramda';
+
 import { SegmentedControls } from 'react-native-radio-buttons';
 import SearchBar from '../../../Components/searchBar';
 import ExploreMapView from './exploreMapView';
 import ExploreListView from './exploreListView';
 
+import { CoachesClients, GymLocations } from '../../../Components/dummyEntries';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,7 +39,13 @@ export default class ExploreForm extends Component {
       selectedSegmented : 'ALL',
       mapStandardMode: true,
       showContentMode: 0,
+      coachesClients: CoachesClients,
+      gymLocations: GymLocations,
     };
+  }
+
+  conponentWillMount() {
+    // this.setState({ coachesClients: CoachesClients });
   }
 
   componentWillReceiveProps(newProps) {
@@ -68,6 +77,23 @@ export default class ExploreForm extends Component {
 
   onClose () {
     this.setState({ mapStandardMode:true });
+  }
+
+  onSelectFilterMode(option) {
+
+    this.setState({ selectedSegmented: option })
+
+    if (option === 'ALL') {
+      this.setState({ coachesClients: CoachesClients });
+      return;
+    }
+
+    isEven = item => item.type === option;
+    const filterValue = R.filter(isEven, CoachesClients);
+    this.setState({ 
+      coachesClients: filterValue,
+      gymLocations: [],
+    });
   }
 
   get showCloseTopBar () {
@@ -143,7 +169,7 @@ export default class ExploreForm extends Component {
           selectedTint= { "#41c3fd" }
           backTint= { "#41c3fd" }
           options={ ["ALL", "NEARBY", "NEW", "EXPERIENCED"] }
-          onSelection={ option => this.setState({ selectedSegmented: option }) }
+          onSelection={ (option) => this.onSelectFilterMode(option) }
           selectedOption={ this.state.selectedSegmented }
           allowFontScaling={ true }
           optionStyle={{
@@ -164,7 +190,7 @@ export default class ExploreForm extends Component {
 
   render() {
     const { status } = this.props;
-
+    
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -175,18 +201,21 @@ export default class ExploreForm extends Component {
               :
               this.showCloseTopBar
           }
-          {
+          {            
             this.state.showContentMode == 0 ?
               <ExploreMapView
                 mapStandardMode={ this.state.mapStandardMode}
                 onTapMap={ () => this.setState({ mapStandardMode:false }) }
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onList() }
+                coachesClients={ this.state.coachesClients }
+                gymLocations={ this.state.gymLocations }
               />
               :
               <ExploreListView
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onMap() }
+                coachesClients={ this.state.coachesClients }
               />
           }
 

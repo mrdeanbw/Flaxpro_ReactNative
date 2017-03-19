@@ -6,6 +6,7 @@ import {
   Animated,
   Image,
   TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native';
 
 import Stars from 'react-native-stars-rating';

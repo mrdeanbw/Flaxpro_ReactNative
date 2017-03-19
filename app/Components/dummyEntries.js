@@ -7,6 +7,9 @@ const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
 const SPACE = 0.014;
 
+export const USER_NEARBY = 'NEARBY';
+export const USER_NEW = 'NEW';
+export const USER_EXPERIENCED = 'EXPERIENCED';
 
 export const GymLocations = [
   {
@@ -41,6 +44,12 @@ export const CoachesClients = [
     rating: 4,
     name: "Emily Joe",
     description: "4 years experience independent",
+    date: 'MAR 18, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEARBY,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: true,
   },
   {
     id: 1,
@@ -53,6 +62,12 @@ export const CoachesClients = [
     rating: 5,
     name: "Mark Carter",
     description: "5 years experience independent",
+    date: 'MAR 19, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEARBY,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: true,
   },
   {
     id: 2,
@@ -65,6 +80,12 @@ export const CoachesClients = [
     rating: 5,
     name: "John Smith",
     description: "8 years experience independent",
+    date: 'MAR 20, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEARBY,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: true,
   },
   {
     id: 3,
@@ -77,9 +98,15 @@ export const CoachesClients = [
     rating: 4,
     name: "Sara Lewis",
     description: "9 years experience independent",
+    date: 'MAR 21, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEARBY,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: true,
   },
   {
-    id: 5,
+    id: 4,
     coordinate: {
       latitude: LATITUDE + 10,
       longitude: LONGITUDE + 10,
@@ -89,9 +116,15 @@ export const CoachesClients = [
     rating: 4,
     name: "Steven Hill",
     description: "10 years experience independent",
+    date: 'MAR 22, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEW,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: true,
   },
   {
-    id: 6,
+    id: 5,
     coordinate: {
       latitude: LATITUDE + SPACE + 10,
       longitude: LONGITUDE - SPACE + 10,
@@ -101,9 +134,15 @@ export const CoachesClients = [
     rating: 5,
     name: "Sarah Nelson",
     description: "12 years experience independent",
+    date: 'MAR 23, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEW,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: true,
   },
   {
-    id: 7,
+    id: 6,
     coordinate: {
       latitude: LATITUDE - SPACE + 10,
       longitude: LONGITUDE - SPACE + 10,
@@ -113,9 +152,15 @@ export const CoachesClients = [
     rating: 4,
     name: "Emily Joe",
     description: "4 years experience independent",
+    date: 'MAR 24, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEW,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
   },
   {
-    id: 8,
+    id: 7,
     coordinate: {
       latitude: LATITUDE + SPACE + 10,
       longitude: LONGITUDE + SPACE + 10,
@@ -125,9 +170,15 @@ export const CoachesClients = [
     rating: 5,
     name: "Mark Carter",
     description: "5 years experience independent",
+    date: 'MAR 25, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEW,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
   },
   {
-    id: 9,
+    id: 8,
     coordinate: {
       latitude: LATITUDE + 20,
       longitude: LONGITUDE + 20,
@@ -137,9 +188,15 @@ export const CoachesClients = [
     rating: 5,
     name: "John Smith",
     description: "8 years experience independent",
+    date: 'MAR 26, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_EXPERIENCED,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
   },
   {
-    id: 10,
+    id: 9,
     coordinate: {
       latitude: LATITUDE + SPACE + 20,
       longitude: LONGITUDE - SPACE + 20,
@@ -149,9 +206,15 @@ export const CoachesClients = [
     rating: 4,
     name: "Sara Lewis",
     description: "9 years experience independent",
+    date: 'MAR 27, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_EXPERIENCED,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
   },
   {
-    id: 11,
+    id: 10,
     coordinate: {
       latitude: LATITUDE - SPACE + 20,
       longitude: LONGITUDE - SPACE + 20,
@@ -161,9 +224,15 @@ export const CoachesClients = [
     rating: 4,
     name: "Steven Hill",
     description: "10 years experience independent",
+    date: 'MAR 28, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_EXPERIENCED,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
   },
   {
-    id: 12,
+    id: 11,
     coordinate: {
       latitude: LATITUDE + SPACE + 20,
       longitude: LONGITUDE + SPACE + 20,
@@ -173,5 +242,76 @@ export const CoachesClients = [
     rating: 5,
     name: "Sarah Nelson",
     description: "12 years experience independent",
+    date: 'MAR 29, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEARBY,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
   },
 ];
+
+export const Messages = [
+  {
+    name: 'Emily Joe',
+    time: '18:45PM',
+    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+    avatar: require('../Assets/avatar1.png'),
+    read: true,
+    group: [],    
+  },
+  {
+    name: 'Mark Carter',
+    time: '18:45PM',
+    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+    avatar: require('../Assets/avatar2.png'),    
+    read: true,
+    group: [],
+  },
+  {
+    name: 'John Smith',
+    time: '18:45PM',
+    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+    avatar: require('../Assets/avatar3.png'),    
+    read: false,
+    group: [],
+  },
+  {
+    name: 'Sara Lewis',
+    time: '18:45PM',
+    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+    avatar: require('../Assets/avatar4.png'),    
+    read: false,
+    group: [],
+  },
+  {
+    name: 'Steven Hill',
+    time: '18:45PM',
+    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
+    avatar: require('../Assets/avatar5.png'),    
+    read: true,
+    group: [],
+  },
+  {
+    name: 'Group',
+    time: '18:45PM',
+    message: 'Friends group',
+    avatar: 0,    
+    read: true,
+    group: [
+      {
+        name: 'Emily Joe',
+        avatar: require('../Assets/avatar1.png'),
+      },
+      {
+        name: 'Mark Carter',
+        avatar: require('../Assets/avatar2.png'),
+      },
+      {
+        name: 'John Smith',
+        avatar: require('../Assets/avatar3.png'),
+      },
+    ],
+  },
+];
+

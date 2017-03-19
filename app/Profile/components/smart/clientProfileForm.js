@@ -22,7 +22,6 @@ const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
 const schedule = require('../../../Assets/schedule.png');
 const edit = require('../../../Assets/edit.png');
-const avatar = require('../../../Assets/avatar1.png');
 const strengthTraining = require('../../../Assets/strength_training.png');
 const pilates = require('../../../Assets/pilates.png');
 const yoga = require('../../../Assets/yoga.png');
@@ -71,6 +70,7 @@ export default class ClientProfileForm extends Component {
   onBack() {
     Actions.pop();
   }
+
   get showMoreOrLessButton() {
     return (
       this.state.showMoreOrLess ?
@@ -133,7 +133,7 @@ export default class ClientProfileForm extends Component {
             <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
           </TouchableOpacity>
 
-          <Text style={ styles.textTitle }>SARA CLINTON</Text>
+          <Text style={ styles.textTitle }>{ this.user.name.toUpperCase() }</Text>
 
           <TouchableOpacity
             onPress={ () => this.onEdit() }
@@ -153,14 +153,15 @@ export default class ClientProfileForm extends Component {
               color="#fff"
             />
           </TouchableOpacity>
-          <Text style={ styles.textTitle }>SARA CLINTON</Text>
+          <Text style={ styles.textTitle }>{ this.user.name.toUpperCase() }</Text>
           <View style={ styles.navButtonWrapper }/>          
         </View>
     );
   }
 
   render() {
-    const { status, editable } = this.props;
+    const { status, editable, user } = this.props;
+    this.user = user;
 
     return (
       <View style={ styles.container }>
@@ -173,7 +174,7 @@ export default class ClientProfileForm extends Component {
               <View style={ styles.avatarTopBackground }/>
               <View style={ styles.avatarBottomBackground }/>
               <View style={ styles.avatarWrapper }>
-                <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+                <Image source={ this.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
               </View>
             </View>
             <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
