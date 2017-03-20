@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Actions, Scene, Router } from 'react-native-router-flux';
+import { Actions, Scene, Router, ActionConst } from 'react-native-router-flux';
 
 import * as reducers from './reducers';
 import Auth from './Auth/containers/auth';
@@ -25,7 +25,7 @@ const store = createStoreWithMiddleware(reducer);
 
 const scenes = Actions.create(
   <Scene key="root">
-    <Scene key="Auth" component={ Auth } />
+    <Scene key="Auth" component={ Auth } type={ ActionConst.REST } />
     <Scene key="ClientInfo" component={ ClientInfo } />
     <Scene key="WhoAreYou" component={ WhoAreYou } />
     <Scene key="Main" component={ Main } />

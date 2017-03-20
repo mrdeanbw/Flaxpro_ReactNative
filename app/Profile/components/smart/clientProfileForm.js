@@ -202,9 +202,27 @@ export default class ClientProfileForm extends Component {
               </View>
               <ScrollView>
                 <View style={ styles.infoContainer }>
-                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
-                  <Text style={ styles.textInfoValue }>25 years / Male</Text>
-                  <Text style={ styles.textInfoValue }>Mississauge</Text>
+                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>                  
+                  <View style={ styles.infoRowContainer }>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ styles.textInfoField }>Sex : </Text>
+                      <Text style={ styles.textInfoValue }>Male</Text>
+                    </View>
+                    <View style={ styles.infoRowRightContainer }>
+                      <Text style={ styles.textInfoField }>Year of experience : </Text>
+                      <Text style={ styles.textInfoValue }>2004</Text>
+                    </View>
+                  </View>
+                  <View style={ styles.infoRowContainer }>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ styles.textInfoField }>Affiliation : </Text>
+                      <Text style={ styles.textInfoValue }>Gym</Text>
+                    </View>
+                    <View style={ styles.infoRowRightContainer }>
+                      <Text style={ styles.textInfoField }>Certification : </Text>
+                      <Text style={ styles.textInfoValue }>Certified Personal Trainer</Text>
+                    </View>
+                  </View>
                 </View>
                 <View style={ styles.infoContainer }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
@@ -413,10 +431,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
+    infoRowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 5,
+  },
+  infoRowLeftContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  infoRowRightContainer: {
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
   textInfoTitle: {
     fontSize: 12,
     fontWeight: 'bold',
     paddingVertical: 5,
+  },
+    textInfoField: {
+    fontSize: 12,
+    color: '#11c6f8',
   },
   textInfoValue: {
     fontSize: 10,

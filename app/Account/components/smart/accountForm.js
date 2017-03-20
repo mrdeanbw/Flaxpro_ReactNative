@@ -42,6 +42,11 @@ export default class AccountForm extends Component {
 
   }
 
+  onLogOut() {
+
+    Actions.Auth();
+  }
+
   render() {
     const { status } = this.props;
 
@@ -100,6 +105,13 @@ export default class AccountForm extends Component {
               <View style={ styles.cellContainer }>
                 <Text style={ styles.textCellTitle }>Sounds</Text>
               </View>
+
+              <TouchableOpacity
+                onPress={ () => this.onLogOut() }
+                style={ styles.cellContainer }
+              >
+                <Text style={ styles.textCellTitle }>Log Out</Text>
+              </TouchableOpacity>
 
             </ScrollView>
           </View>
