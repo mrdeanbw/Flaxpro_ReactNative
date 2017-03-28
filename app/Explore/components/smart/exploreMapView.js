@@ -190,7 +190,7 @@ class ExploreMapView extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-     this.setState({ selectedCoacheClientIndex: 0 });    
+     // this.setState({ selectedCoacheClientIndex: 0 }); //TODO: commented
   }
 
   onStartShouldSetPanResponder = (e) => {
@@ -300,7 +300,7 @@ class ExploreMapView extends Component {
   }
 
   onPressCoachClient ( index ) {
-
+    console.log('index', index)
     this.setState({ selectedCoacheClientIndex: index });
     this.popupDialogCoach.openDialog ();
   }
@@ -319,6 +319,7 @@ class ExploreMapView extends Component {
   onExpandCoach ( key ) {
     this.popupDialogCoach.closeDialog ();
 
+    // console.log('selectedCoacheClientIndex', this.props.coachesClients[this.state.selectedCoacheClientIndex])
     localStorage.get(CommonConstant.user_mode)
       .then((data) => {
         if (data == CommonConstant.user_client) {
@@ -467,7 +468,7 @@ class ExploreMapView extends Component {
       panY,
       canMoveHorizontal,
       scrollX,
-      scrollY,
+      scrollY
     } = this.state;
 
     const coachesClients = this.props.coachesClients;
@@ -544,6 +545,7 @@ class ExploreMapView extends Component {
                   markerScale,
                 } = animations[index];
 
+                console.log(this.state.selectedCoacheClientIndex == index, selected)
                 return (
                   <MapView.Marker
                     key={ index }
@@ -565,27 +567,25 @@ class ExploreMapView extends Component {
                 );
               })
             }
-
-            {
-              this.props.mapStandardMode ?
-
-                  <View style={ [styles.mainContentContainer, { bottom: 60 }] }>
-                    <BottomBar
-                      onList={ () => this.onList() }
-                      onFilter={ () => this.onFilter() }
-                    />
-                  </View>
-
-                :
-                  <View style={ [styles.mainContentContainer, { bottom: 60 + ITEM_PREVIEW_HEIGHT + 20}] }>
-                    <BottomBar
-                      onList={ () => this.onList() }
-                      onFilter={ () => this.onFilter() }
-                    />
-                  </View>
-            }
-
           </MapView.Animated>
+          {
+            this.props.mapStandardMode ?
+
+              <View style={ [styles.mainContentContainer] }>
+                <BottomBar
+                  onList={ () => this.onList() }
+                  onFilter={ () => this.onFilter() }
+                />
+              </View>
+
+              :
+              <View style={ [styles.mainContentContainer] }>
+                <BottomBar
+                  onList={ () => this.onList() }
+                  onFilter={ () => this.onFilter() }
+                />
+              </View>
+          }
           {
             this.props.mapStandardMode ?
               <View style={ [styles.itemContainer, { height: 0 }] }/>

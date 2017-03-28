@@ -11,6 +11,10 @@ import {
   Alert,
 } from 'react-native';
 
+import { Actions } from 'react-native-router-flux';
+import localStorage from 'react-native-local-storage';
+import * as CommonConstant from '../../../Components/commonConstant';
+
 import AnimatedViewCell from './animatedViewCell';
 import BottomBar from './bottomBar';
 
@@ -55,7 +59,7 @@ class ExploreListView extends Component {
         name={ rowData.name }
         description={ rowData.description }
         amount={ rowData.amount }
-        onPress={ () => this.onClickAnimatedViewCell() }
+        onPress={ () => this.onClickAnimatedViewCell(rowData) }
       />
     );
   }
@@ -74,8 +78,23 @@ class ExploreListView extends Component {
     }
   }
 
-  onClickAnimatedViewCell() {
-    
+  onClickAnimatedViewCell(rowData) {
+    console.log('rowData', rowData)
+
+    // console.log('selectedCoacheClientIndex', this.props.coachesClients[])
+    localStorage.get(CommonConstant.user_mode)
+      .then((data) => {
+        if (data == CommonConstant.user_client) {
+          console.log('client')
+          Actions.TrainerProfile({ editable: false, user: rowData });
+          return;
+        } else if (data == CommonConstant.user_trainer){
+          console.log('professional')
+          Actions.ClientProfile({ editable: false, user: rowData });
+          return;
+        }
+      });
+
     // alert("onClickCell");
   }
 

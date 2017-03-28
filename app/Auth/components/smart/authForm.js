@@ -18,8 +18,11 @@ import { Actions } from 'react-native-router-flux';
 import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
 
+//const variable
 const { width, height } = Dimensions.get('window');
+const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+//const image
 const background = require('../../../Assets/background_auth.png');
 const userIcon = require('../../../Assets/user.png');
 const lockIcon = require('../../../Assets/lock.png');
@@ -30,14 +33,13 @@ const linkedinIcon = require('../../../Assets/linkedin.png');
 const arrow = require('../../../Assets/right_arrow.png');
 const triangle = require('../../../Assets/triangle.png');
 
-
 export default class AuthForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      email : '',
-      password : '',
+      email : 'email@email.com', //TODO: for testing
+      password : 'password', //TODO: for testing
       confirmPassword: '',
       selectedButton: 2,
     };
@@ -68,15 +70,21 @@ export default class AuthForm extends Component {
     this.setState({ confirmPassword : '' });
   }
 
-  onLogIn () {
+  //validate email
+  validateEmail(email) {
+    return emailPattern.test(email);
+  }
 
-    if (this.state.email == '') {
-      Alert.alert('Please enter email address.');
+  onLogIn () {
+    const { email, password } = this.state;
+
+    if (!this.validateEmail(email)) {
+      Alert.alert('Not a valid e-mail address.');
       return;
     }
 
-    if (this.state.password == '') {
-      Alert.alert('Please enter password.');
+    if (password == '') {
+      Alert.alert('Password can\'t be empty.');
       return;
     }
 
