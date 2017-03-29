@@ -9,12 +9,14 @@ import Stars from 'react-native-stars-rating';
 
 class AnimatedCoachMarker extends Component {
   render() {
-    const { amount, rating, selected, style } = this.props;
+    const { amount, rating, selected, style, index } = this.props;
 
     const background = selected.interpolate({
       inputRange: [0, 1],
       outputRange: ['#fff', '#45c7f1'],
     });
+
+    // console.log('background ' + index +': ' + background)
 
     const border = selected.interpolate({
       inputRange: [0, 1],

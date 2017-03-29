@@ -471,9 +471,9 @@ class ExploreMapView extends Component {
       scrollY
     } = this.state;
 
-    const coachesClients = this.props.coachesClients;
-    const gymLocations = this.props.gymLocations;
+    const { coachesClients, gymLocations } = this.props;
 
+    console.log(coachesClients)
     this.region = new MapView.AnimatedRegion({
       latitude: coachesClients[0].coordinate.latitude,
       longitude: coachesClients[0].coordinate.longitude,
@@ -545,7 +545,7 @@ class ExploreMapView extends Component {
                   markerScale,
                 } = animations[index];
 
-                console.log(this.state.selectedCoacheClientIndex == index, selected)
+                {/*console.log(this.state.selectedCoacheClientIndex == index, selected)*/}
                 return (
                   <MapView.Marker
                     key={ index }
@@ -562,6 +562,7 @@ class ExploreMapView extends Component {
                       amount={ marker.amount }
                       rating={ marker.rating }
                       selected={ selected }
+                      index={index}
                     />
                   </MapView.Marker>
                 );

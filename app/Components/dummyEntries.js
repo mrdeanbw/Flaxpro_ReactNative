@@ -9,7 +9,7 @@ const SPACE = 0.014;
 
 export const USER_NEARBY = 'NEARBY';
 export const USER_NEW = 'NEW';
-export const USER_EXPERIENCED = 'EXPERIENCED';
+export const USER_REGULAR = 'REGULAR';
 
 export const GymLocations = [
   {
@@ -190,7 +190,7 @@ export const CoachesClients = [
     description: "8 years experience independent",
     date: 'MAR 26, 2017',
     duration: '09:00 AM - 12:00 PM',
-    type: USER_EXPERIENCED,
+    type: USER_REGULAR,
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,
@@ -208,7 +208,7 @@ export const CoachesClients = [
     description: "9 years experience independent",
     date: 'MAR 27, 2017',
     duration: '09:00 AM - 12:00 PM',
-    type: USER_EXPERIENCED,
+    type: USER_REGULAR,
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,
@@ -226,7 +226,7 @@ export const CoachesClients = [
     description: "10 years experience independent",
     date: 'MAR 28, 2017',
     duration: '09:00 AM - 12:00 PM',
-    type: USER_EXPERIENCED,
+    type: USER_REGULAR,
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,

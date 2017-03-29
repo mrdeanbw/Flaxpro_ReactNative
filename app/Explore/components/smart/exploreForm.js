@@ -80,7 +80,6 @@ export default class ExploreForm extends Component {
   }
 
   onSelectFilterMode(option) {
-
     this.setState({ selectedSegmented: option })
 
     if (option === 'ALL') {
@@ -168,7 +167,7 @@ export default class ExploreForm extends Component {
           tint={ "#fff" }
           selectedTint= { "#41c3fd" }
           backTint= { "#41c3fd" }
-          options={ ["ALL", "NEARBY", "NEW", "EXPERIENCED"] }
+          options={ ["ALL", "NEARBY", "NEW", "REGULAR"] }
           onSelection={ (option) => this.onSelectFilterMode(option) }
           selectedOption={ this.state.selectedSegmented }
           allowFontScaling={ true }
