@@ -32,6 +32,8 @@ export const GymLocations = [
   },
 ];
 
+
+
 export const CoachesClients = [
   {
     id: 0,

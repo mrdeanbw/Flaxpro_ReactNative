@@ -60,7 +60,7 @@ export default class ClientProfileForm extends Component {
   }
 
   onEdit() {
-    alert( 'Tapped onEdit!');
+    Actions.EditProfile();
   }
 
   onShowMoreLess(showMode) {

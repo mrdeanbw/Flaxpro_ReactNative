@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
@@ -9,16 +8,20 @@ import {
   Switch,
   ScrollView,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
 
-export default class AccountForm extends Component {
+//auth redux store
+import * as authActions from '../../../Auth/actions';
+
+class AccountForm extends Component {
   constructor(props) {
     super(props);
 
@@ -43,7 +46,8 @@ export default class AccountForm extends Component {
   }
 
   onLogOut() {
-
+    const { authActions: { logout } } = this.props;
+    logout();
     Actions.Auth();
   }
 
@@ -152,7 +156,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
     paddingHorizontal: 10,
@@ -162,7 +165,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
     backgroundColor: '#fff',
@@ -182,3 +184,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+export default connect(state => ({}),
+  (dispatch) => ({ authActions: bindActionCreators(authActions, dispatch) })
+)(AccountForm);

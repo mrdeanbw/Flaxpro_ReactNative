@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
+  ActivityIndicator,
   StyleSheet,
   Text,
   View,
   Image,
   Dimensions,
   TextInput,
-  Button,
   TouchableOpacity,
   Alert,
 } from 'react-native';
-
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { Actions } from 'react-native-router-flux';
 import localStorage from 'react-native-local-storage';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import * as CommonConstant from '../../../Components/commonConstant';
 
 //const variable
@@ -33,27 +34,29 @@ const linkedinIcon = require('../../../Assets/linkedin.png');
 const arrow = require('../../../Assets/right_arrow.png');
 const triangle = require('../../../Assets/triangle.png');
 
-export default class AuthForm extends Component {
+//auth redux store
+import * as authActions from '../../actions';
+
+class AuthForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      email : 'email@email.com', //TODO: for testing
+      email : 'client@mail.com', //TODO: for testing
       password : 'password', //TODO: for testing
       confirmPassword: '',
       selectedButton: 2,
+      loginRequest: false
     };
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps(nextProps) {
+    const { auth: { user } } = nextProps;
 
-    if (newProps.status == 'loginingIn') {
-
-    } else if (newProps.status == 'loggedIn') {
-
-    } else if (newProps.status == 'logIn failed') {
-
+    if (user) {
+      Actions.Main({user_mode: user.professional ? CommonConstant.user_trainer : CommonConstant.user_client});
     }
+    this.setState({ loginRequest: false });
   }
 
   onShowLogIn() {
@@ -77,6 +80,7 @@ export default class AuthForm extends Component {
 
   onLogIn () {
     const { email, password } = this.state;
+    const { actions } = this.props;
 
     if (!this.validateEmail(email)) {
       Alert.alert('Not a valid e-mail address.');
@@ -90,15 +94,22 @@ export default class AuthForm extends Component {
 
     // this.props.login(this.state.email, this.state.password);
 
-    localStorage.get(CommonConstant.user_mode)
-      .then((data) => {
-        if ((data == CommonConstant.user_client) || (data == CommonConstant.user_trainer)) {
-          Actions.Main({ user_mode: data });
-          return;
-        }
-        
-        Actions.WhoAreYou();
-      });    
+    this.setState({ loginRequest: true });
+    actions.login(email, password);
+
+    // localStorage.get(CommonConstant.user_mode)
+    //   .then((data) => {
+    //     const isClient = data == CommonConstant.user_client,
+    //       isProfessional = data == CommonConstant.user_trainer
+    //     if (isClient || isProfessional) {
+    //       // console.log('actions', actions, this.props);
+    //       actions.login(email, password);
+    //       Actions.Main({ user_mode: data });
+    //       return;
+    //     }
+    //
+    //     Actions.WhoAreYou();
+    //   });
   }
 
   onSignUp() {
@@ -212,6 +223,7 @@ export default class AuthForm extends Component {
   }
 
   get showLogin () {
+    const { loginRequest } = this.state;
 
     return (
       <View style={ styles.mainContentContainer }>
@@ -255,7 +267,11 @@ export default class AuthForm extends Component {
         <View style={ styles.arrowButtonContainer }>
           <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onLogIn() }>
             <View style={ styles.arrowButton }>
-              <Image source={ arrow } style={ styles.imageArrow } />
+              {loginRequest ? <ActivityIndicator
+                style={[styles.centering, styles.gray]}
+                color="#0000ff"
+                size="large"
+              /> : <Image source={ arrow } style={ styles.imageArrow } />}
             </View>
           </TouchableOpacity>
         </View>
@@ -455,4 +471,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 5,
   },
+  centering: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 30,
+    height: 24
+  },
+  gray: {
+    backgroundColor: '#fff',
+  },
 });
+
+export default connect(state => {
+    console.log('state', state);
+    return ({
+      auth: state.auth
+    })
+  },
+  (dispatch) => {
+    console.log('authActions', authActions);
+    return ({
+      actions: bindActionCreators(authActions, dispatch)
+    })
+  }
+)(AuthForm);
