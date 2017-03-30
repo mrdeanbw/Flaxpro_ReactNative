@@ -2,18 +2,19 @@ import * as types from './actionTypes';
 
 import { tempProfileData } from '../Components/tempDataUsers';
 
-export const signup = (email, password) => async (dispatch, store) => {
+export const createUser = (userData) => async (dispatch, store) => {
   setTimeout(() => {
     let user = null;
     for (let i = 0; i < tempProfileData.length; i++) {
       const profileData = tempProfileData[i];
-      if (email == profileData.email) {
+      if (userData.email == profileData.email) {
         user = profileData;
         break;
       }
     }
 
-    dispatch({ type: types.SIGNUP, user });
+    console.log('createUser', user);
+    dispatch({ type: types.CREATE_USER, user });
   }, 3000);
 };
 

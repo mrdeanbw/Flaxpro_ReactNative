@@ -44,8 +44,8 @@ class AuthForm extends Component {
     this.state = {
       email : 'client@mail.com', //TODO: for testing
       password : 'password', //TODO: for testing
-      confirmPassword: '',
-      selectedButton: 2,
+      confirmPassword: 'password',
+      selectedButton: 1,
       loginRequest: false
     };
   }
@@ -61,16 +61,16 @@ class AuthForm extends Component {
 
   onShowLogIn() {
     this.setState({ selectedButton: 2 });
-    this.setState({ email : '' });
-    this.setState({ password : '' });
-    this.setState({ confirmPassword : '' });
+    this.setState({ email : 'client@mail.com' });
+    this.setState({ password : 'password' });
+    this.setState({ confirmPassword : 'password' });
   }
 
   onShowSignUp() {
     this.setState({ selectedButton: 1 });
-    this.setState({ email : '' });
-    this.setState({ password : '' });
-    this.setState({ confirmPassword : '' });
+    this.setState({ email : 'client@mail.com' });
+    this.setState({ password : 'password' });
+    this.setState({ confirmPassword : 'password' });
   }
 
   //validate email
@@ -113,30 +113,38 @@ class AuthForm extends Component {
   }
 
   onSignUp() {
+    const { email, password, confirmPassword } = this.state;
+    const { actions } = this.props;
 
-    if (this.state.email == '') {
+    if (email == '') {
       Alert.alert('Please enter email address.');
       return;
     }
 
-    if (this.state.password == '') {
+    if (password == '') {
       Alert.alert('Please enter password.');
       return;
     }
 
-    if (this.state.confirmPassword == '') {
+    if (confirmPassword == '') {
       Alert.alert('Please enter confirm password.');
       return;
     }
 
-    if (this.state.password != this.state.confirmPassword) {
+    if (password != confirmPassword) {
       Alert.alert('The password is not matched.');
       this.setState({ password: '' });
       this.setState({ confirmPassword: '' });
       return;
     }
 
-    Actions.WhoAreYou();
+    localStorage.save('userData', {
+      email,
+      password
+    })
+      .then(() => {
+        Actions.WhoAreYou();
+      })
   }
 
   onForgotPassword() {

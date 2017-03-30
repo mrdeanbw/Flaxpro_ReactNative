@@ -12,14 +12,13 @@ export default function auth(state = initialState, action = {}) {
         ...state,
         user
       };
-    case types.SIGNUP:
+    case types.CREATE_USER:
       return {
         ...state,
         user
       };
     case types.LOGOUT:
       return initialState;
-
     default:
       return state;
   }

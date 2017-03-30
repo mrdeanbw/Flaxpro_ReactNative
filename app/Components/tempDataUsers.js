@@ -62,10 +62,10 @@ export const tempProfileData = [{
   professional: true,
   professions: [{
     profession: "profession1",
-    price: 100
+    price: 100.00
   }, {
     profession: "profession2",
-    price: 100
+    price: 150.00
   }],
   age: 28,
   gender: "Male",
@@ -73,3 +73,33 @@ export const tempProfileData = [{
   certification: "Certified Personal Trainer",
   preferredLocation: null
 }];
+
+
+export const allProfessions = [{
+  id: 'asd7as8',
+  name: 'Yoga'
+}, {
+  id: '6ast5da',
+  name: 'Yoga2'
+}, {
+  id: 'as90dy7',
+  name: 'Yoga3'
+}, {
+  id: 'as67d5d',
+  name: 'Yoga4'
+}, {
+  id: 'ad4324e',
+  name: 'Yoga5'
+}, {
+  id: '785asda',
+  name: 'Yoga6'
+}, {
+  id: 'asdwqd2',
+  name: 'Yoga7'
+}, {
+  id: '1234tfs',
+  name: 'Yoga8'
+}, {
+  id: '123dasd',
+  name: 'Yoga9'
+}]

@@ -32,11 +32,16 @@ export default class WhoAReYouForm extends Component {
   }
 
   onSelectClient () {
-    
-    localStorage.save(CommonConstant.user_mode, CommonConstant.user_client)
-      .then(() => {
-        Actions.ClientInfo();
-    });
+
+    localStorage.get('userData')
+      .then((data) => {
+        localStorage.save([CommonConstant.user_mode, 'userData'], [
+          CommonConstant.user_client, { ...data, professional: false }
+        ])
+          .then(() => {
+            Actions.ClientInfo();
+          });
+      });
   }
 
   onSelectProfessional () {

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
   Dimensions,
-  TextInput,
-  Button,
   TouchableOpacity,
-  Alert,
+  ScrollView
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -31,6 +28,8 @@ const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
 const avatar = require('../../../Assets/avatar1.png');
 
+import { allProfessions } from '../../../Components/tempDataUsers';
+
 export default class ExploreForm extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +40,7 @@ export default class ExploreForm extends Component {
       showContentMode: 0,
       coachesClients: CoachesClients,
       gymLocations: GymLocations,
+      professionSelected: 0
     };
   }
 
@@ -116,7 +116,21 @@ export default class ExploreForm extends Component {
     );
   }
 
+  // getColorForScrollView (index) {
+  //   const { professionSelected } = this.state;
+  //   if ()
+  //   return {backgroundColor: '#4dc7fd'}
+  // }
+
+  selectProfession(index) {
+    const { professionSelected } = this.state;
+    if (index == 0 || professionSelected != index + 1) {
+      this.setState({ professionSelected: index + 1});
+    }
+  }
+
   get showFullTopBar () {
+    const { professionSelected } = this.state;
 
     return (
       <View style={ styles.navContainer }>
@@ -163,26 +177,39 @@ export default class ExploreForm extends Component {
             onDateChange={ (date) => { this.setState({ birthday: date }) } }
           />
         </View>
-        <SegmentedControls
-          tint={ "#fff" }
-          selectedTint= { "#41c3fd" }
-          backTint= { "#41c3fd" }
-          options={ ["ALL", "NEARBY", "NEW", "REGULAR"] }
-          onSelection={ (option) => this.onSelectFilterMode(option) }
-          selectedOption={ this.state.selectedSegmented }
-          allowFontScaling={ true }
-          optionStyle={{
-            fontSize: 12,
-            height: 25,
-          }}
-          containerStyle= {{
-            height: 30,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginHorizontal: 10,
-            marginVertical: 5,
-          }}
-        />
+        <View style={ styles.filterRowContainer }>
+          <View style={ styles.cellContainer }>
+            <View style={ professionSelected == 0 ? styles.selectWrapper : styles.buttonWrapper }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.selectProfession(-1) } }>
+                <View style={ [styles.cellButton] }>
+                  <Text style={ professionSelected == 0 ? styles.selectedText : styles.cellText }> + </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          {/*</View>*/}
+            <ScrollView
+              horizontal={ true }
+              showsHorizontalScrollIndicator={ false }
+            >
+              {/*<View style={ styles.cellContainer }>*/}
+                {
+                  allProfessions.map((profession, index) => {
+                    const  selected = index + 1 == professionSelected;
+                    return (
+                      <View key={index} style={ selected ? styles.selectWrapper : styles.buttonWrapper }>
+                        <TouchableOpacity onPress={ () => { this.selectProfession(index) }}>
+                          <View style={ styles.cellButton }>
+                            <Text style={ selected ? styles.selectedText : styles.cellText }>{ profession.name }</Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    )
+                  })
+                }
+              {/*</View>*/}
+            </ScrollView>
+          </View>
+        </View>
       </View>
     );
   }
@@ -277,4 +304,45 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingVertical: 10,
   },
+
+  //scroll view
+  filterRowContainer: {
+    flexDirection: 'row',
+    paddingVertical: 5,
+    paddingHorizontal: 10
+  },
+  buttonWrapper: {
+    borderRadius: 20,
+    backgroundColor: '#4dc7fd',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectWrapper: {
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cellButton: {
+    color: '#5ad0f6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    height: 30,
+  },
+  cellText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  selectedText: {
+    color: '#4dc7fd',
+    fontSize: 18,
+  },
+  cellContainer: {
+    color: '#fff',
+    borderRadius: 7,
+    flexDirection: 'row',
+    paddingVertical: 10,
+  }
+  //end scroll view
 });

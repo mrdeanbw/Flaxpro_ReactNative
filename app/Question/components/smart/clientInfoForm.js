@@ -25,8 +25,13 @@ const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
 const markIcon = require('../../../Assets/flaxpro_mark.png');
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default class ClientInfoForm extends Component {
+//auth redux store
+import * as authActions from '../../../Auth/actions';
+
+class ClientInfoForm extends Component {
   constructor(props) {
     super(props);
 
@@ -53,7 +58,14 @@ export default class ClientInfoForm extends Component {
   }
 
   onContinue () {
-     Actions.Main({ user_mode: CommonConstant.user_client });
+      const { actions } = this.props;
+
+    localStorage.get('userData')
+      .then((data) => {
+        actions.createUser({ ...data, ...this.data })
+        Actions.Main({ user_mode: CommonConstant.user_client });
+      });
+
   }
 
   render() {
@@ -357,3 +369,9 @@ const styles = StyleSheet.create({
     height: 70,
   },
 });
+
+export default connect(state => ({  }),
+  (dispatch) => ({
+      actions: bindActionCreators(authActions, dispatch)
+    })
+)(ClientInfoForm);
