@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -28,9 +30,7 @@ const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/background.png');
 const avatar = require('../../../Assets/avatar1.png');
 
-import { allProfessions } from '../../../Components/tempDataUsers';
-
-export default class ExploreForm extends Component {
+class ExploreForm extends Component {
   constructor(props) {
     super(props);
 
@@ -130,8 +130,10 @@ export default class ExploreForm extends Component {
   }
 
   get showFullTopBar () {
-    const { professionSelected } = this.state;
+    const { professionSelected } = this.state,
+      { auth: { professions, user, coachesClients } } = this.props;
 
+    console.log('coachesClients', coachesClients)
     return (
       <View style={ styles.navContainer }>
         <View style={ styles.searchBarWrap }>
@@ -177,27 +179,30 @@ export default class ExploreForm extends Component {
             onDateChange={ (date) => { this.setState({ birthday: date }) } }
           />
         </View>
-        <View style={ styles.filterRowContainer }>
-          <View style={ styles.cellContainer }>
-            <View style={ professionSelected == 0 ? styles.selectWrapper : styles.buttonWrapper }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.selectProfession(-1) } }>
-                <View style={ [styles.cellButton] }>
-                  <Text style={ professionSelected == 0 ? styles.selectedText : styles.cellText }> + </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          {/*</View>*/}
-            <ScrollView
-              horizontal={ true }
-              showsHorizontalScrollIndicator={ false }
-            >
-              {/*<View style={ styles.cellContainer }>*/}
+        { user && !user.professional ?
+          <View style={ styles.filterRowContainer }>
+            <View style={ styles.cellContainer }>
+              <View style={ professionSelected == 0 ? styles.selectWrapper : styles.buttonWrapper }>
+                <TouchableOpacity activeOpacity={ .5 } onPress={ () => {
+                  this.selectProfession(-1)
+                } }>
+                  <View style={ [styles.cellButton] }>
+                    <Text style={ professionSelected == 0 ? styles.selectedText : styles.cellText }> + </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <ScrollView
+                horizontal={ true }
+                showsHorizontalScrollIndicator={ false }
+              >
                 {
-                  allProfessions.map((profession, index) => {
-                    const  selected = index + 1 == professionSelected;
+                  professions.map((profession, index) => {
+                    const selected = index + 1 == professionSelected;
                     return (
                       <View key={index} style={ selected ? styles.selectWrapper : styles.buttonWrapper }>
-                        <TouchableOpacity onPress={ () => { this.selectProfession(index) }}>
+                        <TouchableOpacity onPress={ () => {
+                          this.selectProfession(index)
+                        }}>
                           <View style={ styles.cellButton }>
                             <Text style={ selected ? styles.selectedText : styles.cellText }>{ profession.name }</Text>
                           </View>
@@ -206,10 +211,30 @@ export default class ExploreForm extends Component {
                     )
                   })
                 }
-              {/*</View>*/}
-            </ScrollView>
+              </ScrollView>
+            </View>
           </View>
-        </View>
+          : <SegmentedControls
+            tint={ "#fff" }
+            selectedTint= { "#41c3fd" }
+            backTint= { "#41c3fd" }
+            options={ ["ALL", "NEARBY", "NEW", "REGULAR"] }
+            onSelection={ (option) => this.onSelectFilterMode(option) }
+            selectedOption={ this.state.selectedSegmented }
+            allowFontScaling={ true }
+            optionStyle={{
+              fontSize: 12,
+              height: 25,
+            }}
+            containerStyle= {{
+              height: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginHorizontal: 10,
+              marginVertical: 5,
+            }}
+          />
+        }
       </View>
     );
   }
@@ -324,7 +349,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cellButton: {
-    color: '#5ad0f6',
+    // color: '#5ad0f6',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 15,
@@ -339,10 +364,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   cellContainer: {
-    color: '#fff',
     borderRadius: 7,
     flexDirection: 'row',
     paddingVertical: 10,
   }
   //end scroll view
 });
+
+export default connect(state => ({
+    auth: state.auth
+  }),
+  (dispatch) => ({})
+)(ExploreForm);

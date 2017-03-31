@@ -1,18 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
   Dimensions,
-  TextInput,
   ScrollView,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import Calendar from './calendar/Calendar';
@@ -27,7 +27,12 @@ const pilates = require('../../../Assets/pilates.png');
 const yoga = require('../../../Assets/yoga.png');
 const totalWorkout = require('../../../Assets/total_workout.png');
 
-export default class ClientProfileForm extends Component {
+//auth redux store
+import * as authActions from '../../../Auth/actions';
+
+import { allProfessions } from '../../../Components/tempDataUsers'
+
+class ClientProfileForm extends Component {
 
   static propTypes = {
     editable: PropTypes.bool,
@@ -39,6 +44,7 @@ export default class ClientProfileForm extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       showMoreOrLess: true,
     };
@@ -69,6 +75,16 @@ export default class ClientProfileForm extends Component {
 
   onBack() {
     Actions.pop();
+  }
+
+  getIconWorkout(id) {
+    for (let i = 0; i < allProfessions.length; i++) {
+      const prof = allProfessions[i];
+      if (prof.id == id) {
+        return prof.icon;
+      }
+    }
+    return null
   }
 
   get showMoreOrLessButton() {
@@ -121,7 +137,7 @@ export default class ClientProfileForm extends Component {
   }
 
   get getShowNavBar() {
-    const { editable } = this.props;
+    const { editable, auth } = this.props;
 
     return (
       editable ?
@@ -133,7 +149,7 @@ export default class ClientProfileForm extends Component {
             <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
           </TouchableOpacity>
 
-          <Text style={ styles.textTitle }>{ this.user.name.toUpperCase() }</Text>
+          <Text style={ styles.textTitle }>{ auth.user.name.toUpperCase() }</Text>
 
           <TouchableOpacity
             onPress={ () => this.onEdit() }
@@ -153,16 +169,17 @@ export default class ClientProfileForm extends Component {
               color="#fff"
             />
           </TouchableOpacity>
-          <Text style={ styles.textTitle }>{ this.user.name.toUpperCase() }</Text>
+          <Text style={ styles.textTitle }>{ auth.user.name.toUpperCase() }</Text>
           <View style={ styles.navButtonWrapper }/>          
         </View>
     );
   }
 
   render() {
-    const { status, editable, user } = this.props;
-    this.user = user;
+    const { editable, auth } = this.props,
+      { showMoreOrLess } = this.state;
 
+    let countWorkouts = 0;
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -174,30 +191,25 @@ export default class ClientProfileForm extends Component {
               <View style={ styles.avatarTopBackground }/>
               <View style={ styles.avatarBottomBackground }/>
               <View style={ styles.avatarWrapper }>
-                <Image source={ this.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+                <Image source={ auth.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
               </View>
             </View>
             <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
               <View style={ styles.workoutContainer }>
-                <View style={ styles.workoutCell }>
-                  <Image source={ strengthTraining } style={ styles.imageWorkout } />
-                  <Text style={ styles.textWorkoutTitle }>Strength Training</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#41ce59'}] }>89 WORKOUTS</Text>
-                </View>
-                <View style={ styles.workoutCell }>
-                  <Image source={ pilates } style={ styles.imageWorkout } />
-                  <Text style={ styles.textWorkoutTitle }>Pilates</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#ffb21c'}] }>36 WORKOUTS</Text>
-                </View>
-                <View style={ styles.workoutCell }>
-                  <Image source={ yoga } style={ styles.imageWorkout } />
-                  <Text style={ styles.textWorkoutTitle }>Yoga</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#a94df0'}] }>25 WORKOUTS</Text>
-                </View>
+                {
+                  auth.user.workouts.map((workout) => {
+                    countWorkouts += workout.count;
+                    return <View style={ styles.workoutCell }>
+                      <Image source={ this.getIconWorkout(workout.id) } style={ styles.imageWorkout } />
+                      <Text style={ styles.textWorkoutTitle }>{ workout.workout }</Text>
+                      <Text style={ [styles.textWorkoutValue, { color: '#41ce59'}] }>{ workout.count } WORKOUTS</Text>
+                    </View>
+                  })
+                }
                 <View style={ styles.workoutCell }>
                   <Image source={ totalWorkout } style={ styles.imageWorkout } />
                   <Text style={ styles.textWorkoutTitle }>Total Workout</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#0fc8fb'}] }>150</Text>
+                  <Text style={ [styles.textWorkoutValue, { color: '#0fc8fb'}] }>{countWorkouts}</Text>
                 </View>
               </View>
               <ScrollView>
@@ -206,11 +218,11 @@ export default class ClientProfileForm extends Component {
                   <View style={ styles.infoRowContainer }>
                     <View style={ styles.infoRowLeftContainer }>
                       <Text style={ styles.textInfoField }>Sex : </Text>
-                      <Text style={ styles.textInfoValue }>Male</Text>
+                      <Text style={ styles.textInfoValue }>{auth.user.gender}</Text>
                     </View>
                     <View style={ styles.infoRowRightContainer }>
                       <Text style={ styles.textInfoField }>Year of experience : </Text>
-                      <Text style={ styles.textInfoValue }>2004</Text>
+                      <Text style={ styles.textInfoValue }> --- </Text>
                     </View>
                   </View>
                   <View style={ styles.infoRowContainer }>
@@ -220,49 +232,35 @@ export default class ClientProfileForm extends Component {
                     </View>
                     <View style={ styles.infoRowRightContainer }>
                       <Text style={ styles.textInfoField }>Certification : </Text>
-                      <Text style={ styles.textInfoValue }>Certified Personal Trainer</Text>
+                      <Text style={ styles.textInfoValue }>{auth.user.certification ? auth.user.certification : '---'}</Text>
                     </View>
                   </View>
                 </View>
                 <View style={ styles.infoContainer }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                  <Text style={ styles.textInfoValue }>O trained for many years, and I'm very confident about the skullset I developed over the years.</Text>
+                  <Text style={ styles.textInfoValue }>{auth.user.about}</Text>
                 </View>
 
                 <Text style={ [styles.textInfoTitle, { paddingHorizontal: 10 }] }>REVIEWS</Text>
-
-                <View style={ styles.infoContainer }>
-                  <View style={ styles.starContainer }>
-                    <Text style={ styles.textTrainerName }>Mark</Text>
-                    <Stars
-                      isActive={ false }
-                      rateMax={ 5 }
-                      isHalfStarEnabled={ false }
-                      onStarPress={ (rating) => console.log(rating) }
-                      rate={ 5 }
-                      size={ 16 }
-                    />
-                  </View>
-                  <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-                  <Text style={ styles.textGray }>SEP 18, 2016</Text>
-                </View>
-
-                <View style={ styles.infoContainer }>
-                  <View style={ styles.starContainer }>
-                    <Text style={ styles.textTrainerName }>Alex</Text>
-                    <Stars
-                      isActive={ false }
-                      rateMax={ 5 }
-                      isHalfStarEnabled={ false }
-                      onStarPress={ (rating) => console.log(rating) }
-                      rate={ 5 }
-                      size={ 16 }
-                    />
-                  </View>
-                  <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-                  <Text style={ styles.textGray }>SEP 18, 2016</Text>
-                </View>
-
+                { auth.user.reviews.map((review, index) => {
+                    if (showMoreOrLess && index > 1) return null;
+                    return <View style={ styles.infoContainer }>
+                      <View style={ styles.starContainer }>
+                        <Text style={ styles.textTrainerName }>{ review.author }</Text>
+                        <Stars
+                          isActive={ false }
+                          rateMax={ 5 }
+                          isHalfStarEnabled={ false }
+                          // onStarPress={ (rating) => console.log(rating) }
+                          rate={ review.rating }
+                          size={ 16 }
+                        />
+                      </View>
+                      <Text style={ styles.textInfoValue }>{ review.review }</Text>
+                      <Text style={ styles.textGray }>{ review.date }</Text>
+                    </View>
+                  })
+                }
               </ScrollView>
 
               { this.showMoreOrLessButton }
@@ -483,3 +481,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default connect(state => ({
+    auth: state.auth
+  }),
+  (dispatch) => ({
+    actions: bindActionCreators(authActions, dispatch)
+  })
+)(ClientProfileForm);

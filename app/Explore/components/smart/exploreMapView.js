@@ -300,7 +300,6 @@ class ExploreMapView extends Component {
   }
 
   onPressCoachClient ( index ) {
-    console.log('index', index)
     this.setState({ selectedCoacheClientIndex: index });
     this.popupDialogCoach.openDialog ();
   }
@@ -319,7 +318,6 @@ class ExploreMapView extends Component {
   onExpandCoach ( key ) {
     this.popupDialogCoach.closeDialog ();
 
-    // console.log('selectedCoacheClientIndex', this.props.coachesClients[this.state.selectedCoacheClientIndex])
     localStorage.get(CommonConstant.user_mode)
       .then((data) => {
         if (data == CommonConstant.user_client) {
@@ -473,7 +471,6 @@ class ExploreMapView extends Component {
 
     const { coachesClients, gymLocations } = this.props;
 
-    console.log(coachesClients)
     this.region = new MapView.AnimatedRegion({
       latitude: coachesClients[0].coordinate.latitude,
       longitude: coachesClients[0].coordinate.longitude,
@@ -545,7 +542,6 @@ class ExploreMapView extends Component {
                   markerScale,
                 } = animations[index];
 
-                {/*console.log(this.state.selectedCoacheClientIndex == index, selected)*/}
                 return (
                   <MapView.Marker
                     key={ index }

@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
-  Text,
   View,
   Image,
   Dimensions,
-  TouchableOpacity,
   StatusBar,
   Platform,
 } from 'react-native';
@@ -20,6 +17,7 @@ import ClientProfile from '../../../Profile/containers/clientProfile';
 import TrainerProfile from '../../../Profile/containers/trainerProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 
+import { connect } from 'react-redux';
 import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
 import { CoachesClients } from '../../../Components/dummyEntries';
@@ -39,7 +37,7 @@ const profileSelectedIcon = require('../../../Assets/selected_profile.png');
 const accountIcon = require('../../../Assets/account.png');
 const accountSelectedIcon = require('../../../Assets/selected_account.png');
 
-export default class MainForm extends Component {
+class MainForm extends Component {
   constructor(props) {
     super(props);
 
@@ -52,7 +50,15 @@ export default class MainForm extends Component {
       StatusBar.setBarStyle('light-content', false);
     }
   }
-  
+
+  componentWillMount() {
+    const {auth: {user}} = this.props;
+    localStorage.save('authData', {
+      token: user.token,
+      email: user.email
+    })
+  }
+
   render() {
     const { status, user_mode } = this.props;
     return (
@@ -147,3 +153,9 @@ const styles = StyleSheet.create({
     borderTopColor: '#d7d7d7',
   },
 });
+
+export default connect(state => ({
+    auth: state.auth
+  }),
+  (dispatch) => ({})
+)(MainForm);

@@ -45,8 +45,9 @@ class AuthForm extends Component {
       email : 'client@mail.com', //TODO: for testing
       password : 'password', //TODO: for testing
       confirmPassword: 'password',
-      selectedButton: 1,
-      loginRequest: false
+      selectedButton: 2,
+      loginRequest: false,
+      loginForm: false
     };
   }
 
@@ -54,7 +55,7 @@ class AuthForm extends Component {
     const { auth: { user } } = nextProps;
 
     if (user) {
-      Actions.Main({user_mode: user.professional ? CommonConstant.user_trainer : CommonConstant.user_client});
+        Actions.Main({user_mode: user.professional ? CommonConstant.user_trainer : CommonConstant.user_client})
     }
     this.setState({ loginRequest: false });
   }
@@ -240,6 +241,7 @@ class AuthForm extends Component {
             <Image source={ userIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            editable={!loginRequest}
             autoCapitalize="none"
             autoCorrect={ false }
             placeholder="Enter your Email"
@@ -256,6 +258,7 @@ class AuthForm extends Component {
             <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            editable={!loginRequest}
             autoCapitalize="none"
             autoCorrect={ false }
             placeholder="Password"
@@ -313,7 +316,7 @@ class AuthForm extends Component {
 
 
   render() {
-    const { status } = this.props;
+    const { loginForm, selectedButton } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -327,8 +330,7 @@ class AuthForm extends Component {
                   <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowSignUp() }>
                     <View style={ styles.authButton }>
                       <Text style={ styles.buttonText }>SIGNUP</Text>
-                      {
-                        this.state.selectedButton == 1 ?
+                      { selectedButton == 1 ?
                           <Image source={ triangle } style={ styles.imageTriangle } />
                           :
                           <View style={ styles.buttonPaddingView } />
@@ -340,8 +342,7 @@ class AuthForm extends Component {
                   <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowLogIn() }>
                     <View style={ styles.authButton }>
                       <Text style={ styles.buttonText }>LOGIN</Text>
-                      {
-                        this.state.selectedButton == 2 ?
+                      { selectedButton == 2 ?
                           <Image source={ triangle } style={ styles.imageTriangle } />
                           :
                           <View style={ styles.buttonPaddingView } />
@@ -490,16 +491,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(state => {
-    console.log('state', state);
-    return ({
-      auth: state.auth
-    })
-  },
-  (dispatch) => {
-    console.log('authActions', authActions);
-    return ({
-      actions: bindActionCreators(authActions, dispatch)
-    })
-  }
+export default connect(state => ({
+    auth: state.auth
+  }),
+  (dispatch) => ({
+    actions: bindActionCreators(authActions, dispatch)
+  })
 )(AuthForm);

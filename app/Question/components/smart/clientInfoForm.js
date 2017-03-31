@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
+  ActivityIndicator,
   StyleSheet,
   Text,
   View,
@@ -44,6 +44,7 @@ class ClientInfoForm extends Component {
       fitnessLevel : '',
       allergies : '',
       injuries : '',
+      signUpRequest: false
     };
   }
 
@@ -57,20 +58,31 @@ class ClientInfoForm extends Component {
     Alert.alert('Clicked onImportHealthKitData');
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { auth: { user } } = nextProps;
+
+    if (user) {
+      Actions.Main({ user_mode: CommonConstant.user_client });
+    }
+    this.setState({ signUpRequest: false });
+  }
+
   onContinue () {
-      const { actions } = this.props;
+    const { actions } = this.props;
 
     localStorage.get('userData')
       .then((data) => {
-        actions.createUser({ ...data, ...this.data })
-        Actions.Main({ user_mode: CommonConstant.user_client });
+        actions.createUser({ ...data, ...this.state })
+        localStorage.save('userData', null);
+        this.setState({ signUpRequest: true });
+        // Actions.Main({ user_mode: CommonConstant.user_client });
       });
 
   }
 
   render() {
-    const { status } = this.props;
-
+    const { status } = this.props,
+      { signUpRequest } = this.state;
     return (
       <View style={ styles.container }>
         <KeyboardAwareScrollView
@@ -236,6 +248,14 @@ class ClientInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
+        { signUpRequest ? <View
+          style={styles.activityIndicatorContainer}>
+            <ActivityIndicator
+            style={styles.activityIndicator}
+            color="#0000ff"
+            size="large"
+          />
+        </View> : null }
       </View>
     );
   }
@@ -244,6 +264,21 @@ class ClientInfoForm extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative'
+  },
+  activityIndicator: {
+    flex: 1,
+  },
+  activityIndicatorContainer: {
+    flex: 1,
+    position: 'absolute',
+    backgroundColor: '#a3a4a7',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    opacity: 0.5,
+    width, height
   },
   markWrap: {
     flex: 2,
@@ -370,7 +405,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(state => ({  }),
+export default connect(state => ({
+    auth: state.auth
+  }),
   (dispatch) => ({
       actions: bindActionCreators(authActions, dispatch)
     })

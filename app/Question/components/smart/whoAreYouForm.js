@@ -38,9 +38,7 @@ export default class WhoAReYouForm extends Component {
         localStorage.save([CommonConstant.user_mode, 'userData'], [
           CommonConstant.user_client, { ...data, professional: false }
         ])
-          .then(() => {
-            Actions.ClientInfo();
-          });
+        Actions.ClientInfo();
       });
   }
 

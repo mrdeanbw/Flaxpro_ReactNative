@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
+import localStorage from 'react-native-local-storage';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
@@ -47,12 +48,15 @@ class AccountForm extends Component {
 
   onLogOut() {
     const { authActions: { logout } } = this.props;
-    logout();
-    Actions.Auth();
+
+    localStorage.save('authData', null).then(() => {
+        logout();
+        Actions.Auth();
+      })
   }
 
   render() {
-    const { status } = this.props;
+    const { auth: { user } } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -77,7 +81,7 @@ class AccountForm extends Component {
               </TouchableOpacity>
               <View style={ styles.cellContainer }>
                 <Text style={ styles.textCellTitle }>Email</Text>
-                <Text style={ styles.textCellValue }>username@gmail.com</Text>
+                <Text style={ styles.textCellValue }>{ user.email }</Text>
               </View>
               <View style={ styles.cellContainer }>
                 <Text style={ styles.textCellTitle }>Password</Text>
@@ -185,6 +189,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(state => ({}),
+export default connect(state => ({
+    auth: state.auth
+  }),
   (dispatch) => ({ authActions: bindActionCreators(authActions, dispatch) })
 )(AccountForm);

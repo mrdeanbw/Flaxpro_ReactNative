@@ -2,17 +2,27 @@
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+import localStorage from 'react-native-local-storage';
+import { connect } from 'react-redux';
+
 import AuthForm from '../components/smart/authForm';
 import * as authActions from '../actions';
-import { connect } from 'react-redux';
 
 class Auth extends Component {
   constructor(props) {
     super(props);
   }
 
+  componentWillMount() {
+    const {auth: {user}, actions} = this.props;
+
+    localStorage.get('authData').then((data) => {
+      actions.login(data.email, null, data.token)
+    })
+  }
+
   render() {
-    const { actions, status } = this.props;
+    const { actions, auth: { status }} = this.props;
     return (
       <AuthForm { ...actions } status/>
     );
@@ -20,7 +30,7 @@ class Auth extends Component {
 }
 
 export default connect(state => ({
-    status: state.auth.status
+    auth: state.auth
   }),
   (dispatch) => ({
     actions: bindActionCreators(authActions, dispatch)
