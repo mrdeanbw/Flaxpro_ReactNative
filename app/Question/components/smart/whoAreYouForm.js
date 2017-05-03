@@ -33,21 +33,28 @@ export default class WhoAReYouForm extends Component {
 
   onSelectClient () {
 
-    localStorage.get('userData')
-      .then((data) => {
-        localStorage.save([CommonConstant.user_mode, 'userData'], [
-          CommonConstant.user_client, { ...data, professional: false }
-        ])
-        Actions.ClientInfo();
-      });
+    // localStorage.get('userData')
+    //   .then((data) => {
+    //     localStorage.save([CommonConstant.user_mode, 'userData'], [
+    //       CommonConstant.user_client, { ...data, professional: false }
+    //     ])
+    localStorage.save(CommonConstant.user_mode, CommonConstant.user_client)
+    Actions.ClientInfo();
+      // });
   }
 
   onSelectProfessional () {
 
     localStorage.save(CommonConstant.user_mode, CommonConstant.user_trainer)
-      .then(() => {
-        Actions.Main({ user_mode: CommonConstant.user_trainer });
-    })
+    //   .then(() => {
+    //     Actions.Main({ user_mode: CommonConstant.user_trainer });
+    // })
+    this.onProfessionalAlert()
+    // Actions.TrainerInfo();//TODO: need create trainer info form
+  }
+  onProfessionalAlert () {
+
+    Alert.alert('Clicked SelectProfessional');
   }
 
   render() {
@@ -66,7 +73,7 @@ export default class WhoAReYouForm extends Component {
                   <Image source={ professionalIcon } style={ styles.buttonIcon } resizeMode="contain" />
                 </View>
               </TouchableOpacity>
-              <Text style={ styles.text }> I am a fitness Professional </Text>
+              <Text style={ styles.text }> I am a Professional </Text>
             </View>
             <View style={ styles.oneColumn }>
               <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSelectClient() }>
@@ -74,7 +81,7 @@ export default class WhoAReYouForm extends Component {
                   <Image source={ clientIcon } style={ styles.buttonIcon } resizeMode="contain" />
                 </View>
               </TouchableOpacity>
-                <Text style={ styles.text }> Seeking a fitness Professional </Text>
+                <Text style={ styles.text }> Seeking a Professional </Text>
             </View>
           </View>
           <View style={ styles.spaceWrapper }/>
