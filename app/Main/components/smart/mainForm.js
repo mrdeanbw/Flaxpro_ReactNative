@@ -24,18 +24,18 @@ import { CoachesClients } from '../../../Components/dummyEntries';
 
 const { width, height } = Dimensions.get('window');
 
-const exploreIcon = require('../../../Assets/explore.png');
-const exploreSelectedIcon = require('../../../Assets/selected_explore.png');
-const coachesIcon = require('../../../Assets/coaches.png');
-const coachesSelectedIcon = require('../../../Assets/selected_coaches.png');
-const clientsIcon = require('../../../Assets/clients.png');
-const clientsSelectedIcon = require('../../../Assets/selected_clients.png');
-const inboxIcon = require('../../../Assets/inbox.png');
-const inboxSelectedIcon = require('../../../Assets/selected_inbox.png');
-const profileIcon = require('../../../Assets/profile.png');
-const profileSelectedIcon = require('../../../Assets/selected_profile.png');
-const accountIcon = require('../../../Assets/account.png');
-const accountSelectedIcon = require('../../../Assets/selected_account.png');
+const exploreIcon = require('../../../Assets/images/explore.png');
+const exploreSelectedIcon = require('../../../Assets/images/selected_explore.png');
+const coachesIcon = require('../../../Assets/images/coaches.png');
+const coachesSelectedIcon = require('../../../Assets/images/selected_coaches.png');
+const clientsIcon = require('../../../Assets/images/clients.png');
+const clientsSelectedIcon = require('../../../Assets/images/selected_clients.png');
+const inboxIcon = require('../../../Assets/images/inbox.png');
+const inboxSelectedIcon = require('../../../Assets/images/selected_inbox.png');
+const profileIcon = require('../../../Assets/images/profile.png');
+const profileSelectedIcon = require('../../../Assets/images/selected_profile.png');
+const accountIcon = require('../../../Assets/images/account.png');
+const accountSelectedIcon = require('../../../Assets/images/selected_account.png');
 
 class MainForm extends Component {
   constructor(props) {

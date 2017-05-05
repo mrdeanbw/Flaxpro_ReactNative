@@ -19,21 +19,21 @@ import Calendar from './calendar/Calendar';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
-const schedule = require('../../../Assets/schedule.png');
-const edit = require('../../../Assets/edit.png');
-const call = require('../../../Assets/call.png');
-const message = require('../../../Assets/message.png');
-const refer = require('../../../Assets/refer.png');
-const hire = require('../../../Assets/hire.png');
-const offer = require('../../../Assets/offer.png');
-const verified = require('../../../Assets/verified.png');
+const background = require('../../../Assets/images/background.png');
+const schedule = require('../../../Assets/images/schedule.png');
+const edit = require('../../../Assets/images/edit.png');
+const call = require('../../../Assets/images/call.png');
+const message = require('../../../Assets/images/message.png');
+const refer = require('../../../Assets/images/refer.png');
+const hire = require('../../../Assets/images/hire.png');
+const offer = require('../../../Assets/images/offer.png');
+const verified = require('../../../Assets/images/verified.png');
 
 
-const strengthTraining = require('../../../Assets/strength_training.png');
-const pilates = require('../../../Assets/pilates.png');
-const yoga = require('../../../Assets/yoga.png');
-const totalWorkout = require('../../../Assets/total_workout.png');
+const strengthTraining = require('../../../Assets/images/strength_training.png');
+const pilates = require('../../../Assets/images/pilates.png');
+const yoga = require('../../../Assets/images/yoga.png');
+const totalWorkout = require('../../../Assets/images/total_workout.png');
 
 export default class TrainerProfileForm extends Component {
 

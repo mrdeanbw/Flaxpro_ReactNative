@@ -24,15 +24,15 @@ const { width, height } = Dimensions.get('window');
 const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 //const image
-const background = require('../../../Assets/background_auth.png');
-const userIcon = require('../../../Assets/user.png');
-const lockIcon = require('../../../Assets/lock.png');
-const facebookIcon = require('../../../Assets/facebook.png');
-const twitterIcon = require('../../../Assets/twitter.png');
-const googleIcon = require('../../../Assets/google.png');
-const linkedinIcon = require('../../../Assets/linkedin.png');
-const arrow = require('../../../Assets/right_arrow.png');
-const triangle = require('../../../Assets/triangle.png');
+const background = require('../../../Assets/images/background_auth.png');
+const userIcon = require('../../../Assets/images/user.png');
+const lockIcon = require('../../../Assets/images/lock.png');
+const facebookIcon = require('../../../Assets/images/facebook.png');
+const twitterIcon = require('../../../Assets/images/twitter.png');
+const googleIcon = require('../../../Assets/images/google.png');
+const linkedinIcon = require('../../../Assets/images/linkedin.png');
+const arrow = require('../../../Assets/images/right_arrow.png');
+const triangle = require('../../../Assets/images/triangle.png');
 
 //auth redux store
 import * as authActions from '../../actions';

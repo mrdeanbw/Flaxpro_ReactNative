@@ -20,7 +20,7 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
+const background = require('../../../Assets/images/background.png');
 
 //const variable
 const constants = {

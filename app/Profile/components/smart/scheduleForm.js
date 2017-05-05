@@ -28,8 +28,8 @@ import Moment from 'moment';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
-const downArrow = require('../../../Assets/down_arrow.png');
+const background = require('../../../Assets/images/background.png');
+const downArrow = require('../../../Assets/images/down_arrow.png');
 
 const schedules = [
   {

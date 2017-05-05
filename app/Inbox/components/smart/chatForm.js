@@ -21,7 +21,7 @@ import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
+const background = require('../../../Assets/images/background.png');
 // const avatar = require('../../Assets/avatar1.png');
 
 

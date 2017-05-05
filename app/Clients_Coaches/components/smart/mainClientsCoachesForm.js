@@ -21,7 +21,7 @@ import Clients_CoachesForm from './clients_coachesForm';
 import Menu from './menu';
 
 const { width, height } = Dimensions.get('window');
-const background = require('../../../Assets/background.png');
+const background = require('../../../Assets/images/background.png');
 
 export default class MainClientsCoachesForm extends Component {
   constructor(props) {

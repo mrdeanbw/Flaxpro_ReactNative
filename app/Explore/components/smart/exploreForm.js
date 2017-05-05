@@ -27,8 +27,8 @@ import { CoachesClients, GymLocations } from '../../../Components/dummyEntries';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
-const avatar = require('../../../Assets/avatar1.png');
+const background = require('../../../Assets/images/background.png');
+const avatar = require('../../../Assets/images/avatar1.png');
 
 class ExploreForm extends Component {
   constructor(props) {

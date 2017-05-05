@@ -20,7 +20,7 @@ import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
-const background = require('../../../Assets/background.png');
+const background = require('../../../Assets/images/background.png');
 
 const duration = ['1 Months', '2 Months', '3 Months'];
 

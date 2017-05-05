@@ -17,7 +17,7 @@ import { bindActionCreators } from 'redux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 
 const { width, height } = Dimensions.get('window');
-const background = require('../../../Assets/background.png');
+const background = require('../../../Assets/images/background.png');
 
 //auth redux store
 import * as authActions from '../../../Auth/actions';

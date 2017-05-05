@@ -19,13 +19,13 @@ import Calendar from './calendar/Calendar';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
-const schedule = require('../../../Assets/schedule.png');
-const edit = require('../../../Assets/edit.png');
-const strengthTraining = require('../../../Assets/strength_training.png');
-const pilates = require('../../../Assets/pilates.png');
-const yoga = require('../../../Assets/yoga.png');
-const totalWorkout = require('../../../Assets/total_workout.png');
+const background = require('../../../Assets/images/background.png');
+const schedule = require('../../../Assets/images/schedule.png');
+const edit = require('../../../Assets/images/edit.png');
+const strengthTraining = require('../../../Assets/images/strength_training.png');
+const pilates = require('../../../Assets/images/pilates.png');
+const yoga = require('../../../Assets/images/yoga.png');
+const totalWorkout = require('../../../Assets/images/total_workout.png');
 
 //auth redux store
 import * as authActions from '../../../Auth/actions';

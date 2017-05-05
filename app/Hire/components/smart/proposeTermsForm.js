@@ -18,7 +18,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 const { width, height } = Dimensions.get('window');
-const background = require('../../../Assets/background.png');
+const background = require('../../../Assets/images/background.png');
 
 const duration = ['1 Months', '2 Months', '3 Months'];
 

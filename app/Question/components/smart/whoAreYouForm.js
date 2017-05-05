@@ -18,9 +18,9 @@ import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
-const professionalIcon = require('../../../Assets/select_professional.png');
-const clientIcon = require('../../../Assets/select_client.png');
+const background = require('../../../Assets/images/background.png');
+const professionalIcon = require('../../../Assets/images/select_professional.png');
+const clientIcon = require('../../../Assets/images/select_client.png');
 
 export default class WhoAReYouForm extends Component {
   constructor(props) {

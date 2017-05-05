@@ -2,7 +2,7 @@ export const tempProfileData = [{
   id: 'j3478se83but5hiu5',
   email: "client@mail.com",
   token: "78dsf7834nh7dsf62-3bhj77234b6fds89",
-  avatar: require('../Assets/avatar.png'),
+  avatar: require('../Assets/images/avatar.png'),
   reviews: [{
     rating: 5,
     review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
@@ -62,7 +62,7 @@ export const tempProfileData = [{
   id: 'j3478se83but5hiu5',
   email: "pro@mail.com",
   token: "78dsf7834nh7dsf62-3bhj77234b6fds89",
-  avatar: require('../Assets/avatar.png'),
+  avatar: require('../Assets/images/avatar.png'),
   reviews: [{
     rating: 3,
     review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
@@ -119,37 +119,37 @@ export const tempProfileData = [{
 export const allProfessions = [{
   id: 'asd7as8',
   name: 'Yoga',
-  icon: require('../Assets/yoga.png')
+  icon: require('../Assets/images/yoga.png')
 }, {
   id: '6ast5da',
   name: 'Plates',
-  icon: require('../Assets/pilates.png')
+  icon: require('../Assets/images/pilates.png')
 }, {
   id: 'as90dy7',
   name: 'Strength Training',
-  icon: require('../Assets/strength_training.png')
+  icon: require('../Assets/images/strength_training.png')
 }, {
   id: 'as67d5d',
   name: 'Yoga4',
-  icon: require('../Assets/sport.png')
+  icon: require('../Assets/images/sport.png')
 }, {
   id: 'ad4324e',
   name: 'Yoga5',
-  icon: require('../Assets/sport.png')
+  icon: require('../Assets/images/sport.png')
 }, {
   id: '785asda',
   name: 'Yoga6',
-  icon: require('../Assets/sport.png')
+  icon: require('../Assets/images/sport.png')
 }, {
   id: 'asdwqd2',
   name: 'Yoga7',
-  icon: require('../Assets/sport.png')
+  icon: require('../Assets/images/sport.png')
 }, {
   id: '1234tfs',
   name: 'Yoga8',
-  icon: require('../Assets/sport.png')
+  icon: require('../Assets/images/sport.png')
 }, {
   id: '123dasd',
   name: 'Yoga9',
-  icon: require('../Assets/sport.png')
+  icon: require('../Assets/images/sport.png')
 }]

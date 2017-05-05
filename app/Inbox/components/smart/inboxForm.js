@@ -21,10 +21,10 @@ import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
-const edit = require('../../../Assets/edit.png');
-const call = require('../../../Assets/inbox_call.png');
-const remove = require('../../../Assets/inbox_delete.png');
+const background = require('../../../Assets/images/background.png');
+const edit = require('../../../Assets/images/edit.png');
+const call = require('../../../Assets/images/inbox_call.png');
+const remove = require('../../../Assets/images/inbox_delete.png');
 
 
 import { Messages } from '../../../Components/dummyEntries';

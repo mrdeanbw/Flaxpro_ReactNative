@@ -26,8 +26,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomBar from './bottomBar';
 
 const { width, height } = Dimensions.get('window');
-const pin_gym = require('../../../Assets/gym.png');
-const avatar = require('../../../Assets/avatar1.png');
+const pin_gym = require('../../../Assets/images/gym.png');
+const avatar = require('../../../Assets/images/avatar1.png');
 
 
 const ASPECT_RATIO = width / height;

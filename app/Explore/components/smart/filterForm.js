@@ -22,7 +22,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/background.png');
+const background = require('../../../Assets/images/background.png');
 
 const labelSex = ['Male', 'Female'];
 const labelAge = ['16', '17', '18', '19', '20', '21'];

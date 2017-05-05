@@ -67,7 +67,7 @@ function generateUsers(count, prof) {
       id: randomString(),
       email: prof ? `professional${i + 1}@mail.com` : `client${i + 1}@mail.com`,
       token: "78dsf7834nh7dsf62-3bhj77234b6fds89",
-      avatar: require('../Assets/avatar.png'),
+      avatar: require('../Assets/images/avatar.png'),
       clients: [],
       coaches: [],
       reviews: generateReview(getRandomInt()),

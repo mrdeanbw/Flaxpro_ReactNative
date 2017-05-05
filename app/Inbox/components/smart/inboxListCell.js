@@ -10,7 +10,7 @@ import {
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const readMark = require('../../../Assets/notification_read_mark.png');
+const readMark = require('../../../Assets/images/notification_read_mark.png');
 
 const { width, height } = Dimensions.get('window');
 
