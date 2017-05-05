@@ -248,7 +248,7 @@ class ProfessionalInfoForm extends Component {
               <View style={ styles.bottomButtonWrapper }>
                 <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onContinue() }>
                   <View style={ styles.saveButton }>
-                    <Text style={ styles.buttonTextSave }>SAVE</Text>
+                    <Text style={ styles.buttonTextSave }>NEXT</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -331,11 +331,10 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: '#19b8ff',
-    paddingVertical: 5,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 40,
-    height: 30,
+    height: 40,
     marginVertical: 20,
     marginHorizontal: 20,
   },
