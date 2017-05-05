@@ -7,6 +7,7 @@ import { Actions, Scene, Router, ActionConst } from 'react-native-router-flux';
 import * as reducers from './reducers';
 import Auth from './Auth/containers/auth';
 import ClientInfo from './Question/containers/clientInfo';
+import ProfessionalInfo from './Question/containers/professionalInfo';
 import WhoAreYou from './Question/containers/whoAreYou';
 import Main from './Main/containers/main';
 import ExploreMapView from './Explore/components/smart/exploreMapView';
@@ -28,6 +29,7 @@ const scenes = Actions.create(
   <Scene key="root">
     <Scene key="Auth" component={ Auth } type={ ActionConst.REST } />
     <Scene key="ClientInfo" component={ ClientInfo } />
+    <Scene key="ProfessionalInfo" component={ ProfessionalInfo } />
     <Scene key="WhoAreYou" component={ WhoAreYou } />
     <Scene key="Main" component={ Main } />
     <Scene key="ExploreMapView" component={ ExploreMapView } />

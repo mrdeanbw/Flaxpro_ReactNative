@@ -49,12 +49,7 @@ export default class WhoAReYouForm extends Component {
     //   .then(() => {
     //     Actions.Main({ user_mode: CommonConstant.user_trainer });
     // })
-    this.onProfessionalAlert()
-    // Actions.TrainerInfo();//TODO: need create trainer info form
-  }
-  onProfessionalAlert () {
-
-    Alert.alert('Clicked SelectProfessional');
+    Actions.ProfessionalInfo();
   }
 
   render() {

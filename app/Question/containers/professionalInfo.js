@@ -2,11 +2,11 @@
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import ClientInfoForm from '../components/smart/clientInfoForm';
-import { saveClientInfo } from '../actions';
+import ProfessionalInfoForm from '../components/smart/professionalInfoForm';
+import { saveProfessionalInfo } from '../actions';
 import { connect } from 'react-redux';
 
-class ClientInfo extends Component {
+class ProfessionalInfo extends Component {
   constructor(props) {
     super(props);
   }
@@ -14,7 +14,7 @@ class ClientInfo extends Component {
   render() {
     const { actions, status } = this.props;
     return (
-      <ClientInfoForm { ...actions } satus/>
+      <ProfessionalInfoForm { ...actions } satus/>
     );
   }
 }
@@ -23,6 +23,6 @@ export default connect(state => ({
     status: state.question.status
   }),
   (dispatch) => ({
-    actions: bindActionCreators(saveClientInfo, dispatch)
+    actions: bindActionCreators(saveProfessionalInfo, dispatch)
   })
-)(ClientInfo);
+)(ProfessionalInfo);

@@ -13,7 +13,7 @@ class Main extends Component {
 
   render() {
     const { actions, status, user_mode } = this.props;
-
+console.log('>>>>>>>>>>',this.props)
     return (
       <MainForm { ...actions } status={ status } user_mode={ user_mode }/>
     );

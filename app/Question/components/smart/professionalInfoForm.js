@@ -43,7 +43,7 @@ const professionalNames = allProfessions.map(item => item.name)
 //auth redux store
 import * as authActions from '../../../Auth/actions';
 
-class ClientInfoForm extends Component {
+class ProfessionalInfoForm extends Component {
   constructor(props) {
     super(props);
 
@@ -51,10 +51,9 @@ class ClientInfoForm extends Component {
       name: '',
       visibilityProfile : false,
       gender : labelSex[0],
-      age : 28,
-      profession : professionalNames[0],
-      // height : '',
-      // fitnessLevel : '',
+      age : 20,
+      phoneNumber : '',
+      professional : true,
       // allergies : '',
       // injuries : '',
       signUpRequest: false
@@ -123,7 +122,7 @@ class ClientInfoForm extends Component {
         actions.createUser({ ...data, ...this.state })
         localStorage.save('userData', null);
         this.setState({ signUpRequest: true });
-        Actions.Main({ user_mode: CommonConstant.user_client });
+        Actions.Main({ user_mode: CommonConstant.user_trainer });
       });
   }
 
@@ -175,13 +174,24 @@ class ClientInfoForm extends Component {
               </View>
               <ScrollView>
                 <View style={ styles.mainContainer }>
-
+                  <View style={ styles.cellContainer }>
+                    <Text style={ styles.textCellTitle }>Phone Number</Text>
+                    <View style={ styles.viewInputCenter }>
+                      <TextInput
+                        autoCapitalize="none"
+                        autoCorrect={ false }
+                        placeholder="+1"
+                        placeholderTextColor="#9e9e9e"
+                        style={ styles.textInputCenter }
+                        value={ this.state.phoneNumber }
+                        keyboardType='numeric'
+                        onChangeText={ (text) => this.setState({ phoneNumber: text }) }
+                       />
+                    </View>
+                  </View>
 
                   <View style={ styles.cellContainer }>
-                    <View style={ styles.viewTwoText }>
-                      <Text style={ styles.textCellTitle }>Visibility</Text>
-                      <Text style={ styles.textSubTitle }>Enable professionals find your profile</Text>
-                    </View>
+                    <Text style={ styles.textCellTitle }>Visibility profile</Text>
                     <Switch
                       onValueChange={(value) => this.setState({ visibilityProfile: value })}
                       value={ this.state.visibilityProfile } />
@@ -230,43 +240,6 @@ class ClientInfoForm extends Component {
                               value = { this.state.age }
                               onValueChange={ (value) => this.setState({ age: value }) }
                       />
-                    </View>
-                  </View>
-
-                  <View style={ styles.cellContainer }>
-                    <Text style={ styles.textCellTitle }>Looking for</Text>
-                    <View style={ styles.dropdownWrapper }>
-                      <ModalDropdown
-                        options={ professionalNames }
-                        // renderOption={ this.renderOption }
-                        defaultValue={ this.state.profession }
-                        style={ styles.dropdown }
-                        textStyle ={ styles.dropDownText }
-                        dropdownStyle={ styles.dropdownStyle }
-                        onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
-                      />
-                      <EvilIcons
-                        name="chevron-down"
-                        size={ 20 }
-                        color="#10c7f9"
-                      />
-                    </View>
-                  </View>
-
-                  <View style={ styles.cellContainer }>
-                    <Text style={ styles.textCellTitle }>Price</Text>
-                    <View style={ styles.pricesBlock }>
-                    {
-                      prices.map((item, index) =>(
-                        <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item) }>
-                          <View style={ [styles.viewTwoText, styles.priceButton] }>
-                            <Text style={ [styles.textCellTitle, styles.priceButtonText] }>{ item.item }</Text>
-                            <Text style={ [styles.textSubTitle, styles.priceButtonText] }>{ item.price }</Text>
-                          </View>
-                        </TouchableOpacity>
-                      ))
-                    }
-
                     </View>
                   </View>
 
@@ -656,4 +629,4 @@ export default connect(state => ({
   (dispatch) => ({
       actions: bindActionCreators(authActions, dispatch)
     })
-)(ClientInfoForm);
+)(ProfessionalInfoForm);
