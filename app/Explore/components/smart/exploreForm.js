@@ -35,7 +35,8 @@ class ExploreForm extends Component {
     super(props);
 
     this.state = {
-      selectedSegmented : 'ALL',
+      selectedLocationSegment : 'ALL',
+      selectedPriceSegment : '$50-$100',
       mapStandardMode: true,
       showContentMode: 0,
       coachesClients: CoachesClients,
@@ -79,8 +80,8 @@ class ExploreForm extends Component {
     this.setState({ mapStandardMode:true });
   }
 
-  onSelectFilterMode(option) {
-    this.setState({ selectedSegmented: option })
+  onSelectLocationFilterMode(option) {
+    this.setState({ selectedLocationSegment: option })
 
     if (option === 'ALL') {
       this.setState({ coachesClients: CoachesClients });
@@ -93,6 +94,10 @@ class ExploreForm extends Component {
       coachesClients: filterValue,
       gymLocations: [],
     });
+  }
+
+  onSelectPriceFilterMode(option) {
+    this.setState({ selectedPriceSegment: option })
   }
 
   get showCloseTopBar () {
@@ -129,6 +134,10 @@ class ExploreForm extends Component {
     }
   }
 
+  today() {
+    return (new Date()).toDateString();
+  }
+
   get showFullTopBar () {
     const { professionSelected } = this.state,
       { auth: { professions, user, coachesClients } } = this.props;
@@ -141,6 +150,7 @@ class ExploreForm extends Component {
             height={ 20 }
             autoCorrect={ false }
             returnKeyType={ "search" }
+            iconSearchName={ "md-pin" }
             placeholder="Prefered Location"
             iconColor={ "#fff" }
             placeholderColor={ "#fff" }
@@ -156,7 +166,7 @@ class ExploreForm extends Component {
           <DatePicker
             date={ this.state.birthday }
             mode="date"
-            placeholder="Tuesday, SEP 05, 2016"
+            placeholder={this.today()}
             format="dddd, MMM DD, YYYY"
             minDate="01/01/1900"
             maxDate="12/31/2100"
@@ -219,26 +229,49 @@ class ExploreForm extends Component {
               </ScrollView>
             </View>
           </View>
-          : <SegmentedControls
-            tint={ "#fff" }
-            selectedTint= { "#41c3fd" }
-            backTint= { "#41c3fd" }
-            options={ ["ALL", "NEARBY", "NEW", "REGULAR"] }
-            onSelection={ (option) => this.onSelectFilterMode(option) }
-            selectedOption={ this.state.selectedSegmented }
-            allowFontScaling={ true }
-            optionStyle={{
-              fontSize: 12,
-              height: 25,
-            }}
-            containerStyle= {{
-              height: 30,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginHorizontal: 10,
-              marginVertical: 5,
-            }}
-          />
+          :
+          <View style={ styles.segmentsBlock }>
+            <SegmentedControls
+              tint={ "#41c3fd" }
+              selectedTint= { "#fff" }
+              backTint= { "#fff" }
+              options={ ["ALL", "NEARBY"] }
+              onSelection={ (option) => this.onSelectLocationFilterMode(option) }
+              selectedOption={ this.state.selectedLocationSegment }
+              allowFontScaling={ true }
+              optionStyle={{
+                fontSize: 10,
+              }}
+              containerStyle= {{
+                borderRadius: 15,
+                width:width/2 - 15,
+                height: 25,
+                marginLeft: 10,
+                marginRight: 5,
+                marginVertical: 7,
+              }}
+            />
+            <SegmentedControls
+              tint={ "#41c3fd" }
+              selectedTint= { "#fff" }
+              backTint= { "#fff" }
+              options={ ["$50-$100", "$100-$300", "$300+"] }
+              onSelection={ (option) => this.onSelectPriceFilterMode(option) }
+              selectedOption={ this.state.selectedPriceSegment }
+              allowFontScaling={ true }
+              optionStyle={{
+                fontSize: 9,
+              }}
+              containerStyle= {{
+                borderRadius: 15,
+                width:width/2 - 15,
+                height: 25,
+                marginLeft: 5,
+                marginRight: 10,
+                marginVertical: 7,
+              }}
+            />
+          </View>
         }
       </View>
     );
@@ -302,7 +335,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#5bd5f9',
     marginHorizontal: 10,
-    marginVertical: 5,
+    marginTop: 5,
+    marginBottom: 10,
   },
   calendar: {
     width : width - 55,
@@ -321,6 +355,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
 
+  },
+  segmentsBlock: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   closeButtonWrapper: {
     flex: 1,
@@ -371,7 +411,7 @@ const styles = StyleSheet.create({
   cellContainer: {
     borderRadius: 7,
     flexDirection: 'row',
-    paddingVertical: 10,
+    // paddingVertical: 10,
   }
   //end scroll view
 });

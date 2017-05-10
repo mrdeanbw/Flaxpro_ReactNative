@@ -135,57 +135,6 @@ class MainForm extends Component {
               </TabNavigator.Item>
             ))
           }
-          {/*/!* Explore *!/*/}
-          {/*<TabNavigator.Item*/}
-            {/*selected={ this.state.selectedTab === 'explore' }*/}
-            {/*title="EXPLORE"*/}
-            {/*renderIcon={ () => <Image source={ exploreIcon } style={ styles.iconTabbarGeneral }/> }*/}
-            {/*renderSelectedIcon={ () => <Image source={ exploreSelectedIcon } style={ styles.iconTabbarGeneral }/> }*/}
-            {/*onPress={ () => this.setState({ selectedTab: 'explore' }) }>*/}
-            {/*<Explore/>*/}
-          {/*</TabNavigator.Item>*/}
-
-          {/*/!* Clients or Coaches *!/*/}
-          {/*<TabNavigator.Item*/}
-            {/*selected={ this.state.selectedTab === 'clients_coaches' }*/}
-            {/*title={ user_mode === CommonConstant.user_client ? "COACHES" : "CLIENTS" }*/}
-            {/*renderIcon={ () => <Image source={ user_mode === CommonConstant.user_client ? coachesIcon : clientsIcon } style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/> }*/}
-            {/*renderSelectedIcon={ () => <Image source={ user_mode === CommonConstant.user_client ? coachesSelectedIcon : clientsSelectedIcon } style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/> }*/}
-            {/*onPress={ () => this.setState({ selectedTab: 'clients_coaches' }) }>*/}
-            {/*<Clients_Coaches/>*/}
-          {/*</TabNavigator.Item>*/}
-
-          {/* Inbox */}
-          {/*<TabNavigator.Item*/}
-            {/*selected={ this.state.selectedTab === 'inbox' }*/}
-            {/*title="INBOX"*/}
-            {/*renderIcon={ () => <Image source={ inboxIcon } style={ styles.iconTabbarGeneral }/> }*/}
-            {/*renderSelectedIcon={ () => <Image source={ inboxSelectedIcon } style={ styles.iconTabbarGeneral }/> }*/}
-            {/*badgeText={ this.state.badge }*/}
-            {/*onPress={ () => this.setState({ selectedTab: 'inbox' }) }>*/}
-            {/*<Inbox/>*/}
-          {/*</TabNavigator.Item>*/}
-
-          {/* Profile */}
-          {/*<TabNavigator.Item*/}
-            {/*selected={ this.state.selectedTab === 'profile' }*/}
-            {/*title="PROFILE"*/}
-            {/*renderIcon={ () => <Image source={ profileIcon } style={ styles.iconTabbarProfile }/> }*/}
-            {/*renderSelectedIcon={ () => <Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/> }*/}
-            {/*onPress={ () => this.setState({ selectedTab: 'profile' }) }>*/}
-            {/*{ user_mode === CommonConstant.user_client ? <ClientProfile user={ CoachesClients[0] }/> : <TrainerProfile user={ CoachesClients[0] }/> }*/}
-          {/*</TabNavigator.Item>*/}
-
-          {/* Account */}
-          {/*<TabNavigator.Item*/}
-            {/*selected={ this.state.selectedTab === 'account' }*/}
-            {/*title="ACCOUNT"*/}
-            {/*renderIcon={ () => <Image source={ accountIcon } style={ styles.iconTabbarGeneral }/> }*/}
-            {/*renderSelectedIcon={ () => <Image source={ accountSelectedIcon } style={ styles.iconTabbarGeneral }/> }*/}
-            {/*onPress={ () => this.setState({ selectedTab: 'account' }) }>*/}
-            {/*<Account/>*/}
-          {/*</TabNavigator.Item>*/}
-
         </TabNavigator>
       </View>
     );
@@ -202,7 +151,7 @@ const styles = StyleSheet.create({
   },
   iconTabbarGeneral: {
     height: 25,
-    width: 25,
+    width: 27,
   },
   iconTabbarCoaches: {
     height: 25,
@@ -220,6 +169,9 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderTopWidth: 2,
     borderTopColor: '#d7d7d7',
+    paddingBottom: 3,
+    paddingTop: 3,
+    height: 52,
   },
 });
 

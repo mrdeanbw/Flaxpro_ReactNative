@@ -20,9 +20,9 @@ const defaultTypes = {
   listType: true,
 }
 
-const list = require('../../../Assets/images/list.png');
-const filter = require('../../../Assets/images/filter.png');
-const map = require('../../../Assets/images/map.png');
+const list = require('../../../Assets/images/list-light.png');
+const filter = require('../../../Assets/images/filter-light.png');
+const map = require('../../../Assets/images/map-light.png');
 
 class BottomBar extends React.Component {
   constructor(props) {
@@ -85,7 +85,7 @@ BottomBar.default = defaultTypes;
 const styles = StyleSheet.create({
   bottomBarContainer: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: '#363f46',
     borderRadius: 20,
 
     shadowOffset: {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   textListFilter: {
     backgroundColor: 'transparent',
-    color: '#464646',
+    color: '#fff',
     alignSelf: 'center',
     paddingRight: 10,
   },

@@ -175,7 +175,6 @@ export default class SearchBar extends React.Component {
                   paddingLeft: height * 0.3,
                   fontSize: height * 0.6,
                   color: '#fff',
-                  fontFamily: 'Open Sans',
                 },
                 textStyle
               ]
