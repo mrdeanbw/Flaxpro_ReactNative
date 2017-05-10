@@ -51,14 +51,14 @@ class AuthForm extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { auth: { user } } = nextProps;
-
-    if (user) {
-        Actions.Main({user_mode: user.professional ? CommonConstant.user_trainer : CommonConstant.user_client})
-    }
-    this.setState({ loginRequest: false });
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const { auth: { user } } = nextProps;
+  //
+  //   if (user) {
+  //       Actions.Main({user_mode: user.professional ? CommonConstant.user_trainer : CommonConstant.user_client})
+  //   }
+  //   this.setState({ loginRequest: false });
+  // }
 
   onShowLogIn() {
     this.setState({ selectedButton: 2 });

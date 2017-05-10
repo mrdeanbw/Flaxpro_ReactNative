@@ -53,9 +53,6 @@ class ProfessionalInfoForm extends Component {
       gender : labelSex[0],
       age : 20,
       phoneNumber : '',
-      professional : true,
-      // allergies : '',
-      // injuries : '',
       signUpRequest: false
     };
   }
@@ -64,11 +61,10 @@ class ProfessionalInfoForm extends Component {
     const { auth: { user } } = nextProps;
 
     if (user) {
-      Actions.Main({ user_mode: CommonConstant.user_client });
+      Actions.Main({ user_mode: CommonConstant.user_trainer });
     }
     this.setState({
       signUpRequest: false ,
-      // visibility: false ,
     });
   }
 
@@ -122,7 +118,6 @@ class ProfessionalInfoForm extends Component {
         actions.createUser({ ...data, ...this.state })
         localStorage.save('userData', null);
         this.setState({ signUpRequest: true });
-        Actions.Main({ user_mode: CommonConstant.user_trainer });
       });
   }
 

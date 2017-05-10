@@ -37,6 +37,7 @@ const profileSelectedIcon = require('../../../Assets/images/selected_profile.png
 const accountIcon = require('../../../Assets/images/account.png');
 const accountSelectedIcon = require('../../../Assets/images/selected_account.png');
 
+
 class MainForm extends Component {
   constructor(props) {
     super(props);
@@ -61,61 +62,129 @@ class MainForm extends Component {
 
   render() {
     const { status, user_mode } = this.props;
+    let tabNavigator = [
+      /* Explore */
+      {
+        title: "EXPLORE",
+        selected: this.state.selectedTab === "explore",
+        renderIcon: () => (<Image source={ exploreIcon } style={ styles.iconTabbarGeneral }/>),
+        renderSelectedIcon: () => (<Image source={ exploreSelectedIcon } style={ styles.iconTabbarGeneral }/>),
+        onPress: () => this.setState({ selectedTab: 'explore' }),
+        children: <Explore/>,
+      },
+      /* Clients or Coaches */
+      {
+        title: user_mode === CommonConstant.user_client ? "COACHES" : "CLIENTS",
+        selected: this.state.selectedTab === "clients_coaches",
+        renderIcon: () => (
+          <Image source={ user_mode === CommonConstant.user_client ? coachesIcon : clientsIcon }
+                 style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/>
+        ),
+        renderSelectedIcon: () => (
+          <Image source={ user_mode === CommonConstant.user_client ? coachesSelectedIcon : clientsSelectedIcon }
+                 style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/>
+        ),
+        onPress: () => this.setState({ selectedTab: 'clients_coaches' }),
+        children: <Clients_Coaches/>,
+      },
+      /* Inbox */
+      {
+        title: "INBOX",
+        selected: this.state.selectedTab === "inbox",
+        renderIcon: () => (<Image source={ inboxIcon } style={ styles.iconTabbarGeneral }/>),
+        renderSelectedIcon: () => (<Image source={ inboxSelectedIcon } style={ styles.iconTabbarGeneral }/>),
+        onPress: () => this.setState({ selectedTab: 'inbox' }),
+        badgeText: this.state.badge,
+        children: <Inbox/>,
+      },
+      /* Profile */
+      {
+        title: "PROFILE",
+        selected: this.state.selectedTab === "profile",
+        renderIcon: () => (<Image source={ profileIcon } style={ styles.iconTabbarProfile }/>),
+        renderSelectedIcon: () => (<Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/>),
+        onPress: () => this.setState({ selectedTab: 'profile' }),
+        children: user_mode === CommonConstant.user_client ? <ClientProfile user={ CoachesClients[0] }/> : <TrainerProfile user={ CoachesClients[0] }/>,
+      },
+      /* Account*/
+      {
+        title: "ACCOUNT",
+        selected: this.state.selectedTab === "account",
+        renderIcon: () => (<Image source={ accountIcon } style={ styles.iconTabbarGeneral }/>),
+        renderSelectedIcon: () => (<Image source={ accountSelectedIcon } style={ styles.iconTabbarGeneral }/>),
+        onPress: () => this.setState({ selectedTab: 'account' }),
+        children: <Account/>,
+      },
+    ];
     return (
       <View style={ styles.container }>
         <TabNavigator
           tabBarStyle={ styles.tab }
         >
-          {/* Explore */}
-          <TabNavigator.Item
-            selected={ this.state.selectedTab === 'explore' }
-            title="EXPLORE"
-            renderIcon={ () => <Image source={ exploreIcon } style={ styles.iconTabbarGeneral }/> }
-            renderSelectedIcon={ () => <Image source={ exploreSelectedIcon } style={ styles.iconTabbarGeneral }/> }
-            onPress={ () => this.setState({ selectedTab: 'explore' }) }>
-            <Explore/>
-          </TabNavigator.Item>
+          {
+            tabNavigator.map((tab, index) => (
+              <TabNavigator.Item
+                key={ index }
+                selected={ tab.selected }
+                title={ tab.title }
+                badgeText={ tab.badgeText }
+                renderIcon={ tab.renderIcon }
+                renderSelectedIcon={ tab.renderSelectedIcon }
+                onPress={ tab.onPress }>
+                { tab.children }
+              </TabNavigator.Item>
+            ))
+          }
+          {/*/!* Explore *!/*/}
+          {/*<TabNavigator.Item*/}
+            {/*selected={ this.state.selectedTab === 'explore' }*/}
+            {/*title="EXPLORE"*/}
+            {/*renderIcon={ () => <Image source={ exploreIcon } style={ styles.iconTabbarGeneral }/> }*/}
+            {/*renderSelectedIcon={ () => <Image source={ exploreSelectedIcon } style={ styles.iconTabbarGeneral }/> }*/}
+            {/*onPress={ () => this.setState({ selectedTab: 'explore' }) }>*/}
+            {/*<Explore/>*/}
+          {/*</TabNavigator.Item>*/}
 
-          {/* Clients or Coaches */}
-          <TabNavigator.Item
-            selected={ this.state.selectedTab === 'clients_coaches' }
-            title={ user_mode === CommonConstant.user_client ? "COACHES" : "CLIENTS" }
-            renderIcon={ () => <Image source={ user_mode === CommonConstant.user_client ? coachesIcon : clientsIcon } style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/> }
-            renderSelectedIcon={ () => <Image source={ user_mode === CommonConstant.user_client ? coachesSelectedIcon : clientsSelectedIcon } style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/> }
-            onPress={ () => this.setState({ selectedTab: 'clients_coaches' }) }>
-            <Clients_Coaches/>
-          </TabNavigator.Item>
+          {/*/!* Clients or Coaches *!/*/}
+          {/*<TabNavigator.Item*/}
+            {/*selected={ this.state.selectedTab === 'clients_coaches' }*/}
+            {/*title={ user_mode === CommonConstant.user_client ? "COACHES" : "CLIENTS" }*/}
+            {/*renderIcon={ () => <Image source={ user_mode === CommonConstant.user_client ? coachesIcon : clientsIcon } style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/> }*/}
+            {/*renderSelectedIcon={ () => <Image source={ user_mode === CommonConstant.user_client ? coachesSelectedIcon : clientsSelectedIcon } style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/> }*/}
+            {/*onPress={ () => this.setState({ selectedTab: 'clients_coaches' }) }>*/}
+            {/*<Clients_Coaches/>*/}
+          {/*</TabNavigator.Item>*/}
 
           {/* Inbox */}
-          <TabNavigator.Item
-            selected={ this.state.selectedTab === 'inbox' }
-            title="INBOX"
-            renderIcon={ () => <Image source={ inboxIcon } style={ styles.iconTabbarGeneral }/> }
-            renderSelectedIcon={ () => <Image source={ inboxSelectedIcon } style={ styles.iconTabbarGeneral }/> }
-            badgeText={ this.state.badge }
-            onPress={ () => this.setState({ selectedTab: 'inbox' }) }>
-            <Inbox/>
-          </TabNavigator.Item>
+          {/*<TabNavigator.Item*/}
+            {/*selected={ this.state.selectedTab === 'inbox' }*/}
+            {/*title="INBOX"*/}
+            {/*renderIcon={ () => <Image source={ inboxIcon } style={ styles.iconTabbarGeneral }/> }*/}
+            {/*renderSelectedIcon={ () => <Image source={ inboxSelectedIcon } style={ styles.iconTabbarGeneral }/> }*/}
+            {/*badgeText={ this.state.badge }*/}
+            {/*onPress={ () => this.setState({ selectedTab: 'inbox' }) }>*/}
+            {/*<Inbox/>*/}
+          {/*</TabNavigator.Item>*/}
 
           {/* Profile */}
-          <TabNavigator.Item
-            selected={ this.state.selectedTab === 'profile' }
-            title="PROFILE"
-            renderIcon={ () => <Image source={ profileIcon } style={ styles.iconTabbarProfile }/> }
-            renderSelectedIcon={ () => <Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/> }
-            onPress={ () => this.setState({ selectedTab: 'profile' }) }>
-            { user_mode === CommonConstant.user_client ? <ClientProfile user={ CoachesClients[0] }/> : <TrainerProfile user={ CoachesClients[0] }/> }
-          </TabNavigator.Item>
+          {/*<TabNavigator.Item*/}
+            {/*selected={ this.state.selectedTab === 'profile' }*/}
+            {/*title="PROFILE"*/}
+            {/*renderIcon={ () => <Image source={ profileIcon } style={ styles.iconTabbarProfile }/> }*/}
+            {/*renderSelectedIcon={ () => <Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/> }*/}
+            {/*onPress={ () => this.setState({ selectedTab: 'profile' }) }>*/}
+            {/*{ user_mode === CommonConstant.user_client ? <ClientProfile user={ CoachesClients[0] }/> : <TrainerProfile user={ CoachesClients[0] }/> }*/}
+          {/*</TabNavigator.Item>*/}
 
           {/* Account */}
-          <TabNavigator.Item
-            selected={ this.state.selectedTab === 'account' }
-            title="ACCOUNT"
-            renderIcon={ () => <Image source={ accountIcon } style={ styles.iconTabbarGeneral }/> }
-            renderSelectedIcon={ () => <Image source={ accountSelectedIcon } style={ styles.iconTabbarGeneral }/> }
-            onPress={ () => this.setState({ selectedTab: 'account' }) }>
-            <Account/>
-          </TabNavigator.Item>
+          {/*<TabNavigator.Item*/}
+            {/*selected={ this.state.selectedTab === 'account' }*/}
+            {/*title="ACCOUNT"*/}
+            {/*renderIcon={ () => <Image source={ accountIcon } style={ styles.iconTabbarGeneral }/> }*/}
+            {/*renderSelectedIcon={ () => <Image source={ accountSelectedIcon } style={ styles.iconTabbarGeneral }/> }*/}
+            {/*onPress={ () => this.setState({ selectedTab: 'account' }) }>*/}
+            {/*<Account/>*/}
+          {/*</TabNavigator.Item>*/}
 
         </TabNavigator>
       </View>

@@ -53,10 +53,6 @@ class ClientInfoForm extends Component {
       gender : labelSex[0],
       age : 28,
       profession : professionalNames[0],
-      // height : '',
-      // fitnessLevel : '',
-      // allergies : '',
-      // injuries : '',
       signUpRequest: false
     };
   }
@@ -69,7 +65,6 @@ class ClientInfoForm extends Component {
     }
     this.setState({
       signUpRequest: false ,
-      // visibility: false ,
     });
   }
 
@@ -123,7 +118,6 @@ class ClientInfoForm extends Component {
         actions.createUser({ ...data, ...this.state })
         localStorage.save('userData', null);
         this.setState({ signUpRequest: true });
-        Actions.Main({ user_mode: CommonConstant.user_client });
       });
   }
 
