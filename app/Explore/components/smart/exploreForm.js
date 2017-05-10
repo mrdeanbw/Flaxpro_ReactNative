@@ -133,7 +133,6 @@ class ExploreForm extends Component {
     const { professionSelected } = this.state,
       { auth: { professions, user, coachesClients } } = this.props;
 
-    console.log('coachesClients', coachesClients)
     return (
       <View style={ styles.navContainer }>
         <View style={ styles.searchBarWrap }>

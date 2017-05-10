@@ -21,6 +21,10 @@ export const createUser = (userData) => async (dispatch, store) => {
       }
     }
 
+    user.professional = userData.professional;
+    user.name = userData.name || user.name;
+    user.age = userData.age || user.age;
+
     dispatch({ type: types.CREATE_USER, user, professions, coachesClients });
   }, 1000);
 };

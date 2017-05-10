@@ -53,7 +53,8 @@ class ProfessionalInfoForm extends Component {
       gender : labelSex[0],
       age : 20,
       phoneNumber : '',
-      signUpRequest: false
+      signUpRequest: false,
+      professional: true,
     };
   }
 
