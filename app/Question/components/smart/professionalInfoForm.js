@@ -176,7 +176,7 @@ class ProfessionalInfoForm extends Component {
                 <View style={ styles.mainContainer }>
                   <View style={ styles.cellContainer }>
                     <Text style={ styles.textCellTitle }>Phone Number</Text>
-                    <View style={ styles.viewInputCenter }>
+                    <View style={ styles.viewInput }>
                       <TextInput
                         autoCapitalize="none"
                         autoCorrect={ false }
@@ -232,7 +232,6 @@ class ProfessionalInfoForm extends Component {
                       <Slider style={ styles.slider }
                               maximumTrackTintColor="#9be5ff"
                               minimumTrackTintColor="#10c7f9"
-                              trackStyle={{backgroundColor: '#9be5ff'}}
                               thumbStyle={ styles.thumbStyle }
                               minimumValue={ 15 }
                               maximumValue={ 85 }
@@ -503,6 +502,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: width/2 -100,
+    borderBottomWidth: 1,
+    borderBottomColor: '#9e9e9e',
+  },
+  viewInput: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginHorizontal: width/2 -85,
     borderBottomWidth: 1,
     borderBottomColor: '#9e9e9e',
   },
