@@ -138,17 +138,19 @@ class ExploreForm extends Component {
         <View style={ styles.searchBarWrap }>
           <SearchBar
             onSearchChange={ () => console.log('On Focus') }
-            height={ 25 }
+            height={ 20 }
             autoCorrect={ false }
             returnKeyType={ "search" }
-            iconColor={ "#ffffff99" }
-            placeholderColor="#ffffff99"
+            placeholder="Prefered Location"
+            iconColor={ "#fff" }
+            placeholderColor={ "#fff" }
             paddingTop={ 20 }
           />
         </View>
         <View style={ styles.calendarBarWrap } >
           <EvilIcons
-            name="calendar"  size={ 35 }
+            name="calendar"
+            size={ 25 }
             color="#fff"
           />
           <DatePicker
@@ -166,13 +168,17 @@ class ExploreForm extends Component {
               dateInput: {
                 borderColor: "transparent",
                 alignItems: "flex-start",
-                height: 25,
+                height: 20,
               },
               dateText: {
                 color: "#fff",
+                fontFamily: 'Open Sans',
+                fontSize: 12,
               },
               placeholderText: {
-                color: "#a2e2fe",
+                color: "#fff",
+                fontFamily: 'Open Sans',
+                fontSize: 12,
               },
             }}
             onDateChange={ (date) => { this.setState({ birthday: date }) } }
@@ -294,13 +300,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#86d5f9',
+    backgroundColor: '#5bd5f9',
     marginHorizontal: 10,
     marginVertical: 5,
   },
   calendar: {
     width : width - 55,
-    height: 35,
+    height: 30,
     alignItems: "center",
     justifyContent: "center",
   },

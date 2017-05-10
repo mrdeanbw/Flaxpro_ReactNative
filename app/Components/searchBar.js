@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#86d5f9',
+    backgroundColor: '#5bd5f9',
   },
   searchBarInput: {
     flex: 1,
@@ -139,7 +139,7 @@ export default class SearchBar extends React.Component {
               styles.searchBar,
               {
                 height: height + 10,
-                paddingLeft: height * 0.25,
+                paddingLeft: height * 0.5,
               },
               inputStyle
             ]
@@ -175,6 +175,7 @@ export default class SearchBar extends React.Component {
                   paddingLeft: height * 0.3,
                   fontSize: height * 0.6,
                   color: '#fff',
+                  fontFamily: 'Open Sans',
                 },
                 textStyle
               ]
