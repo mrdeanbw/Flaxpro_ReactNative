@@ -36,6 +36,34 @@ class AnimatedViewCell extends Component {
 
   render() {
     const { width, height, avatar, name, description, rating, amount, user, profession = {} } = this.props;
+    const professionalClientData = {
+      backgroundColor: !user.professional && profession.name ? profession.color : '#45c7f1',
+      professionalProfessionBlock: !user.professional && profession.name &&
+        <Text style={ [styles.textDescription, { color: profession.color }] }>{ profession.name }</Text>,
+      professionalStarsBlock: user.professional &&
+        <View style={ styles.starContainer }>
+          <Stars
+            isActive={ false }
+            rateMax={ 5 }
+            isHalfStarEnabled={ false }
+            onStarPress={ (rating) => console.log(rating) }
+            rate={ rating }
+            size={ 12 }
+            color="gold"
+          />
+        </View>,
+      clientStarsBlock: !user.professional &&
+        <Stars
+          isActive={ false }
+          rateMax={ 5 }
+          isHalfStarEnabled={ false }
+          onStarPress={ (rating) => console.log(rating) }
+          rate={ rating }
+          size={ 12 }
+          color="white"
+        />,
+    };
+
     return (
       <Animated.View style={ this.props.style }>
         <TouchableOpacity 
@@ -46,18 +74,7 @@ class AnimatedViewCell extends Component {
             <Image source={ avatar } style={ [{ width: width * 0.36 }, { height: height * 0.36 }, { borderRadius: height * 0.18 }] } />
             <Text style={ styles.textName }>{ name }</Text>
             {
-              user.professional &&
-              <View style={ styles.starContainer }>
-                <Stars
-                  isActive={ false }
-                  rateMax={ 5 }
-                  isHalfStarEnabled={ false }
-                  onStarPress={ (rating) => console.log(rating) }
-                  rate={ rating }
-                  size={ 12 }
-                  color="gold"
-                />
-              </View>
+              professionalClientData.professionalStarsBlock
             }
             <Text
               style={ styles.textDescription }
@@ -67,22 +84,12 @@ class AnimatedViewCell extends Component {
               { description }
             </Text>
             {
-              !user.professional && profession.name &&
-              <Text style={ [styles.textDescription, { color: profession.color }] }>{ profession.name }</Text>
+              professionalClientData.professionalProfessionBlock
             }
           </View>
-          <View style={ [styles.ratingContainer, {backgroundColor: !user.professional && profession.name ? profession.color : '#45c7f1'}] }>
+          <View style={ [styles.ratingContainer, {backgroundColor: professionalClientData.backgroundColor}] }>
             {
-              !user.professional &&
-              <Stars
-                isActive={ false }
-                rateMax={ 5 }
-                isHalfStarEnabled={ false }
-                onStarPress={ (rating) => console.log(rating) }
-                rate={ rating }
-                size={ 12 }
-                color="white"
-              />
+              professionalClientData.clientStarsBlock
             }
             <Text style={ styles.textPrice }>${ amount }</Text>
           </View>
