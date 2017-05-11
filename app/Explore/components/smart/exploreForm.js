@@ -192,7 +192,7 @@ class ExploreForm extends Component {
             onDateChange={ (date) => { this.setState({ birthday: date }) } }
           />
         </View>
-        { user && user.professional ?
+        { user && !user.professional ?
           <View style={ styles.filterRowContainer }>
             <View style={ styles.cellContainer }>
               <View style={ professionSelected == 0 ? styles.selectWrapper : styles.buttonWrapper }>
