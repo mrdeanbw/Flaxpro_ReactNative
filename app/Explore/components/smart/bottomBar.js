@@ -11,13 +11,13 @@ const propTypes = {
   style: PropTypes.object,
   onFilter: PropTypes.func,
   onList: PropTypes.func,
-  listType: PropTypes.bool,
+  mapType: PropTypes.bool,
 };
 
 const defaultTypes = {
   onFilter: () => {},
   onList: () => {},
-  listType: true,
+  mapType: true,
 }
 
 const list = require('../../../Assets/images/list-light.png');
@@ -48,12 +48,12 @@ class BottomBar extends React.Component {
   }
 
   render() {
-    const { listType } = this.props;
+    const { mapType } = this.props;
 
     let listTitle = "List";
     let listImage = list;
 
-    if ( !listType ) {
+    if ( mapType ) {
       listTitle = "Map";
       listImage = map;
     }

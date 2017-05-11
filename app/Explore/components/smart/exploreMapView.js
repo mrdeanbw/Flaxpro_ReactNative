@@ -566,24 +566,13 @@ class ExploreMapView extends Component {
               })
             }
           </MapView.Animated>
-          {
-            this.props.mapStandardMode ?
 
-              <View style={ [styles.mainContentContainer] }>
-                <BottomBar
-                  onList={ () => this.onList() }
-                  onFilter={ () => this.onFilter() }
-                />
-              </View>
-
-              :
-              <View style={ [styles.mainContentContainer] }>
-                <BottomBar
-                  onList={ () => this.onList() }
-                  onFilter={ () => this.onFilter() }
-                />
-              </View>
-          }
+          <View style={ [styles.mainContentContainer] }>
+            <BottomBar
+              onList={ () => this.onList() }
+              onFilter={ () => this.onFilter() }
+            />
+          </View>
           {
             this.props.mapStandardMode ?
               <View style={ [styles.itemContainer, { height: 0 }] }/>
