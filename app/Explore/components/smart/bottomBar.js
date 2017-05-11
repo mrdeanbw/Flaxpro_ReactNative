@@ -20,9 +20,9 @@ const defaultTypes = {
   mapType: true,
 }
 
-const list = require('../../../Assets/images/list-light.png');
-const filter = require('../../../Assets/images/filter-light.png');
-const map = require('../../../Assets/images/map-light.png');
+const list = require('../../../Assets/images/list_white.png');
+const filter = require('../../../Assets/images/filter_white.png');
+const map = require('../../../Assets/images/map_white.png');
 
 class BottomBar extends React.Component {
   constructor(props) {
