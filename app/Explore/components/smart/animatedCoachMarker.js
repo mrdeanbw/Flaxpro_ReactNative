@@ -9,7 +9,7 @@ import Stars from 'react-native-stars-rating';
 
 class AnimatedCoachMarker extends Component {
   render() {
-    const { amount, rating, selected, style, index } = this.props;
+    const { personName, amount, rating, selected, style, index } = this.props;
 
     const background = selected.interpolate({
       inputRange: [0, 1],
@@ -40,7 +40,8 @@ class AnimatedCoachMarker extends Component {
             styles.contentContainer,
           ]}
         >
-          <Animated.Text style={ [styles.amount, { color: textColor }] }>${ amount }</Animated.Text>
+          {/*<Animated.Text style={ [styles.amount, { color: textColor }] }>${ amount }</Animated.Text>*/}
+          <Animated.Text style={ [styles.personName, { color: textColor }] }>{ personName }</Animated.Text>
           <Stars
             isActive={ false }
             rateMax={ 5 }
@@ -50,6 +51,9 @@ class AnimatedCoachMarker extends Component {
             size={ 12 }
           />
 
+        </Animated.View>
+        <Animated.View style={ styles.bubbleAmount }>
+          <Animated.Text style={ styles.amount }>${ amount }</Animated.Text>
         </Animated.View>
         <Animated.View
           style={ [styles.arrowBorder, { borderTopColor: border }]}
@@ -63,6 +67,7 @@ class AnimatedCoachMarker extends Component {
 }
 
 AnimatedCoachMarker.propTypes = {
+  personName: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   selected: PropTypes.object.isRequired,
   rating: PropTypes.number.isRequired,
@@ -82,32 +87,50 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   bubble: {
     flex: 0,
     flexDirection: 'row',
     alignSelf: 'flex-start',
     backgroundColor: '#fff',
-    borderRadius: 5,
+    borderRadius: 20,
     borderColor: '#a7a7a7',
     borderWidth: 1,
   },
   amount: {
+    color: '#fff',
+    fontSize: 13,
+  },
+  bubbleAmount: {
+    flex: 0,
+    alignSelf: 'center',
+    backgroundColor: '#45c7f1',
+    borderRadius: 13,
+    marginBottom: -24,
+    marginTop: 2,
+    flexDirection: 'column',
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+  },
+  personName: {
     color: '#505050',
     fontSize: 13,
   },
   arrow: {
     backgroundColor: 'transparent',
-    borderWidth: 10,
+    borderWidth: 7,
     borderColor: 'transparent',
     borderTopColor: '#fff',
     alignSelf: 'center',
-    marginTop: -22,
+    marginTop: -16,
   },
   arrowBorder: {
     backgroundColor: 'transparent',
-    borderWidth: 10,
+    borderWidth: 7,
     borderColor: 'transparent',
     borderTopColor: '#a7a7a7',
     alignSelf: 'center',

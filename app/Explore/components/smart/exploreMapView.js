@@ -556,6 +556,7 @@ class ExploreMapView extends Component {
                         ],
                       }}
                       amount={ marker.amount }
+                      personName={ marker.name }
                       rating={ marker.rating }
                       selected={ selected }
                       index={index}
