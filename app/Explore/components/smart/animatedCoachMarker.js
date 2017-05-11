@@ -9,7 +9,7 @@ import Stars from 'react-native-stars-rating';
 
 class AnimatedCoachMarker extends Component {
   render() {
-    const { personName, amount, rating, selected, style, index } = this.props;
+    const { personName, amount, rating, selected, style, index, user, profession = {} } = this.props;
 
     const background = selected.interpolate({
       inputRange: [0, 1],
@@ -28,6 +28,10 @@ class AnimatedCoachMarker extends Component {
       outputRange: ['#000', '#fff'],
     });
 
+    const professionalClientData = {
+      backgroundColor: !user.professional && profession.color ? profession.color :'#45c7f1',
+    };
+
     return (
       <Animated.View style={[styles.container, style]}>
         <Animated.View
@@ -40,7 +44,6 @@ class AnimatedCoachMarker extends Component {
             styles.contentContainer,
           ]}
         >
-          {/*<Animated.Text style={ [styles.amount, { color: textColor }] }>${ amount }</Animated.Text>*/}
           <Animated.Text style={ [styles.personName, { color: textColor }] }>{ personName }</Animated.Text>
           <Stars
             isActive={ false }
@@ -52,7 +55,7 @@ class AnimatedCoachMarker extends Component {
           />
 
         </Animated.View>
-        <Animated.View style={ styles.bubbleAmount }>
+        <Animated.View style={ [styles.bubbleAmount, {backgroundColor: professionalClientData.backgroundColor}] }>
           <Animated.Text style={ styles.amount }>${ amount }</Animated.Text>
         </Animated.View>
         <Animated.View
@@ -106,7 +109,6 @@ const styles = StyleSheet.create({
   bubbleAmount: {
     flex: 0,
     alignSelf: 'center',
-    backgroundColor: '#45c7f1',
     borderRadius: 13,
     marginBottom: -24,
     marginTop: 2,

@@ -469,7 +469,7 @@ class ExploreMapView extends Component {
       scrollY
     } = this.state;
 
-    const { coachesClients, gymLocations } = this.props;
+    const { coachesClients, gymLocations, user } = this.props;
 
     this.region = new MapView.AnimatedRegion({
       latitude: coachesClients[0].coordinate.latitude,
@@ -558,8 +558,10 @@ class ExploreMapView extends Component {
                       amount={ marker.amount }
                       personName={ marker.name }
                       rating={ marker.rating }
+                      profession={ marker.profession }
                       selected={ selected }
                       index={index}
+                      user={ user }
                     />
                   </MapView.Marker>
                 );

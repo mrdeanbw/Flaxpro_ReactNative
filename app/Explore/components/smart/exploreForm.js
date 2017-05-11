@@ -296,6 +296,7 @@ class ExploreForm extends Component {
                 onList={ () => this.onList() }
                 coachesClients={ this.state.coachesClients }
                 gymLocations={ this.state.gymLocations }
+                user={ user }
               />
               :
               <ExploreListView

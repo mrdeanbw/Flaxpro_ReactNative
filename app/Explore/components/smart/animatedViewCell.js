@@ -36,6 +36,7 @@ class AnimatedViewCell extends Component {
 
   render() {
     const { width, height, avatar, name, description, rating, amount, user, profession = {} } = this.props;
+
     const professionalClientData = {
       backgroundColor: !user.professional && profession.name ? profession.color : '#45c7f1',
       professionalProfessionBlock: !user.professional && profession.name &&
