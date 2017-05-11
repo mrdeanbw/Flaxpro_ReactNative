@@ -35,7 +35,7 @@ class AnimatedViewCell extends Component {
   }
 
   render() {
-    const { width, height, avatar, name, description, rating, amount } = this.props;
+    const { width, height, avatar, name, description, rating, amount, user } = this.props;
     return (
       <Animated.View style={ this.props.style }>
         <TouchableOpacity 
@@ -45,18 +45,33 @@ class AnimatedViewCell extends Component {
           <View style={ styles.topContainer }>
             <Image source={ avatar } style={ [{ width: width * 0.36 }, { height: height * 0.36 }, { borderRadius: height * 0.18 }] } />
             <Text style={ styles.textName }>{ name }</Text>
+            {
+              user.professional &&
+              <Stars
+                isActive={ false }
+                rateMax={ 5 }
+                isHalfStarEnabled={ false }
+                onStarPress={ (rating) => console.log(rating) }
+                rate={ rating }
+                size={ 12 }
+                color="gold"
+              />
+            }
             <Text style={ styles.textDescription }>{ description }</Text>
           </View>
           <View style={ styles.ratingContainer }>
-            <Stars
-              isActive={ false }
-              rateMax={ 5 }
-              isHalfStarEnabled={ false }
-              onStarPress={ (rating) => console.log(rating) }
-              rate={ rating }
-              size={ 12 }
-              color="white"
-            />
+            {
+              !user.professional &&
+              <Stars
+                isActive={ false }
+                rateMax={ 5 }
+                isHalfStarEnabled={ false }
+                onStarPress={ (rating) => console.log(rating) }
+                rate={ rating }
+                size={ 12 }
+                color="white"
+              />
+            }
             <Text style={ styles.textPrice }>${ amount }</Text>
           </View>
         </TouchableOpacity>

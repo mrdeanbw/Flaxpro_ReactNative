@@ -62,7 +62,6 @@ class ExploreForm extends Component {
 
   onList () {
     this.setState({ showContentMode: 1,  mapStandardMode: true });
-    // this.setState({ mapStandardMode:true });
   }
 
   onFilter () {
@@ -71,7 +70,6 @@ class ExploreForm extends Component {
 
   onMap () {
     this.setState({ showContentMode: 0, mapStandardMode: true });
-    // this.setState({ mapStandardMode:true });
   }
 
   onClose () {
@@ -277,7 +275,8 @@ class ExploreForm extends Component {
 
   render() {
     const { status } = this.props;
-    
+    const { user } = this.props.auth;
+
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -303,6 +302,7 @@ class ExploreForm extends Component {
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onMap() }
                 coachesClients={ this.state.coachesClients }
+                user={ user }
               />
           }
 

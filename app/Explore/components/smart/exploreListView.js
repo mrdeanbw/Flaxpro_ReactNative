@@ -60,6 +60,7 @@ class ExploreListView extends Component {
         description={ rowData.description }
         amount={ rowData.amount }
         onPress={ () => this.onClickAnimatedViewCell(rowData) }
+        user={ this.props.user }
       />
     );
   }
@@ -79,9 +80,6 @@ class ExploreListView extends Component {
   }
 
   onClickAnimatedViewCell(rowData) {
-    console.log('rowData', rowData)
-
-    // console.log('selectedCoacheClientIndex', this.props.coachesClients[])
     localStorage.get(CommonConstant.user_mode)
       .then((data) => {
         if (data == CommonConstant.user_client) {
@@ -94,8 +92,6 @@ class ExploreListView extends Component {
           return;
         }
       });
-
-    // alert("onClickCell");
   }
 
   render() {
@@ -118,7 +114,7 @@ class ExploreListView extends Component {
           <BottomBar
             onList={ () => this.onList() }
             onFilter={ () => this.onFilter() }
-            mapType={ true }
+            listType={ false }
           />
         </View>
 
