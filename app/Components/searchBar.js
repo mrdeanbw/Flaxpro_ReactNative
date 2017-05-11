@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import dismissKeyboard from 'react-native/Libraries/Utilities/dismissKeyboard';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 const styles = StyleSheet.create({
   searchBar: {
@@ -139,23 +140,27 @@ export default class SearchBar extends React.Component {
               styles.searchBar,
               {
                 height: height + 10,
-                paddingLeft: height * 0.5,
+                paddingLeft: height * 0.25,
               },
               inputStyle
             ]
           }
         >
-          { this.state.isOnFocus ?
-            <Icon
-                name={ iconSearchName } size={ height }
-                color={ iconColor }
-            />
-          :
-            <Icon
-              name={ iconSearchName } size={ height }
-              color={ iconColor }
-            />
-          }
+          <EvilIcons
+            name={ iconSearchName }  size={ height * 1.2 }
+            color={ iconColor }
+          />
+          {/*{ this.state.isOnFocus ?*/}
+            {/*<Icon*/}
+                {/*name={ iconSearchName } size={ height }*/}
+                {/*color={ iconColor }*/}
+            {/*/>*/}
+          {/*:*/}
+            {/*<Icon*/}
+              {/*name={ iconSearchName } size={ height }*/}
+              {/*color={ iconColor }*/}
+            {/*/>*/}
+          {/*}*/}
           <TextInput
             autoCapitalize="none"
             autoCorrect={ autoCorrect === true }
@@ -172,7 +177,7 @@ export default class SearchBar extends React.Component {
             style={
               [styles.searchBarInput,
                 {
-                  paddingLeft: height * 0.3,
+                  // paddingLeft: height * 0.2,
                   fontSize: height * 0.6,
                   color: '#fff',
                 },

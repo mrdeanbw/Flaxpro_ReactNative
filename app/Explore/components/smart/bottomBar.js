@@ -50,10 +50,10 @@ class BottomBar extends React.Component {
   render() {
     const { listType } = this.props;
 
-    var listTitle = "List";
-    var listImage = list;
+    let listTitle = "List";
+    let listImage = list;
 
-    if ( listType == false ) {
+    if ( !listType ) {
       listTitle = "Map";
       listImage = map;
     }

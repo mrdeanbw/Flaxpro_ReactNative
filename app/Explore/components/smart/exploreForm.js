@@ -61,19 +61,17 @@ class ExploreForm extends Component {
   }
 
   onList () {
-
-    this.setState({ showContentMode: 1 });
-    this.setState({ mapStandardMode:true });
+    this.setState({ showContentMode: 1,  mapStandardMode: true });
+    // this.setState({ mapStandardMode:true });
   }
 
   onFilter () {
-
     Actions.FilterForm();
   }
 
   onMap () {
-    this.setState({ showContentMode: 0 });
-    this.setState({ mapStandardMode:true });
+    this.setState({ showContentMode: 0, mapStandardMode: true });
+    // this.setState({ mapStandardMode:true });
   }
 
   onClose () {
@@ -150,7 +148,7 @@ class ExploreForm extends Component {
             height={ 20 }
             autoCorrect={ false }
             returnKeyType={ "search" }
-            iconSearchName={ "md-pin" }
+            iconSearchName={ "location" }
             placeholder="Prefered Location"
             iconColor={ "#fff" }
             placeholderColor={ "#fff" }

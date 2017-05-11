@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   },
   iconTabbarGeneral: {
     height: 25,
-    width: 27,
+    width: 25,
   },
   iconTabbarCoaches: {
     height: 25,
