@@ -118,27 +118,33 @@ export const tempProfileData = [{
 
 export const allProfessions = [{
   id: 'asd7as8',
-  name: 'Yoga',
+  name: 'Simply Yoga',
+  color: '#ac6bbd',
   icon: require('../Assets/images/yoga.png')
 }, {
   id: '6ast5da',
-  name: 'Plates',
+  name: 'Chiro',
+  color: '#51c9b0',
   icon: require('../Assets/images/pilates.png')
 }, {
   id: 'as90dy7',
   name: 'Strength Training',
+  color: '#ee4e42',
   icon: require('../Assets/images/strength_training.png')
 }, {
   id: 'as67d5d',
-  name: 'Yoga4',
+  name: 'Fitness Training',
+  color: '#fec107',
   icon: require('../Assets/images/sport.png')
 }, {
   id: 'ad4324e',
-  name: 'Yoga5',
+  name: 'Simply Yoga',
+  color: '#ac6bbd',
   icon: require('../Assets/images/sport.png')
 }, {
   id: '785asda',
   name: 'Yoga6',
+  color: '#4c64b4',
   icon: require('../Assets/images/sport.png')
 }, {
   id: 'asdwqd2',

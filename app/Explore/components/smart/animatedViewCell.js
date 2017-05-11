@@ -35,7 +35,7 @@ class AnimatedViewCell extends Component {
   }
 
   render() {
-    const { width, height, avatar, name, description, rating, amount, user } = this.props;
+    const { width, height, avatar, name, description, rating, amount, user, profession = {} } = this.props;
     return (
       <Animated.View style={ this.props.style }>
         <TouchableOpacity 
@@ -47,19 +47,31 @@ class AnimatedViewCell extends Component {
             <Text style={ styles.textName }>{ name }</Text>
             {
               user.professional &&
-              <Stars
-                isActive={ false }
-                rateMax={ 5 }
-                isHalfStarEnabled={ false }
-                onStarPress={ (rating) => console.log(rating) }
-                rate={ rating }
-                size={ 12 }
-                color="gold"
-              />
+              <View style={ styles.starContainer }>
+                <Stars
+                  isActive={ false }
+                  rateMax={ 5 }
+                  isHalfStarEnabled={ false }
+                  onStarPress={ (rating) => console.log(rating) }
+                  rate={ rating }
+                  size={ 12 }
+                  color="gold"
+                />
+              </View>
             }
-            <Text style={ styles.textDescription }>{ description }</Text>
+            <Text
+              style={ styles.textDescription }
+              numberOfLines={ 1 }
+              ellipsizeMode="tail"
+            >
+              { description }
+            </Text>
+            {
+              !user.professional && profession.name &&
+              <Text style={ [styles.textDescription, { color: profession.color }] }>{ profession.name }</Text>
+            }
           </View>
-          <View style={ styles.ratingContainer }>
+          <View style={ [styles.ratingContainer, {backgroundColor: !user.professional && profession.name ? profession.color : '#45c7f1'}] }>
             {
               !user.professional &&
               <Stars
@@ -87,10 +99,13 @@ module.exports = AnimatedViewCell;
 const styles = StyleSheet.create({
 
   topContainer: {
-    flex: 4.5,
+    flex: 5,
     alignItems: 'center',
     justifyContent: 'center',
-  },  
+  },
+  starContainer: {
+
+  },
   ratingContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -106,6 +121,7 @@ const styles = StyleSheet.create({
     color: '#1c1c1c',
   },
   textDescription: {
+    paddingHorizontal: 3,
     color: '#808080',
     fontSize: 10,
     textAlign: 'center',

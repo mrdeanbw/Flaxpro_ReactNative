@@ -61,6 +61,7 @@ class ExploreListView extends Component {
         amount={ rowData.amount }
         onPress={ () => this.onClickAnimatedViewCell(rowData) }
         user={ this.props.user }
+        profession={ rowData.profession }
       />
     );
   }
@@ -114,7 +115,7 @@ class ExploreListView extends Component {
           <BottomBar
             onList={ () => this.onList() }
             onFilter={ () => this.onFilter() }
-            listType={ false }
+            mapType={ true }
           />
         </View>
 

@@ -52,6 +52,10 @@ export const CoachesClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: true,
+    profession: {
+      name: 'Fitness Training',
+      color: '#fec107',
+    },
   },
   {
     id: 1,
@@ -70,6 +74,10 @@ export const CoachesClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: true,
+    profession: {
+      name: 'Simply Yoga',
+      color: '#ac6bbd',
+    },
   },
   {
     id: 2,
@@ -88,6 +96,10 @@ export const CoachesClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: true,
+    profession: {
+      name: 'Strength Training',
+      color: '#ee4e42',
+    },
   },
   {
     id: 3,
@@ -106,6 +118,10 @@ export const CoachesClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: true,
+    profession: {
+      name: 'Yoga6',
+      color: '#4c64b4',
+    },
   },
   {
     id: 4,
@@ -124,6 +140,10 @@ export const CoachesClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: true,
+    profession: {
+      name: 'Strength Training',
+      color: '#ee4e42',
+    },
   },
   {
     id: 5,
@@ -142,6 +162,10 @@ export const CoachesClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: true,
+    profession: {
+      name: 'Simply Yoga',
+      color: '#ac6bbd',
+    },
   },
   {
     id: 6,
@@ -160,6 +184,10 @@ export const CoachesClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,
+    profession: {
+      name: 'Fitness Training',
+      color: '#fec107',
+    },
   },
   {
     id: 7,
@@ -196,6 +224,10 @@ export const CoachesClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,
+    profession: {
+      name: 'Yoga6',
+      color: '#4c64b4',
+    },
   },
   {
     id: 9,

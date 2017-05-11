@@ -72,9 +72,9 @@ class MainForm extends Component {
         onPress: () => this.setState({ selectedTab: 'explore' }),
         children: <Explore/>,
       },
-      /* Clients or Coaches */
+      /* Clients or Professional */
       {
-        title: user_mode === CommonConstant.user_client ? "COACHES" : "CLIENTS",
+        title: user_mode === CommonConstant.user_client ? "PROS" : "CLIENTS",
         selected: this.state.selectedTab === "clients_coaches",
         renderIcon: () => (
           <Image source={ user_mode === CommonConstant.user_client ? coachesIcon : clientsIcon }
