@@ -6,8 +6,8 @@ export function clientProfile() {
   };
 }
 
-export function trainerProfile() {
+export function professionalProfile() {
   return {
-    type: [types.TRAINER_PROFILE_REQUEST, types.TRAINER_PROFILE_SUCCESS, types.TRAINER_PROFILE_ERROR]
+    type: [types.PROFESSIONAL_PROFILE_REQUEST, types.PROFESSIONAL_PROFILE_SUCCESS, types.PROFESSIONAL_PROFILE_ERROR]
   };
 }

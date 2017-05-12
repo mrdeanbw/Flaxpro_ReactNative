@@ -35,7 +35,7 @@ const pilates = require('../../../Assets/images/pilates.png');
 const yoga = require('../../../Assets/images/yoga.png');
 const totalWorkout = require('../../../Assets/images/total_workout.png');
 
-export default class TrainerProfileForm extends Component {
+export default class ProfessionalProfileForm extends Component {
 
   static propTypes = {
     editable: PropTypes.bool,
@@ -287,7 +287,7 @@ export default class TrainerProfileForm extends Component {
                     </View>
                     <View style={ styles.infoRowRightContainer }>
                       <Text style={ styles.textInfoField }>Certification : </Text>
-                      <Text style={ styles.textInfoValue }>Certified Personal Trainer</Text>
+                      <Text style={ styles.textInfoValue }>Certified Personal Professional</Text>
                     </View>
                   </View>
                 </View>
@@ -300,7 +300,7 @@ export default class TrainerProfileForm extends Component {
 
                 <View style={ styles.infoContainer }>
                   <View style={ styles.starContainer }>
-                    <Text style={ styles.textTrainerName }>Mark</Text>
+                    <Text style={ styles.textProfessionalName }>Mark</Text>
                     <Stars
                       isActive={ false }
                       rateMax={ 5 }
@@ -316,7 +316,7 @@ export default class TrainerProfileForm extends Component {
 
                 <View style={ styles.infoContainer }>
                   <View style={ styles.starContainer }>
-                    <Text style={ styles.textTrainerName }>Alex</Text>
+                    <Text style={ styles.textProfessionalName }>Alex</Text>
                     <Stars
                       isActive={ false }
                       rateMax={ 5 }
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
   starContainer: {
     flexDirection: 'row',
   },
-  textTrainerName: {
+  textProfessionalName: {
     fontSize: 11,
     fontWeight: 'bold',
     paddingRight: 5,

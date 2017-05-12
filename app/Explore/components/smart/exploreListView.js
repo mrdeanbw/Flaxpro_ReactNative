@@ -85,9 +85,9 @@ class ExploreListView extends Component {
       .then((data) => {
         if (data == CommonConstant.user_client) {
           console.log('client')
-          Actions.TrainerProfile({ editable: false, user: rowData });
+          Actions.ProfessionalProfile({ editable: false, user: rowData });
           return;
-        } else if (data == CommonConstant.user_trainer){
+        } else if (data == CommonConstant.user_professional){
           console.log('professional')
           Actions.ClientProfile({ editable: false, user: rowData });
           return;
@@ -99,13 +99,13 @@ class ExploreListView extends Component {
     const { status } = this.props;
 
     this.state = {
-      dataSource: this.dataSource.cloneWithRows(this.props.coachesClients),
+      dataSource: this.dataSource.cloneWithRows(this.props.professionalsClients),
     };
 
     return (
       <View style={ styles.container }>
         <ListView
-          pageSize = { this.props.coachesClients.length }
+          pageSize = { this.props.professionalsClients.length }
           dataSource={ this.state.dataSource }
           renderRow={ this.renderRow.bind(this) }
           contentContainerStyle={ styles.list }

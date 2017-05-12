@@ -12,22 +12,22 @@ import TabNavigator from 'react-native-tab-navigator';
 
 import Explore from '../../../Explore/containers/explore';
 import Account from '../../../Account/containers/account';
-import Clients_Coaches from '../../../Clients_Coaches/containers/clients_coaches';
+import Clients_Professionals from '../../../Clients_Professionals/containers/clients_professionals';
 import ClientProfile from '../../../Profile/containers/clientProfile';
-import TrainerProfile from '../../../Profile/containers/trainerProfile';
+import ProfessionalProfile from '../../../Profile/containers/professionalProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 
 import { connect } from 'react-redux';
 import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
-import { CoachesClients } from '../../../Components/dummyEntries';
+import { ProfessionalsClients } from '../../../Components/dummyEntries';
 
 const { width, height } = Dimensions.get('window');
 
 const exploreIcon = require('../../../Assets/images/explore.png');
 const exploreSelectedIcon = require('../../../Assets/images/selected_explore.png');
-const coachesIcon = require('../../../Assets/images/coaches.png');
-const coachesSelectedIcon = require('../../../Assets/images/selected_coaches.png');
+const professionalsIcon = require('../../../Assets/images/professionals.png');
+const professionalsSelectedIcon = require('../../../Assets/images/selected_professionals.png');
 const clientsIcon = require('../../../Assets/images/clients.png');
 const clientsSelectedIcon = require('../../../Assets/images/selected_clients.png');
 const inboxIcon = require('../../../Assets/images/inbox.png');
@@ -75,17 +75,17 @@ class MainForm extends Component {
       /* Clients or Professional */
       {
         title: user_mode === CommonConstant.user_client ? "PROS" : "CLIENTS",
-        selected: this.state.selectedTab === "clients_coaches",
+        selected: this.state.selectedTab === "clients_professionals",
         renderIcon: () => (
-          <Image source={ user_mode === CommonConstant.user_client ? coachesIcon : clientsIcon }
-                 style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/>
+          <Image source={ user_mode === CommonConstant.user_client ? professionalsIcon : clientsIcon }
+                 style={ user_mode === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
         ),
         renderSelectedIcon: () => (
-          <Image source={ user_mode === CommonConstant.user_client ? coachesSelectedIcon : clientsSelectedIcon }
-                 style={ user_mode === CommonConstant.user_client ? styles.iconTabbarCoaches : styles.iconTabbarClients }/>
+          <Image source={ user_mode === CommonConstant.user_client ? professionalsSelectedIcon : clientsSelectedIcon }
+                 style={ user_mode === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
         ),
-        onPress: () => this.setState({ selectedTab: 'clients_coaches' }),
-        children: <Clients_Coaches/>,
+        onPress: () => this.setState({ selectedTab: 'clients_professionals' }),
+        children: <Clients_Professionals/>,
       },
       /* Inbox */
       {
@@ -104,7 +104,7 @@ class MainForm extends Component {
         renderIcon: () => (<Image source={ profileIcon } style={ styles.iconTabbarProfile }/>),
         renderSelectedIcon: () => (<Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/>),
         onPress: () => this.setState({ selectedTab: 'profile' }),
-        children: user_mode === CommonConstant.user_client ? <ClientProfile user={ CoachesClients[0] }/> : <TrainerProfile user={ CoachesClients[0] }/>,
+        children: user_mode === CommonConstant.user_client ? <ClientProfile user={ ProfessionalsClients[0] }/> : <ProfessionalProfile user={ ProfessionalsClients[0] }/>,
       },
       /* Account*/
       {
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
   },
-  iconTabbarCoaches: {
+  iconTabbarProfessionals: {
     height: 25,
     width: 33,
   },

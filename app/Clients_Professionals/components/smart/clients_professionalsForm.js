@@ -17,9 +17,9 @@ import localStorage from 'react-native-local-storage';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import * as CommonConstant from '../../../Components/commonConstant';
 import SearchBar from '../../../Components/searchBar';
-import Clients_CoachesListCell from './clients_coachesListCell';
+import Clients_ProfessionalsListCell from './clients_professionalsListCell';
 import ClientProfile from '../../../Profile/containers/clientProfile';
-import TrainerProfile from '../../../Profile/containers/trainerProfile';
+import ProfessionalProfile from '../../../Profile/containers/professionalProfile';
 import R from 'ramda';
 
 const { width, height } = Dimensions.get('window');
@@ -28,20 +28,20 @@ const weeks = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const years = ['2017', '2018', '2019', '2020'];
 
-import { CoachesClients } from '../../../Components/dummyEntries';
+import { ProfessionalsClients } from '../../../Components/dummyEntries';
 
-export default class Clients_CoachesForm extends Component {
+export default class Clients_ProfessionalsForm extends Component {
   constructor(props) {
     super(props);
 
-    var dataSourceClients_Coaches = new ListView.DataSource(
+    var dataSourceClients_Professionals = new ListView.DataSource(
       { rowHasChanged: (r1, r2) => r1 !== r2 });
 
     isEven = item => item.myGuest === true;
-    this.filterValue = R.filter(isEven, CoachesClients);
+    this.filterValue = R.filter(isEven, ProfessionalsClients);
 
     this.state = {
-      dataSourceClients_Coaches: dataSourceClients_Coaches.cloneWithRows(this.filterValue),
+      dataSourceClients_Professionals: dataSourceClients_Professionals.cloneWithRows(this.filterValue),
 
     };
   }
@@ -54,19 +54,19 @@ export default class Clients_CoachesForm extends Component {
 
     } else if (newProps.status == 'ClientsError') {
 
-    } else if (newProps.status == 'CoachesRequest') {
+    } else if (newProps.status == 'ProfessionalsRequest') {
 
-    } else if (newProps.status == 'CoachesSuccess') {
+    } else if (newProps.status == 'ProfessionalsSuccess') {
 
-    } else if (newProps.status == 'CoachesError') {
+    } else if (newProps.status == 'ProfessionalsError') {
 
     }
   }
 
-  renderClients_CoachesRow(rowData, sectionID, rowID) {
+  renderClients_ProfessionalsRow(rowData, sectionID, rowID) {
 
     return (
-      <Clients_CoachesListCell
+      <Clients_ProfessionalsListCell
         index={ Number(rowID) + 1 }
         name={ rowData.name }
         time={ rowData.time }
@@ -81,9 +81,9 @@ export default class Clients_CoachesForm extends Component {
     localStorage.get(CommonConstant.user_mode)
       .then((data) => {
         if (data == CommonConstant.user_client) {
-          Actions.TrainerProfile({ editable: false, user: this.filterValue[rowID] });
+          Actions.ProfessionalProfile({ editable: false, user: this.filterValue[rowID] });
           return;
-        } else if (data == CommonConstant.user_trainer){
+        } else if (data == CommonConstant.user_professional){
           Actions.ClientProfile({ editable: false, user: this.filterValue[rowID] });
           return;
         }
@@ -119,11 +119,11 @@ export default class Clients_CoachesForm extends Component {
 
     return (
       <View style={ styles.container }>
-        <View style={ styles.clients_coachesContainer }>
+        <View style={ styles.clients_professionalsContainer }>
           <ListView
-            dataSource={ this.state.dataSourceClients_Coaches}
-            renderRow={ this.renderClients_CoachesRow.bind(this) }
-            contentContainerStyle={ styles.clients_coachesListView}
+            dataSource={ this.state.dataSourceClients_Professionals}
+            renderRow={ this.renderClients_ProfessionalsRow.bind(this) }
+            contentContainerStyle={ styles.clients_professionalsListView}
           />
         </View>
         <View style={ styles.filterContainer }>
@@ -218,11 +218,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  clients_coachesContainer: {
+  clients_professionalsContainer: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  clients_coachesListView: {
+  clients_professionalsListView: {
     borderStyle: 'solid',
     borderTopWidth: 1,
     borderTopColor: '#f3f3f3',

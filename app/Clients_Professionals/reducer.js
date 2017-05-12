@@ -4,7 +4,7 @@ const initialState = {
   status: null,
 };
 
-export default function clients_coaches(state = initialState, action = {}) {
+export default function clients_professionals(state = initialState, action = {}) {
   switch (action.type) {
     case types.CLIENTS_REQUEST:
       return {
@@ -21,20 +21,20 @@ export default function clients_coaches(state = initialState, action = {}) {
         ...state,
         status: 'ClientsError',
       };
-    case types.COACHES_REQUEST:
+    case types.PROFESSIONALS_REQUEST:
       return {
         ...state,
-        status: 'CoachesRequest',
+        status: 'ProfessionalsRequest',
       };
-    case types.COACHES_SUCCESS:
+    case types.PROFESSIONALS_SUCCESS:
       return {
         ...state,
-        status: 'CoachesSuccess',
+        status: 'ProfessionalsSuccess',
       };
-    case types.COACHES_ERROR:
+    case types.PROFESSIONALS_ERROR:
       return {
         ...state,
-        status: 'CoachesError',
+        status: 'ProfessionalsError',
       };
     default:
       return state;

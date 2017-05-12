@@ -55,7 +55,7 @@ class AuthForm extends Component {
     const { auth: { user } } = nextProps;
 
     if (user) {
-        Actions.Main({user_mode: user.professional ? CommonConstant.user_trainer : CommonConstant.user_client})
+        Actions.Main({user_mode: user.professional ? CommonConstant.user_professional : CommonConstant.user_client})
     }
     this.setState({ loginRequest: false });
   }
@@ -101,7 +101,7 @@ class AuthForm extends Component {
     // localStorage.get(CommonConstant.user_mode)
     //   .then((data) => {
     //     const isClient = data == CommonConstant.user_client,
-    //       isProfessional = data == CommonConstant.user_trainer
+    //       isProfessional = data == CommonConstant.user_professional
     //     if (isClient || isProfessional) {
     //       // console.log('actions', actions, this.props);
     //       actions.login(email, password);

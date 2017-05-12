@@ -6,8 +6,8 @@ export function clients() {
   };
 }
 
-export function coaches() {
+export function professionals() {
   return {
-    type: [types.COACHES_REQUEST, types.COACHES_SUCCESS, types.COACHES_ERROR]
+    type: [types.PROFESSIONALS_REQUEST, types.PROFESSIONALS_SUCCESS, types.PROFESSIONALS_ERROR]
   };
 }

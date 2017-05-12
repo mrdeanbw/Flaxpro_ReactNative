@@ -17,13 +17,13 @@ import Icons from 'react-native-vector-icons/MaterialIcons';
 import Drawer from 'react-native-drawer';
 import * as CommonConstant from '../../../Components/commonConstant';
 import SearchBar from '../../../Components/searchBar';
-import Clients_CoachesForm from './clients_coachesForm';
+import Clients_ProfessionalsForm from './clients_professionalsForm';
 import Menu from './menu';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
 
-export default class MainClientsCoachesForm extends Component {
+export default class MainClientsProfessionalsForm extends Component {
   constructor(props) {
     super(props);
 
@@ -40,11 +40,11 @@ export default class MainClientsCoachesForm extends Component {
 
     } else if (newProps.status == 'ClientsError') {
 
-    } else if (newProps.status == 'CoachesRequest') {
+    } else if (newProps.status == 'ProfessionalsRequest') {
 
-    } else if (newProps.status == 'CoachesSuccess') {
+    } else if (newProps.status == 'ProfessionalsSuccess') {
 
-    } else if (newProps.status == 'CoachesError') {
+    } else if (newProps.status == 'ProfessionalsError') {
 
     }
   }
@@ -106,7 +106,7 @@ export default class MainClientsCoachesForm extends Component {
               onOpen={ () => this.onOpenMenu() }
               onClose={ () => this.onCloseMenu() }
             >
-              <Clients_CoachesForm/>
+              <Clients_ProfessionalsForm/>
               
            </Drawer>
 

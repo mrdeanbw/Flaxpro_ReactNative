@@ -29,7 +29,7 @@ const labelAge = ['16', '17', '18', '19', '20', '21'];
 const labelVerified = ['Yes', 'No'];
 const labelAffiliation = ['Gym', 'Independent', 'All'];
 const labelYearOfExprience = ['2004', '2005', '2006'];
-const labelCertification = ['Certified Personal Trainer1', 'Certified Personal Trainer2', 'Certified Personal Trainer3'];
+const labelCertification = ['Certified Personal Professional1', 'Certified Personal Professional2', 'Certified Personal Professional3'];
 const labelLocation = ['Near by', 'City', 'Countary', 'Km'];
 
 export default class FilterForm extends Component {

@@ -29,7 +29,11 @@ import { bindActionCreators } from 'redux';
 
 const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
-const prices = [{item: '$', price: '$50-100'},{item: '$$', price: '$100-300'},{item: '$$$', price: '$300+'}]
+const prices = [
+  {item: '$', price: '$50-100', level: 1},
+  {item: '$$', price: '$100-300', level: 2},
+  {item: '$$$', price: '$300+', level: 3}
+  ];
 
 import * as CommonConstant from '../../../Components/commonConstant';
 import { allProfessions } from '../../../Components/tempDataUsers'
@@ -49,10 +53,11 @@ class ClientInfoForm extends Component {
 
     this.state = {
       name: '',
-      visibilityProfile : false,
+      visibility : false,
       gender : labelSex[0],
       age : 28,
       profession : professionalNames[0],
+      priceLevel : prices[0].level,
       signUpRequest: false
     };
   }
@@ -112,7 +117,6 @@ class ClientInfoForm extends Component {
 
   onContinue () {
     const { actions } = this.props;
-
     localStorage.get('userData')
       .then((data) => {
         actions.createUser({ ...data, ...this.state })
@@ -131,7 +135,7 @@ class ClientInfoForm extends Component {
     this.setState({ profession: value });
   }
   onCheckPrice(value) {
-    this.setState({ price: value });
+    this.setState({ priceLevel: value });
   }
 
   render() {
@@ -177,8 +181,8 @@ class ClientInfoForm extends Component {
                       <Text style={ styles.textSubTitle }>Enable professionals find your profile</Text>
                     </View>
                     <Switch
-                      onValueChange={(value) => this.setState({ visibilityProfile: value })}
-                      value={ this.state.visibilityProfile } />
+                      onValueChange={(value) => this.setState({ visibility: value })}
+                      value={ this.state.visibility } />
                   </View>
 
                   <View style={ styles.cellContainer }>
@@ -252,10 +256,10 @@ class ClientInfoForm extends Component {
                     <View style={ styles.pricesBlock }>
                     {
                       prices.map((item, index) =>(
-                        <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item) }>
-                          <View style={ [styles.viewTwoText, styles.priceButton] }>
-                            <Text style={ [styles.textCellTitle, styles.priceButtonText] }>{ item.item }</Text>
-                            <Text style={ [styles.textSubTitle, styles.priceButtonText] }>{ item.price }</Text>
+                        <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
+                          <View style={ [styles.viewTwoText, item.level === this.state.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
+                            <Text style={ [styles.textCellTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
+                            <Text style={ [styles.textSubTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
                           </View>
                         </TouchableOpacity>
                       ))
@@ -359,15 +363,28 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     marginHorizontal: 20,
   },
-  priceButton: {
+  priceButtonChecked: {
     backgroundColor: '#19b8ff',
     alignItems: 'center',
     borderRadius: 30,
     width: 70,
     marginLeft: 15,
   },
-  priceButtonText: {
+  priceButton: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    borderRadius: 30,
+    width: 70,
+    marginLeft: 15,
+    borderWidth: 1,
+    borderColor: '#19b8ff',
+  },
+  priceButtonTextChecked: {
     color: '#fff',
+    textAlign: 'center',
+  },
+  priceButtonText: {
+    color: '#6b6b6b',
     textAlign: 'center',
   },
   pricesBlock: {

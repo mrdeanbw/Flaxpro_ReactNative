@@ -246,7 +246,7 @@ class ClientProfileForm extends Component {
                     if (showMoreOrLess && index > 1) return null;
                     return <View style={ styles.infoContainer }>
                       <View style={ styles.starContainer }>
-                        <Text style={ styles.textTrainerName }>{ review.author }</Text>
+                        <Text style={ styles.textProfessionalName }>{ review.author }</Text>
                         <Stars
                           isActive={ false }
                           rateMax={ 5 }
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
   starContainer: {
     flexDirection: 'row',
   },
-  textTrainerName: {
+  textProfessionalName: {
     fontSize: 11,
     fontWeight: 'bold',
     paddingRight: 5,

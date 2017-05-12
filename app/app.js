@@ -14,10 +14,10 @@ import ExploreMapView from './Explore/components/smart/exploreMapView';
 import FilterForm from './Explore/components/smart/filterForm';
 import ProposeTerms from './Hire/containers/proposeTerms';
 import Payment from './Hire/containers/payment';
-import Clients_Coaches from './Clients_Coaches/containers/clients_coaches';
+import Clients_Professionals from './Clients_Professionals/containers/clients_professionals';
 import ScheduleForm from './Profile/components/smart/scheduleForm';
 import ClientProfile from './Profile/containers/clientProfile';
-import TrainerProfile from './Profile/containers/trainerProfile';
+import ProfessionalProfile from './Profile/containers/professionalProfile';
 import EditProfile from './Profile/components/smart/editProfile';
 import ChatForm from './Inbox/components/smart/chatForm';
 
@@ -36,10 +36,10 @@ const scenes = Actions.create(
     <Scene key="FilterForm" component={ FilterForm } direction="vertical" />
     <Scene key="ProposeTerms" component={ ProposeTerms } />
     <Scene key="Payment" component={ Payment } />
-    <Scene key="Clients_Coaches" component={ Clients_Coaches } />
+    <Scene key="Clients_Professionals" component={ Clients_Professionals } />
     <Scene key="ScheduleForm" component={ ScheduleForm } />
     <Scene key="ClientProfile" component={ ClientProfile } />
-    <Scene key="TrainerProfile" component={ TrainerProfile } />
+    <Scene key="ProfessionalProfile" component={ ProfessionalProfile } />
     <Scene key="ChatForm" component={ ChatForm } />
     <Scene key="EditProfile" component={ EditProfile }/>
   </Scene>

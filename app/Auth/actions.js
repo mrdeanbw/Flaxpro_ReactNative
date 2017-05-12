@@ -1,32 +1,46 @@
 import * as types from './actionTypes';
+import request, { toQueryString } from '../request';
 
 import { tempProfileData, allProfessions } from '../Components/tempDataUsers';
 
 export const createUser = (userData) => async (dispatch, store) => {
-  setTimeout(() => {
-    let user = null,
-      professions = [];
+  let user = {},
+    professions = [];
 
-    let coachesClients = null;
+  let professionalsClients = null;
 
-    for (let i = 0; i < tempProfileData.length; i++) {
-      const profileData = tempProfileData[i];
-      if (userData.email == profileData.email) {
-        if (!profileData.professional) {
-          professions = allProfessions;
-        }
-        coachesClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
-        user = profileData;
-        break;
+  for (let i = 0; i < tempProfileData.length; i++) {
+    const profileData = tempProfileData[i];
+    if (userData.email == profileData.email) {
+      if (!profileData.professional) {
+        professions = allProfessions;
       }
+      professionalsClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
+      user = profileData;
+      break;
     }
+  }
 
-    user.professional = userData.professional;
-    user.name = userData.name || user.name;
-    user.age = userData.age || user.age;
+  user.professional = userData.professional;
+  user.name = userData.name || user.name;
+  user.age = userData.age || user.age;
 
-    dispatch({ type: types.CREATE_USER, user, professions, coachesClients });
-  }, 1000);
+
+  const newUser = generateUsers(getRandomInt(10, 40), userData.professional)
+  const url = userData.professional ? '/professional/new' : '/client/new';
+  const options = {
+    method: 'post',
+    body: JSON.stringify({...newUser[0], ...userData}),
+  };
+
+  try {
+    const response = await request(url, options);
+    console.log('=======44444=', response)
+  } catch (error) {
+    console.log('=======55555=', error)
+  }
+
+  dispatch({ type: types.CREATE_USER, user, professions, professionalsClients });
 };
 
 export const login = (email, password, token = null) => async (dispatch, store) => {
@@ -41,7 +55,7 @@ export const login = (email, password, token = null) => async (dispatch, store) 
     let user = null,
       professions = [];
 
-    let coachesClients = null;
+    let professionalsClients = null;
 
     for (let i = 0; i < tempProfileData.length; i++) {
       const profileData = tempProfileData[i];
@@ -49,13 +63,13 @@ export const login = (email, password, token = null) => async (dispatch, store) 
           if (!profileData.professional) {
             professions = allProfessions;
           }
-          coachesClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
+          professionalsClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
           user = profileData;
           break;
       }
     }
 
-    dispatch({ type: types.LOGIN, user, professions, coachesClients });
+    dispatch({ type: types.LOGIN, user, professions, professionalsClients });
   }, 1000);
 };
 
@@ -71,20 +85,18 @@ function generateUsers(count, prof) {
       id: randomString(),
       email: prof ? `professional${i + 1}@mail.com` : `client${i + 1}@mail.com`,
       token: "78dsf7834nh7dsf62-3bhj77234b6fds89",
-      avatar: require('../Assets/images/avatar.png'),
+      avatar: '../Assets/images/avatar.png',
       clients: [],
-      coaches: [],
-      reviews: generateReview(getRandomInt()),
+      reviews: []/*generateReview(getRandomInt())*/,
       name: `${prof ? 'Professional' : 'Client'} Name${i}`,
       professional: prof,
-      professions: prof ? generateProfessions(getRandomInt(1, allProfessions.length - 1)) : null,
+      professions:  null,
       age: getRandomInt(20, 40),
       gender: Boolean(Math.round(Math.random())) ? "Male" : "Female",
       visibility: Boolean(Math.round(Math.random())),
-      certification: prof ? "Certified Personal Trainer" : null,
+      certification: prof ? "Certified Personal Professional" : null,
       preferredLocation: null,
-      birthday : '10.01.1991',
-      phoneNumber : '+1-956-587-8545',
+      phone : '+1-956-587-8545',
       weight : getRandomInt(60, 95),
       height : getRandomInt(165, 180),
       fitnessLevel : 0,

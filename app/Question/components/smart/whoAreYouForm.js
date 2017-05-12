@@ -45,9 +45,9 @@ export default class WhoAReYouForm extends Component {
 
   onSelectProfessional () {
 
-    localStorage.save(CommonConstant.user_mode, CommonConstant.user_trainer)
+    localStorage.save(CommonConstant.user_mode, CommonConstant.user_professional)
     //   .then(() => {
-    //     Actions.Main({ user_mode: CommonConstant.user_trainer });
+    //     Actions.Main({ user_mode: CommonConstant.user_professional });
     // })
     Actions.ProfessionalInfo();
   }

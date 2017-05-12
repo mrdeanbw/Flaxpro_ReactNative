@@ -3,25 +3,25 @@ import * as types from './actionTypes';
 const initialState = {
   user: null,
   professions: [],
-  coachesClients: []
+  professionalsClients: []
 };
 
 export default function auth(state = initialState, action = {}) {
-  const { user, professions, coachesClients } = action;
+  const { user, professions, professionalsClients } = action;
   switch (action.type) {
     case types.LOGIN:
       return {
         ...state,
         user,
         professions,
-        coachesClients
+        professionalsClients
       };
     case types.CREATE_USER:
       return {
         ...state,
         user,
         professions,
-        coachesClients
+        professionalsClients
       };
     case types.LOGOUT:
       return initialState;

@@ -7,7 +7,7 @@ import {
 
 import Stars from 'react-native-stars-rating';
 
-class AnimatedCoachMarker extends Component {
+class AnimatedProfessionalMarker extends Component {
   render() {
     const { personName, amount, rating, selected, style, index, user, profession = {} } = this.props;
 
@@ -69,7 +69,7 @@ class AnimatedCoachMarker extends Component {
   }
 }
 
-AnimatedCoachMarker.propTypes = {
+AnimatedProfessionalMarker.propTypes = {
   personName: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   selected: PropTypes.object.isRequired,
@@ -77,7 +77,7 @@ AnimatedCoachMarker.propTypes = {
   style: PropTypes.any,
 };
 
-AnimatedCoachMarker.defaultProps = {
+AnimatedProfessionalMarker.defaultProps = {
   rating: 5,
 };
 
@@ -150,4 +150,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = AnimatedCoachMarker;
+module.exports = AnimatedProfessionalMarker;

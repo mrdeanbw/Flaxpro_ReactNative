@@ -17,7 +17,7 @@ import * as CommonConstant from '../../../Components/commonConstant';
 
 import MapView from 'react-native-maps';
 import PanController from './panController';
-import AnimatedCoachMarker from './animatedCoachMarker';
+import AnimatedProfessionalMarker from './animatedProfessionalMarker';
 import AnimatedViewCell from './animatedViewCell';
 import PopupDialog from 'react-native-popup-dialog';
 import Stars from 'react-native-stars-rating';
@@ -174,7 +174,7 @@ class ExploreMapView extends Component {
       scale,
       translateY,
       selectedGymIndex: 0,
-      selectedCoacheClientIndex: 0,
+      selectedProfessionalClientIndex: 0,
     };
 
     // this.region = new MapView.AnimatedRegion({
@@ -190,7 +190,7 @@ class ExploreMapView extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-     // this.setState({ selectedCoacheClientIndex: 0 }); //TODO: commented
+     // this.setState({ selectedProfessionalClientIndex: 0 }); //TODO: commented
   }
 
   onStartShouldSetPanResponder = (e) => {
@@ -234,13 +234,13 @@ class ExploreMapView extends Component {
       index,
     } = this.state;
 
-    const coachesClients = this.props.coachesClients;
+    const professionalsClients = this.props.professionalsClients;
 
     const shouldBeMovable = Math.abs(value) < 2;
     if (shouldBeMovable !== canMoveHorizontal) {
       this.setState({ canMoveHorizontal: shouldBeMovable });
       if (!shouldBeMovable) {
-        const { coordinate } = coachesClients[index];
+        const { coordinate } = professionalsClients[index];
         this.region.stopAnimation();
         this.region.timing({
           latitude: scrollY.interpolate({
@@ -267,12 +267,12 @@ class ExploreMapView extends Component {
         this.region.stopAnimation();
         this.region.timing({
           latitude: scrollX.interpolate({
-            inputRange: coachesClients.map( (item, index) => index * SNAP_WIDTH),
-            outputRange: coachesClients.map(item => item.coordinate.latitude),
+            inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
+            outputRange: professionalsClients.map(item => item.coordinate.latitude),
           }),
           longitude: scrollX.interpolate({
-            inputRange: coachesClients.map( (item, index) => index * SNAP_WIDTH),
-            outputRange: coachesClients.map(item => item.coordinate.longitude),
+            inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
+            outputRange: professionalsClients.map(item => item.coordinate.longitude),
           }),
           duration: 0,
         }).start();
@@ -299,32 +299,32 @@ class ExploreMapView extends Component {
     this.popupDialogGym.closeDialog ();
   }
 
-  onPressCoachClient ( index ) {
-    this.setState({ selectedCoacheClientIndex: index });
-    this.popupDialogCoach.openDialog ();
+  onPressProfessionalClient ( index ) {
+    this.setState({ selectedProfessionalClientIndex: index });
+    this.popupDialogProfessional.openDialog ();
   }
 
-  onHireCoach ( key ) {
+  onHireProfessional ( key ) {
 
-    this.popupDialogCoach.closeDialog ();
+    this.popupDialogProfessional.closeDialog ();
     Actions.Payment();
   }
 
-  onMakeOfferCoach ( ) {
+  onMakeOfferProfessional ( ) {
 
-    Actions.ProposeTerms({ user: this.props.coachesClients[this.state.selectedCoacheClientIndex] });
+    Actions.ProposeTerms({ user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
   }
 
-  onExpandCoach ( key ) {
-    this.popupDialogCoach.closeDialog ();
+  onExpandProfessional ( key ) {
+    this.popupDialogProfessional.closeDialog ();
 
     localStorage.get(CommonConstant.user_mode)
       .then((data) => {
         if (data == CommonConstant.user_client) {
-          Actions.TrainerProfile({ editable: false, user: this.props.coachesClients[this.state.selectedCoacheClientIndex] });
+          Actions.ProfessionalProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
           return;
-        } else if (data == CommonConstant.user_trainer){
-          Actions.ClientProfile({ editable: false, user: this.props.coachesClients[this.state.selectedCoacheClientIndex] });
+        } else if (data == CommonConstant.user_professional){
+          Actions.ClientProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
           return;
         }
       });
@@ -352,8 +352,8 @@ class ExploreMapView extends Component {
 
   onClickAnimatedViewCell (index) {
 
-    this.setState({ selectedCoacheClientIndex: index });
-    this.popupDialogCoach.openDialog ();
+    this.setState({ selectedProfessionalClientIndex: index });
+    this.popupDialogProfessional.openDialog ();
   }
 
   get dialogGymPreferedWorkoutLocation () {
@@ -391,61 +391,61 @@ class ExploreMapView extends Component {
     );
   }
 
-  get dialogSelectCoachClient () {
+  get dialogSelectProfessionalClient () {
 
-    const coachesClients = this.props.coachesClients
+    const professionalsClients = this.props.professionalsClients
 
     return (
       <PopupDialog
-        ref={ (popupDialogCoach) => { this.popupDialogCoach = popupDialogCoach; }}
+        ref={ (popupDialogProfessional) => { this.popupDialogProfessional = popupDialogProfessional; }}
         width={ width * 0.8 }
         dialogStyle={ styles.dialogContainer }
       >
-        <View style={ styles.coachDialogContentContainer }>
-          <View style={ styles.coachDialogTopContainer }>
-            <Image source={ coachesClients[this.state.selectedCoacheClientIndex].avatar } style={ styles.avatar } />
-            <View style={ styles.coachTopSubContainer }>
-              <View style={ styles.coachNameRatingContainer }>
-                <Text style={ styles.textName }>{ coachesClients[this.state.selectedCoacheClientIndex].name }</Text>
+        <View style={ styles.professionalDialogContentContainer }>
+          <View style={ styles.professionalDialogTopContainer }>
+            <Image source={ professionalsClients[this.state.selectedProfessionalClientIndex].avatar } style={ styles.avatar } />
+            <View style={ styles.professionalTopSubContainer }>
+              <View style={ styles.professionalNameRatingContainer }>
+                <Text style={ styles.textName }>{ professionalsClients[this.state.selectedProfessionalClientIndex].name }</Text>
                 <Stars
                   isActive={ false }
                   rateMax={ 5 }
                   isHalfStarEnabled={ true }
-                  rate={ coachesClients[this.state.selectedCoacheClientIndex].rating }
+                  rate={ professionalsClients[this.state.selectedProfessionalClientIndex].rating }
                   size={ 20 }
                 />
               </View>
-              <Text style={ styles.dialogText2 }>{ coachesClients[this.state.selectedCoacheClientIndex].description }</Text>
+              <Text style={ styles.dialogText2 }>{ professionalsClients[this.state.selectedProfessionalClientIndex].description }</Text>
             </View>
           </View>
-          <View style = { styles.coachMiddleContainer }>
+          <View style = { styles.professionalMiddleContainer }>
             <View style={ styles.dateContainer }>
               <EvilIcons
                 name="calendar"  size={ 30 }
                 color="#41c3fd"
               />
-              <Text style={ styles.textDate }>{ coachesClients[this.state.selectedCoacheClientIndex].date }</Text>
+              <Text style={ styles.textDate }>{ professionalsClients[this.state.selectedProfessionalClientIndex].date }</Text>
             </View>
-            <Text>{ coachesClients[this.state.selectedCoacheClientIndex].duration }</Text>
+            <Text>{ professionalsClients[this.state.selectedProfessionalClientIndex].duration }</Text>
           </View>
           <View style={ styles.dialogBottomContainer }>
             <View style={ styles.leftButtonContainer }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onHireCoach() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onHireProfessional() }>
                 <View style={ styles.buttonWrapper }>
-                  <Text style={ styles.coachButton }>HIRE ${ coachesClients[this.state.selectedCoacheClientIndex].amount }/HR</Text>
+                  <Text style={ styles.professionalButton }>HIRE ${ professionalsClients[this.state.selectedProfessionalClientIndex].amount }/HR</Text>
                 </View>
               </TouchableOpacity>
             </View>
             <View style={ styles.rightButtonContainer }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onMakeOfferCoach() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onMakeOfferProfessional() }>
                 <View style={ styles.buttonWrapper }>
-                  <Text style={ styles.coachButton }>MAKE AN OFFER</Text>
+                  <Text style={ styles.professionalButton }>MAKE AN OFFER</Text>
                 </View>
               </TouchableOpacity>
             </View>
           </View>
           <View style={ styles.expandContainer }>
-            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onExpandCoach() }>
+            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onExpandProfessional() }>
               <View style={ styles.expandWrapper }>
                 <Ionicons
                   name="md-expand"  size={ 25 }
@@ -469,16 +469,16 @@ class ExploreMapView extends Component {
       scrollY
     } = this.state;
 
-    const { coachesClients, gymLocations, user } = this.props;
+    const { professionalsClients, gymLocations, user } = this.props;
 
     this.region = new MapView.AnimatedRegion({
-      latitude: coachesClients[0].coordinate.latitude,
-      longitude: coachesClients[0].coordinate.longitude,
+      latitude: professionalsClients[0].coordinate.latitude,
+      longitude: professionalsClients[0].coordinate.longitude,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     });
     
-    const animations = coachesClients.map( (item, index) =>
+    const animations = professionalsClients.map( (item, index) =>
       getMarkerState(panX, panY, scrollY, index)
     );
 
@@ -488,12 +488,12 @@ class ExploreMapView extends Component {
     this.region.stopAnimation();
     this.region.timing({
       latitude: scrollX.interpolate({
-        inputRange: coachesClients.map( (item, index) => index * SNAP_WIDTH),
-        outputRange: coachesClients.map(item => item.coordinate.latitude),
+        inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
+        outputRange: professionalsClients.map(item => item.coordinate.latitude),
       }),
       longitude: scrollX.interpolate({
-        inputRange: coachesClients.map( (item, index) => index * SNAP_WIDTH),
-        outputRange: coachesClients.map( item => item.coordinate.longitude),
+        inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
+        outputRange: professionalsClients.map( item => item.coordinate.longitude),
       }),
       duration: 0,
     }).start();
@@ -506,7 +506,7 @@ class ExploreMapView extends Component {
           horizontal={ canMoveHorizontal }
           xMode="snap"
           snapSpacingX={ SNAP_WIDTH }
-          xBounds={ [-(ITEM_WIDTH + ITEM_SPACING) * (coachesClients.length - 1), 0] }
+          xBounds={ [-(ITEM_WIDTH + ITEM_SPACING) * (professionalsClients.length - 1), 0] }
           panY={ panY }
           panX={ panX }
           onStartShouldSetPanResponder={ this.onStartShouldSetPanResponder }
@@ -534,7 +534,7 @@ class ExploreMapView extends Component {
             }
 
             {
-              coachesClients.map( (marker, index) => {
+              professionalsClients.map( (marker, index) => {
 
                 const {
                   selected,
@@ -546,9 +546,9 @@ class ExploreMapView extends Component {
                   <MapView.Marker
                     key={ index }
                     coordinate={ marker.coordinate }
-                    onPress={ () => this.onPressCoachClient(index) }
+                    onPress={ () => this.onPressProfessionalClient(index) }
                   >
-                    <AnimatedCoachMarker
+                    <AnimatedProfessionalMarker
                       style={{
                         opacity: markerOpacity,
                         transform: [
@@ -581,7 +581,7 @@ class ExploreMapView extends Component {
             :
               <View style={ styles.itemContainer }>
                 {
-                  coachesClients.map( (marker, index) => {
+                  professionalsClients.map( (marker, index) => {
                     const {
                       translateY,
                       translateX,
@@ -607,6 +607,7 @@ class ExploreMapView extends Component {
                         name={ marker.name }
                         description={ marker.description }
                         amount={ marker.amount }
+                        user={ user }
                         onPress={ () => this.onClickAnimatedViewCell(index) }
                       />
                     );
@@ -616,7 +617,7 @@ class ExploreMapView extends Component {
           }
 
           { this.dialogGymPreferedWorkoutLocation }
-          { this.dialogSelectCoachClient }
+          { this.dialogSelectProfessionalClient }
 
         </PanController>
       </View>
@@ -725,14 +726,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#696969',
   },
-  coachDialogContentContainer: {
+  professionalDialogContentContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
     width: width * 0.8,
     borderRadius: 20,
   },
-  coachDialogTopContainer: {
+  professionalDialogTopContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,
     paddingTop: 10,
@@ -742,11 +743,11 @@ const styles = StyleSheet.create({
     height: 70,
     borderRadius: 35,
   },
-  coachTopSubContainer: {
+  professionalTopSubContainer: {
     flex : 1,
     paddingLeft: 15,
   },
-  coachNameRatingContainer: {
+  professionalNameRatingContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -759,7 +760,7 @@ const styles = StyleSheet.create({
     color: '#585858',
     paddingVertical: 10,
   },
-  coachMiddleContainer: {
+  professionalMiddleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -795,7 +796,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
   },
-  coachButton: {
+  professionalButton: {
     color: '#272727',
   },
   mainContentContainer: {

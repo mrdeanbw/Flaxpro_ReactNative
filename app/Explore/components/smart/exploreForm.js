@@ -23,7 +23,7 @@ import SearchBar from '../../../Components/searchBar';
 import ExploreMapView from './exploreMapView';
 import ExploreListView from './exploreListView';
 
-import { CoachesClients, GymLocations } from '../../../Components/dummyEntries';
+import { ProfessionalsClients, GymLocations } from '../../../Components/dummyEntries';
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,14 +39,14 @@ class ExploreForm extends Component {
       selectedPriceSegment : '$50-$100',
       mapStandardMode: true,
       showContentMode: 0,
-      coachesClients: CoachesClients,
+      professionalsClients: ProfessionalsClients,
       gymLocations: GymLocations,
       professionSelected: 0
     };
   }
 
   conponentWillMount() {
-    // this.setState({ coachesClients: CoachesClients });
+    // this.setState({ professionalsClients: ProfessionalsClients });
   }
 
   componentWillReceiveProps(newProps) {
@@ -80,14 +80,14 @@ class ExploreForm extends Component {
     this.setState({ selectedLocationSegment: option })
 
     if (option === 'ALL') {
-      this.setState({ coachesClients: CoachesClients });
+      this.setState({ professionalsClients: ProfessionalsClients });
       return;
     }
 
     isEven = item => item.type === option;
-    const filterValue = R.filter(isEven, CoachesClients);
+    const filterValue = R.filter(isEven, ProfessionalsClients);
     this.setState({ 
-      coachesClients: filterValue,
+      professionalsClients: filterValue,
       gymLocations: [],
     });
   }
@@ -136,7 +136,7 @@ class ExploreForm extends Component {
 
   get showFullTopBar () {
     const { professionSelected } = this.state,
-      { auth: { professions, user, coachesClients } } = this.props;
+      { auth: { professions, user, professionalsClients } } = this.props;
 
     return (
       <View style={ styles.navContainer }>
@@ -294,7 +294,7 @@ class ExploreForm extends Component {
                 onTapMap={ () => this.setState({ mapStandardMode:false }) }
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onList() }
-                coachesClients={ this.state.coachesClients }
+                professionalsClients={ this.state.professionalsClients }
                 gymLocations={ this.state.gymLocations }
                 user={ user }
               />
@@ -302,7 +302,7 @@ class ExploreForm extends Component {
               <ExploreListView
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onMap() }
-                coachesClients={ this.state.coachesClients }
+                professionalsClients={ this.state.professionalsClients }
                 user={ user }
               />
           }

@@ -10,7 +10,7 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-export default class ClientCoachesListCell extends Component {
+export default class ClientProfessionalsListCell extends Component {
 
   static propTypes = {
     height: PropTypes.number,

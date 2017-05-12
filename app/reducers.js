@@ -3,7 +3,7 @@ import question from './Question/reducer';
 import explore from './Explore/reducer';
 import hire from './Hire/reducer';
 import account from './Account/reducer';
-import clients_coaches from './Clients_Coaches/reducer';
+import clients_professionals from './Clients_Professionals/reducer';
 import profile from './Profile/reducer';
 
 export {
@@ -12,6 +12,6 @@ export {
   explore,
   hire,
   account,
-  clients_coaches,
+  clients_professionals,
   profile,
 };

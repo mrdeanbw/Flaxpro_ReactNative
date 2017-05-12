@@ -89,7 +89,7 @@ export const tempProfileData = [{
     date: 'SEP 18, 2016',
     author: 'Dick'
   }],
-  name: "Coach",
+  name: "Professional",
   professional: true,
   professions: [{
     profession: "Yoga",
@@ -103,7 +103,7 @@ export const tempProfileData = [{
   age: 28,
   gender: "Male",
   visibility: false,
-  certification: "Certified Personal Trainer",
+  certification: "Certified Personal Professional",
   preferredLocation: null,
   birthday : '10.01.1991',
   phoneNumber : '+1-956-587-8545',

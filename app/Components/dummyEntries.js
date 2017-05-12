@@ -34,7 +34,7 @@ export const GymLocations = [
 
 
 
-export const CoachesClients = [
+export const ProfessionalsClients = [
   {
     id: 0,
     coordinate: {

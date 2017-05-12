@@ -21,20 +21,20 @@ export default function profile(state = initialState, action = {}) {
         ...state,
         status: 'ClientProfileError',
       };
-    case types.TRAINER_PROFILE_REQUEST:
+    case types.PROFESSIONAL_PROFILE_REQUEST:
       return {
         ...state,
-        status: 'TrainerProfileRequest',
+        status: 'ProfessionalProfileRequest',
       };
-    case types.TRAINER_PROFILE_SUCCESS:
+    case types.PROFESSIONAL_PROFILE_SUCCESS:
       return {
         ...state,
-        status: 'TrainerProfileSuccess',
+        status: 'ProfessionalProfileSuccess',
       };
-    case types.TRAINER_PROFILE_ERROR:
+    case types.PROFESSIONAL_PROFILE_ERROR:
       return {
         ...state,
-        status: 'TrainerProfileError',
+        status: 'ProfessionalProfileError',
       };
   
     default:

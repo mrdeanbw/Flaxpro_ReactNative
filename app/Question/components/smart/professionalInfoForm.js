@@ -49,10 +49,10 @@ class ProfessionalInfoForm extends Component {
 
     this.state = {
       name: '',
-      visibilityProfile : false,
+      visibility : false,
       gender : labelSex[0],
       age : 20,
-      phoneNumber : '',
+      phone : '',
       signUpRequest: false,
       professional: true,
     };
@@ -61,8 +61,9 @@ class ProfessionalInfoForm extends Component {
   componentWillReceiveProps(nextProps) {
     const { auth: { user } } = nextProps;
 
+    console.log('==========',user)
     if (user) {
-      Actions.Main({ user_mode: CommonConstant.user_trainer });
+      Actions.Main({ user_mode: CommonConstant.user_professional });
     }
     this.setState({
       signUpRequest: false ,
@@ -179,9 +180,9 @@ class ProfessionalInfoForm extends Component {
                         placeholder="+1"
                         placeholderTextColor="#9e9e9e"
                         style={ styles.textInputCenter }
-                        value={ this.state.phoneNumber }
+                        value={ this.state.phone }
                         keyboardType='numeric'
-                        onChangeText={ (text) => this.setState({ phoneNumber: text }) }
+                        onChangeText={ (text) => this.setState({ phone: text }) }
                        />
                     </View>
                   </View>
@@ -189,8 +190,8 @@ class ProfessionalInfoForm extends Component {
                   <View style={ styles.cellContainer }>
                     <Text style={ styles.textCellTitle }>Visibility profile</Text>
                     <Switch
-                      onValueChange={(value) => this.setState({ visibilityProfile: value })}
-                      value={ this.state.visibilityProfile } />
+                      onValueChange={(value) => this.setState({ visibility: value })}
+                      value={ this.state.visibility } />
                   </View>
 
                   <View style={ styles.cellContainer }>
