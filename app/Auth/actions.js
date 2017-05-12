@@ -3,6 +3,32 @@ import request, { toQueryString } from '../request';
 
 import { tempProfileData, allProfessions } from '../Components/tempDataUsers';
 
+
+function loginError(input = null) {
+  return { type: types.AUTH_ERROR, input };
+}
+
+function loginSuccess(input) {
+  return { type: types.AUTH_SUCCESS, input };
+}
+
+function createUserSuccess(user, token, professions, professionalsClients) {
+  return {
+    type: types.CREATE_USER_SUCCESS,
+    user,
+    token,
+    professions,
+    professionalsClients
+  };
+}
+
+function createUserError(error) {
+  return { type: types.CREATE_USER_ERROR, error };
+}
+
+/**
+ * fake request
+ */
 export const createUser = (userData) => async (dispatch, store) => {
   let user = {},
     professions = [];
@@ -25,52 +51,68 @@ export const createUser = (userData) => async (dispatch, store) => {
   user.name = userData.name || user.name;
   user.age = userData.age || user.age;
 
+  dispatch(createUserSuccess(user, user.token, professions, professionalsClients));
+};
+/**
+ * request to server
+ */
+export const createUserServer = (email, password) => async (dispatch, store) => {
 
-  const newUser = generateUsers(getRandomInt(10, 40), userData.professional)
-  const url = userData.professional ? '/professional/new' : '/client/new';
+  const url = '/auth/register';
   const options = {
     method: 'post',
-    body: JSON.stringify({...newUser[0], ...userData}),
+    body: JSON.stringify({email, password}),
   };
 
   try {
     const response = await request(url, options);
-    console.log('=======44444=', response)
+    dispatch(createUserSuccess(response.user, response.token))
   } catch (error) {
-    console.log('=======55555=', error)
+    dispatch(createUserError(error.message))
   }
 
-  dispatch({ type: types.CREATE_USER, user, professions, professionalsClients });
 };
 
+
 export const login = (email, password, token = null) => async (dispatch, store) => {
-  // console.log('email: ', email, 'password: ', password);
-  // const response = await fetch(`apiEndpoint/...`, {
-  //   headers: { }
-  // });
-  // let comments = [];
-  // if (response.status === 200) comments = await response.json(); else console.log(response);
+  /**
+   * fake request
+   */
+  let user = null,
+    professions = [];
 
-  setTimeout(() => {
-    let user = null,
-      professions = [];
+  let professionalsClients = null;
 
-    let professionalsClients = null;
-
-    for (let i = 0; i < tempProfileData.length; i++) {
-      const profileData = tempProfileData[i];
-      if (email == profileData.email && (!token || token == profileData.token)) {
-          if (!profileData.professional) {
-            professions = allProfessions;
-          }
-          professionalsClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
-          user = profileData;
-          break;
+  for (let i = 0; i < tempProfileData.length; i++) {
+    const profileData = tempProfileData[i];
+    if (email == profileData.email && (!token || token == profileData.token)) {
+      if (!profileData.professional) {
+        professions = allProfessions;
       }
+      professionalsClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
+      user = profileData;
+      break;
     }
+  }
 
-    dispatch({ type: types.LOGIN, user, professions, professionalsClients });
-  }, 1000);
+  dispatch({ type: types.LOGIN, user, professions, professionalsClients });
+
+  /**
+   * request to server
+   */
+  const url = '/auth/login';
+  const options = {
+    method: 'post',
+    body: JSON.stringify({email, password}),
+  };
+
+  try {
+    const response = await request(url, options);
+    // dispatch(loginSuccess(response))
+  } catch (error) {
+    // dispatch(loginError(error))
+  }
+
 };
 
 export const logout = () => async (dispatch, store) => {

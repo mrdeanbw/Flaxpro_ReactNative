@@ -14,25 +14,30 @@ class Auth extends Component {
   }
 
   componentWillMount() {
-    const {auth: {user}, actions} = this.props;
-
+    const {auth: {user}, login} = this.props;
     localStorage.get('authData').then((data) => {
-      actions.login(data.email, null, data.token)
+      login(data.email, null, data.token)
     })
   }
 
   render() {
-    const { actions, auth: { status }} = this.props;
+    const { actions } = this.props;
     return (
-      <AuthForm { ...actions } status/>
+      <AuthForm { ...actions } />
     );
   }
 }
 
-export default connect(state => ({
-    auth: state.auth
-  }),
-  (dispatch) => ({
-    actions: bindActionCreators(authActions, dispatch)
-  })
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  login: (email, password, token) => dispatch(authActions.login(email, password, token)),
+  actions: bindActionCreators(authActions, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
 )(Auth);

@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import ProfessionalInfoForm from '../components/smart/professionalInfoForm';
-import { saveProfessionalInfo } from '../actions';
+import * as professionalAction from '../actions';
 import { connect } from 'react-redux';
 
 class ProfessionalInfo extends Component {
@@ -19,10 +19,15 @@ class ProfessionalInfo extends Component {
   }
 }
 
-export default connect(state => ({
-    status: state.question.status
-  }),
-  (dispatch) => ({
-    actions: bindActionCreators(saveProfessionalInfo, dispatch)
-  })
+const mapStateToProps = (state) => ({
+  status: state.question.status,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(professionalAction, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
 )(ProfessionalInfo);

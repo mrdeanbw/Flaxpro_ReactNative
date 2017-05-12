@@ -108,7 +108,6 @@ class ClientInfoForm extends Component {
         </TouchableOpacity>
         <View style={ styles.navBarTitleContainer }>
           <Text style={ styles.textTitle }>CREATING YOUR PROFILE</Text>
-          {/*<Text style={ styles.textSubTitle }>New good life, Fitness</Text>*/}
         </View>
         <View style={ styles.navButtonWrapper }/>
       </View>
@@ -116,13 +115,20 @@ class ClientInfoForm extends Component {
   }
 
   onContinue () {
-    const { actions } = this.props;
+    const { actions, createRole } = this.props;
+    /**
+     * fake request
+     */
     localStorage.get('userData')
       .then((data) => {
         actions.createUser({ ...data, ...this.state })
         localStorage.save('userData', null);
         this.setState({ signUpRequest: true });
       });
+    /**
+     * request to server
+     */
+    createRole(this.state)
   }
 
   onBack() {

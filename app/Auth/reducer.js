@@ -1,27 +1,54 @@
 import * as types from './actionTypes';
 
 const initialState = {
-  user: null,
+  loading: false,
+  error: null,
+  token: '',
+  user: {},
   professions: [],
   professionalsClients: []
 };
 
 export default function auth(state = initialState, action = {}) {
-  const { user, professions, professionalsClients } = action;
+  const { user={}, professions=[], professionalsClients=[], error=null, token } = action;
   switch (action.type) {
     case types.LOGIN:
       return {
         ...state,
         user,
+        error,
         professions,
-        professionalsClients
+        professionalsClients,
       };
-    case types.CREATE_USER:
+    case types.AUTH_SUCCESS:
       return {
         ...state,
+        error,
+        loading: false,
+      };
+    case types.AUTH_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: 'Неверный логин или пароль',
+      };
+
+    case types.CREATE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        token,
         user,
+        error,
         professions,
-        professionalsClients
+        professionalsClients,
+      };
+    case types.CREATE_USER_ERROR:
+      return {
+        ...state,
+        loading: false,
+        user,
+        error,
       };
     case types.LOGOUT:
       return initialState;

@@ -24,8 +24,9 @@ function checkStatus(response) {
     return response;
   }
 
-  const error = new Error(response.statusText);
+  const error = new Error({message:response._bodyText});
   error.response = response;
+  error.message = JSON.parse(response._bodyText).error;
   throw error;
 }
 
@@ -38,7 +39,8 @@ function checkStatus(response) {
  * @return {object}           The response data
  */
 export default function request(url, options, authState) {
-  const apiUrl = 'http://192.168.88.56:3000/api';
+  // const apiUrl = 'http://192.168.88.56:3000/api';
+  const apiUrl = 'http://localhost:3000/api';
   const headers = {
     Accept: 'application/json',
     // 'Content-Type': 'application/x-www-form-urlencoded',

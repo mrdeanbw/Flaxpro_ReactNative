@@ -61,7 +61,6 @@ class ProfessionalInfoForm extends Component {
   componentWillReceiveProps(nextProps) {
     const { auth: { user } } = nextProps;
 
-    console.log('==========',user)
     if (user) {
       Actions.Main({ user_mode: CommonConstant.user_professional });
     }
@@ -113,14 +112,20 @@ class ProfessionalInfoForm extends Component {
   }
 
   onContinue () {
-    const { actions } = this.props;
-
+    const { actions, createRole } = this.props;
+    /**
+     * fake request
+     */
     localStorage.get('userData')
       .then((data) => {
         actions.createUser({ ...data, ...this.state })
         localStorage.save('userData', null);
         this.setState({ signUpRequest: true });
       });
+    /**
+     * request to server
+     */
+    createRole(this.state)
   }
 
   onBack() {

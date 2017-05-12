@@ -47,31 +47,42 @@ class AuthForm extends Component {
       confirmPassword: 'password',
       selectedButton: 2,
       loginRequest: false,
+      registerRequest: false,
       loginForm: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const { auth: { user } } = nextProps;
-
-    if (user) {
+    const { auth: { user, error } } = nextProps;
+    if (error) {
+      Alert.alert(error);
+      return;
+    }
+    if (user && this.state.loginRequest) {
         Actions.Main({user_mode: user.professional ? CommonConstant.user_professional : CommonConstant.user_client})
     }
-    this.setState({ loginRequest: false });
+    if (user && this.state.registerRequest) {
+      Actions.WhoAreYou();
+    }
+    this.setState({ loginRequest: false, registerRequest: false });
   }
 
   onShowLogIn() {
-    this.setState({ selectedButton: 2 });
-    this.setState({ email : 'client@mail.com' });
-    this.setState({ password : 'password' });
-    this.setState({ confirmPassword : 'password' });
+    this.setState({
+      selectedButton: 2,
+      email : 'client@mail.com',
+      password : 'password',
+      confirmPassword : 'password'
+    });
   }
 
   onShowSignUp() {
-    this.setState({ selectedButton: 1 });
-    this.setState({ email : 'client@mail.com' });
-    this.setState({ password : 'password' });
-    this.setState({ confirmPassword : 'password' });
+    this.setState({
+      selectedButton: 1,
+      email : 'client@mail.com',
+      password : 'password',
+      confirmPassword : 'password'
+    });
   }
 
   //validate email
@@ -81,8 +92,7 @@ class AuthForm extends Component {
 
   onLogIn () {
     const { email, password } = this.state;
-    const { actions } = this.props;
-
+    const { login } = this.props;
     if (!this.validateEmail(email)) {
       Alert.alert('Not a valid e-mail address.');
       return;
@@ -93,29 +103,13 @@ class AuthForm extends Component {
       return;
     }
 
-    // this.props.login(this.state.email, this.state.password);
+    this.setState({ loginRequest: true }, ()=>login(email, password));
 
-    this.setState({ loginRequest: true });
-    actions.login(email, password);
-
-    // localStorage.get(CommonConstant.user_mode)
-    //   .then((data) => {
-    //     const isClient = data == CommonConstant.user_client,
-    //       isProfessional = data == CommonConstant.user_professional
-    //     if (isClient || isProfessional) {
-    //       // console.log('actions', actions, this.props);
-    //       actions.login(email, password);
-    //       Actions.Main({ user_mode: data });
-    //       return;
-    //     }
-    //
-    //     Actions.WhoAreYou();
-    //   });
   }
 
   onSignUp() {
     const { email, password, confirmPassword } = this.state;
-    const { actions } = this.props;
+    const { createUser, createUserServer } = this.props;
 
     if (email == '') {
       Alert.alert('Please enter email address.');
@@ -134,18 +128,11 @@ class AuthForm extends Component {
 
     if (password != confirmPassword) {
       Alert.alert('The password is not matched.');
-      this.setState({ password: '' });
-      this.setState({ confirmPassword: '' });
+      this.setState({ password: '', confirmPassword: '' });
       return;
     }
+    this.setState({ registerRequest: true }, ()=>createUserServer(email, password));
 
-    localStorage.save('userData', {
-      email,
-      password
-    })
-      .then(() => {
-        Actions.WhoAreYou();
-      })
   }
 
   onForgotPassword() {
@@ -177,6 +164,7 @@ class AuthForm extends Component {
             <Image source={ userIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            editable={true}
             autoCapitalize="none"
             autoCorrect={ false }
             placeholder="Enter your Email"
@@ -193,6 +181,7 @@ class AuthForm extends Component {
             <Image source={ lockIcon } style={ styles.icon } resizeMode="contain" />
           </View>
           <TextInput
+            editable={true}
             autoCapitalize="none"
             autoCorrect={ false }
             placeholder="Password"
@@ -491,10 +480,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(state => ({
-    auth: state.auth
-  }),
-  (dispatch) => ({
-    actions: bindActionCreators(authActions, dispatch)
-  })
+
+const mapStateToProps = (state) => ({
+  auth: state.auth
+});
+
+export default connect(
+  mapStateToProps
 )(AuthForm);

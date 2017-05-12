@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import ClientInfoForm from '../components/smart/clientInfoForm';
-import { saveClientInfo } from '../actions';
+import * as clientAction from '../actions';
 import { connect } from 'react-redux';
 
 class ClientInfo extends Component {
@@ -19,10 +19,15 @@ class ClientInfo extends Component {
   }
 }
 
-export default connect(state => ({
-    status: state.question.status
-  }),
-  (dispatch) => ({
-    actions: bindActionCreators(saveClientInfo, dispatch)
-  })
+const mapStateToProps = (state) => ({
+  status: state.question.status,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(clientAction, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
 )(ClientInfo);
