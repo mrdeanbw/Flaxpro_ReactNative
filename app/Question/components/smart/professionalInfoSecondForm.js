@@ -53,7 +53,7 @@ class ProfessionalInfoForm extends Component {
       insured: true,
       profession: 'Fitness Trainer',
       certification: 'Certified personal trainer',
-      address: 'Rostov region, Taganrog',
+      address: '4 York st, Toronto',
       own: 'Both',
       experience: 5
     };
@@ -65,7 +65,7 @@ class ProfessionalInfoForm extends Component {
 
   loadInitialState = async () => {
     try {
-      var value = await AsyncStorage.getItem('professionalSecondForm');
+      const value = await AsyncStorage.getItem('professionalSecondForm');
       if (value !== null){
         this.setState({ ...JSON.parse(value)});
       }

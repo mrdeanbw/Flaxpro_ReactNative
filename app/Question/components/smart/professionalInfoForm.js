@@ -57,7 +57,7 @@ class ProfessionalInfoForm extends Component {
 
   loadInitialState = async () => {
     try {
-      var value = await AsyncStorage.getItem('professionalFirstForm');
+      const value = await AsyncStorage.getItem('professionalFirstForm');
       if (value !== null){
         this.setState({ ...JSON.parse(value)});
       }
