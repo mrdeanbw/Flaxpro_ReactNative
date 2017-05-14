@@ -10,7 +10,7 @@ OR
 android: react-native link && react-native run-android
 
 
-####Installation Errors/Solutions
+## Installation Errors/Solutions
 
     //Error after running react-native run-ios
      ld: library not found for -lAirMaps
