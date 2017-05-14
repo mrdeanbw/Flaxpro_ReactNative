@@ -47,7 +47,7 @@ class ProfessionalInfoForm extends Component {
     super(props);
 
     this.state = {
-      price: 200,
+      price: this.priceToString(200),
       insured: 'Yes',
       profession: 'Fitness Trainer',
       certification: 'Certified personal trainer',
@@ -56,6 +56,18 @@ class ProfessionalInfoForm extends Component {
       experience: 5
     };
   }
+  /*
+   price: Number,
+   insured: Boolean,
+   profession: String,
+   certification: String,
+   experience: Number,
+   toClient: Boolean,
+   ownSpace: Boolean,
+   decsription: String,
+
+   location: {lon, lat, city, country} OR
+   address: String address*/
 
   componentWillReceiveProps(nextProps) {
     const { auth: { user } } = nextProps;
@@ -82,7 +94,6 @@ class ProfessionalInfoForm extends Component {
         </TouchableOpacity>
         <View style={ styles.navBarTitleContainer }>
           <Text style={ styles.textTitle }>CREATING YOUR PROFILE</Text>
-          {/*<Text style={ styles.textSubTitle }>New good life, Fitness</Text>*/}
         </View>
         <View style={ styles.navButtonWrapper }/>
       </View>
@@ -90,17 +101,25 @@ class ProfessionalInfoForm extends Component {
   }
 
   onContinue () {
-    //   const { actions } = this.props;
-    //    localStorage.get('userData')
-    //   .then((data) => {
-    //     actions.createUser({ ...data, ...this.state })
-    //     localStorage.save('userData', null);
-    //     this.setState({ signUpRequest: true });
-    //   });
+    const { actions, createRole } = this.props;
+    /**
+     * fake request
+     */
+    localStorage.get('userData')
+      .then((data) => {
+        actions.createUser({ ...data, ...this.state })
+        localStorage.save('userData', null);
+        this.setState({ signUpRequest: true });
+      });
+    /**
+     * request to server
+     */
+    createRole(this.state)
   }
 
   onBack() {
-    Actions.pop();
+    const { changeProfessionalForm } = this.props;
+    changeProfessionalForm({firstForm: true})
   }
   onInsured(value) {
     this.setState({ insured: value });
@@ -118,6 +137,29 @@ class ProfessionalInfoForm extends Component {
     var newExperience = this.state.experience + value
     newExperience = newExperience < 0 ? 0 : newExperience
     this.setState({ experience: newExperience });
+  }
+
+  onFocusPrice() {
+    this.setState({price: this.priceToInt(this.state.price)})
+  }
+  onBlurPrice() {
+    this.setState({price: this.priceToString(this.state.price)})
+  }
+  priceToString(text) {
+    return text+'.00';
+  }
+  priceToInt(text) {
+    return text.slice(0,-3);
+  }
+  onChangePrice(text) {
+    text = this.checkForNumber(...text)
+    this.setState({price: text})
+  }
+  checkForNumber(...value){
+    const numbers = '0123456789';
+
+    value = value.filter((e) => numbers.includes(e))
+    return value.join('')
   }
 
   render() {
@@ -143,7 +185,9 @@ class ProfessionalInfoForm extends Component {
                         placeholderTextColor="#9e9e9e"
                         value={ this.state.price }
                         keyboardType='numeric'
-                        onChangeText={ (text) => this.setState({ price: text }) }
+                        onChangeText={ (text) => this.onChangePrice(text) }
+                        onFocus={ () => this.onFocusPrice()}
+                        onBlur={ () => this.onBlurPrice()}
                       />
                       <Text style={ [styles.textPrice, styles.textLabelPrice] }>/per session</Text>
                     </View>
