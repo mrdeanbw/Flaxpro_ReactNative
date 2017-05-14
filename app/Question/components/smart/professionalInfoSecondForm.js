@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   Animated,
   ActivityIndicator,
   StyleSheet,
@@ -24,9 +25,10 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import localStorage from 'react-native-local-storage';
 
 const { width, height } = Dimensions.get('window');
-const labelInsure = ['Yes', 'No'];
+const labelInsure = [{value:true, text:'Yes'}, {value: false, text:'No'}];
 const labelOwn = ['Go to client', 'Own space', 'Both'];
 const professions = ['Manager', 'Fitness Trainer', 'Doctor'];
 const certifications = ['No', 'Certified personal trainer'];
@@ -48,26 +50,29 @@ class ProfessionalInfoForm extends Component {
 
     this.state = {
       price: this.priceToString(200),
-      insured: 'Yes',
+      insured: true,
       profession: 'Fitness Trainer',
       certification: 'Certified personal trainer',
-      location: 'Rostov region, Taganrog',
+      address: 'Rostov region, Taganrog',
       own: 'Both',
       experience: 5
     };
   }
-  /*
-   price: Number,
-   insured: Boolean,
-   profession: String,
-   certification: String,
-   experience: Number,
-   toClient: Boolean,
-   ownSpace: Boolean,
-   decsription: String,
 
-   location: {lon, lat, city, country} OR
-   address: String address*/
+  componentDidMount() {
+    this.loadInitialState().done();
+  }
+
+  loadInitialState = async () => {
+    try {
+      var value = await AsyncStorage.getItem('professionalSecondForm');
+      if (value !== null){
+        this.setState({ ...JSON.parse(value)});
+      }
+    } catch (error) {
+      Alert.alert('AsyncStorage error: ' + error.message);
+    }
+  };
 
   componentWillReceiveProps(nextProps) {
     const { auth: { user } } = nextProps;
@@ -75,9 +80,7 @@ class ProfessionalInfoForm extends Component {
     if (user) {
       Actions.Main({ user_mode: CommonConstant.user_trainer });
     }
-    this.setState({
-      signUpRequest: false ,
-    });
+    this.setState({ signUpRequest: false });
   }
 
   get getShowNavBar() {
@@ -103,6 +106,21 @@ class ProfessionalInfoForm extends Component {
   onContinue () {
     const { actions, createRole } = this.props;
     /**
+     * 'price' to {number}
+     */
+    this.state.price = +this.priceToInt(this.state.price);
+
+    if(this.state.own === 'Both') {
+      this.state.toClient = true;
+      this.state.ownSpace = true;
+    }
+    if(this.state.own === 'Go to client') {
+      this.state.toClient = true;
+    }
+    if(this.state.own === 'Own space') {
+      this.state.ownSpace = true;
+    }
+    /**
      * fake request
      */
     localStorage.get('userData')
@@ -114,11 +132,18 @@ class ProfessionalInfoForm extends Component {
     /**
      * request to server
      */
-    createRole(this.state)
+    AsyncStorage.getItem('professionalFirstForm')
+      .then((data) => {
+        AsyncStorage.multiRemove(['professionalFirstForm', 'professionalSecondForm']);
+        this.setState({ signUpRequest: true });
+
+        createRole({ ...JSON.parse(data), ...this.state })
+      })
   }
 
   onBack() {
     const { changeProfessionalForm } = this.props;
+    AsyncStorage.setItem('professionalSecondForm', JSON.stringify(this.state));
     changeProfessionalForm({firstForm: true})
   }
   onInsured(value) {
@@ -133,17 +158,19 @@ class ProfessionalInfoForm extends Component {
   onSelectCertification(value) {
     this.setState({ certification: value });
   }
-  udateExperience(value) {
-    var newExperience = this.state.experience + value
-    newExperience = newExperience < 0 ? 0 : newExperience
-    this.setState({ experience: newExperience });
+  updateExperience(value) {
+    let experience = this.state.experience + value;
+    experience = experience < 0 ? 0 : experience;
+    this.setState({ experience });
   }
 
   onFocusPrice() {
-    this.setState({price: this.priceToInt(this.state.price)})
+    const price = this.priceToInt(this.state.price);
+    this.setState({ price })
   }
   onBlurPrice() {
-    this.setState({price: this.priceToString(this.state.price)})
+    const price = this.priceToString(this.state.price);
+    this.setState({ price })
   }
   priceToString(text) {
     return text+'.00';
@@ -186,8 +213,8 @@ class ProfessionalInfoForm extends Component {
                         value={ this.state.price }
                         keyboardType='numeric'
                         onChangeText={ (text) => this.onChangePrice(text) }
-                        onFocus={ () => this.onFocusPrice()}
-                        onBlur={ () => this.onBlurPrice()}
+                        onFocus={ () => this.onFocusPrice() }
+                        onBlur={ () => this.onBlurPrice() }
                       />
                       <Text style={ [styles.textPrice, styles.textLabelPrice] }>/per session</Text>
                     </View>
@@ -196,17 +223,17 @@ class ProfessionalInfoForm extends Component {
                     <Text style={ styles.textCellTitle }>Insured</Text>
                     <View style={ styles.cellValueContainer }>
                       {
-                        labelInsure.map(value => {
+                        labelInsure.map(item => {
                           return (
                             <RadioButton
                               style={ styles.paddingTwo }
-                              key={ value }
-                              label={ value }
+                              key={ item.text }
+                              label={ item.text }
                               color="#19b8ff"
                               iconStyle={ styles.iconButton }
                               labelStyle={ styles.textInput }
-                              checked={ this.state.insured == value }
-                              onPress={ () => this.onInsured(value) }
+                              checked={ this.state.insured == item.value }
+                              onPress={ () => this.onInsured(item.value) }
                             />
                           );
                         })
@@ -256,14 +283,14 @@ class ProfessionalInfoForm extends Component {
                         name="minus"
                         size={ 12 }
                         color="#10c7f9"
-                        onPress={ () => this.udateExperience(-1) }
+                        onPress={ () => this.updateExperience(-1) }
                       />
                       <Text style={ [styles.dropDownText, styles.experienceText] }>{this.state.experience} years</Text>
                       <FontAwesome
                         name="plus"
                         size={ 12 }
                         color="#10c7f9"
-                        onPress={ () => this.udateExperience(1) }
+                        onPress={ () => this.updateExperience(1) }
                       />
                     </View>
                   </View>
@@ -275,9 +302,9 @@ class ProfessionalInfoForm extends Component {
                         autoCorrect={ false }
                         placeholder="Location"
                         placeholderTextColor="#9e9e9e"
-                        style={ styles.textInputCenter }
-                        value={ this.state.location }
-                        onChangeText={ (text) => this.setState({ location: text }) }
+                        style={ styles.textInputRight }
+                        value={ this.state.address }
+                        onChangeText={ (text) => this.setState({ address: text }) }
                        />
                     </View>
                   </View>
@@ -461,7 +488,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Open Sans',
     color: '#6b6b6b',
   },
-  textInputCenter: {
+  textInputRight: {
     fontFamily: 'Open Sans',
     flex: 1,
     color: '#1e1e1e',
@@ -471,7 +498,7 @@ const styles = StyleSheet.create({
   },
   viewInput: {
     flexDirection: 'row',
-    textAlign: 'right',
+    // textAlign: 'right',
     alignItems: 'center',
     marginHorizontal: width/2 -125,
     borderBottomWidth: 1,

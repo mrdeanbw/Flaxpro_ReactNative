@@ -47,3 +47,7 @@ export const createRole = (userData) => async (dispatch, store) => {
   }
 
 };
+
+export function changeProfessionalForm({ firstForm }) {
+  return { type: types.PROFESSIONALINFO_CHANGEFORM, firstForm };
+}

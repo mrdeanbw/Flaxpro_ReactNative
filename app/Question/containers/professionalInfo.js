@@ -1,8 +1,10 @@
 'use strict';
+import { View } from 'react-native';
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import ProfessionalInfoForm from '../components/smart/professionalInfoForm';
+import ProfessionalInfoSecondForm from '../components/smart/professionalInfoSecondForm';
 import * as professionalAction from '../actions';
 import { connect } from 'react-redux';
 
@@ -12,15 +14,26 @@ class ProfessionalInfo extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
+    const { actions, status, firstForm } = this.props;
     return (
-      <ProfessionalInfoForm { ...actions } satus/>
+    <View style={{flex: 1, position: 'relative'}}>
+      {
+        firstForm &&
+        <ProfessionalInfoForm { ...actions } satus/>
+      }
+      {
+        !firstForm &&
+        <ProfessionalInfoSecondForm { ...actions } satus/>
+      }
+
+    </View>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
   status: state.question.status,
+  firstForm: state.question.firstForm,
 });
 
 const mapDispatchToProps = (dispatch) => ({

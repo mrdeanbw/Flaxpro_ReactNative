@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   Animated,
   ActivityIndicator,
   StyleSheet,
@@ -17,29 +18,21 @@ import {
 } from 'react-native';
 
 import Slider from 'react-native-slider';
-import DatePicker from 'react-native-datepicker';
-import ModalDropdown from 'react-native-modal-dropdown';
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import EntypoIcons from 'react-native-vector-icons/Entypo';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
-const prices = [{item: '$', price: '$50-100'},{item: '$$', price: '$100-300'},{item: '$$$', price: '$300+'}]
 
 import * as CommonConstant from '../../../Components/commonConstant';
-import { allProfessions } from '../../../Components/tempDataUsers'
 const background = require('../../../Assets/images/background.png');
-const markIcon = require('../../../Assets/images/flaxpro_mark.png');
 const avatar = require('../../../Assets/images/avatar.png');
 const edit_avatar = require('../../../Assets/images/edit_avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
 
-const professionalNames = allProfessions.map(item => item.name)
 //auth redux store
 import * as authActions from '../../../Auth/actions';
 
@@ -58,40 +51,32 @@ class ProfessionalInfoForm extends Component {
     };
   }
 
+  componentDidMount() {
+    this.loadInitialState().done();
+  }
+
+  loadInitialState = async () => {
+    try {
+      var value = await AsyncStorage.getItem('professionalFirstForm');
+      if (value !== null){
+        this.setState({ ...JSON.parse(value)});
+      }
+    } catch (error) {
+      Alert.alert('AsyncStorage error: ' + error.message);
+    }
+  };
+
   componentWillReceiveProps(nextProps) {
     const { auth: { user } } = nextProps;
 
     if (user) {
       Actions.Main({ user_mode: CommonConstant.user_professional });
     }
-    this.setState({
-      signUpRequest: false ,
-    });
+    this.setState({ signUpRequest: false });
   }
 
   get getShowNavBar() {
-    const { editable, auth } = this.props;
-
     return (
-      // editable ?
-      //   <View style={ styles.navBarContainer }>
-      //     <TouchableOpacity
-      //       onPress={ () => this.onSchdule() }
-      //       style={ styles.navButtonWrapper }
-      //     >
-      //       <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
-      //     </TouchableOpacity>
-      //
-      //     <Text style={ styles.textTitle }>{ auth.user.name.toUpperCase() }</Text>
-      //
-      //     <TouchableOpacity
-      //       onPress={ () => this.onEdit() }
-      //       style={ styles.navButtonWrapper }
-      //     >
-      //       <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
-      //     </TouchableOpacity>
-      //   </View>
-      //   :
       <View style={ styles.navBarContainer }>
         <TouchableOpacity
           onPress={ () => this.onBack() }
@@ -104,7 +89,6 @@ class ProfessionalInfoForm extends Component {
         </TouchableOpacity>
         <View style={ styles.navBarTitleContainer }>
           <Text style={ styles.textTitle }>CREATING YOUR PROFILE</Text>
-          {/*<Text style={ styles.textSubTitle }>New good life, Fitness</Text>*/}
         </View>
         <View style={ styles.navButtonWrapper }/>
       </View>
@@ -112,20 +96,11 @@ class ProfessionalInfoForm extends Component {
   }
 
   onContinue () {
-    const { actions, createRole } = this.props;
-    /**
-     * fake request
-     */
-    localStorage.get('userData')
-      .then((data) => {
-        actions.createUser({ ...data, ...this.state })
-        localStorage.save('userData', null);
-        this.setState({ signUpRequest: true });
-      });
-    /**
-     * request to server
-     */
-    createRole(this.state)
+    const { actions, changeProfessionalForm } = this.props;
+    AsyncStorage.setItem('professionalFirstForm', JSON.stringify(this.state));
+
+    changeProfessionalForm({firstForm: false})
+
   }
 
   onBack() {
@@ -133,12 +108,6 @@ class ProfessionalInfoForm extends Component {
   }
   onSex(value) {
     this.setState({ gender: value });
-  }
-  onSelectProfession(value) {
-    this.setState({ profession: value });
-  }
-  onCheckPrice(value) {
-    this.setState({ price: value });
   }
 
   render() {
@@ -201,7 +170,7 @@ class ProfessionalInfoForm extends Component {
                   <View style={ styles.cellContainer }>
                     <Text style={ styles.textCellTitle }>Visibility profile</Text>
                     <Switch
-                      onValueChange={(value) => this.setState({ visibility: value })}
+                      onValueChange={ ( value) => this.setState({ visibility: value }) }
                       value={ this.state.visibility } />
                   </View>
 
@@ -640,6 +609,9 @@ const styles = StyleSheet.create({
 export default connect(state => ({
     auth: state.auth
   }),
+  /**
+   * fake request
+   */
   (dispatch) => ({
       actions: bindActionCreators(authActions, dispatch)
     })

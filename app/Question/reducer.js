@@ -2,6 +2,7 @@ import * as types from './actionTypes';
 
 const initialState = {
   status: null,
+  firstForm: true,
 };
 
 export default function question(state = initialState, action = {}) {
@@ -35,6 +36,11 @@ export default function question(state = initialState, action = {}) {
       return {
         ...state,
         status: '-----professionalinfo failed',
+      };
+    case types.PROFESSIONALINFO_CHANGEFORM:
+      return {
+        ...state,
+        firstForm: action.firstForm,
       };
     default:
       return state;
