@@ -144,7 +144,13 @@ class ProfessionalInfoForm extends Component {
   render() {
     const { status } = this.props,
       { signUpRequest } = this.state;
-    let scale = (width * 3/4 -75) / 72 ;
+
+    const sliderWidth = width * 1/4;
+    const ageInitialValue = 15;
+    const numberDivisions = 72;
+    const allPaddingsMargings = 75;
+    let scale = (width - sliderWidth - allPaddingsMargings) / numberDivisions ;
+    const paddingLeft =(this.state.age - ageInitialValue) * scale;
     return (
       <View style={ styles.container }>
         <KeyboardAwareScrollView
@@ -224,7 +230,7 @@ class ProfessionalInfoForm extends Component {
                   <View style={ styles.cellContainer }>
                     <Text style={ styles.textCellTitle }>Age</Text>
                     <View style={ styles.viewSlider }>
-                      <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.age -15) * scale}] }>
+                      <Animated.View style={ [styles.animateContainer, {paddingLeft: paddingLeft}] }>
                         <Animated.View style={ styles.bubble }>
                           <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonText] }>{ this.state.age }</Animated.Text>
                         </Animated.View>
