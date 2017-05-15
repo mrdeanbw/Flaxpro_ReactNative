@@ -11,10 +11,12 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import ModalDropdown from 'react-native-modal-dropdown';
 
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import CommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import R from 'ramda';
 
@@ -41,12 +43,9 @@ class ExploreForm extends Component {
       showContentMode: 0,
       professionalsClients: ProfessionalsClients,
       gymLocations: GymLocations,
-      professionSelected: 0
+      professionSelected: 0,
+      selectedProfessions: [],
     };
-  }
-
-  conponentWillMount() {
-    // this.setState({ professionalsClients: ProfessionalsClients });
   }
 
   componentWillReceiveProps(newProps) {
@@ -110,18 +109,27 @@ class ExploreForm extends Component {
           />
         </TouchableOpacity>
         <Text style={ styles.textTitle }>MAP</Text>
-
         <View style={ styles.closeButtonWrapper } />
-
       </View>
     );
   }
 
-  // getColorForScrollView (index) {
-  //   const { professionSelected } = this.state;
-  //   if ()
-  //   return {backgroundColor: '#4dc7fd'}
-  // }
+  removeProfessions (value) {
+
+  }
+
+  onSelectProfession (value) {
+    let selectedProfessions = this.state.selectedProfessions;
+    const profession = R.find(R.propEq('id', value.props.id))(this.props.auth.professions);
+    if(selectedProfessions.includes(profession)){
+      selectedProfessions.splice(selectedProfessions.indexOf(profession), 1);
+    }
+    selectedProfessions.unshift(profession);
+
+    this.setState({ selectedProfessions });
+    this.selectProfession(0);
+    return false;
+  }
 
   selectProfession(index) {
     const { professionSelected } = this.state;
@@ -193,37 +201,83 @@ class ExploreForm extends Component {
         { user && !user.professional ?
           <View style={ styles.filterRowContainer }>
             <View style={ styles.cellContainer }>
-              <View style={ professionSelected == 0 ? styles.selectWrapper : styles.buttonWrapper }>
-                <TouchableOpacity activeOpacity={ .5 } onPress={ () => {
-                  this.selectProfession(-1)
-                } }>
-                  <View style={ [styles.cellButton] }>
-                    <Text style={ professionSelected == 0 ? styles.selectedText : styles.cellText }> + </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity activeOpacity={ .5 }>
+                <ModalDropdown
+                  options={ professions.map((item) => (<Text key={item.id} id={item.id}>{item.name}</Text>)) }
+                  defaultValue={<CommunityIcons name="plus" size={ 25 } color={ "#41c3fd" }/>}
+                  style={ styles.dropdown }
+                  textStyle ={ styles.dropDownText }
+                  dropdownStyle={ styles.dropdownStyle }
+                  onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
+                />
+              </TouchableOpacity>
+
+              {
+                this.state.selectedProfessions.length>0 &&
+                <View style={ [styles.buttonWrapper,
+                  {
+                    backgroundColor: professionSelected == 0 ? '#4dc7fd' : '#fff',
+                    borderColor: '#4dc7fd',
+                  }
+                ] }>
+                  <TouchableOpacity activeOpacity={ .5 } onPress={ () => {
+                    this.selectProfession(-1)
+                  } }>
+                    <View style={ [styles.cellButton] }>
+                      <Text style={ [styles.cellText, {color: professionSelected == 0 ? '#fff' : '#4dc7fd'}] }>
+                        All </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              }
+
               <ScrollView
                 horizontal={ true }
                 showsHorizontalScrollIndicator={ false }
+                ref={(ref) => {this.searchProfessionScroll = ref}}
+                onContentSizeChange={(contentWidth, contentHeight)=>{
+                  const scrollToEnd = contentWidth - width + 20 >0 ? contentWidth - width + 20 :0;
+                  this.searchProfessionScroll.scrollTo({x: scrollToEnd});
+                }}
               >
+                <View style={ styles.cellContainer }>
                 {
-                  professions.map((profession, index) => {
+                  this.state.selectedProfessions.map((profession, index) => {
                     const selected = index + 1 == professionSelected;
                     return (
-                      <View key={index} style={ selected ? styles.selectWrapper : styles.buttonWrapper }>
+                      <View key={index} style={ [ styles.buttonWrapper,
+                        {
+                          backgroundColor: selected ? profession.color || '#4dc7fd' : '#fff',
+                          borderColor: profession.color || '#4dc7fd',
+                        }
+                        ] }>
                         <TouchableOpacity onPress={ () => {
                           this.selectProfession(index)
                         }}>
                           <View style={ styles.cellButton }>
-                            <Text style={ selected ? styles.selectedText : styles.cellText }>{ profession.name }</Text>
+                            <Text style={ [styles.cellText, {color: selected ? '#fff' : profession.color || '#4dc7fd' }] }>{ profession.name }</Text>
                           </View>
                         </TouchableOpacity>
                       </View>
                     )
                   })
                 }
+                </View>
               </ScrollView>
             </View>
+
+            {
+              !this.state.selectedProfessions.length &&
+              <View style={ styles.searchProfessionBlock }>
+                <LineIcons
+                  name="magnifier"
+                  size={ 20 }
+                  color={ "#acacac" }
+                />
+                <Text style={ styles.searchProfessionText }> Search a Profession </Text>
+              </View>
+            }
+
           </View>
           :
           <View style={ styles.segmentsBlock }>
@@ -315,7 +369,10 @@ class ExploreForm extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    // width,
+    // height,
     flex: 1,
+    // backgroundColor: '#1abef2',
   },
   background: {
     width,
@@ -373,43 +430,45 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingVertical: 10,
   },
+  searchProfessionBlock: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchProfessionText: {
+    color: '#acacac',
+  },
 
   //scroll view
   filterRowContainer: {
-    flexDirection: 'row',
+    backgroundColor: '#fff',
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
     paddingVertical: 5,
     paddingHorizontal: 10
   },
   buttonWrapper: {
+    marginHorizontal: 2,
     borderRadius: 20,
-    backgroundColor: '#4dc7fd',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  selectWrapper: {
-    borderRadius: 20,
-    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#4dc7fd',
     justifyContent: 'center',
     alignItems: 'center',
   },
   cellButton: {
     // color: '#5ad0f6',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     paddingHorizontal: 15,
-    height: 30,
+    height: 25,
   },
   cellText: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  selectedText: {
     color: '#4dc7fd',
-    fontSize: 18,
+    fontSize: 12,
   },
   cellContainer: {
     borderRadius: 7,
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
     // paddingVertical: 10,
   }
   //end scroll view
