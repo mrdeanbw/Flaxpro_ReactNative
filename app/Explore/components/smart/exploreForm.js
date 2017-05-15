@@ -30,7 +30,6 @@ import { ProfessionalsClients, GymLocations } from '../../../Components/dummyEnt
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/images/background.png');
-const avatar = require('../../../Assets/images/avatar1.png');
 
 class ExploreForm extends Component {
   constructor(props) {
@@ -44,7 +43,7 @@ class ExploreForm extends Component {
       professionalsClients: ProfessionalsClients,
       gymLocations: GymLocations,
       professionSelected: 0,
-      selectedProfessions: [],
+      listSelectedProfessions: [],
     };
   }
 
@@ -114,19 +113,26 @@ class ExploreForm extends Component {
     );
   }
 
-  removeProfessions (value) {
-
+  removeProfession (profession) {
+    const index = this.state.listSelectedProfessions.indexOf(profession);
+    if(index + 1 === this.state.professionSelected) {
+      this.selectProfession(-1);
+    } else if(index + 1 < this.state.professionSelected){
+      this.selectProfession(this.state.professionSelected-2);
+    }
+    this.state.listSelectedProfessions.splice(index, 1);
+    this.setState({ listSelectedProfessions: this.state.listSelectedProfessions });
   }
 
   onSelectProfession (value) {
-    let selectedProfessions = this.state.selectedProfessions;
+    let listSelectedProfessions = this.state.listSelectedProfessions;
     const profession = R.find(R.propEq('id', value.props.id))(this.props.auth.professions);
-    if(selectedProfessions.includes(profession)){
-      selectedProfessions.splice(selectedProfessions.indexOf(profession), 1);
+    if(listSelectedProfessions.includes(profession)){
+      listSelectedProfessions.splice(listSelectedProfessions.indexOf(profession), 1);
     }
-    selectedProfessions.unshift(profession);
+    listSelectedProfessions.unshift(profession);
 
-    this.setState({ selectedProfessions });
+    this.setState({ listSelectedProfessions });
     this.selectProfession(0);
     return false;
   }
@@ -200,7 +206,7 @@ class ExploreForm extends Component {
         </View>
         { user && !user.professional ?
           <View style={ styles.filterRowContainer }>
-            <View style={ styles.cellContainer }>
+            <View style={ styles.professionSearchContainer }>
               <TouchableOpacity activeOpacity={ .5 }>
                 <ModalDropdown
                   options={ professions.map((item) => (<Text key={item.id} id={item.id}>{item.name}</Text>)) }
@@ -213,7 +219,7 @@ class ExploreForm extends Component {
               </TouchableOpacity>
 
               {
-                this.state.selectedProfessions.length>0 &&
+                this.state.listSelectedProfessions.length>0 &&
                 <View style={ [styles.buttonWrapper,
                   {
                     backgroundColor: professionSelected == 0 ? '#4dc7fd' : '#fff',
@@ -242,21 +248,37 @@ class ExploreForm extends Component {
               >
                 <View style={ styles.cellContainer }>
                 {
-                  this.state.selectedProfessions.map((profession, index) => {
+                  this.state.listSelectedProfessions.map((profession, index) => {
                     const selected = index + 1 == professionSelected;
                     return (
-                      <View key={index} style={ [ styles.buttonWrapper,
-                        {
-                          backgroundColor: selected ? profession.color || '#4dc7fd' : '#fff',
-                          borderColor: profession.color || '#4dc7fd',
-                        }
-                        ] }>
-                        <TouchableOpacity onPress={ () => {
-                          this.selectProfession(index)
+                      <View  key={index}>
+
+                        <View style={ [ styles.buttonWrapper,
+                          {
+                            backgroundColor: selected ? profession.color || '#4dc7fd' : '#fff',
+                            borderColor: profession.color || '#4dc7fd',
+                          }
+                          ] }>
+                          <TouchableOpacity onPress={ () => {
+                            this.selectProfession(index)
+                          }}>
+                            <View style={ styles.cellButton }>
+                              <Text style={ [styles.cellText, {color: selected ? '#fff' : profession.color || '#4dc7fd' }] }>{ profession.name }</Text>
+                            </View>
+                          </TouchableOpacity>
+
+                        </View>
+
+                        <TouchableOpacity style={ styles.closeProfession} activeOpacity={ .5 } onPress={ () => {
+                          this.removeProfession(profession)
                         }}>
-                          <View style={ styles.cellButton }>
-                            <Text style={ [styles.cellText, {color: selected ? '#fff' : profession.color || '#4dc7fd' }] }>{ profession.name }</Text>
-                          </View>
+                          <View style={ styles.closeProfessionView }></View>
+                          <EvilIcons
+                            name="close-o"
+                            size={ 21 }
+                            color={ "#4dc7fd" }
+                            style={ styles.closeProfessionIcon}
+                          />
                         </TouchableOpacity>
                       </View>
                     )
@@ -267,7 +289,7 @@ class ExploreForm extends Component {
             </View>
 
             {
-              !this.state.selectedProfessions.length &&
+              !this.state.listSelectedProfessions.length &&
               <View style={ styles.searchProfessionBlock }>
                 <LineIcons
                   name="magnifier"
@@ -371,8 +393,8 @@ const styles = StyleSheet.create({
   container: {
     // width,
     // height,
-    flex: 1,
     // backgroundColor: '#1abef2',
+    flex: 1,
   },
   background: {
     width,
@@ -438,6 +460,29 @@ const styles = StyleSheet.create({
   searchProfessionText: {
     color: '#acacac',
   },
+  closeProfession: {
+    position: 'absolute',
+    right:0,
+    top:-1,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+    height: 25,
+    width: 25,
+    backgroundColor: 'transparent',
+  },
+  closeProfessionIcon: {
+
+  },
+  closeProfessionView: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    position: 'absolute',
+    right: 3,
+    top: 1,
+    height: 15,
+    width: 15,
+    overflow: 'hidden'
+  },
 
   //scroll view
   filterRowContainer: {
@@ -449,6 +494,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     marginHorizontal: 2,
+    marginTop: 3,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#4dc7fd',
@@ -456,11 +502,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cellButton: {
-    // color: '#5ad0f6',
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingHorizontal: 15,
-    height: 25,
+    height: 23,
   },
   cellText: {
     color: '#4dc7fd',
@@ -469,8 +514,12 @@ const styles = StyleSheet.create({
   cellContainer: {
     borderRadius: 7,
     flexDirection: 'row-reverse',
-    // paddingVertical: 10,
-  }
+    justifyContent: 'flex-end',
+  },
+  professionSearchContainer: {
+    borderRadius: 7,
+    flexDirection: 'row-reverse',
+  },
   //end scroll view
 });
 
