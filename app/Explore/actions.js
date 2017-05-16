@@ -20,29 +20,54 @@ function professionalsError(error) {
   return { type: types.EXPLORE_GET_PROFESSIONALS_ERROR, error };
 }
 
-function clientSuccess(clients) {
+function clientsSuccess({clients}) {
   return { type: types.EXPLORE_GET_CLIENTS_SUCCESS, clients };
 }
 
-function clientError(error) {
+function clientsError(error) {
   return { type: types.EXPLORE_GET_CLIENTS_ERROR, error };
 }
 
-export const getProfessionals = () => async (dispatch, store) => {
+export const getProfessionals = (data) => async (dispatch, store) => {
   professionalsRequest();
-  const url = '/professional/q';
+  let url = '/professional/q';
   const { token } = store().auth;
   const options = {
     headers: {'Authorization': token},
     method: 'get',
-    // body: JSON.stringify({...userData, user}),
   };
+  if(data){
+    const queryString = toQueryString(data);
+    url += '?' + queryString;
+  }
 
   try {
     const response = await request(url, options);
     dispatch(professionalsSuccess(response));
   } catch (error) {
     dispatch(professionalsError(error.message));
+  }
+
+};
+
+export const getClients = (data) => async (dispatch, store) => {
+  clientsRequest();
+  let url = '/client/q';
+  const { token } = store().auth;
+  const options = {
+    headers: {'Authorization': token},
+    method: 'get',
+  };
+  if(data){
+    const queryString = toQueryString(data);
+    url += '?' + queryString;
+  }
+
+  try {
+    const response = await request(url, options);
+    dispatch(clientsSuccess(response));
+  } catch (error) {
+    dispatch(clientsError(error.message));
   }
 
 };

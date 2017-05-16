@@ -95,7 +95,6 @@ export const login = (email, password, token = null) => async (dispatch, store) 
     }
   }
 
-  dispatch({ type: types.LOGIN, professions, professionalsClients });
 
   /**
    * request to server
@@ -109,6 +108,12 @@ export const login = (email, password, token = null) => async (dispatch, store) 
   try {
     const response = await request(url, options);
     dispatch(loginSuccess(response))
+    /**
+     * fake request
+     */
+    dispatch({ type: types.LOGIN, professions, professionalsClients });
+    /**
+     * */
   } catch (error) {
     dispatch(loginError(error))
   }
