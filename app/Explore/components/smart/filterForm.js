@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Animated,
   AppRegistry,
   StyleSheet,
   Text,
@@ -14,7 +15,7 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-
+import Slider from 'react-native-slider';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { RadioButtons } from 'react-native-radio-buttons'
 import RadioButton from './radioButton';
@@ -27,10 +28,18 @@ const background = require('../../../Assets/images/background.png');
 const labelSex = ['Male', 'Female'];
 const labelAge = ['16', '17', '18', '19', '20', '21'];
 const labelVerified = ['Yes', 'No'];
+const labelInsured = ['Yes', 'No'];
 const labelAffiliation = ['Gym', 'Independent', 'All'];
 const labelYearOfExprience = ['2004', '2005', '2006'];
 const labelCertification = ['Certified Personal Professional1', 'Certified Personal Professional2', 'Certified Personal Professional3'];
-const labelLocation = ['Near by', 'City', 'Countary', 'Km'];
+const labelLocation = ['Meet at Home', 'One place'];
+const labelProfession = ['Pilates', 'Yoga', 'Massage'];
+
+const prices = [
+  {item: '$', price: '$50-100', level: 1},
+  {item: '$$', price: '$100-300', level: 2},
+  {item: '$$$', price: '$300+', level: 3}
+];
 
 export default class FilterForm extends Component {
 
@@ -39,12 +48,15 @@ export default class FilterForm extends Component {
 
     this.state = {
       selectedSex: labelSex[0],
-      selectedAge: labelAge[4],
+      selectedAge: 28,
       selectedVerified: labelVerified[0],
+      selectedInsured: labelInsured[0],
       selectedAffiliation: labelAffiliation[0],
       selectedYourOfExperience: labelYearOfExprience[0],
       selectedCertification: labelCertification[0],
       selectedLocation: labelLocation[0],
+      selectedProfession: labelProfession[0],
+      priceLevel : prices[0].level
     };
   }
 
@@ -79,6 +91,10 @@ export default class FilterForm extends Component {
     this.setState({ selectedVerified: value });
   }
 
+  onInsured(value) {
+    this.setState({ selectedInsured: value });
+  }
+
   onAffiliation(value) {
     this.setState({ selectedAffiliation: value });
   }
@@ -95,6 +111,14 @@ export default class FilterForm extends Component {
     this.setState({ selectedLocation: value });
   }
 
+  onProfession(value) {
+    this.setState({ selectedProfession: value });
+  }
+
+
+  onCheckPrice(value) {
+    this.setState({ priceLevel: value });
+  }
 
   renderOption(option, selected, onSelect, index){
     const styleText = selected ? styles.textSelectedCellValue : styles.textCellValue;
@@ -115,7 +139,7 @@ export default class FilterForm extends Component {
 
   render() {
     const { status } = this.props;
-
+    let scale = (width * 3/4 -75) / 72 ;
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -138,7 +162,7 @@ export default class FilterForm extends Component {
           <View style={ styles.mainContainer }>
 
             <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Sex</Text>
+              <Text style={ [styles.textCellTitle, styles.labelLine] }>Sex</Text>
               <View style={ styles.cellValueContainer }>
                 {
                   labelSex.map(value => {
@@ -156,16 +180,64 @@ export default class FilterForm extends Component {
               </View>
             </View>
 
+
             <View style={ styles.cellContainer }>
               <Text style={ styles.textCellTitle }>Age</Text>
-              <RadioButtons
-                options={ labelAge }
-                onSelection={ this.onAge.bind(this) }
-                selectedOption={ this.state.selectedAge }
-                renderOption={ this.renderOption }
-                renderContainer={ this.renderContainer }
-              />
+              <View style={ styles.viewSlider }>
+                <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selectedAge -15) * scale}] }>
+                  <Animated.View style={ styles.bubble }>
+                    <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonText] }>{ this.state.selectedAge }</Animated.Text>
+                  </Animated.View>
+                  <Animated.View style={ styles.arrowBorder } />
+                  <Animated.View style={ styles.arrow } />
+                </Animated.View>
+                <Slider style={ styles.slider }
+                        maximumTrackTintColor="#9be5ff"
+                        minimumTrackTintColor="#10c7f9"
+                        trackStyle={{backgroundColor: '#9be5ff'}}
+                        thumbStyle={ styles.thumbStyle }
+                        minimumValue={ 15 }
+                        maximumValue={ 85 }
+                        step={ 1 }
+                        value = { this.state.selectedAge }
+                        onValueChange={ (value) => this.setState({ selectedAge: value }) }
+                />
+              </View>
             </View>
+
+
+            <View style={ styles.cellContainer }>
+              <Text style={ styles.textCellTitle }>Price</Text>
+              <View style={ styles.pricesBlock }>
+                {
+                  prices.map((item, index) =>(
+                    <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
+                      <View style={ [styles.viewTwoText, item.level === this.state.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
+                        <Text style={ [styles.textCellTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
+                        <Text style={ [styles.textSubTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                }
+
+              </View>
+            </View>
+
+            {/*<View style={ styles.cellContainer }>*/}
+              {/*<Text style={ [styles.textCellTitle, styles.labelLine] }>Age</Text>*/}
+              {/*<RadioButtons*/}
+                {/*options={ labelAge }*/}
+                {/*onSelection={ this.onAge.bind(this) }*/}
+                {/*selectedOption={ this.state.selectedAge }*/}
+                {/*renderOption={ this.renderOption }*/}
+                {/*renderContainer={ this.renderContainer }*/}
+              {/*/>*/}
+            {/*</View>*/}
+
+
+
+
+
 
             <View style={ styles.cellContainer }>
               <Text style={ styles.textCellTitle }>Verified</Text>
@@ -186,26 +258,26 @@ export default class FilterForm extends Component {
               </View>
             </View>
 
-            <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Affiliation</Text>
-              <View style={ styles.cellValueContainer }>
-                {
-                  labelAffiliation.map(value => {
-                    return (
-                      <RadioButton
-                        style={ styles.paddingThree }
-                        key={ value }
-                        label={ value }
-                        checked={ this.state.selectedAffiliation == value }
-                        onPress={ () => this.onAffiliation(value) }
-                      />
-                    );
-                  })
-                }
-              </View>
-            </View>
+            {/*<View style={ styles.cellContainer }>*/}
+              {/*<Text style={ styles.textCellTitle }>Affiliation</Text>*/}
+              {/*<View style={ styles.cellValueContainer }>*/}
+                {/*{*/}
+                  {/*labelAffiliation.map(value => {*/}
+                    {/*return (*/}
+                      {/*<RadioButton*/}
+                        {/*style={ styles.paddingThree }*/}
+                        {/*key={ value }*/}
+                        {/*label={ value }*/}
+                        {/*checked={ this.state.selectedAffiliation == value }*/}
+                        {/*onPress={ () => this.onAffiliation(value) }*/}
+                      {/*/>*/}
+                    {/*);*/}
+                  {/*})*/}
+                {/*}*/}
+              {/*</View>*/}
+            {/*</View>*/}
 
-            <View style={ styles.cellContainer }>
+            <View style={ styles.cellContainerBlock }>
               <Text style={ styles.textCellTitle }>Year of Experience</Text>
               <View style={ styles.dropdownWrapper }>
                 <ModalDropdown
@@ -220,6 +292,57 @@ export default class FilterForm extends Component {
                   name="chevron-down"  size={ 30 }
                   color="#fff"
                 />
+              </View>
+            </View>
+
+            <View style={ styles.cellContainer }>
+              <Text style={ styles.textCellTitle }>Location</Text>
+              <View style={ styles.pricesBlock }>
+                {
+                  labelLocation.map((item, index) =>(
+                    <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
+                      <View style={ [styles.viewTwoText, item === this.state.selectedLocation ? styles.priceButtonChecked : styles.priceButton] }>
+                        <Text style={ [styles.textSubTitle, item === this.state.selectedLocation ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                }
+              </View>
+            </View>
+
+
+            <View style={ styles.cellContainer }>
+              <Text style={ styles.textCellTitle }>Insured</Text>
+              <View style={ styles.cellValueContainer }>
+                {
+                  labelInsured.map(value => {
+                    return (
+                      <RadioButton
+                        style={ styles.paddingTwo }
+                        key={ value }
+                        label={ value }
+                        checked={ this.state.selectedInsured == value }
+                        onPress={ () => this.onInsured(value) }
+                      />
+                    );
+                  })
+                }
+              </View>
+            </View>
+
+
+            <View style={ styles.cellContainer }>
+              <Text style={ styles.textCellTitle }>Profession</Text>
+              <View style={ styles.pricesBlock }>
+                {
+                  labelProfession.map((item, index) =>(
+                    <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onProfession(item) }>
+                      <View style={ [styles.viewTwoText, item === this.state.selectedProfession ? styles.priceButtonChecked : styles.priceButton] }>
+                        <Text style={ [styles.textSubTitle, item === this.state.selectedProfession ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                }
               </View>
             </View>
 
@@ -241,23 +364,7 @@ export default class FilterForm extends Component {
               </View>
             </View>
 
-            <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Location</Text>
-              <View style={ styles.cellValueContainer }>
-                {
-                  labelLocation.map(value => {
-                    return (
-                      <RadioButton
-                        key={ value }
-                        label={ value }
-                        checked={ this.state.selectedLocation == value }
-                        onPress={ () => this.onLocation(value) }
-                      />
-                    );
-                  })
-                }
-              </View>
-            </View>
+
 
             <View style={ styles.buttonWrapper }>
               <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onDone() }>
@@ -276,12 +383,101 @@ export default class FilterForm extends Component {
 }
 
 const styles = StyleSheet.create({
+
+  cellContainerBlock: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  pricesBlock: {
+    flexDirection: 'row',
+  },
+  viewTwoText: {
+    flexDirection: 'column',
+  },
+  priceButtonChecked: {
+    backgroundColor: '#19b8ff',
+    alignItems: 'center',
+    borderRadius: 30,
+    width: 70,
+    marginLeft: 15,
+  },
+  priceButton: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    borderRadius: 30,
+    width: 70,
+    marginLeft: 15,
+    borderWidth: 1,
+    borderColor: '#19b8ff',
+  },
+  textSubTitle: {
+    fontFamily: 'Open Sans',
+    color: '#707070',
+    fontSize: 10,
+  },
+
+
+  bubble: {
+    flexDirection: 'column',
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 5,
+    flex: 0,
+    alignSelf: 'flex-start',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    borderColor: '#fff',
+    borderWidth: 1,
+  },
+  textAboveSlider: {
+    height: 15,
+    width: 20,
+    fontSize: 13,
+  },
+  priceButtonText: {
+    color: '#6b6b6b',
+    textAlign: 'center',
+  },
+  arrow: {
+    backgroundColor: 'transparent',
+    borderWidth: 6,
+    borderColor: 'transparent',
+    borderTopColor: '#fff',
+    alignSelf: 'center',
+    marginTop: -12,
+  },
+  arrowBorder: {
+    backgroundColor: 'transparent',
+    borderWidth: 6,
+    borderColor: 'transparent',
+    borderTopColor: '#fff',
+    alignSelf: 'center',
+    marginTop: -0.5,
+  },
+  slider: {
+    marginRight: 15,
+    alignItems: 'center',
+    height: 20,
+    marginBottom: -10,
+  },
+
+  viewSlider:{
+    flex: 1,
+    flexDirection: 'column',
+    marginLeft: width/4,
+  },
+
   container: {
     flex: 1,
   },
   background: {
     width,
     height,
+  },
+  labelLine: {
+    width : width * 0.15,
   },
   navBarContainer: {
     flex: 1,
@@ -310,10 +506,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   cellContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
   },
   cellValueContainer: {
     flexDirection: 'row',
