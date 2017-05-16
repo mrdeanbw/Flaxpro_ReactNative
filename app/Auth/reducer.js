@@ -15,7 +15,8 @@ export default function auth(state = initialState, action = {}) {
     case types.LOGIN:
       return {
         ...state,
-        user,
+        // user,
+        // token,
         error,
         professions,
         professionalsClients,
@@ -23,6 +24,8 @@ export default function auth(state = initialState, action = {}) {
     case types.AUTH_SUCCESS:
       return {
         ...state,
+        user,
+        token,
         error,
         loading: false,
       };

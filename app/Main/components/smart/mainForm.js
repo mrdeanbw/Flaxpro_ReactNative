@@ -61,7 +61,7 @@ class MainForm extends Component {
   }
 
   render() {
-    const { status, user_mode } = this.props;
+    const { user_mode } = this.props;
     let tabNavigator = [
       /* Explore */
       {
@@ -175,8 +175,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(state => ({
-    auth: state.auth
-  }),
-  (dispatch) => ({})
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(state =>
+  mapStateToProps
 )(MainForm);

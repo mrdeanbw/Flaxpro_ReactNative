@@ -12,17 +12,21 @@ class Explore extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
+    const { actions, auth } = this.props;
     return (
-      <ExploreForm { ...actions } status/>
+      <ExploreForm { ...actions } auth={ auth }/>
     );
   }
 }
 
-export default connect(state => ({
-    status: state.auth.status
-  }),
-  (dispatch) => ({
-    actions: bindActionCreators(exploreActions, dispatch)
-  })
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(exploreActions, dispatch),
+});
+export default connect(state =>
+  mapStateToProps,
+  mapDispatchToProps
 )(Explore);

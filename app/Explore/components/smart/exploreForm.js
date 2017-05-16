@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
+  Alert,
   Text,
   View,
   Image,
@@ -47,8 +48,16 @@ class ExploreForm extends Component {
     };
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillMount(){
+    this.props.getProfessionals()
+  }
 
+  componentWillReceiveProps(newProps) {
+    const { explore: { professionals, error } } = newProps;
+    if (error) {
+      Alert.alert(error);
+      return;
+    }
     if (newProps.status == 'explore_request') {
 
     } else if (newProps.status == 'explore_success') {
@@ -150,7 +159,7 @@ class ExploreForm extends Component {
 
   get showFullTopBar () {
     const { professionSelected } = this.state,
-      { auth: { professions, user, professionalsClients } } = this.props;
+      { auth: { professions, user, professionalsClients }, explore  } = this.props;
 
     return (
       <View style={ styles.navContainer }>
@@ -350,7 +359,6 @@ class ExploreForm extends Component {
   }
 
   render() {
-    const { status } = this.props;
     const { user } = this.props.auth;
 
     return (
@@ -523,8 +531,10 @@ const styles = StyleSheet.create({
   //end scroll view
 });
 
-export default connect(state => ({
-    auth: state.auth
-  }),
-  (dispatch) => ({})
+const mapStateToProps = (state) => ({
+  explore: state.explore
+});
+
+export default connect(state =>
+  mapStateToProps
 )(ExploreForm);
