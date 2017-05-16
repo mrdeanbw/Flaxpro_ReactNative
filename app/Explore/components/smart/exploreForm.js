@@ -350,7 +350,6 @@ class ExploreForm extends Component {
   }
 
   render() {
-    const { status } = this.props;
     const { user } = this.props.auth;
 
     return (
