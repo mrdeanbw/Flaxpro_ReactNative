@@ -8,11 +8,11 @@ function loginError(input = null) {
   return { type: types.AUTH_ERROR, input };
 }
 
-function loginSuccess(input) {
-  return { type: types.AUTH_SUCCESS, input };
+function loginSuccess({user, token}) {
+  return { type: types.AUTH_SUCCESS, user, token };
 }
 
-function createUserSuccess(user, token, professions, professionalsClients) {
+function createUserSuccess({user, token, professions, professionalsClients}) {
   return {
     type: types.CREATE_USER_SUCCESS,
     user,
@@ -51,7 +51,7 @@ export const createUser = (userData) => async (dispatch, store) => {
   user.name = userData.name || user.name;
   user.age = userData.age || user.age;
 
-  dispatch(createUserSuccess(user, user.token, professions, professionalsClients));
+  dispatch(createUserSuccess({user, token: user.token, professions, professionalsClients}));
 };
 /**
  * request to server
@@ -66,7 +66,7 @@ export const createUserServer = (email, password) => async (dispatch, store) => 
 
   try {
     const response = await request(url, options);
-    dispatch(createUserSuccess(response.user, response.token))
+    dispatch(createUserSuccess(response))
   } catch (error) {
     dispatch(createUserError(error.message))
   }
@@ -95,7 +95,7 @@ export const login = (email, password, token = null) => async (dispatch, store) 
     }
   }
 
-  dispatch({ type: types.LOGIN, user, professions, professionalsClients });
+  dispatch({ type: types.LOGIN, professions, professionalsClients });
 
   /**
    * request to server
@@ -108,9 +108,9 @@ export const login = (email, password, token = null) => async (dispatch, store) 
 
   try {
     const response = await request(url, options);
-    // dispatch(loginSuccess(response))
+    dispatch(loginSuccess(response))
   } catch (error) {
-    // dispatch(loginError(error))
+    dispatch(loginError(error))
   }
 
 };
@@ -126,7 +126,7 @@ function generateUsers(count, prof) {
     users.push({
       id: randomString(),
       email: prof ? `professional${i + 1}@mail.com` : `client${i + 1}@mail.com`,
-      token: "78dsf7834nh7dsf62-3bhj77234b6fds89",
+      // token: "78dsf7834nh7dsf62-3bhj77234b6fds89",
       avatar: '../Assets/images/avatar.png',
       clients: [],
       reviews: []/*generateReview(getRandomInt())*/,

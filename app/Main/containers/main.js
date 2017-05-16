@@ -12,16 +12,19 @@ class Main extends Component {
   }
 
   render() {
-    const { actions, status, user_mode } = this.props;
+    const { actions, user_mode } = this.props;
     return (
-      <MainForm { ...actions } status={ status } user_mode={ user_mode }/>
+      <MainForm { ...actions }  user_mode={ user_mode }/>
     );
   }
 }
 
-export default connect(state => ({
-    status: state.auth.status
-  }),
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(state =>
+  mapStateToProps,
   (dispatch) => ({
     actions: bindActionCreators(mainActions, dispatch)
   })

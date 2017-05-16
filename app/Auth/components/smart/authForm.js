@@ -13,7 +13,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -53,7 +53,7 @@ class AuthForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { auth: { user, error } } = nextProps;
+    const { auth: { user, error, token } } = nextProps;
     if (error) {
       Alert.alert(error);
       return;
@@ -278,6 +278,18 @@ class AuthForm extends Component {
         <Text style={ styles.lineOR }>OR</Text>
 
         <View style={ styles.socialContainer }>
+          <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onFacebook() }>
+            <View style={ styles.socialButton }>
+              <EvilIcons
+                name="sc-facebook"
+                size={ 43 }
+                color={"#fff"}
+                style={{ backgroundColor:"#3a5999",height:40, overflow: 'hidden',paddingTop:3,
+                  width:40, borderRadius:20}}
+              />
+              {/*<Image source={ facebookIcon } style={ styles.socialIcon } resizeMode="contain" />*/}
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onFacebook() }>
             <View style={ styles.socialButton }>
               <Image source={ facebookIcon } style={ styles.socialIcon } resizeMode="contain" />

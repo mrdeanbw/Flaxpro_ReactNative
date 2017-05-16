@@ -16,7 +16,7 @@ class Auth extends Component {
   componentWillMount() {
     const {auth: {user}, login} = this.props;
     localStorage.get('authData').then((data) => {
-      login(data.email, null, data.token)
+      // login(data.email, null, data.token)
     })
   }
 

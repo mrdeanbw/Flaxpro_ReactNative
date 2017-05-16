@@ -12,7 +12,7 @@ function professionalsRequest() {
   };
 }
 
-function professionalsSuccess(professionals) {
+function professionalsSuccess({professionals}) {
   return { type: types.EXPLORE_GET_PROFESSIONALS_SUCCESS, professionals };
 }
 
@@ -31,7 +31,7 @@ function clientError(error) {
 export const getProfessionals = () => async (dispatch, store) => {
   professionalsRequest();
   const url = '/professional/q';
-  const {user, token} = store().auth;
+  const { token } = store().auth;
   const options = {
     headers: {'Authorization': token},
     method: 'get',
@@ -42,7 +42,7 @@ export const getProfessionals = () => async (dispatch, store) => {
     const response = await request(url, options);
     dispatch(professionalsSuccess(response));
   } catch (error) {
-    dispatch(professionalsError(error));
+    dispatch(professionalsError(error.message));
   }
 
 };
