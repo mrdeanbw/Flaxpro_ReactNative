@@ -59,7 +59,7 @@ class AuthForm extends Component {
       return;
     }
     if (user && this.state.loginRequest) {
-        Actions.Main({user_mode: user.professional ? CommonConstant.user_professional : CommonConstant.user_client})
+        Actions.Main({ user_mode: user.role })
     }
     if (user && this.state.registerRequest) {
       Actions.WhoAreYou();
@@ -279,16 +279,16 @@ class AuthForm extends Component {
 
         <View style={ styles.socialContainer }>
           <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onFacebook() }>
-            <View style={ styles.socialButton }>
-              <EvilIcons
-                name="sc-facebook"
-                size={ 43 }
-                color={"#fff"}
-                style={{ backgroundColor:"#3a5999",height:40, overflow: 'hidden',paddingTop:3,
-                  width:40, borderRadius:20}}
-              />
-              {/*<Image source={ facebookIcon } style={ styles.socialIcon } resizeMode="contain" />*/}
-            </View>
+            {/*<View style={ styles.socialButton }>*/}
+              {/*<EvilIcons*/}
+                {/*name="sc-facebook"*/}
+                {/*size={ 43 }*/}
+                {/*color={"#fff"}*/}
+                {/*style={{ backgroundColor:"#3a5999",height:40, overflow: 'hidden',paddingTop:3,*/}
+                  {/*width:40, borderRadius:20}}*/}
+              {/*/>*/}
+              {/*/!*<Image source={ facebookIcon } style={ styles.socialIcon } resizeMode="contain" />*!/*/}
+            {/*</View>*/}
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onFacebook() }>
             <View style={ styles.socialButton }>

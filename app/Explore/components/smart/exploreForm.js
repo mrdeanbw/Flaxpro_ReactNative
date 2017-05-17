@@ -29,6 +29,7 @@ import ExploreListView from './exploreListView';
 import { ProfessionalsClients, GymLocations } from '../../../Components/dummyEntries';
 
 const { width, height } = Dimensions.get('window');
+import * as CommonConstant from '../../../Components/commonConstant';
 
 const background = require('../../../Assets/images/background.png');
 
@@ -159,7 +160,7 @@ class ExploreForm extends Component {
 
   get showFullTopBar () {
     const { professionSelected } = this.state,
-      { auth: { professions, user, professionalsClients }, explore  } = this.props;
+      { auth: { professions, user, professionalsClients }, explore, user_mode  } = this.props;
 
     return (
       <View style={ styles.navContainer }>
@@ -213,7 +214,7 @@ class ExploreForm extends Component {
             onDateChange={ (date) => { this.setState({ birthday: date }) } }
           />
         </View>
-        { user && !user.professional ?
+        { user && user.role === CommonConstant.user_client ?
           <View style={ styles.filterRowContainer }>
             <View style={ styles.professionSearchContainer }>
               <TouchableOpacity activeOpacity={ .5 }>

@@ -30,8 +30,8 @@ import localStorage from 'react-native-local-storage';
 const { width, height } = Dimensions.get('window');
 const labelInsure = [{value:true, text:'Yes'}, {value: false, text:'No'}];
 const labelOwn = ['Go to client', 'Own space', 'Both'];
-const professions = ['Manager', 'Fitness Trainer', 'Doctor'];
-const certifications = ['No', 'Certified personal trainer'];
+const professions = ['Manager', 'Fitness Trainer123412341234134', 'Doctor'];
+const certifications = ['Certified personal trainer', 'No'];
 
 
 
@@ -51,8 +51,8 @@ class ProfessionalInfoForm extends Component {
     this.state = {
       price: this.priceToString(200),
       insured: true,
-      profession: 'Fitness Trainer',
-      certification: 'Certified personal trainer',
+      profession: professions[0],
+      certification: certifications[0],
       address: '4 York st, Toronto',
       own: 'Both',
       experience: 5
@@ -198,8 +198,10 @@ class ProfessionalInfoForm extends Component {
           <Image source={ background } style={ styles.background } resizeMode="cover">
             { this.getShowNavBar }
             <View style={ styles.contentContainer }>
-              <ScrollView>
+              {/*<ScrollView>*/}
                 <View style={ styles.mainContainer }>
+
+
                   <View style={ styles.cellContainer }>
                     <Text style={ styles.textCellTitle }>My price</Text>
                     <View style={ styles.priceWrapper }>
@@ -343,7 +345,7 @@ class ProfessionalInfoForm extends Component {
                     />
                   </View>
                 </View>
-              </ScrollView>
+              {/*</ScrollView>*/}
               <View style={ styles.bottomButtonWrapper }>
                 <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onContinue() }>
                   <View style={ styles.saveButton }>
@@ -399,6 +401,7 @@ const styles = StyleSheet.create({
   priceWrapper: {
     flexDirection: 'row',
     height: 25,
+    width: width*0.4,
     borderWidth: 1,
     borderColor: '#10c7f9',
     borderRadius: 15,
@@ -516,12 +519,13 @@ const styles = StyleSheet.create({
   dropdownWrapper: {
     flexDirection: 'row',
     height: 25,
+    // width: width*0.4,
     borderWidth: 1,
     borderColor: '#10c7f9',
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
   },
   dropdown: {
     width : width * 0.3,
@@ -535,7 +539,7 @@ const styles = StyleSheet.create({
   },
   dropDownText: {
     color: '#6b6b6b',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Open Sans',
     textAlign: 'center',
   }

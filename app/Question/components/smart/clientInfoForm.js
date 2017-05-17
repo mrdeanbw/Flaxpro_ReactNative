@@ -264,7 +264,7 @@ class ClientInfoForm extends Component {
                       prices.map((item, index) =>(
                         <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
                           <View style={ [styles.viewTwoText, item.level === this.state.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
-                            <Text style={ [styles.textCellTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
+                            <Text style={ [styles.textCellValue, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
                             <Text style={ [styles.textSubTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
                           </View>
                         </TouchableOpacity>
@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f0f0f0',
     backgroundColor: '#fff',
     paddingHorizontal: 10,
-    paddingVertical: 12,
+    paddingVertical: 11,
   },
   viewTwoText: {
     flexDirection: 'column',
@@ -488,24 +488,24 @@ const styles = StyleSheet.create({
   textCellValue: {
     fontFamily: 'Open Sans',
     color: '#707070',
-    fontSize: 14,
+    fontSize: 12,
   },
   avatarContainer: {
     position: 'relative',
-    height: 210,
+    height: 200,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarTopBackground: {
     width: width,
-    height: 105,
+    height: 100,
     backgroundColor: 'transparent',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
   avatarBottomBackground: {
     width: width,
-    height: 105,
+    height: 100,
     backgroundColor: '#fff',
   },
   imageAvatar: {
