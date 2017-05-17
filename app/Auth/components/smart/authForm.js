@@ -59,7 +59,7 @@ class AuthForm extends Component {
       return;
     }
     if (user && this.state.loginRequest) {
-        Actions.Main({user_mode: user.professional ? CommonConstant.user_professional : CommonConstant.user_client})
+        Actions.Main({ user_mode: user.role })
     }
     if (user && this.state.registerRequest) {
       Actions.WhoAreYou();
