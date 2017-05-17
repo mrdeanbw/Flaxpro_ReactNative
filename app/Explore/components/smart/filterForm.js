@@ -20,6 +20,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { RadioButtons } from 'react-native-radio-buttons'
 import RadioButton from './radioButton';
 import ModalDropdown from 'react-native-modal-dropdown';
+import StarRating from 'react-native-stars-rating';
 
 const { width, height } = Dimensions.get('window');
 
@@ -56,7 +57,8 @@ export default class FilterForm extends Component {
       selectedCertification: labelCertification[0],
       selectedLocation: labelLocation[0],
       selectedProfession: labelProfession[0],
-      priceLevel : prices[0].level
+      priceLevel : prices[0].level,
+      selectedReview: 2
     };
   }
 
@@ -133,22 +135,19 @@ export default class FilterForm extends Component {
     );
   }
 
-  renderContainer(optionNodes){
-    return <View style={ styles.cellValueContainer }>{ optionNodes }</View>
-  }
+  // renderContainer(optionNodes){
+  //   return <View style={ styles.cellValueContainer }>{ optionNodes }</View>
+  // }
 
   render() {
     const { status } = this.props;
-    let scale = (width * 3/4 -75) / 72 ;
+    let scale = (width) / 104 ;
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
 
           <View style={ styles.navBarContainer }>
             <View style={ styles.closeButtonWrapper } />
-
-            <Text style={ styles.textTitle }>FILTER</Text>
-
             <TouchableOpacity
               onPress={ () => this.onClose() }
               style={ styles.closeButtonWrapper }
@@ -158,9 +157,18 @@ export default class FilterForm extends Component {
                 color="#fff"
               />
             </TouchableOpacity>
+            <Text style={ styles.textTitle }>FILTER</Text>
+            <TouchableOpacity
+              onPress={ () => this.onClose() }
+              style={ styles.closeButtonWrapper }
+            >
+              <EvilIcons
+                name="check"  size={ 35 }
+                color="#fff"
+              />
+            </TouchableOpacity>
           </View>
           <View style={ styles.mainContainer }>
-
             <View style={ styles.cellContainer }>
               <Text style={ [styles.textCellTitle, styles.labelLine] }>Sex</Text>
               <View style={ styles.cellValueContainer }>
@@ -179,8 +187,6 @@ export default class FilterForm extends Component {
                 }
               </View>
             </View>
-
-
             <View style={ styles.cellContainer }>
               <Text style={ styles.textCellTitle }>Age</Text>
               <View style={ styles.viewSlider }>
@@ -192,9 +198,9 @@ export default class FilterForm extends Component {
                   <Animated.View style={ styles.arrow } />
                 </Animated.View>
                 <Slider style={ styles.slider }
-                        maximumTrackTintColor="#9be5ff"
-                        minimumTrackTintColor="#10c7f9"
-                        trackStyle={{backgroundColor: '#9be5ff'}}
+                        maximumTrackTintColor="#b2e1fb"
+                        minimumTrackTintColor="#ffffff"
+                        trackStyle= {{backgroundColor: '#ffffff'}}
                         thumbStyle={ styles.thumbStyle }
                         minimumValue={ 15 }
                         maximumValue={ 85 }
@@ -204,11 +210,9 @@ export default class FilterForm extends Component {
                 />
               </View>
             </View>
-
-
-            <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Price</Text>
-              <View style={ styles.pricesBlock }>
+            <View style={ [styles.cellContainer, styles.priceContainer] }>
+              <Text style={ [styles.textCellTitle, styles.labelLine] }>Price</Text>
+              <View style={ styles.touchBlock }>
                 {
                   prices.map((item, index) =>(
                     <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
@@ -222,7 +226,6 @@ export default class FilterForm extends Component {
 
               </View>
             </View>
-
             {/*<View style={ styles.cellContainer }>*/}
               {/*<Text style={ [styles.textCellTitle, styles.labelLine] }>Age</Text>*/}
               {/*<RadioButtons*/}
@@ -233,14 +236,8 @@ export default class FilterForm extends Component {
                 {/*renderContainer={ this.renderContainer }*/}
               {/*/>*/}
             {/*</View>*/}
-
-
-
-
-
-
             <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Verified</Text>
+              <Text style={ [styles.textCellTitle, styles.labelLine] }>Verified</Text>
               <View style={ styles.cellValueContainer }>
                 {
                   labelVerified.map(value => {
@@ -257,7 +254,6 @@ export default class FilterForm extends Component {
                 }
               </View>
             </View>
-
             {/*<View style={ styles.cellContainer }>*/}
               {/*<Text style={ styles.textCellTitle }>Affiliation</Text>*/}
               {/*<View style={ styles.cellValueContainer }>*/}
@@ -276,9 +272,8 @@ export default class FilterForm extends Component {
                 {/*}*/}
               {/*</View>*/}
             {/*</View>*/}
-
-            <View style={ styles.cellContainerBlock }>
-              <Text style={ styles.textCellTitle }>Year of Experience</Text>
+            <View style={ [styles.cellContainerBlock , styles.marginTop5] }>
+              <Text style={styles.textCellTitle}>Year of Experience</Text>
               <View style={ styles.dropdownWrapper }>
                 <ModalDropdown
                   options={ labelYearOfExprience }
@@ -294,14 +289,13 @@ export default class FilterForm extends Component {
                 />
               </View>
             </View>
-
-            <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Location</Text>
-              <View style={ styles.pricesBlock }>
+            <View style={ [styles.cellContainer] }>
+              <Text style={ [styles.textCellTitle, styles.labelLine, styles.marginTop5] }>Location</Text>
+              <View style={ [styles.touchBlock, styles.marginTop5] }>
                 {
                   labelLocation.map((item, index) =>(
                     <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
-                      <View style={ [styles.viewTwoText, item === this.state.selectedLocation ? styles.priceButtonChecked : styles.priceButton] }>
+                      <View style={ [styles.viewTwoTextPadding, item === this.state.selectedLocation ? styles.priceButtonChecked : styles.priceButton] }>
                         <Text style={ [styles.textSubTitle, item === this.state.selectedLocation ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
                       </View>
                     </TouchableOpacity>
@@ -309,11 +303,9 @@ export default class FilterForm extends Component {
                 }
               </View>
             </View>
-
-
-            <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Insured</Text>
-              <View style={ styles.cellValueContainer }>
+            <View style={ [styles.cellContainer] }>
+              <Text style={ [styles.textCellTitle, styles.labelLine, styles.marginTop5 ]}>Insured</Text>
+              <View style={ [styles.cellValueContainer, styles.marginTop5] }>
                 {
                   labelInsured.map(value => {
                     return (
@@ -329,25 +321,43 @@ export default class FilterForm extends Component {
                 }
               </View>
             </View>
-
-
             <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Profession</Text>
-              <View style={ styles.pricesBlock }>
+              <View style={ styles.starContainer }>
+                <Text style={ [styles.textCellTitle, styles.labelLine, styles.marginTop5 ]}>Reviews</Text>
+                <View style={ [styles.marginTop5 ] }>
+                  <StarRating
+                    starColor={'red'}
+                    isActive={ true }
+                    rateMax={ 5 }
+                    isHalfStarEnabled={ false }
+                    onStarPress={ (rating) => console.log(rating) }
+                    rate={ 5 }
+                    size={ 26 }
+                    rating={this.state.selectedReview}
+                  />
+                </View>
+              </View>
+            </View>
+            <View style={ [styles.cellContainerBlock, styles.marginTop5] }>
+              <Text style={ [styles.textCellTitle, ] }>Profession</Text>
+              <View style={ [styles.touchBlock, styles.marginTop5] }>
                 {
                   labelProfession.map((item, index) =>(
                     <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onProfession(item) }>
-                      <View style={ [styles.viewTwoText, item === this.state.selectedProfession ? styles.priceButtonChecked : styles.priceButton] }>
+                      <View style={ [styles.viewTwoTextPadding, item === this.state.selectedProfession ? styles.priceButtonChecked : styles.priceButton] }>
                         <Text style={ [styles.textSubTitle, item === this.state.selectedProfession ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
                       </View>
                     </TouchableOpacity>
                   ))
                 }
+                <EvilIcons
+                  name="plus"  size={ 35 }
+                  color="#fff"
+                />
               </View>
             </View>
-
-            <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Certification</Text>
+            <View style={[ styles.cellContainerBlock, styles.marginTop5 ]}>
+              <Text style={ [styles.textCellTitle] }>Certification</Text>
               <View style={ styles.dropdownWrapper }>
                 <ModalDropdown
                   options={ labelCertification }
@@ -363,9 +373,6 @@ export default class FilterForm extends Component {
                 />
               </View>
             </View>
-
-
-
             <View style={ styles.buttonWrapper }>
               <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onDone() }>
                 <View style={ styles.doneButton }>
@@ -373,8 +380,6 @@ export default class FilterForm extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-
-
           </View>
         </Image>
       </View>
@@ -383,31 +388,45 @@ export default class FilterForm extends Component {
 }
 
 const styles = StyleSheet.create({
-
+  starContainer: {
+    flexDirection: 'row',
+  },
+  marginTop5: {
+    marginTop: 10,
+  },
   cellContainerBlock: {
+    marginTop: -5,
+    flexDirection: 'column',
     flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
-  pricesBlock: {
+  touchBlock: {
     flexDirection: 'row',
+    marginLeft: -15
+  },
+  priceContainer: {
+    marginBottom: 10
   },
   viewTwoText: {
     flexDirection: 'column',
+  },
+  viewTwoTextPadding: {
+    paddingVertical: 6
   },
   priceButtonChecked: {
     backgroundColor: '#19b8ff',
     alignItems: 'center',
     borderRadius: 30,
-    width: 70,
+    width: 76,
     marginLeft: 15,
   },
   priceButton: {
     backgroundColor: '#fff',
     alignItems: 'center',
     borderRadius: 30,
-    width: 70,
+    width: 76,
     marginLeft: 15,
     borderWidth: 1,
     borderColor: '#19b8ff',
@@ -418,7 +437,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
 
+  thumbStyle:{
+    width: 20,
+    height: 20,
+    backgroundColor: '#fff',
+    borderColor: '#10c7f9',
+    borderWidth: 1
+  },
 
+  animateContainer: {
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
+    marginRight: 6,
+    marginLeft: -6,
+  },
   bubble: {
     flexDirection: 'column',
     alignItems: "center",
@@ -466,7 +498,8 @@ const styles = StyleSheet.create({
   viewSlider:{
     flex: 1,
     flexDirection: 'column',
-    marginLeft: width/4,
+    marginLeft: width/20,
+    marginBottom:20
   },
 
   container: {
@@ -477,7 +510,7 @@ const styles = StyleSheet.create({
     height,
   },
   labelLine: {
-    width : width * 0.15,
+    width : width * 0.23,
   },
   navBarContainer: {
     flex: 1,
@@ -490,7 +523,7 @@ const styles = StyleSheet.create({
   closeButtonWrapper: {
     flex: 1,
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    marginLeft: -5
   },
   textTitle: {
     flex: 10,
