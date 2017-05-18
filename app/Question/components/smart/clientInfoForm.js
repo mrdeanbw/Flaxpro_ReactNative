@@ -36,11 +36,11 @@ const prices = [
   ];
 
 import * as CommonConstant from '../../../Components/commonConstant';
+import UploadFromCameraRoll from '../../../Components/imageUploader';
 import { allProfessions } from '../../../Components/tempDataUsers'
 const background = require('../../../Assets/images/background.png');
 const markIcon = require('../../../Assets/images/flaxpro_mark.png');
 const avatar = require('../../../Assets/images/avatar.png');
-const edit_avatar = require('../../../Assets/images/edit_avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
 
 const professionalNames = allProfessions.map(item => item.name)
@@ -74,28 +74,7 @@ class ClientInfoForm extends Component {
   }
 
   get getShowNavBar() {
-    const { editable, auth } = this.props;
-
     return (
-      // editable ?
-      //   <View style={ styles.navBarContainer }>
-      //     <TouchableOpacity
-      //       onPress={ () => this.onSchdule() }
-      //       style={ styles.navButtonWrapper }
-      //     >
-      //       <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
-      //     </TouchableOpacity>
-      //
-      //     <Text style={ styles.textTitle }>{ auth.user.name.toUpperCase() }</Text>
-      //
-      //     <TouchableOpacity
-      //       onPress={ () => this.onEdit() }
-      //       style={ styles.navButtonWrapper }
-      //     >
-      //       <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
-      //     </TouchableOpacity>
-      //   </View>
-      //   :
       <View style={ styles.navBarContainer }>
         <TouchableOpacity
           onPress={ () => this.onBack() }
@@ -161,7 +140,7 @@ class ClientInfoForm extends Component {
                 <View style={ styles.avatarBottomBackground }/>
                 <View style={ styles.avatarWrapper }>
                   <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
-                  <Image source={ edit_avatar } style={ styles.imageEditAvatar } resizeMode="cover"/>
+                  <UploadFromCameraRoll directlyUpload={true}/>
                 </View>
               </View>
               <View style={ styles.cellContainer }>
@@ -512,13 +491,6 @@ const styles = StyleSheet.create({
     height: 160,
     width: 160,
     borderRadius: 80,
-  },
-  imageEditAvatar: {
-    height: 41,
-    width: 41,
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
   },
   avatarWrapper: {
     backgroundColor: '#fff',
