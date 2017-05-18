@@ -55,10 +55,10 @@ class AuthForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { auth: { user, error, token } } = nextProps;
-    // if (error) {
-    //   Alert.alert(error);
-    //   return;
-    // }
+    if (error) {
+      Alert.alert(error);
+      return;
+    }
     AsyncStorage.setItem('token', token);
     if (user && this.state.loginRequest) {
         Actions.Main({ user_mode: user.role })
