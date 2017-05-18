@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Alert,
   Text,
+  TextInput,
   View,
   Image,
   Dimensions,
@@ -12,7 +13,6 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import ModalDropdown from 'react-native-modal-dropdown';
 
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -46,7 +46,11 @@ class ExploreForm extends Component {
       gymLocations: GymLocations,
       professionSelected: 0,
       listSelectedProfessions: [],
+      searchProfession: '',
+      filteredProfessions: [],
+      searchProfessionMode: true,
     };
+    this.filterAutocomplete = this.filterAutocomplete.bind(this)
   }
 
   componentWillMount(){
@@ -136,13 +140,13 @@ class ExploreForm extends Component {
 
   onSelectProfession (value) {
     let listSelectedProfessions = this.state.listSelectedProfessions;
-    const profession = R.find(R.propEq('id', value.props.id))(this.props.auth.professions);
+    const profession = R.find(R.propEq('id', value.id))(this.props.auth.professions);
     if(listSelectedProfessions.includes(profession)){
       listSelectedProfessions.splice(listSelectedProfessions.indexOf(profession), 1);
     }
     listSelectedProfessions.unshift(profession);
 
-    this.setState({ listSelectedProfessions });
+    this.setState({ listSelectedProfessions, filteredProfessions: [], searchProfession:''});
     this.selectProfession(0);
     return false;
   }
@@ -150,8 +154,13 @@ class ExploreForm extends Component {
   selectProfession(index) {
     const { professionSelected } = this.state;
     if (index == 0 || professionSelected != index + 1) {
-      this.setState({ professionSelected: index + 1});
+      this.setState({ professionSelected: index + 1, searchProfessionMode: false});
     }
+  }
+
+  filterAutocomplete(searchProfession) {
+    const filteredProfessions = searchProfession ? this.props.auth.professions.filter((e)=>e.name.toLowerCase().includes(searchProfession)) : [];
+    this.setState({ filteredProfessions, searchProfession });
   }
 
   today() {
@@ -160,7 +169,7 @@ class ExploreForm extends Component {
 
   get showFullTopBar () {
     const { professionSelected } = this.state,
-      { auth: { professions, user, professionalsClients }, explore, user_mode  } = this.props;
+      { auth: { user, professions }, explore, user_mode  } = this.props;
 
     return (
       <View style={ styles.navContainer }>
@@ -217,99 +226,114 @@ class ExploreForm extends Component {
         { user && user.role === CommonConstant.user_client ?
           <View style={ styles.filterRowContainer }>
             <View style={ styles.professionSearchContainer }>
-              <TouchableOpacity activeOpacity={ .5 }>
-                <ModalDropdown
-                  options={ professions.map((item) => (<Text key={item.id} id={item.id}>{item.name}</Text>)) }
-                  defaultValue={<CommunityIcons name="plus" size={ 25 } color={ "#41c3fd" }/>}
-                  style={ styles.dropdown }
-                  textStyle ={ styles.dropDownText }
-                  dropdownStyle={ styles.dropdownStyle }
-                  onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
-                />
-              </TouchableOpacity>
-
-              {
-                this.state.listSelectedProfessions.length>0 &&
-                <View style={ [styles.buttonWrapper,
-                  {
-                    backgroundColor: professionSelected == 0 ? '#4dc7fd' : '#fff',
-                    borderColor: '#4dc7fd',
-                  }
-                ] }>
-                  <TouchableOpacity activeOpacity={ .5 } onPress={ () => {
-                    this.selectProfession(-1)
-                  } }>
-                    <View style={ [styles.cellButton] }>
-                      <Text style={ [styles.cellText, {color: professionSelected == 0 ? '#fff' : '#4dc7fd'}] }>
-                        All </Text>
+              {!this.state.searchProfessionMode &&
+              <View style={styles.professionSearchContainer}>
+                {
+                  this.state.listSelectedProfessions.length>0 &&
+                  <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+                    <View style={ [styles.buttonWrapper,
+                      {
+                        backgroundColor: '#4dc7fd',
+                        marginHorizontal:5,
+                        borderColor: '#4dc7fd',
+                      }
+                    ] }>
+                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.setState({ searchProfessionMode: true, filteredProfessions: professions}) } }>
+                        <View style={ [styles.cellButton] }>
+                          <Text style={ [styles.cellText, {color:'#fff'}] }>
+                            All</Text>
+                        </View>
+                      </TouchableOpacity>
                     </View>
-                  </TouchableOpacity>
-                </View>
+                    <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.setState({ searchProfessionMode: true}, ()=>this.searchProfessionInput.focus()) } }>
+                      <LineIcons
+                        name="magnifier"
+                        size={ 20 }
+                        color={ "#4dc7fd" }
+                      />
+                    </TouchableOpacity>
+                  </View>
+                }
+
+                <ScrollView
+                  horizontal={ true }
+                  showsHorizontalScrollIndicator={ false }
+                  ref={(ref) => {this.searchProfessionScroll = ref}}
+                  onContentSizeChange={(contentWidth, contentHeight)=>{
+                    const scrollToEnd = contentWidth - width >0 ? contentWidth - width :0;
+                    this.searchProfessionScroll.scrollTo({x: scrollToEnd});
+                  }}
+                >
+                  <View style={ styles.cellContainer }>
+                    {
+                      this.state.listSelectedProfessions.map((profession, index) => {
+                        const selected = index + 1 == professionSelected;
+                        return (
+                          <View  key={index}>
+
+                            <View style={ [ styles.buttonWrapper,
+                              {
+                                backgroundColor: selected ? profession.color || '#4dc7fd' : '#fff',
+                                borderColor: profession.color || '#4dc7fd',
+                              }
+                            ] }>
+                              <TouchableOpacity onPress={ () => {
+                                this.selectProfession(index)
+                              }}>
+                                <View style={ styles.cellButton }>
+                                  <Text style={ [styles.cellText, {color: selected ? '#fff' : profession.color || '#4dc7fd' }] }>{ profession.name }</Text>
+                                </View>
+                              </TouchableOpacity>
+
+                            </View>
+
+                            <TouchableOpacity style={ styles.closeProfession} activeOpacity={ .5 } onPress={ () => {
+                              this.removeProfession(profession)
+                            }}>
+                              <View style={ styles.closeProfessionView }></View>
+                              <EvilIcons
+                                name="close-o"
+                                size={ 21 }
+                                color={ "#4dc7fd" }
+                                style={ styles.closeProfessionIcon}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        )
+                      })
+                    }
+                  </View>
+                </ScrollView>
+              </View>
               }
 
-              <ScrollView
-                horizontal={ true }
-                showsHorizontalScrollIndicator={ false }
-                ref={(ref) => {this.searchProfessionScroll = ref}}
-                onContentSizeChange={(contentWidth, contentHeight)=>{
-                  const scrollToEnd = contentWidth - width + 20 >0 ? contentWidth - width + 20 :0;
-                  this.searchProfessionScroll.scrollTo({x: scrollToEnd});
-                }}
-              >
-                <View style={ styles.cellContainer }>
-                {
-                  this.state.listSelectedProfessions.map((profession, index) => {
-                    const selected = index + 1 == professionSelected;
-                    return (
-                      <View  key={index}>
 
-                        <View style={ [ styles.buttonWrapper,
-                          {
-                            backgroundColor: selected ? profession.color || '#4dc7fd' : '#fff',
-                            borderColor: profession.color || '#4dc7fd',
-                          }
-                          ] }>
-                          <TouchableOpacity onPress={ () => {
-                            this.selectProfession(index)
-                          }}>
-                            <View style={ styles.cellButton }>
-                              <Text style={ [styles.cellText, {color: selected ? '#fff' : profession.color || '#4dc7fd' }] }>{ profession.name }</Text>
-                            </View>
-                          </TouchableOpacity>
-
-                        </View>
-
-                        <TouchableOpacity style={ styles.closeProfession} activeOpacity={ .5 } onPress={ () => {
-                          this.removeProfession(profession)
-                        }}>
-                          <View style={ styles.closeProfessionView }></View>
-                          <EvilIcons
-                            name="close-o"
-                            size={ 21 }
-                            color={ "#4dc7fd" }
-                            style={ styles.closeProfessionIcon}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    )
-                  })
-                }
-                </View>
-              </ScrollView>
             </View>
 
             {
-              !this.state.listSelectedProfessions.length &&
+              (this.state.searchProfessionMode || !this.state.listSelectedProfessions.length) &&
               <View style={ styles.searchProfessionBlock }>
                 <LineIcons
                   name="magnifier"
                   size={ 20 }
                   color={ "#acacac" }
                 />
-                <Text style={ styles.searchProfessionText }> Search a Profession </Text>
+                <TextInput
+                  editable={true}
+                  autoCapitalize="none"
+                  autoCorrect={ false }
+                  placeholder="Search a Profession"
+                  placeholderTextColor="#acacac"
+                  color="#acacac"
+                  width={250}
+                  ref={(ref) => {this.searchProfessionInput = ref}}
+                  style={ styles.searchProfessionText }
+                  value={ this.state.searchProfession }
+                  onChangeText={ this.filterAutocomplete }
+                />
+
               </View>
             }
-
           </View>
           :
           <View style={ styles.segmentsBlock }>
@@ -361,10 +385,23 @@ class ExploreForm extends Component {
 
   render() {
     const { user } = this.props.auth;
+    const { filteredProfessions } = this.state;
 
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
+
+          <View style={styles.dropdown}>
+            {
+              filteredProfessions.map((item) => (
+                <TouchableOpacity key={item.id} activeOpacity={ .5 } onPress={ (r) => this.onSelectProfession(item) }>
+                  <Text style={styles.dropdownText}>{item.name} </Text>
+                  <View style={styles.dropdownSeparator} />
+
+                </TouchableOpacity>
+              ))
+            }
+          </View>
 
           {
             this.state.mapStandardMode ?
@@ -467,7 +504,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchProfessionText: {
-    color: '#acacac',
+    // width:250,
+    height:25,
+    fontSize:12,
+    paddingHorizontal: 5,
+    alignSelf: 'center',
+
   },
   closeProfession: {
     position: 'absolute',
@@ -514,7 +556,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingHorizontal: 15,
-    height: 23,
+    height: 20,
   },
   cellText: {
     color: '#4dc7fd',
@@ -530,6 +572,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
   },
   //end scroll view
+  dropdownText: {
+    paddingHorizontal:6,
+    paddingVertical: 10,
+    fontSize: 11,
+    textAlignVertical: 'center',
+  },
+  dropdownSeparator:{
+    marginHorizontal:5,
+    borderWidth:0.5,
+    borderColor: '#d3d3d3',
+  },
+  dropdown: {
+    borderColor: '#d3d3d3',
+    backgroundColor: '#fff',
+    overflow:'hidden',
+    borderRadius: 3,
+    borderWidth: 1,
+    position: 'absolute',
+    top: 140,
+    justifyContent: 'center',
+    left: 10,
+    zIndex: 1
+  }
 });
 
 const mapStateToProps = (state) => ({

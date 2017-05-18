@@ -14,11 +14,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { Actions } from 'react-native-router-flux';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
-import * as CommonConstant from '../../../Components/commonConstant';
 
 //const variable
 const { width, height } = Dimensions.get('window');
@@ -34,9 +30,6 @@ const googleIcon = require('../../../Assets/images/google.png');
 const linkedinIcon = require('../../../Assets/images/linkedin.png');
 const arrow = require('../../../Assets/images/right_arrow.png');
 const triangle = require('../../../Assets/images/triangle.png');
-
-//auth redux store
-import * as authActions from '../../actions';
 
 class AuthForm extends Component {
   constructor(props) {
@@ -59,7 +52,7 @@ class AuthForm extends Component {
       Alert.alert(error);
       return;
     }
-    AsyncStorage.setItem('token', token);
+    token && AsyncStorage.setItem('token', token);
     if (user && this.state.loginRequest) {
         Actions.Main({ user_mode: user.role })
     }
