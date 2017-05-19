@@ -24,6 +24,7 @@ export const getExploreClient = () => async (dispatch, store) => {
 
   try {
     const [{ professions }, { professionals }] = await Promise.all([request(professionsUrl, options, auth), request(professionalsUrl, options, auth)]);
+    console.log('=========data=', professions, professionals);
     dispatch(mainSuccess({professions, professionals}));
   } catch (error) {
     const error =

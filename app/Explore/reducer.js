@@ -27,8 +27,8 @@ export default function explore(state = initialState, action = {}) {
       return {
         error: null,
         loading: false,
-        clients: action.clients || state.clients,
-        professionals: action.professionals || state.professionals,
+        clients: action.clients ? action.clients.map((e) => {e.coordinate = {latitude: e.location.lat, longitude: e.location.lon}; return e;}) : state.clients,
+        professionals: action.professionals ? action.professionals.map((e) => {e.coordinate = {latitude: e.location.lat, longitude: e.location.lon}; return e;}) : state.professionals,
         professions: action.professions || state.professions,
       };
     default:

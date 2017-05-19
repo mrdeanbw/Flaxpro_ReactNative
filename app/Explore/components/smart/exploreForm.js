@@ -26,6 +26,7 @@ import ExploreMapView from './exploreMapView';
 import ExploreListView from './exploreListView';
 
 import { ProfessionalsClients, GymLocations } from '../../../Components/dummyEntries';
+import { allProfessions } from '../../../Components/tempDataUsers';
 
 const { width, height } = Dimensions.get('window');
 import * as CommonConstant from '../../../Components/commonConstant';
@@ -44,10 +45,11 @@ class ExploreForm extends Component {
       showContentMode: 0,
       professionalsClients: ProfessionalsClients,
       gymLocations: GymLocations,
-      professionSelected: 0,
+      professionSelected: {},
       listSelectedProfessions: [],
       searchProfession: '',
       filteredProfessions: [],
+      filteredProfessionals: [ ...ProfessionalsClients, ...this.props.explore.professionals, ],
       searchProfessionMode: false,
     };
     this.filterAutocomplete = this.filterAutocomplete.bind(this)
@@ -74,7 +76,7 @@ class ExploreForm extends Component {
 
   setDefaultProfessions () {
     if(this.props.explore && this.props.explore.professions) {
-      const listSelectedProfessions = defaultProfessions.map((value) => R.find(R.propEq('name', value))(this.props.explore.professions));
+      const listSelectedProfessions = defaultProfessions.map((value) => R.find(R.propEq('name', value))(this.props.explore.professions || allProfessions));
       this.setState({ listSelectedProfessions })
     }
 
@@ -104,9 +106,9 @@ class ExploreForm extends Component {
       return;
     }
 
-    isEven = item => item.type === option;
-    const filterValue = R.filter(isEven, ProfessionalsClients);
-    this.setState({ 
+    const filterValue = R.filter(item => item.type === option, ProfessionalsClients);
+    this.setState({
+      selectedLocationSegment: option,
       professionalsClients: filterValue,
       gymLocations: [],
     });
@@ -137,37 +139,35 @@ class ExploreForm extends Component {
 
   removeProfession (profession) {
     const index = this.state.listSelectedProfessions.indexOf(profession);
-    if(index + 1 === this.state.professionSelected) {
-      this.selectInListProfession(-1);
-    } else if(index + 1 < this.state.professionSelected){
-      this.selectInListProfession(this.state.professionSelected-2);
-    }
     this.state.listSelectedProfessions.splice(index, 1);
+    if(profession._id === this.state.professionSelected._id) {
+      this.selectInListProfession({});
+    }
     this.setState({ listSelectedProfessions: this.state.listSelectedProfessions });
   }
 
   onSelectProfession (value) {
     let listSelectedProfessions = this.state.listSelectedProfessions;
-    const profession = R.find(R.propEq('id', value.id))(this.props.auth.professions);
+    const profession = R.find(R.propEq('_id', value._id))(this.props.explore.professions || allProfessions);
     if(listSelectedProfessions.includes(profession)){
       listSelectedProfessions.splice(listSelectedProfessions.indexOf(profession), 1);
     }
     listSelectedProfessions.unshift(profession);
 
-    this.setState({ listSelectedProfessions, filteredProfessions: [], searchProfession:''});
-    this.selectInListProfession(0);
-    return false;
+    this.setState({ listSelectedProfessions, filteredProfessions: [], searchProfession:'', searchProfessionMode: false});
   }
 
-  selectInListProfession(index) {
-    const { professionSelected } = this.state;
-    if (index == 0 || professionSelected != index + 1) {
-      this.setState({ professionSelected: index + 1, searchProfessionMode: false});
+  selectInListProfession(professionSelected) {
+    let filteredProfessionals = [ ...ProfessionalsClients, ...this.props.explore.professionals ].filter((e)=>(e.profession && e.profession._id===professionSelected._id));
+    if(professionSelected._id === this.state.professionSelected._id) {
+      filteredProfessionals = [ ...ProfessionalsClients, ...this.props.explore.professionals];
+      professionSelected = {};
     }
+    this.setState({ filteredProfessionals, professionSelected, searchProfessionMode: false});
   }
 
   filterAutocomplete(searchProfession) {
-    const filteredProfessions = searchProfession ? this.props.auth.professions.filter((e)=>e.name.toLowerCase().includes(searchProfession)) : [];
+    const filteredProfessions = searchProfession ? (this.props.explore.professions || allProfessions).filter((e)=>e.name.toLowerCase().includes(searchProfession)) : [];
     this.setState({ filteredProfessions, searchProfession });
   }
 
@@ -177,7 +177,7 @@ class ExploreForm extends Component {
 
   get showFullTopBar () {
     const { professionSelected } = this.state,
-      { auth: { user, professions }, explore  } = this.props;
+      { auth: { user }, explore: { professions=allProfessions }  } = this.props;
 
     return (
       <View style={ styles.navContainer }>
@@ -275,7 +275,7 @@ class ExploreForm extends Component {
                   <View style={ styles.cellContainer }>
                     {
                       this.state.listSelectedProfessions.map((profession, index) => {
-                        const selected = index + 1 == professionSelected;
+                        const selected = profession._id === professionSelected._id;
                         return (
                           <View  key={index}>
 
@@ -286,7 +286,7 @@ class ExploreForm extends Component {
                               }
                             ] }>
                               <TouchableOpacity onPress={ () => {
-                                this.selectInListProfession(index)
+                                this.selectInListProfession(profession)
                               }}>
                                 <View style={ styles.cellButton }>
                                   <Text style={ [styles.cellText, {color: selected ? '#fff' : profession.color || '#4dc7fd' }] }>{ profession.name }</Text>
@@ -402,7 +402,7 @@ class ExploreForm extends Component {
           <View style={styles.dropdown}>
             {
               filteredProfessions.map((item) => (
-                <TouchableOpacity key={item.id} activeOpacity={ .5 } onPress={ (r) => this.onSelectProfession(item) }>
+                <TouchableOpacity key={item._id} activeOpacity={ .5 } onPress={ (r) => this.onSelectProfession(item) }>
                   <Text style={styles.dropdownText}>{item.name} </Text>
                   <View style={styles.dropdownSeparator} />
 
@@ -424,7 +424,7 @@ class ExploreForm extends Component {
                 onTapMap={ () => this.setState({ mapStandardMode:false }) }
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onList() }
-                professionalsClients={ this.state.professionalsClients }
+                professionalsClients={ this.state.filteredProfessionals }
                 gymLocations={ this.state.gymLocations }
                 user={ user }
               />
@@ -432,7 +432,7 @@ class ExploreForm extends Component {
               <ExploreListView
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onMap() }
-                professionalsClients={ this.state.professionalsClients }
+                professionalsClients={ this.state.filteredProfessionals }
                 user={ user }
               />
           }
@@ -571,6 +571,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   cellContainer: {
+    marginRight:150,
     borderRadius: 7,
     flexDirection: 'row-reverse',
     justifyContent: 'flex-end',
