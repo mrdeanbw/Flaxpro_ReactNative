@@ -11,7 +11,8 @@ import ProfessionalInfo from './Question/containers/professionalInfo';
 import WhoAreYou from './Question/containers/whoAreYou';
 import Main from './Main/containers/main';
 import ExploreMapView from './Explore/components/smart/exploreMapView';
-import FilterForm from './Explore/components/smart/filterForm';
+import FilterClientForm from './Explore/components/smart/filterClientForm';
+import FilterProfessionalForm from './Explore/components/smart/filterProfessionalForm';
 import ProposeTerms from './Hire/containers/proposeTerms';
 import Payment from './Hire/containers/payment';
 import Clients_Professionals from './Clients_Professionals/containers/clients_professionals';
@@ -33,7 +34,8 @@ const scenes = Actions.create(
     <Scene key="WhoAreYou" component={ WhoAreYou } />
     <Scene key="Main" component={ Main } />
     <Scene key="ExploreMapView" component={ ExploreMapView } />
-    <Scene key="FilterForm" component={ FilterForm } direction="vertical" />
+    <Scene key="FilterClientForm" component={ FilterClientForm } direction="vertical" />
+    <Scene key="FilterProfessionalForm" component={ FilterProfessionalForm } direction="vertical" />
     <Scene key="ProposeTerms" component={ ProposeTerms } />
     <Scene key="Payment" component={ Payment } />
     <Scene key="Clients_Professionals" component={ Clients_Professionals } />

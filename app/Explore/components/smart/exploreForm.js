@@ -87,7 +87,8 @@ class ExploreForm extends Component {
   }
 
   onFilter () {
-    Actions.FilterForm();
+    ///Actions.FilterProfessionalForm();
+    Actions.FilterClientForm();
   }
 
   onMap () {
