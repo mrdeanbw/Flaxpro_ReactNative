@@ -50,6 +50,7 @@ class AuthForm extends Component {
     const { auth: { user, error, token } } = nextProps;
     if (error) {
       Alert.alert(error);
+      this.setState({ loginRequest: false, registerRequest: false })
       return;
     }
     token && AsyncStorage.setItem('token', token);

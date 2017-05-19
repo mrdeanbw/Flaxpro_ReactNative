@@ -479,7 +479,6 @@ class ExploreMapView extends Component {
       getMarkerState(panX, panY, scrollY, index)
     );
 
-    console.log('==================', professionalsClients);
     if(professionalsClients.length){
       this.region = new MapView.AnimatedRegion({
         latitude: professionalsClients[0].coordinate.latitude,
