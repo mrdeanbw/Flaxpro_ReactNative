@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Alert,
+  ScrollView
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -34,7 +35,7 @@ const labelAffiliation = ['Gym', 'Independent', 'All'];
 const labelYearOfExprience = ['2004', '2005', '2006'];
 const labelCertification = ['Certified Personal Professional1', 'Certified Personal Professional2', 'Certified Personal Professional3'];
 const labelLocation = ['Meet at Home', 'One place'];
-const labelProfession = ['Pilates', 'Yoga', 'Massage'];
+const labelProfession = ['Pilates', 'Yoga trainers', 'Massage'];
 
 const prices = [
   {item: '$', price: '$50-100', level: 1},
@@ -159,7 +160,7 @@ export default class FilterForm extends Component {
             </TouchableOpacity>
             <Text style={ styles.textTitle }>FILTER</Text>
             <TouchableOpacity
-              onPress={ () => this.onClose() }
+              onPress={ () => this.onDone() }
               style={ styles.closeButtonWrapper }
             >
               <EvilIcons
@@ -168,219 +169,224 @@ export default class FilterForm extends Component {
               />
             </TouchableOpacity>
           </View>
-          <View style={ styles.mainContainer }>
-            <View style={ styles.cellContainer }>
-              <Text style={ [styles.textCellTitle, styles.labelLine] }>Sex</Text>
-              <View style={ styles.cellValueContainer }>
-                {
-                  labelSex.map(value => {
-                    return (
-                      <RadioButton
-                        style={ styles.paddingTwo }
-                        key={ value }
-                        label={ value }
-                        checked={ this.state.selectedSex == value }
-                        onPress={ () => this.onSex(value) }
-                      />
-                    );
-                  })
-                }
+          <ScrollView>
+            <View style={ styles.mainContainer }>
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.textCellTitle, styles.labelLine] }>Sex</Text>
+                <View style={ styles.cellValueContainer }>
+                  {
+                    labelSex.map(value => {
+                      return (
+                        <RadioButton
+                          style={ styles.paddingTwo }
+                          key={ value }
+                          label={ value }
+                          checked={ this.state.selectedSex == value }
+                          onPress={ () => this.onSex(value) }
+                          size={23}
+                        />
+                      );
+                    })
+                  }
+                </View>
               </View>
-            </View>
-            <View style={ styles.cellContainer }>
-              <Text style={ styles.textCellTitle }>Age</Text>
-              <View style={ styles.viewSlider }>
-                <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selectedAge -15) * scale}] }>
-                  <Animated.View style={ styles.bubble }>
-                    <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonText] }>{ this.state.selectedAge }</Animated.Text>
+              <View style={ styles.cellContainer }>
+                <Text style={ styles.textCellTitle }>Age</Text>
+                <View style={ styles.viewSlider }>
+                  <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selectedAge -15) * scale}] }>
+                    <Animated.View style={ styles.bubble }>
+                      <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonTextChecked] }>{ this.state.selectedAge }</Animated.Text>
+                    </Animated.View>
+                    <Animated.View style={ styles.arrowBorder } />
+                    <Animated.View style={ styles.arrow } />
                   </Animated.View>
-                  <Animated.View style={ styles.arrowBorder } />
-                  <Animated.View style={ styles.arrow } />
-                </Animated.View>
-                <Slider style={ styles.slider }
-                        maximumTrackTintColor="#b2e1fb"
-                        minimumTrackTintColor="#ffffff"
-                        trackStyle= {{backgroundColor: '#ffffff'}}
-                        thumbStyle={ styles.thumbStyle }
-                        minimumValue={ 15 }
-                        maximumValue={ 85 }
-                        step={ 1 }
-                        value = { this.state.selectedAge }
-                        onValueChange={ (value) => this.setState({ selectedAge: value }) }
-                />
+                  <Slider style={ styles.slider }
+                          maximumTrackTintColor="#b2e1fb"
+                          minimumTrackTintColor="#ffffff"
+                          trackStyle= {{backgroundColor: '#ffffff'}}
+                          thumbStyle={ styles.thumbStyle }
+                          minimumValue={ 15 }
+                          maximumValue={ 85 }
+                          step={ 1 }
+                          value = { this.state.selectedAge }
+                          onValueChange={ (value) => this.setState({ selectedAge: value }) }
+                  />
+                </View>
               </View>
-            </View>
-            <View style={ [styles.cellContainer, styles.priceContainer] }>
-              <Text style={ [styles.textCellTitle, styles.labelLine] }>Price</Text>
-              <View style={ styles.touchBlock }>
-                {
-                  prices.map((item, index) =>(
-                    <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
-                      <View style={ [styles.viewTwoText, item.level === this.state.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
-                        <Text style={ [styles.textCellTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
-                        <Text style={ [styles.textSubTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))
-                }
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.textCellTitle, styles.labelLine] }>Price</Text>
+                <View style={ styles.touchBlock }>
+                  {
+                    prices.map((item, index) =>(
+                      <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
+                        <View style={ [styles.viewTwoText, item.level === this.state.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
+                          <Text style={ [styles.textCellTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
+                          <Text style={ [styles.textSubTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))
+                  }
 
+                </View>
               </View>
-            </View>
-            {/*<View style={ styles.cellContainer }>*/}
+              {/*<View style={ styles.cellContainer }>*/}
               {/*<Text style={ [styles.textCellTitle, styles.labelLine] }>Age</Text>*/}
               {/*<RadioButtons*/}
-                {/*options={ labelAge }*/}
-                {/*onSelection={ this.onAge.bind(this) }*/}
-                {/*selectedOption={ this.state.selectedAge }*/}
-                {/*renderOption={ this.renderOption }*/}
-                {/*renderContainer={ this.renderContainer }*/}
+              {/*options={ labelAge }*/}
+              {/*onSelection={ this.onAge.bind(this) }*/}
+              {/*selectedOption={ this.state.selectedAge }*/}
+              {/*renderOption={ this.renderOption }*/}
+              {/*renderContainer={ this.renderContainer }*/}
               {/*/>*/}
-            {/*</View>*/}
-            <View style={ styles.cellContainer }>
-              <Text style={ [styles.textCellTitle, styles.labelLine] }>Verified</Text>
-              <View style={ styles.cellValueContainer }>
-                {
-                  labelVerified.map(value => {
-                    return (
-                      <RadioButton
-                        style={ styles.paddingTwo }
-                        key={ value }
-                        label={ value }
-                        checked={ this.state.selectedVerified == value }
-                        onPress={ () => this.onVerified(value) }
-                      />
-                    );
-                  })
-                }
+              {/*</View>*/}
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.textCellTitle, styles.labelLine] }>Verified</Text>
+                <View style={ styles.cellValueContainer }>
+                  {
+                    labelVerified.map(value => {
+                      return (
+                        <RadioButton
+                          style={ styles.paddingTwo }
+                          key={ value }
+                          label={ value }
+                          checked={ this.state.selectedVerified == value }
+                          onPress={ () => this.onVerified(value) }
+                          size={23}
+                        />
+                      );
+                    })
+                  }
+                </View>
               </View>
-            </View>
-            {/*<View style={ styles.cellContainer }>*/}
+              {/*<View style={ styles.cellContainer }>*/}
               {/*<Text style={ styles.textCellTitle }>Affiliation</Text>*/}
               {/*<View style={ styles.cellValueContainer }>*/}
-                {/*{*/}
-                  {/*labelAffiliation.map(value => {*/}
-                    {/*return (*/}
-                      {/*<RadioButton*/}
-                        {/*style={ styles.paddingThree }*/}
-                        {/*key={ value }*/}
-                        {/*label={ value }*/}
-                        {/*checked={ this.state.selectedAffiliation == value }*/}
-                        {/*onPress={ () => this.onAffiliation(value) }*/}
-                      {/*/>*/}
-                    {/*);*/}
-                  {/*})*/}
-                {/*}*/}
+              {/*{*/}
+              {/*labelAffiliation.map(value => {*/}
+              {/*return (*/}
+              {/*<RadioButton*/}
+              {/*style={ styles.paddingThree }*/}
+              {/*key={ value }*/}
+              {/*label={ value }*/}
+              {/*checked={ this.state.selectedAffiliation == value }*/}
+              {/*onPress={ () => this.onAffiliation(value) }*/}
+              {/*/>*/}
+              {/*);*/}
+              {/*})*/}
+              {/*}*/}
               {/*</View>*/}
-            {/*</View>*/}
-            <View style={ [styles.cellContainerBlock , styles.marginTop5] }>
-              <Text style={styles.textCellTitle}>Year of Experience</Text>
-              <View style={ styles.dropdownWrapper }>
-                <ModalDropdown
-                  options={ labelYearOfExprience }
-                  defaultValue={ this.state.selectedYourOfExperience }
-                  style={ styles.dropdown }
-                  textStyle ={ styles.dropDownText }
-                  dropdownStyle={ styles.dropdownStyle }
-                  onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }
-                />
-                <EvilIcons
-                  name="chevron-down"  size={ 30 }
-                  color="#fff"
-                />
+              {/*</View>*/}
+              <View style={ styles.cellContainerBlock }>
+                <Text style={styles.textCellTitle}>Year of Experience</Text>
+                <View style={ styles.dropdownWrapper }>
+                  <ModalDropdown
+                    options={ labelYearOfExprience }
+                    defaultValue={ this.state.selectedYourOfExperience }
+                    style={ styles.dropdown }
+                    textStyle ={ styles.dropDownText }
+                    dropdownStyle={ styles.dropdownStyle }
+                    onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }
+                  />
+                  <EvilIcons
+                    name="chevron-down"  size={ 30 }
+                    color="#fff"
+                  />
+                </View>
               </View>
-            </View>
-            <View style={ [styles.cellContainer] }>
-              <Text style={ [styles.textCellTitle, styles.labelLine, styles.marginTop5] }>Location</Text>
-              <View style={ [styles.touchBlock, styles.marginTop5] }>
-                {
-                  labelLocation.map((item, index) =>(
-                    <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
-                      <View style={ [styles.viewTwoTextPadding, item === this.state.selectedLocation ? styles.priceButtonChecked : styles.priceButton] }>
-                        <Text style={ [styles.textSubTitle, item === this.state.selectedLocation ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))
-                }
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.textCellTitle, styles.labelLine] }>Location</Text>
+                <View style={ [styles.touchBlock] }>
+                  {
+                    labelLocation.map((item, index) =>(
+                      <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
+                        <View style={ [styles.viewTwoTextPadding, item === this.state.selectedLocation ? styles.priceButtonChecked : styles.priceButton] }>
+                          <Text style={ [styles.textSubTitle, item === this.state.selectedLocation ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))
+                  }
+                </View>
               </View>
-            </View>
-            <View style={ [styles.cellContainer] }>
-              <Text style={ [styles.textCellTitle, styles.labelLine, styles.marginTop5 ]}>Insured</Text>
-              <View style={ [styles.cellValueContainer, styles.marginTop5] }>
-                {
-                  labelInsured.map(value => {
-                    return (
-                      <RadioButton
-                        style={ styles.paddingTwo }
-                        key={ value }
-                        label={ value }
-                        checked={ this.state.selectedInsured == value }
-                        onPress={ () => this.onInsured(value) }
-                      />
-                    );
-                  })
-                }
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.textCellTitle, styles.labelLine ]}>Insured</Text>
+                <View style={ styles.cellValueContainer }>
+                  {
+                    labelInsured.map(value => {
+                      return (
+                        <RadioButton
+                          size={23}
+                          style={ styles.paddingTwo }
+                          key={ value }
+                          label={ value }
+                          checked={ this.state.selectedInsured == value }
+                          onPress={ () => this.onInsured(value) }
+                        />
+                      );
+                    })
+                  }
+                </View>
               </View>
-            </View>
-            <View style={ styles.cellContainer }>
-              <View style={ styles.starContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine, styles.marginTop5 ]}>Reviews</Text>
-                <View style={ [styles.marginTop5 ] }>
+              <View style={ styles.cellContainer }>
+                <View style={ styles.starContainer }>
+                  <Text style={ [styles.textCellTitle, styles.labelLine ]}>Reviews</Text>
                   <StarRating
-                    starColor={'red'}
+                    color='#fff'
                     isActive={ true }
                     rateMax={ 5 }
                     isHalfStarEnabled={ false }
                     onStarPress={ (rating) => console.log(rating) }
                     rate={ 5 }
-                    size={ 26 }
+                    size={ 30 }
                     rating={this.state.selectedReview}
                   />
                 </View>
               </View>
-            </View>
-            <View style={ [styles.cellContainerBlock, styles.marginTop5] }>
-              <Text style={ [styles.textCellTitle, ] }>Profession</Text>
-              <View style={ [styles.touchBlock, styles.marginTop5] }>
-                {
-                  labelProfession.map((item, index) =>(
-                    <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onProfession(item) }>
-                      <View style={ [styles.viewTwoTextPadding, item === this.state.selectedProfession ? styles.priceButtonChecked : styles.priceButton] }>
-                        <Text style={ [styles.textSubTitle, item === this.state.selectedProfession ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))
-                }
-                <EvilIcons
-                  name="plus"  size={ 35 }
-                  color="#fff"
-                />
-              </View>
-            </View>
-            <View style={[ styles.cellContainerBlock, styles.marginTop5 ]}>
-              <Text style={ [styles.textCellTitle] }>Certification</Text>
-              <View style={ styles.dropdownWrapper }>
-                <ModalDropdown
-                  options={ labelCertification }
-                  defaultValue={ this.state.selectedCertification }
-                  style={ styles.dropdown }
-                  textStyle ={ styles.dropDownText }
-                  dropdownStyle={ styles.dropdownStyle }
-                  onSelect={ (rowId, rowData) => this.onCertification(rowData) }
-                />
-                <EvilIcons
-                  name="chevron-down"  size={ 30 }
-                  color="#fff"
-                />
-              </View>
-            </View>
-            <View style={ styles.buttonWrapper }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onDone() }>
-                <View style={ styles.doneButton }>
-                  <Text style={ styles.buttonText }>Done</Text>
+              <View style={ styles.cellContainerBlock }>
+                <Text style={ styles.textCellTitle }>Profession</Text>
+                <View style={ styles.touchBlock }>
+                  {
+                    labelProfession.map((item, index) =>(
+                      <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onProfession(item) }>
+                        <View style={ [styles.viewTwoTextPadding, item === this.state.selectedProfession ? styles.priceButtonChecked : styles.priceButton] }>
+                          <Text style={ [styles.textSubTitle, item === this.state.selectedProfession ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))
+                  }
+                  <EvilIcons
+                    name="plus"
+                    size={ 35 }
+                    color="#fff"
+                    style={ styles.addButton }
+                  />
                 </View>
-              </TouchableOpacity>
+              </View>
+              <View style={ styles.cellContainerBlock }>
+                <Text style={ styles.textCellTitle }>Certification</Text>
+                <View style={ styles.dropdownWrapper }>
+                  <ModalDropdown
+                    options={ labelCertification }
+                    defaultValue={ this.state.selectedCertification }
+                    style={ styles.dropdown }
+                    textStyle ={ styles.dropDownText }
+                    dropdownStyle={ styles.dropdownStyle }
+                    onSelect={ (rowId, rowData) => this.onCertification(rowData) }
+                  />
+                  <EvilIcons
+                    name="chevron-down"  size={ 30 }
+                    color="#fff"
+                  />
+                </View>
+              </View>
+              {/*<View style={ styles.buttonWrapper }>*/}
+              {/*<TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onDone() }>*/}
+              {/*<View style={ styles.doneButton }>*/}
+              {/*<Text style={ styles.buttonText }>Done</Text>*/}
+              {/*</View>*/}
+              {/*</TouchableOpacity>*/}
+              {/*</View>*/}
             </View>
-          </View>
+          </ScrollView>
         </Image>
       </View>
     );
@@ -388,26 +394,26 @@ export default class FilterForm extends Component {
 }
 
 const styles = StyleSheet.create({
+
+  addButton: {
+    marginLeft: 10,
+  },
   starContainer: {
     flexDirection: 'row',
-  },
-  marginTop5: {
-    marginTop: 10,
+    alignItems: 'center',
   },
   cellContainerBlock: {
-    marginTop: -5,
+    flex: 0,
+    marginVertical: 7,
     flexDirection: 'column',
-    flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
   touchBlock: {
     flexDirection: 'row',
-    marginLeft: -15
-  },
-  priceContainer: {
-    marginBottom: 10
+    marginLeft: -15,
+    marginTop: 10
   },
   viewTwoText: {
     flexDirection: 'column',
@@ -416,20 +422,20 @@ const styles = StyleSheet.create({
     paddingVertical: 6
   },
   priceButtonChecked: {
-    backgroundColor: '#19b8ff',
     alignItems: 'center',
     borderRadius: 30,
     width: 76,
     marginLeft: 15,
+    backgroundColor: '#fff',
   },
   priceButton: {
-    backgroundColor: '#fff',
     alignItems: 'center',
     borderRadius: 30,
     width: 76,
     marginLeft: 15,
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#19b8ff',
+    borderColor: '#fff',
   },
   textSubTitle: {
     fontFamily: 'Open Sans',
@@ -469,7 +475,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   priceButtonText: {
-    color: '#6b6b6b',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  priceButtonTextChecked: {
+    color: '#82d7fd',
     textAlign: 'center',
   },
   arrow: {
@@ -503,7 +513,7 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    flex: 1,
+    flex: 0,
   },
   background: {
     width,
@@ -513,17 +523,15 @@ const styles = StyleSheet.create({
     width : width * 0.23,
   },
   navBarContainer: {
-    flex: 1,
+    flex: 0,
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    paddingTop: 20,
-    justifyContent: 'center',
     alignItems: 'center',
+    paddingTop:40,
   },
   closeButtonWrapper: {
-    flex: 1,
+    flex: 0,
     paddingVertical: 5,
-    marginLeft: -5
   },
   textTitle: {
     flex: 10,
@@ -532,7 +540,7 @@ const styles = StyleSheet.create({
     fontSize: 22
   },
   mainContainer: {
-    flex: 10,
+    flex: 0,
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'flex-start',
@@ -541,7 +549,9 @@ const styles = StyleSheet.create({
   cellContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex:0,
     justifyContent: 'space-between',
+    marginVertical: 7,
 
   },
   cellValueContainer: {
@@ -579,7 +589,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   paddingTwo: {
-    marginRight: 40,
+    marginRight: 30,
+    paddingVertical: 0
   },
   paddingThree: {
     marginRight: 20,
