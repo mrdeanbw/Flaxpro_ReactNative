@@ -8,8 +8,8 @@ function loginError(input = null) {
   return { type: types.AUTH_ERROR, input };
 }
 
-function loginSuccess({user, token}) {
-  return { type: types.AUTH_SUCCESS, user, token };
+function loginSuccess(data) {
+  return { type: types.AUTH_SUCCESS, ...data };
 }
 
 function createUserSuccess({user, token, professions, professionalsClients}) {
@@ -76,7 +76,7 @@ export const createUserServer = (email, password) => async (dispatch, store) => 
 
 export const login = (email, password, token = null) => async (dispatch, store) => {
   /**
-   * fake request
+   * fake data: 'professions', 'professionalsClients'
    */
   let user = null,
     professions = [];
@@ -107,13 +107,7 @@ export const login = (email, password, token = null) => async (dispatch, store) 
 
   try {
     const response = await request(url, options);
-    dispatch(loginSuccess(response))
-    /**
-     * fake request
-     */
-    dispatch({ type: types.LOGIN, professions, professionalsClients });
-    /**
-     * */
+    dispatch(loginSuccess({...response, professions, professionalsClients}))
   } catch (error) {
     dispatch(loginError(error))
   }

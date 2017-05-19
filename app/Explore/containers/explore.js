@@ -2,9 +2,12 @@
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+import { View, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
 import ExploreForm from '../components/smart/exploreForm';
 import * as exploreActions from '../actions';
-import { connect } from 'react-redux';
+
+const { width, height } = Dimensions.get('window');
 
 class Explore extends Component {
   constructor(props) {
@@ -12,20 +15,45 @@ class Explore extends Component {
   }
 
   render() {
-    const { actions, auth } = this.props;
+    const { actions, auth, explore: {loading, error} } = this.props;
     return (
-      <ExploreForm { ...actions } auth={ auth }/>
+      <View >
+        {
+          !loading && !error &&
+          <ExploreForm { ...actions } auth={ auth }/>
+        }
+        {
+          loading &&
+          <View style={styles.background}>
+            <ActivityIndicator
+              color="#fff"
+              size="large"
+            />
+          </View>
+        }
+      </View>
     );
   }
 }
+const styles = StyleSheet.create({
+  background: {
+    width,
+    height,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1abef2',
+  }
+});
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  explore: state.explore,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(exploreActions, dispatch),
 });
+
 export default connect(state =>
   mapStateToProps,
   mapDispatchToProps

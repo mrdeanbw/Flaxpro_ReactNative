@@ -26,7 +26,8 @@ function checkStatus(response) {
 
   const error = new Error({message:response._bodyText});
   error.response = response;
-  error.message = JSON.parse(response._bodyText).error;
+  const body = response._bodyText ? JSON.parse(response._bodyText) : {};
+  error.message = body.error || `Status: ${response.status}`;
   throw error;
 }
 
@@ -43,16 +44,12 @@ export default function request(url, options, authState) {
   const apiUrl = 'http://localhost:3000/api';
   const headers = {
     Accept: 'application/json',
-    // 'Content-Type': 'application/x-www-form-urlencoded',
     'Content-Type': 'application/json',
   };
 
-  /**
-   * Will be used with Authorization
-   */
-  // if (authState && authState.token && authState.token.token) {
-  //   headers.Authorization = `Bearer ${authState.token.token}`;
-  // }
+  if (authState && authState.token) {
+    headers.Authorization = authState.token;
+  }
 
   const requestOptions = {
     ...options,

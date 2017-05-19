@@ -31,7 +31,6 @@ import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 const background = require('../../../Assets/images/background.png');
 const avatar = require('../../../Assets/images/avatar.png');
-const edit_avatar = require('../../../Assets/images/edit_avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
 
 //auth redux store

@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 
 import Stars from 'react-native-stars-rating';
+import * as CommonConstant from '../../../Components/commonConstant';
 
 class AnimatedProfessionalMarker extends Component {
   render() {
@@ -29,7 +30,7 @@ class AnimatedProfessionalMarker extends Component {
     });
 
     const professionalClientData = {
-      backgroundColor: !user.professional && profession.color ? profession.color :'#45c7f1',
+      backgroundColor: user.role === CommonConstant.user_client && profession.color ? profession.color :'#45c7f1',
     };
 
     return (

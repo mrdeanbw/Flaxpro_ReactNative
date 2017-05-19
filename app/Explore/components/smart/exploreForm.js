@@ -16,7 +16,6 @@ import { connect } from 'react-redux';
 
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import CommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import R from 'ramda';
@@ -32,6 +31,7 @@ const { width, height } = Dimensions.get('window');
 import * as CommonConstant from '../../../Components/commonConstant';
 
 const background = require('../../../Assets/images/background.png');
+const defaultProfessions = [ 'Fitness Training', 'Physiotherapist', 'Yoga', 'Massage' ];
 
 class ExploreForm extends Component {
   constructor(props) {
@@ -48,13 +48,13 @@ class ExploreForm extends Component {
       listSelectedProfessions: [],
       searchProfession: '',
       filteredProfessions: [],
-      searchProfessionMode: true,
+      searchProfessionMode: false,
     };
     this.filterAutocomplete = this.filterAutocomplete.bind(this)
   }
 
   componentWillMount(){
-    this.props.getProfessionals()
+    this.setDefaultProfessions()
   }
 
   componentWillReceiveProps(newProps) {
@@ -70,6 +70,13 @@ class ExploreForm extends Component {
     } else if (newProps.status == 'explore_error') {
 
     }
+  }
+
+  setDefaultProfessions () {
+    if(this.props.auth && this.props.auth.professions) {
+      return defaultProfessions.map((value) => R.find(R.propEq('name', value))(this.props.auth.professions));
+    }
+    return [];
   }
 
   onList () {
@@ -130,9 +137,9 @@ class ExploreForm extends Component {
   removeProfession (profession) {
     const index = this.state.listSelectedProfessions.indexOf(profession);
     if(index + 1 === this.state.professionSelected) {
-      this.selectProfession(-1);
+      this.selectInListProfession(-1);
     } else if(index + 1 < this.state.professionSelected){
-      this.selectProfession(this.state.professionSelected-2);
+      this.selectInListProfession(this.state.professionSelected-2);
     }
     this.state.listSelectedProfessions.splice(index, 1);
     this.setState({ listSelectedProfessions: this.state.listSelectedProfessions });
@@ -147,11 +154,11 @@ class ExploreForm extends Component {
     listSelectedProfessions.unshift(profession);
 
     this.setState({ listSelectedProfessions, filteredProfessions: [], searchProfession:''});
-    this.selectProfession(0);
+    this.selectInListProfession(0);
     return false;
   }
 
-  selectProfession(index) {
+  selectInListProfession(index) {
     const { professionSelected } = this.state;
     if (index == 0 || professionSelected != index + 1) {
       this.setState({ professionSelected: index + 1, searchProfessionMode: false});
@@ -169,7 +176,7 @@ class ExploreForm extends Component {
 
   get showFullTopBar () {
     const { professionSelected } = this.state,
-      { auth: { user, professions }, explore, user_mode  } = this.props;
+      { auth: { user, professions }, explore  } = this.props;
 
     return (
       <View style={ styles.navContainer }>
@@ -260,7 +267,7 @@ class ExploreForm extends Component {
                   showsHorizontalScrollIndicator={ false }
                   ref={(ref) => {this.searchProfessionScroll = ref}}
                   onContentSizeChange={(contentWidth, contentHeight)=>{
-                    const scrollToEnd = contentWidth - width >0 ? contentWidth - width :0;
+                    const scrollToEnd = contentWidth - width -55 >0 ? contentWidth - width -55 :0;
                     this.searchProfessionScroll.scrollTo({x: scrollToEnd});
                   }}
                 >
@@ -278,7 +285,7 @@ class ExploreForm extends Component {
                               }
                             ] }>
                               <TouchableOpacity onPress={ () => {
-                                this.selectProfession(index)
+                                this.selectInListProfession(index)
                               }}>
                                 <View style={ styles.cellButton }>
                                   <Text style={ [styles.cellText, {color: selected ? '#fff' : profession.color || '#4dc7fd' }] }>{ profession.name }</Text>
@@ -374,7 +381,7 @@ class ExploreForm extends Component {
                 height: 25,
                 marginLeft: 5,
                 marginRight: 10,
-                marginVertical: 7,
+                marginVertical: 5,
               }}
             />
           </View>

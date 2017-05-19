@@ -100,14 +100,16 @@ export default class UploadFromCameraRoll extends React.Component {
     });
 
     let opts = {
-      method: 'POST',                             // optional: POST or PUT
-      headers: { 'Accept': 'application/json', 'Authorization': this.state.token },  // optional
-      url: 'http://192.168.88.56:3000/api/profile/avatar-upload',
-      files: files, //Array
-      params: {name: 'test-app'} //??????
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': this.state.token
+      },
+      url: 'http://localhost:3000/api/profile/avatar-upload',
+      files: files,
+      params: {name: 'test-app'}
     };
 
-    console.log('=========oooo=', opts)
     this.setState({ uploading: true, showUploadModal: true, });
     RNUploader.upload(opts, (err, res) => {
       if (err) {

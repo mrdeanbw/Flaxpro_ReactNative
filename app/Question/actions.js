@@ -30,17 +30,16 @@ function createClientError(error) {
 
 export const createRole = (userData) => async (dispatch, store) => {
   const url = userData.professional ? '/professional/new' : '/client/new';
-  const {user, token} = store().auth;
+  const { auth } = store();
   const createRoleSuccess = userData.professional ? createProfessionalSuccess : createClientSuccess;
   const createRoleError = userData.professional ? createProfessionalError : createClientError;
   const options = {
-    headers: {'Authorization': token},
     method: 'post',
-    body: JSON.stringify({...userData, user}),
+    body: JSON.stringify({...userData, user: auth.user}),
   };
 
   try {
-    const response = await request(url, options);
+    const response = await request(url, options, auth);
     dispatch(createRoleSuccess(response));
   } catch (error) {
     dispatch(createRoleError(error));

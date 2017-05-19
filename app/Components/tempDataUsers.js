@@ -118,7 +118,7 @@ export const tempProfileData = [{
 
 export const allProfessions = [{
   id: 'asd7as8',
-  name: 'Simply Yoga',
+  name: 'Yoga',
   color: '#ac6bbd',
   icon: require('../Assets/images/yoga.png')
 }, {
@@ -143,12 +143,12 @@ export const allProfessions = [{
   icon: require('../Assets/images/sport.png')
 }, {
   id: '785asda',
-  name: 'Yoga6',
+  name: 'Physiotherapist',
   color: '#4c64b4',
   icon: require('../Assets/images/sport.png')
 }, {
   id: 'asdwqd2',
-  name: 'Yoga7',
+  name: 'Massage',
   icon: require('../Assets/images/sport.png')
 }, {
   id: '1234tfs',

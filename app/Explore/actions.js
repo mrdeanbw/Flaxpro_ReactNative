@@ -1,39 +1,23 @@
 import * as types from './actionTypes';
 import request, { toQueryString } from '../request';
 
-function clientsRequest() {
-  return {
-    type: types.EXPLORE_GET_CLIENTS
-  };
-}
-function professionalsRequest() {
-  return {
-    type: types.EXPLORE_GET_PROFESSIONALS
-  };
+export function exploreRequest() {
+  return { type: types.EXPLORE_GET_REQUEST };
 }
 
-function professionalsSuccess({professionals}) {
-  return { type: types.EXPLORE_GET_PROFESSIONALS_SUCCESS, professionals };
+function exploreError(error) {
+  return { type: types.EXPLORE_GET_ERROR, error };
 }
 
-function professionalsError(error) {
-  return { type: types.EXPLORE_GET_PROFESSIONALS_ERROR, error };
-}
-
-function clientsSuccess({clients}) {
-  return { type: types.EXPLORE_GET_CLIENTS_SUCCESS, clients };
-}
-
-function clientsError(error) {
-  return { type: types.EXPLORE_GET_CLIENTS_ERROR, error };
+function exploreSuccess(data) {
+  return { type: types.EXPLORE_GET_SUCCESS, ...data };
 }
 
 export const getProfessionals = (data) => async (dispatch, store) => {
-  professionalsRequest();
+  dispatch(exploreRequest());
   let url = '/professional/q';
-  const { token } = store().auth;
+  const { auth } = store();
   const options = {
-    headers: {'Authorization': token},
     method: 'get',
   };
   if(data){
@@ -42,20 +26,22 @@ export const getProfessionals = (data) => async (dispatch, store) => {
   }
 
   try {
-    const response = await request(url, options);
-    dispatch(professionalsSuccess(response));
+    const response = await request(url, options, auth);
+    dispatch(exploreSuccess(response));
   } catch (error) {
-    dispatch(professionalsError(error.message));
+    const error =
+      `Explore Error: getProfessionals 
+      Message: ${error.message}`;
+    dispatch(exploreError(error));
   }
 
 };
 
 export const getClients = (data) => async (dispatch, store) => {
-  clientsRequest();
+  dispatch(exploreRequest());
   let url = '/client/q';
-  const { token } = store().auth;
+  const { auth } = store();
   const options = {
-    headers: {'Authorization': token},
     method: 'get',
   };
   if(data){
@@ -64,10 +50,37 @@ export const getClients = (data) => async (dispatch, store) => {
   }
 
   try {
-    const response = await request(url, options);
-    dispatch(clientsSuccess(response));
+    const response = await request(url, options, auth);
+    dispatch(exploreSuccess(response));
   } catch (error) {
-    dispatch(clientsError(error.message));
+    const error =
+      `Explore Error: getClients 
+      Message: ${error.message}`;
+    dispatch(exploreError(error));
+  }
+
+};
+
+export const getProfessions = (data) => async (dispatch, store) => {
+  dispatch(exploreRequest());
+  let url = '/profession';
+  const { auth } = store();
+  const options = {
+    method: 'get',
+  };
+  if(data){
+    const queryString = toQueryString(data);
+    url += '?' + queryString;
+  }
+
+  try {
+    const response = await request(url, options, auth);
+    dispatch(exploreSuccess(response));
+  } catch (error) {
+    const error =
+      `Explore Error: getProfessions 
+      Message: ${error.message}`;
+    dispatch(exploreError(error));
   }
 
 };

@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
 
 import AnimatedViewCell from './animatedViewCell';
@@ -81,18 +80,15 @@ class ExploreListView extends Component {
   }
 
   onClickAnimatedViewCell(rowData) {
-    localStorage.get(CommonConstant.user_mode)
-      .then((data) => {
-        if (data == CommonConstant.user_client) {
-          console.log('client')
-          Actions.ProfessionalProfile({ editable: false, user: rowData });
-          return;
-        } else if (data == CommonConstant.user_professional){
-          console.log('professional')
-          Actions.ClientProfile({ editable: false, user: rowData });
-          return;
-        }
-      });
+    if (rowData.role == CommonConstant.user_client) {
+      console.log('client')
+      Actions.ProfessionalProfile({ editable: false, user: rowData });
+      return;
+    } else if (rowData.role == CommonConstant.user_professional){
+      console.log('professional')
+      Actions.ClientProfile({ editable: false, user: rowData });
+      return;
+    }
   }
 
   render() {
