@@ -23,7 +23,7 @@ export const getExploreClient = () => async (dispatch, store) => {
   };
 
   try {
-    const [professions, professionals] = await Promise.all([request(professionsUrl, options, auth), request(professionalsUrl, options, auth)]);
+    const [{ professions }, { professionals }] = await Promise.all([request(professionsUrl, options, auth), request(professionalsUrl, options, auth)]);
     dispatch(mainSuccess({professions, professionals}));
   } catch (error) {
     const error =

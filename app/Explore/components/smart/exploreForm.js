@@ -73,10 +73,11 @@ class ExploreForm extends Component {
   }
 
   setDefaultProfessions () {
-    if(this.props.auth && this.props.auth.professions) {
-      return defaultProfessions.map((value) => R.find(R.propEq('name', value))(this.props.auth.professions));
+    if(this.props.explore && this.props.explore.professions) {
+      const listSelectedProfessions = defaultProfessions.map((value) => R.find(R.propEq('name', value))(this.props.explore.professions));
+      this.setState({ listSelectedProfessions })
     }
-    return [];
+
   }
 
   onList () {
