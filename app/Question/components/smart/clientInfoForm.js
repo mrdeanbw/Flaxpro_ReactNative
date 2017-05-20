@@ -205,7 +205,7 @@ class ClientInfoForm extends Component {
                       <Slider style={ styles.slider }
                               maximumTrackTintColor="#9be5ff"
                               minimumTrackTintColor="#10c7f9"
-                              trackStyle={{backgroundColor: '#9be5ff'}}
+                              trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);', marginTop: -4}}
                               thumbStyle={ styles.thumbStyle }
                               minimumValue={ 15 }
                               maximumValue={ 85 }
@@ -567,7 +567,6 @@ const styles = StyleSheet.create({
   },
   slider: {
     marginRight: 15,
-    alignItems: 'center',
     height: 20,
     marginBottom: -10,
   },
