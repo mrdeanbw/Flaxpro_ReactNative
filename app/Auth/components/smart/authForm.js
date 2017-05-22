@@ -261,16 +261,20 @@ class AuthForm extends Component {
 
         </View>
         <View style={ styles.arrowButtonContainer }>
-          <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onLogIn() }>
-            <View style={ styles.arrowButton }>
-              {loginRequest ? <ActivityIndicator
+          <View style={ styles.arrowButton }>
+            {loginRequest ?
+              <ActivityIndicator
                 style={[styles.centering, styles.gray]}
                 color="#0000ff"
                 size="large"
-              /> : <Image source={ arrow } style={ styles.imageArrow } />}
-            </View>
-          </TouchableOpacity>
+              />
+              :
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onLogIn() }>
+                 <Image source={ arrow } style={ styles.imageArrow } />
+              </TouchableOpacity>
+            }
         </View>
+      </View>
         <Text style={ styles.lineOR }>OR</Text>
 
         <View style={ styles.socialContainer }>

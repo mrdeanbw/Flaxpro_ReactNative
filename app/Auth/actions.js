@@ -27,17 +27,20 @@ function createUserError(error) {
 }
 
 /**
- * fake request
+ * request to server
  */
-export const createUser = (userData) => async (dispatch, store) => {
-  let user = {},
+export const createUserServer = (email, password) => async (dispatch, store) => {
+  /**
+   * fake data: 'professions', 'professionalsClients'
+   */
+  let user = null,
     professions = [];
 
   let professionalsClients = null;
 
   for (let i = 0; i < tempProfileData.length; i++) {
     const profileData = tempProfileData[i];
-    if (userData.email == profileData.email) {
+    if (email == profileData.email && (!token || token == profileData.token)) {
       if (!profileData.professional) {
         professions = allProfessions;
       }
@@ -47,17 +50,6 @@ export const createUser = (userData) => async (dispatch, store) => {
     }
   }
 
-  user.professional = userData.professional;
-  user.name = userData.name || user.name;
-  user.age = userData.age || user.age;
-
-  dispatch(createUserSuccess({user, token: user.token, professions, professionalsClients}));
-};
-/**
- * request to server
- */
-export const createUserServer = (email, password) => async (dispatch, store) => {
-
   const url = '/auth/register';
   const options = {
     method: 'post',
@@ -66,7 +58,7 @@ export const createUserServer = (email, password) => async (dispatch, store) => 
 
   try {
     const response = await request(url, options);
-    dispatch(createUserSuccess(response))
+    dispatch(createUserSuccess({...response, professions, professionalsClients}))
   } catch (error) {
     dispatch(createUserError(error.message))
   }

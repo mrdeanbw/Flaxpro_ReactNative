@@ -21,6 +21,12 @@ export default function auth(state = initialState, action = {}) {
         professions,
         professionalsClients,
       };
+    case types.UPDATE_USER:
+      return {
+        ...state,
+        user,
+        error,
+      };
     case types.AUTH_SUCCESS:
       return {
         ...state,
