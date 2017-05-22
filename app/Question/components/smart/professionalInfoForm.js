@@ -211,6 +211,7 @@ class ProfessionalInfoForm extends Component {
                               minimumTrackTintColor="#10c7f9"
                               trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);'}}
                               thumbStyle={ styles.thumbStyle }
+                              thumbTouchSize={{width: 40, height: 60}}
                               minimumValue={ 15 }
                               maximumValue={ 85 }
                               step={ 1 }

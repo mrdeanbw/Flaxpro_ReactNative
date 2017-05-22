@@ -203,8 +203,9 @@ export default class FilterForm extends Component {
                   <Slider style={ styles.slider }
                           maximumTrackTintColor="#b2e1fb"
                           minimumTrackTintColor="#ffffff"
-                          trackStyle= {{backgroundColor: 'rgba(255, 255, 255, 0.5);', marginTop: -4}}
+                          trackStyle= {{backgroundColor: 'rgba(255, 255, 255, 0.5);'}}
                           thumbStyle={ styles.thumbStyle }
+                          thumbTouchSize={{width: 40, height: 60}}
                           minimumValue={ 15 }
                           maximumValue={ 85 }
                           step={ 1 }
@@ -444,6 +445,7 @@ const styles = StyleSheet.create({
   },
 
   thumbStyle:{
+    top:11,
     width: 20,
     height: 20,
     backgroundColor: '#fff',
@@ -488,7 +490,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderTopColor: '#fff',
     alignSelf: 'center',
-    marginTop: -12,
+    marginTop: -15,
   },
   arrowBorder: {
     backgroundColor: 'transparent',
