@@ -204,7 +204,8 @@ class ClientInfoForm extends Component {
                       <Slider style={ styles.slider }
                               maximumTrackTintColor="#9be5ff"
                               minimumTrackTintColor="#10c7f9"
-                              trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);', marginTop: -4}}
+                              trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);'}}
+                              thumbTouchSize={{width: 40, height: 60}}
                               thumbStyle={ styles.thumbStyle }
                               minimumValue={ 15 }
                               maximumValue={ 85 }
@@ -554,7 +555,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderTopColor: '#19b8ff',
     alignSelf: 'center',
-    marginTop: -12,
+    marginTop: -15,
   },
   arrowBorder: {
     backgroundColor: 'transparent',
@@ -567,7 +568,7 @@ const styles = StyleSheet.create({
   slider: {
     marginRight: 15,
     height: 20,
-    marginBottom: -10,
+    marginBottom: -8,
   },
   textAboveSlider: {
     textAlign: 'center',
@@ -577,6 +578,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   thumbStyle:{
+    top:11,
     width: 20,
     height: 20,
     backgroundColor: '#fff',

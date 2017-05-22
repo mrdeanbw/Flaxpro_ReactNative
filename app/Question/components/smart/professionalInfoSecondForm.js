@@ -363,7 +363,8 @@ class ProfessionalInfoForm extends Component {
 
 const styles = StyleSheet.create({
   experienceView: {
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    width: width*0.4,
   },
   experienceText: {
     width: width * 0.28
