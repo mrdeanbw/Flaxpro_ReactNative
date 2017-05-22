@@ -17,15 +17,12 @@ import {
 } from 'react-native';
 
 import Slider from 'react-native-slider';
-import DatePicker from 'react-native-datepicker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
@@ -43,8 +40,6 @@ const avatar = require('../../../Assets/images/avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
 
 const professionalNames = allProfessions.map(item => item.name)
-//auth redux store
-import * as authActions from '../../../Auth/actions';
 
 class ClientInfoForm extends Component {
   constructor(props) {
@@ -62,14 +57,17 @@ class ClientInfoForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { auth: { user } } = nextProps;
+    const { auth: { user }, question: { error } } = nextProps;
 
+    if (error) {
+      Alert.alert(error);
+      this.setState({ signUpRequest: false })
+      return;
+    }
     if (user) {
       Actions.Main({ user_mode: CommonConstant.user_client });
     }
-    this.setState({
-      signUpRequest: false ,
-    });
+    this.setState({ signUpRequest: false });
   }
 
   get getShowNavBar() {
@@ -93,16 +91,8 @@ class ClientInfoForm extends Component {
   }
 
   onContinue () {
-    const { actions, createRole } = this.props;
-    /**
-     * fake request
-     */
-    localStorage.get('userData')
-      .then((data) => {
-        actions.createUser({ ...data, ...this.state })
-        localStorage.save('userData', null);
-        this.setState({ signUpRequest: true });
-      });
+    const { createRole } = this.props;
+    this.setState({ signUpRequest: true });
     /**
      * request to server
      */
@@ -285,6 +275,7 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     flex: 1,
+    position: 'relative'
   },
   activityIndicatorContainer: {
     flex: 1,
@@ -639,9 +630,7 @@ const styles = StyleSheet.create({
 });
 
 export default connect(state => ({
-    auth: state.auth
+  auth: state.auth,
+  question: state.question,
   }),
-  (dispatch) => ({
-      actions: bindActionCreators(authActions, dispatch)
-    })
 )(ClientInfoForm);

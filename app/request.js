@@ -1,4 +1,5 @@
 import 'whatwg-fetch';
+import { Actions } from 'react-native-router-flux';
 
 /**
  * Parses the JSON returned by a network request
@@ -22,6 +23,9 @@ function checkStatus(response) {
   console.log('checkStatus', response);
   if (response.status >= 200 && response.status < 300) {
     return response;
+  }
+  if (response.status === 401) {
+    return Actions.Auth();
   }
 
   const error = new Error({message:response._bodyText});

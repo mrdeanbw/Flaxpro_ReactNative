@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   AsyncStorage,
   Animated,
-  ActivityIndicator,
   StyleSheet,
   Text,
   View,
@@ -46,7 +45,6 @@ class ProfessionalInfoForm extends Component {
       gender : labelSex[0],
       age : 20,
       phone : '',
-      signUpRequest: false,
       professional: true,
     };
   }
@@ -72,7 +70,6 @@ class ProfessionalInfoForm extends Component {
     if (user) {
       Actions.Main({ user_mode: CommonConstant.user_professional });
     }
-    this.setState({ signUpRequest: false });
   }
 
   get getShowNavBar() {
@@ -96,7 +93,7 @@ class ProfessionalInfoForm extends Component {
   }
 
   onContinue () {
-    const { actions, changeProfessionalForm } = this.props;
+    const { changeProfessionalForm } = this.props;
     AsyncStorage.setItem('professionalFirstForm', JSON.stringify(this.state));
 
     changeProfessionalForm({firstForm: false})
@@ -111,8 +108,7 @@ class ProfessionalInfoForm extends Component {
   }
 
   render() {
-    const { status } = this.props,
-      { signUpRequest } = this.state;
+    const { status } = this.props;
 
     const sliderWidth = width * 1/4;
     const ageInitialValue = 15;
@@ -233,14 +229,6 @@ class ProfessionalInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
-        { signUpRequest ? <View
-          style={styles.activityIndicatorContainer}>
-            <ActivityIndicator
-            style={styles.activityIndicator}
-            color="#0000ff"
-            size="large"
-          />
-        </View> : null }
       </View>
     );
   }
@@ -250,21 +238,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative'
-  },
-  activityIndicator: {
-    flex: 1,
-  },
-  activityIndicatorContainer: {
-    flex: 1,
-    position: 'absolute',
-    backgroundColor: '#a3a4a7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    opacity: 0.5,
-    width,
-    height
   },
   markWrap: {
     flex: 2,
@@ -611,10 +584,4 @@ const styles = StyleSheet.create({
 export default connect(state => ({
     auth: state.auth
   }),
-  /**
-   * fake request
-   */
-  (dispatch) => ({
-      actions: bindActionCreators(authActions, dispatch)
-    })
 )(ProfessionalInfoForm);
