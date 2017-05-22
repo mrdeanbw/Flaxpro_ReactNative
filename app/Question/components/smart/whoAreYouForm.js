@@ -68,7 +68,8 @@ export default class WhoAReYouForm extends Component {
                   <Image source={ professionalIcon } style={ styles.buttonIcon } resizeMode="contain" />
                 </View>
               </TouchableOpacity>
-              <Text style={ styles.text }> I am a Professional </Text>
+              <Text style={ styles.text }> I am a  </Text>
+              <Text style={ styles.text }> Professional </Text>
             </View>
             <View style={ styles.oneColumn }>
               <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSelectClient() }>
