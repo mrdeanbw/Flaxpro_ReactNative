@@ -50,8 +50,8 @@ export default class ProfessionalProfileForm extends Component {
     this.state = {
       showMoreOrLess: true,
     };
-  }  
-  
+  }
+
   componentWillReceiveProps(newProps) {
 
     if (newProps.status == 'ClientProfileRequest') {
@@ -64,7 +64,7 @@ export default class ProfessionalProfileForm extends Component {
   }
 
   onSchdule() {
-    Actions.ScheduleForm(); 
+    Actions.ScheduleForm();
   }
 
   onEdit() {
@@ -155,20 +155,41 @@ export default class ProfessionalProfileForm extends Component {
       editable ?
         <View style={ styles.navBarContainer }>
           <TouchableOpacity
-            onPress={ () => this.onSchdule() }
+            onPress={ () => this.onBack() }
             style={ styles.navButtonWrapper }
           >
-            <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
+            <EntypoIcons
+              name="chevron-thin-left"  size={ 25 }
+              color="#fff"
+            />
           </TouchableOpacity>
+          {/*<TouchableOpacity*/}
+            {/*onPress={ () => this.onSchdule() }*/}
+            {/*style={ styles.navButtonWrapper }*/}
+          {/*>*/}
+            {/*<Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>*/}
+          {/*</TouchableOpacity>*/}
           <View style={ styles.navBarTitleContainer }>
-            <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }</Text>
+            <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }
+              <Image source={ verified } style={ styles.imageVerified }/>
+            </Text>
+
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
+          {/*<TouchableOpacity*/}
+            {/*onPress={ () => this.onEdit() }*/}
+            {/*style={ styles.navButtonWrapper }*/}
+          {/*>*/}
+            {/*<Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>*/}
+          {/*</TouchableOpacity>*/}
           <TouchableOpacity
-            onPress={ () => this.onEdit() }
+            onPress={ () => this.onBack() }
             style={ styles.navButtonWrapper }
           >
-            <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
+            <EntypoIcons
+              name="dots-three-vertical"  size={ 25 }
+              color="#fff"
+            />
           </TouchableOpacity>
         </View>
         :
@@ -186,7 +207,7 @@ export default class ProfessionalProfileForm extends Component {
             <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }</Text>
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
-          <View style={ styles.navButtonWrapper }/>          
+          <View style={ styles.navButtonWrapper }/>
         </View>
     );
   }
@@ -201,7 +222,7 @@ export default class ProfessionalProfileForm extends Component {
             <Image source={ call } style={ styles.imageButton } />
           </TouchableOpacity>
         </View>
-        
+
         <View style={ styles.actionCell }>
           <TouchableOpacity
             onPress={ () => this.onMessage() }
@@ -209,7 +230,7 @@ export default class ProfessionalProfileForm extends Component {
             <Image source={ message } style={ styles.imageButton } />
           </TouchableOpacity>
         </View>
-        
+
         <View style={ styles.actionCell }>
           <TouchableOpacity
             onPress={ () => this.onReferToFriend() }
@@ -227,7 +248,7 @@ export default class ProfessionalProfileForm extends Component {
             <Image source={ hire } style={ styles.imageButton }>
               <Text style={ styles.textActionSmall }>HIRE NOW</Text>
               <Text style={ styles.textActionLarge }>${ this.user.amount }</Text>
-            </Image>  
+            </Image>
           </TouchableOpacity>
         </View>
 
@@ -237,7 +258,7 @@ export default class ProfessionalProfileForm extends Component {
           >
             <Image source={ offer } style={ styles.imageButton }>
               <Text style={ styles.textActionMiddle }>MAKE AN OFFER</Text>
-            </Image>  
+            </Image>
           </TouchableOpacity>
         </View>
       </View>
@@ -251,84 +272,125 @@ export default class ProfessionalProfileForm extends Component {
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
-          
+
           { this.showNavBar }
 
           <View style={ styles.contentContainer }>
             <View style={ styles.avatarContainer }>
-              <View style={ styles.avatarTopBackground }/>
-              <View style={ styles.avatarBottomBackground }/>
               <View style={ styles.avatarWrapper }>
                 <Image source={ this.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
-                <Image source={ verified } style={ styles.imageVerified }/>
+              </View>
+              <View style={ styles.actionBtnContainer }>
+                <View style={ styles.emptyGreenBtn }>
+                  <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
+                  <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
+                </View>
+                <View style={ styles.greenBtn }>
+                  <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
+
+                  <Text style={ [styles.greenBtnText, styles.btnText, styles.textWhite] } >
+                    <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>$50 </Text>
+                    / PER SESSION
+                  </Text>
+                </View>
               </View>
             </View>
+
             <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
               {
                 editable ? <View style={ styles.actionContainer }/> : this.showActions
               }
               <ScrollView>
-                <View style={ styles.infoContainer }>
-                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>                  
+                <View style={ [styles.infoContainer, styles.infoBlock] }>
+                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
                   <View style={ styles.infoRowContainer }>
                     <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Sex : </Text>
-                      <Text style={ styles.textInfoValue }>Male</Text>
+                      <Text style={ styles.textInfoField }>Gender : </Text>
+                      <Text style={ styles.textInfoValue }>Female</Text>
                     </View>
-                    <View style={ styles.infoRowRightContainer }>
-                      <Text style={ styles.textInfoField }>Year of experience : </Text>
-                      <Text style={ styles.textInfoValue }>2004</Text>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ styles.textInfoField }>Profession : </Text>
+                      <Text style={ styles.textInfoValue }>Fitnes trenner</Text>
                     </View>
                   </View>
                   <View style={ styles.infoRowContainer }>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Affiliation : </Text>
-                      <Text style={ styles.textInfoValue }>Gym</Text>
+                    <View style={ styles.infoRowRightContainer }>
+                      <Text style={ styles.textInfoField }>Age : </Text>
+                      <Text style={ styles.textInfoValue }>26 years old</Text>
                     </View>
                     <View style={ styles.infoRowRightContainer }>
                       <Text style={ styles.textInfoField }>Certification : </Text>
                       <Text style={ styles.textInfoValue }>Certified Personal Professional</Text>
                     </View>
                   </View>
+                  <View style={ styles.infoRowContainer }>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ styles.textInfoField }>Insured : </Text>
+                      <Text style={ styles.textInfoValue }>true</Text>
+                    </View>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ styles.textInfoField }>Years of experience : </Text>
+                      <Text style={ styles.textInfoValue }>2008</Text>
+                    </View>
+                  </View>
+                  <View style={ styles.infoRowContainer }>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ styles.textInfoField }>Location : </Text>
+                      <Text style={ [styles.textInfoValue, styles.locationStyle] }>4 York st, Toronto ON L54 N7</Text>
+                    </View>
+                  </View>
+                  <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>
+                    <View style={styles.actionIcon}>
+                      <Image source={ this.user.avatar } style={ styles.actionIconImage } resizeMode="cover"/>
+                      <Text>Go to client</Text>
+                    </View>
+                    <View style={styles.actionIcon}>
+                      <Image source={ this.user.avatar } style={ styles.actionIconImage } resizeMode="cover"/>
+                      <Text>Own space</Text>
+                    </View>
+                  </View>
                 </View>
-                <View style={ styles.infoContainer }>
+                <View style={ [styles.infoContainer, styles.infoBlock] }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
                   <Text style={ styles.textInfoValue }>O trained for many years, and I'm very confident about the skullset I developed over the years.</Text>
                 </View>
 
-                <Text style={ [styles.textInfoTitle, { paddingHorizontal: 10 }] }>REVIEWS</Text>
+                <View style={ [styles.infoContainer, styles.infoBlock] }>
+                  <Text style={ [styles.textInfoTitle] }>REVIEWS</Text>
 
-                <View style={ styles.infoContainer }>
-                  <View style={ styles.starContainer }>
-                    <Text style={ styles.textProfessionalName }>Mark</Text>
-                    <Stars
-                      isActive={ false }
-                      rateMax={ 5 }
-                      isHalfStarEnabled={ false }
-                      onStarPress={ (rating) => console.log(rating) }
-                      rate={ 5 }
-                      size={ 16 }
-                    />
+                  <View style={ styles.infoContainer }>
+                    <View style={ styles.starContainer }>
+                      <Text style={ styles.textProfessionalName }>Mark</Text>
+                      <Stars
+                        isActive={ false }
+                        rateMax={ 5 }
+                        isHalfStarEnabled={ false }
+                        onStarPress={ (rating) => console.log(rating) }
+                        rate={ 5 }
+                        size={ 16 }
+                      />
+                    </View>
+                    <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
+                    <Text style={ styles.textGray }>SEP 18, 2016</Text>
                   </View>
-                  <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-                  <Text style={ styles.textGray }>SEP 18, 2016</Text>
+
+                  <View style={ styles.infoContainer }>
+                    <View style={ styles.starContainer }>
+                      <Text style={ styles.textProfessionalName }>Alex</Text>
+                      <Stars
+                        isActive={ false }
+                        rateMax={ 5 }
+                        isHalfStarEnabled={ false }
+                        onStarPress={ (rating) => console.log(rating) }
+                        rate={ 5 }
+                        size={ 16 }
+                      />
+                    </View>
+                    <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
+                    <Text style={ styles.textGray }>SEP 18, 2016</Text>
+                  </View>
                 </View>
 
-                <View style={ styles.infoContainer }>
-                  <View style={ styles.starContainer }>
-                    <Text style={ styles.textProfessionalName }>Alex</Text>
-                    <Stars
-                      isActive={ false }
-                      rateMax={ 5 }
-                      isHalfStarEnabled={ false }
-                      onStarPress={ (rating) => console.log(rating) }
-                      rate={ 5 }
-                      size={ 16 }
-                    />
-                  </View>
-                  <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-                  <Text style={ styles.textGray }>SEP 18, 2016</Text>
-                </View>
 
               </ScrollView>
 
@@ -394,6 +456,69 @@ const customStyle = {
 }
 
 const styles = StyleSheet.create({
+  actionIconImage:  {
+    width: 40,
+    height: 40
+  },
+  actionIcon: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: 100,
+    padding: 5
+  },
+
+  actionIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  locationStyle: {
+    borderWidth: 1,
+    borderColor: '#0fcefc',
+    borderRadius: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+  },
+  btnTextHeader: {
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  btnText: {
+    fontSize: 10,
+  },
+  textGreen: {
+    color: '#b5e07b'
+  },
+  textWhite: {
+    color: '#fff'
+  },
+  greenBtnText: {
+    textAlign: 'center',
+    flexDirection: 'row',
+  },
+  greenBtn: {
+    flexDirection: 'column',
+    backgroundColor: '#b5e07b',
+    borderRadius: 20,
+    width: 180,
+    padding:5
+
+  },
+  emptyGreenBtn: {
+    borderWidth: 1,
+    borderColor: '#b5e07b',
+    width: 180,
+    borderRadius: 20,
+    padding:5,
+
+  },
+  actionBtnContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5
+  },
+
   container: {
     flex: 1,
   },
@@ -439,49 +564,37 @@ const styles = StyleSheet.create({
     height: 24,
   },
   avatarContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 64,
+    height: 155,
+    backgroundColor: '#F7F9FA'
   },
-  avatarTopBackground: {
-    width: width,
-    height: 32,
-    backgroundColor: 'transparent',
-  },
-  avatarBottomBackground: {
-    width: width,
-    height: 32,
-    backgroundColor: '#fff',
-  },
+
   imageAvatar: {
-    height: 60,
-    width: 60,
-    borderRadius: 30,
+    height: 80,
+    width: 80,
+    borderRadius: 40,
   },
   imageVerified: {
     height: 20,
     width: 20,
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
+    marginTop: 5,
+    marginLeft: 5,
   },
   avatarWrapper: {
     backgroundColor: '#fff',
-    position: 'absolute',
-    left: width / 2 - 32,
+    marginLeft: width / 2 - 32,
     height: 64,
     width: 64,
     borderRadius: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 30
   },
   contentContainer: {
     flex: 8.5,
-    backgroundColor: 'transparent',
+    backgroundColor: '#f7f9fa',
   },
   contentMainContainer: {
     flex: 8.5,
-    backgroundColor: '#fff',
+    backgroundColor: '#f7f9fa',
   },
   actionContainer: {
     flexDirection: 'row',
@@ -489,7 +602,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignSelf: 'stretch',
     paddingHorizontal: 10,
-    paddingVertical: 5,    
   },
   actionCell: {
     justifyContent: 'center',
@@ -523,6 +635,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: 'transparent',
     paddingHorizontal: 10,
+  },
+  infoBlock: {
+    borderWidth: 1,
+    borderColor: '#f0f1f1',
+    backgroundColor: '#fff',
+    marginBottom: 10
   },
   infoContainer: {
     paddingVertical: 5,
