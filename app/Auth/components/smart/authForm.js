@@ -313,7 +313,8 @@ class AuthForm extends Component {
 
 
   render() {
-    const { loginForm, selectedButton } = this.props;
+    const { loginForm } = this.props;
+    const { selectedButton } = this.state;
 
     return (
       <View style={ styles.container }>
