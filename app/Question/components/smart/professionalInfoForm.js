@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   AsyncStorage,
   Animated,
-  ActivityIndicator,
   StyleSheet,
   Text,
   View,
@@ -46,7 +45,6 @@ class ProfessionalInfoForm extends Component {
       gender : labelSex[0],
       age : 20,
       phone : '',
-      signUpRequest: false,
       professional: true,
     };
   }
@@ -72,7 +70,6 @@ class ProfessionalInfoForm extends Component {
     if (user) {
       Actions.Main({ user_mode: CommonConstant.user_professional });
     }
-    this.setState({ signUpRequest: false });
   }
 
   get getShowNavBar() {
@@ -96,7 +93,7 @@ class ProfessionalInfoForm extends Component {
   }
 
   onContinue () {
-    const { actions, changeProfessionalForm } = this.props;
+    const { changeProfessionalForm } = this.props;
     AsyncStorage.setItem('professionalFirstForm', JSON.stringify(this.state));
 
     changeProfessionalForm({firstForm: false})
@@ -111,8 +108,7 @@ class ProfessionalInfoForm extends Component {
   }
 
   render() {
-    const { status } = this.props,
-      { signUpRequest } = this.state;
+    const { status } = this.props;
 
     const sliderWidth = width * 1/4;
     const ageInitialValue = 15;
@@ -209,8 +205,9 @@ class ProfessionalInfoForm extends Component {
                       <Slider style={ styles.slider }
                               maximumTrackTintColor="#9be5ff"
                               minimumTrackTintColor="#10c7f9"
-                              trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);', marginTop: -4}}
+                              trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);'}}
                               thumbStyle={ styles.thumbStyle }
+                              thumbTouchSize={{width: 40, height: 60}}
                               minimumValue={ 15 }
                               maximumValue={ 85 }
                               step={ 1 }
@@ -232,14 +229,6 @@ class ProfessionalInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
-        { signUpRequest ? <View
-          style={styles.activityIndicatorContainer}>
-            <ActivityIndicator
-            style={styles.activityIndicator}
-            color="#0000ff"
-            size="large"
-          />
-        </View> : null }
       </View>
     );
   }
@@ -249,21 +238,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative'
-  },
-  activityIndicator: {
-    flex: 1,
-  },
-  activityIndicatorContainer: {
-    flex: 1,
-    position: 'absolute',
-    backgroundColor: '#a3a4a7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    opacity: 0.5,
-    width,
-    height
   },
   markWrap: {
     flex: 2,
@@ -524,7 +498,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderTopColor: '#19b8ff',
     alignSelf: 'center',
-    marginTop: -12,
+    marginTop: -15,
   },
   arrowBorder: {
     backgroundColor: 'transparent',
@@ -537,7 +511,7 @@ const styles = StyleSheet.create({
   slider: {
     marginRight: 15,
     height: 20,
-    marginBottom: -10,
+    marginBottom: -8,
   },
   textAboveSlider: {
     textAlign: 'center',
@@ -547,6 +521,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   thumbStyle:{
+    top:11,
     width: 20,
     height: 20,
     backgroundColor: '#fff',
@@ -609,10 +584,4 @@ const styles = StyleSheet.create({
 export default connect(state => ({
     auth: state.auth
   }),
-  /**
-   * fake request
-   */
-  (dispatch) => ({
-      actions: bindActionCreators(authActions, dispatch)
-    })
 )(ProfessionalInfoForm);

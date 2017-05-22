@@ -24,8 +24,6 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import localStorage from 'react-native-local-storage';
 
 const { width, height } = Dimensions.get('window');
 const labelInsure = [{value:true, text:'Yes'}, {value: false, text:'No'}];
@@ -40,9 +38,6 @@ const background = require('../../../Assets/images/background.png');
 const avatar = require('../../../Assets/images/avatar.png');
 const edit_avatar = require('../../../Assets/images/edit_avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
-
-//auth redux store
-import * as authActions from '../../../Auth/actions';
 
 class ProfessionalInfoForm extends Component {
   constructor(props) {
@@ -67,7 +62,7 @@ class ProfessionalInfoForm extends Component {
     try {
       const value = await AsyncStorage.getItem('professionalSecondForm');
       if (value !== null){
-        this.setState({ ...JSON.parse(value)});
+        this.setState({ ...JSON.parse(value), price: this.priceToString(JSON.parse(value).price)});
       }
     } catch (error) {
       Alert.alert('AsyncStorage error: ' + error.message);
@@ -75,8 +70,13 @@ class ProfessionalInfoForm extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { auth: { user } } = nextProps;
+    const { auth: { user }, question: { error } } = nextProps;
 
+    if (error) {
+      Alert.alert(error);
+      this.setState({ signUpRequest: false })
+      return;
+    }
     if (user) {
       Actions.Main({ user_mode: CommonConstant.user_trainer });
     }
@@ -104,7 +104,7 @@ class ProfessionalInfoForm extends Component {
   }
 
   onContinue () {
-    const { actions, createRole } = this.props;
+    const { createRole } = this.props;
     /**
      * 'price' to {number}
      */
@@ -120,24 +120,15 @@ class ProfessionalInfoForm extends Component {
     if(this.state.own === 'Own space') {
       this.state.ownSpace = true;
     }
-    /**
-     * fake request
-     */
-    localStorage.get('userData')
-      .then((data) => {
-        actions.createUser({ ...data, ...this.state })
-        localStorage.save('userData', null);
-        this.setState({ signUpRequest: true });
-      });
+
     /**
      * request to server
      */
     AsyncStorage.getItem('professionalFirstForm')
       .then((data) => {
         AsyncStorage.multiRemove(['professionalFirstForm', 'professionalSecondForm']);
-        this.setState({ signUpRequest: true });
-
         createRole({ ...JSON.parse(data), ...this.state })
+        this.setState({ signUpRequest: true,  price: this.priceToString(200) });
       })
   }
 
@@ -190,6 +181,8 @@ class ProfessionalInfoForm extends Component {
   }
 
   render() {
+    const { signUpRequest } = this.state;
+
     return (
       <View style={ styles.container }>
         <KeyboardAwareScrollView
@@ -198,154 +191,151 @@ class ProfessionalInfoForm extends Component {
           <Image source={ background } style={ styles.background } resizeMode="cover">
             { this.getShowNavBar }
             <View style={ styles.contentContainer }>
-              {/*<ScrollView>*/}
-                <View style={ styles.mainContainer }>
+              <View style={ styles.mainContainer }>
 
-
-                  <View style={ styles.cellContainer }>
-                    <Text style={ styles.textCellTitle }>My price</Text>
-                    <View style={ styles.priceWrapper }>
-                      <Text style={ styles.textPrice }>$</Text>
-                      <TextInput
-                        autoCapitalize="none"
-                        style={ styles.priceInput }
-                        autoCorrect={ false }
-                        placeholder="0.00"
-                        placeholderTextColor="#9e9e9e"
-                        value={ this.state.price }
-                        keyboardType='numeric'
-                        onChangeText={ (text) => this.onChangePrice(text) }
-                        onFocus={ () => this.onFocusPrice() }
-                        onBlur={ () => this.onBlurPrice() }
-                      />
-                      <Text style={ [styles.textPrice, styles.textLabelPrice] }>/per session</Text>
-                    </View>
-                  </View>
-                  <View style={ styles.cellContainer }>
-                    <Text style={ styles.textCellTitle }>Insured</Text>
-                    <View style={ styles.cellValueContainer }>
-                      {
-                        labelInsure.map(item => {
-                          return (
-                            <RadioButton
-                              style={ styles.paddingTwo }
-                              key={ item.text }
-                              label={ item.text }
-                              color="#19b8ff"
-                              iconStyle={ styles.iconButton }
-                              labelStyle={ styles.textInput }
-                              checked={ this.state.insured == item.value }
-                              onPress={ () => this.onInsured(item.value) }
-                            />
-                          );
-                        })
-                      }
-                    </View>
-                  </View>
-                  <View style={ styles.cellContainer }>
-                    <Text style={ styles.textCellTitle }>Profession</Text>
-                    <View style={ styles.dropdownWrapper }>
-                      <ModalDropdown
-                        options={ professions }
-                        defaultValue={ this.state.profession }
-                        style={ styles.dropdown }
-                        textStyle ={ styles.dropDownText }
-                        dropdownStyle={ styles.dropdownStyle }
-                        onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
-                      />
-                      <EvilIcons
-                        name="chevron-down"
-                        size={ 20 }
-                        color="#10c7f9"
-                      />
-                    </View>
-                  </View>
-                  <View style={ styles.cellContainer }>
-                    <Text style={ styles.textCellTitle }>Certification</Text>
-                    <View style={ styles.dropdownWrapper }>
-                      <ModalDropdown
-                        options={ certifications }
-                        defaultValue={ this.state.certification }
-                        style={ styles.dropdown }
-                        textStyle ={ styles.dropDownText }
-                        dropdownStyle={ styles.dropdownStyle }
-                        onSelect={ (rowId, rowData) => this.onSelectCertification(rowData) }
-                      />
-                      <EvilIcons
-                        name="chevron-down"
-                        size={ 20 }
-                        color="#10c7f9"
-                      />
-                    </View>
-                  </View>
-                  <View style={ styles.cellContainer }>
-                    <Text style={ styles.textCellTitle }>Years of experience</Text>
-                    <View style={ [styles.dropdownWrapper, styles.experienceView] }>
-                      <FontAwesome
-                        name="minus"
-                        size={ 12 }
-                        color="#10c7f9"
-                        onPress={ () => this.updateExperience(-1) }
-                      />
-                      <Text style={ [styles.dropDownText, styles.experienceText] }>{this.state.experience} years</Text>
-                      <FontAwesome
-                        name="plus"
-                        size={ 12 }
-                        color="#10c7f9"
-                        onPress={ () => this.updateExperience(1) }
-                      />
-                    </View>
-                  </View>
-                  <View style={ styles.cellContainer }>
-                    <Text style={ styles.textCellTitle }>Location</Text>
-                    <View style={ styles.viewInput }>
-                      <TextInput
-                        autoCapitalize="none"
-                        autoCorrect={ false }
-                        placeholder="Location"
-                        placeholderTextColor="#9e9e9e"
-                        style={ styles.textInputRight }
-                        value={ this.state.address }
-                        onChangeText={ (text) => this.setState({ address: text }) }
-                       />
-                    </View>
-                  </View>
-                  <View style={ styles.cellContainer }>
-                    <View style={ styles.cellValueContainer }>
-                      {
-                        labelOwn.map(value => {
-                          return (
-                            <RadioButton
-                              style={ styles.paddingTwo }
-                              key={ value }
-                              label={ value }
-                              color="#19b8ff"
-                              iconStyle={ styles.iconButton }
-                              labelStyle={ styles.textInput }
-                              checked={ this.state.own == value }
-                              onPress={ () => this.onOwn(value) }
-                            />
-                          );
-                        })
-                      }
-                    </View>
-                  </View>
-                  <View style={ styles.cellDescriptionContainer }>
-                    <Text style={ [styles.textCellTitle, styles.descLabel] }>Description</Text>
+                <View style={ styles.cellContainer }>
+                  <Text style={ styles.textCellTitle }>My price</Text>
+                  <View style={ styles.priceWrapper }>
+                    <Text style={ styles.textPrice }>$</Text>
                     <TextInput
-                      multiline = {true}
-                      numberOfLines = {4}
                       autoCapitalize="none"
+                      style={ styles.priceInput }
                       autoCorrect={ false }
-                      placeholder="Description"
+                      placeholder="0.00"
                       placeholderTextColor="#9e9e9e"
-                      style={ [styles.textInputDesc, styles.textCellTitle] }
-                      value={ this.state.description }
-                      onChangeText={ (text) => this.setState({ description: text }) }
+                      value={ this.state.price }
+                      keyboardType='numeric'
+                      onChangeText={ (text) => this.onChangePrice(text) }
+                      onFocus={ () => this.onFocusPrice() }
+                      onBlur={ () => this.onBlurPrice() }
+                    />
+                    <Text style={ [styles.textPrice, styles.textLabelPrice] }>/per session</Text>
+                  </View>
+                </View>
+                <View style={ styles.cellContainer }>
+                  <Text style={ styles.textCellTitle }>Insured</Text>
+                  <View style={ styles.cellValueContainer }>
+                    {
+                      labelInsure.map(item => {
+                        return (
+                          <RadioButton
+                            style={ styles.paddingTwo }
+                            key={ item.text }
+                            label={ item.text }
+                            color="#19b8ff"
+                            iconStyle={ styles.iconButton }
+                            labelStyle={ styles.textInput }
+                            checked={ this.state.insured == item.value }
+                            onPress={ () => this.onInsured(item.value) }
+                          />
+                        );
+                      })
+                    }
+                  </View>
+                </View>
+                <View style={ styles.cellContainer }>
+                  <Text style={ styles.textCellTitle }>Profession</Text>
+                  <View style={ styles.dropdownWrapper }>
+                    <ModalDropdown
+                      options={ professions }
+                      defaultValue={ this.state.profession }
+                      style={ styles.dropdown }
+                      textStyle ={ styles.dropDownText }
+                      dropdownStyle={ styles.dropdownStyle }
+                      onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
+                    />
+                    <EvilIcons
+                      name="chevron-down"
+                      size={ 20 }
+                      color="#10c7f9"
                     />
                   </View>
                 </View>
-              {/*</ScrollView>*/}
+                <View style={ styles.cellContainer }>
+                  <Text style={ styles.textCellTitle }>Certification</Text>
+                  <View style={ styles.dropdownWrapper }>
+                    <ModalDropdown
+                      options={ certifications }
+                      defaultValue={ this.state.certification }
+                      style={ styles.dropdown }
+                      textStyle ={ styles.dropDownText }
+                      dropdownStyle={ styles.dropdownStyle }
+                      onSelect={ (rowId, rowData) => this.onSelectCertification(rowData) }
+                    />
+                    <EvilIcons
+                      name="chevron-down"
+                      size={ 20 }
+                      color="#10c7f9"
+                    />
+                  </View>
+                </View>
+                <View style={ styles.cellContainer }>
+                  <Text style={ styles.textCellTitle }>Years of experience</Text>
+                  <View style={ [styles.dropdownWrapper, styles.experienceView] }>
+                    <FontAwesome
+                      name="minus"
+                      size={ 12 }
+                      color="#10c7f9"
+                      onPress={ () => this.updateExperience(-1) }
+                    />
+                    <Text style={ [styles.dropDownText, styles.experienceText] }>{this.state.experience} years</Text>
+                    <FontAwesome
+                      name="plus"
+                      size={ 12 }
+                      color="#10c7f9"
+                      onPress={ () => this.updateExperience(1) }
+                    />
+                  </View>
+                </View>
+                <View style={ styles.cellContainer }>
+                  <Text style={ styles.textCellTitle }>Location</Text>
+                  <View style={ styles.viewInput }>
+                    <TextInput
+                      autoCapitalize="none"
+                      autoCorrect={ false }
+                      placeholder="Location"
+                      placeholderTextColor="#9e9e9e"
+                      style={ styles.textInputRight }
+                      value={ this.state.address }
+                      onChangeText={ (text) => this.setState({ address: text }) }
+                     />
+                  </View>
+                </View>
+                <View style={ styles.cellContainer }>
+                  <View style={ styles.cellValueContainer }>
+                    {
+                      labelOwn.map(value => {
+                        return (
+                          <RadioButton
+                            style={ styles.paddingTwo }
+                            key={ value }
+                            label={ value }
+                            color="#19b8ff"
+                            iconStyle={ styles.iconButton }
+                            labelStyle={ styles.textInput }
+                            checked={ this.state.own == value }
+                            onPress={ () => this.onOwn(value) }
+                          />
+                        );
+                      })
+                    }
+                  </View>
+                </View>
+                <View style={ styles.cellDescriptionContainer }>
+                  <Text style={ [styles.textCellTitle, styles.descLabel] }>Description</Text>
+                  <TextInput
+                    multiline = {true}
+                    numberOfLines = {4}
+                    autoCapitalize="none"
+                    autoCorrect={ false }
+                    placeholder="Description"
+                    placeholderTextColor="#9e9e9e"
+                    style={ [styles.textInputDesc, styles.textCellTitle] }
+                    value={ this.state.description }
+                    onChangeText={ (text) => this.setState({ description: text }) }
+                  />
+                </View>
+              </View>
               <View style={ styles.bottomButtonWrapper }>
                 <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onContinue() }>
                   <View style={ styles.saveButton }>
@@ -356,6 +346,14 @@ class ProfessionalInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
+        { signUpRequest ? <View
+          style={styles.activityIndicatorContainer}>
+          <ActivityIndicator
+            style={styles.activityIndicator}
+            color="#0000ff"
+            size="large"
+          />
+        </View> : null }
       </View>
     );
   }
@@ -363,7 +361,24 @@ class ProfessionalInfoForm extends Component {
 
 const styles = StyleSheet.create({
   experienceView: {
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    width: width*0.4,
+  },
+  activityIndicator: {
+    flex: 1,
+    position: 'relative'
+  },
+  activityIndicatorContainer: {
+    flex: 1,
+    position: 'absolute',
+    backgroundColor: '#a3a4a7',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    opacity: 0.5,
+    width,
+    height
   },
   experienceText: {
     width: width * 0.28
@@ -419,6 +434,7 @@ const styles = StyleSheet.create({
   },
   bottomButtonWrapper: {
     marginHorizontal: 30,
+    flex:1,
     justifyContent: 'flex-end',
   },
   saveButton: {
@@ -546,9 +562,7 @@ const styles = StyleSheet.create({
 });
 
 export default connect(state => ({
-    auth: state.auth
+    auth: state.auth,
+    question: state.question,
   }),
-  (dispatch) => ({
-      actions: bindActionCreators(authActions, dispatch)
-    })
 )(ProfessionalInfoForm);
