@@ -237,7 +237,7 @@ class ExploreMapView extends Component {
     const professionalsClients = this.props.professionalsClients;
 
     const shouldBeMovable = Math.abs(value) < 2;
-    if (shouldBeMovable !== canMoveHorizontal) {
+    if (shouldBeMovable !== canMoveHorizontal && professionalsClients.length) {
       this.setState({ canMoveHorizontal: shouldBeMovable });
       if (!shouldBeMovable) {
         const { coordinate } = professionalsClients[index];
@@ -393,7 +393,7 @@ class ExploreMapView extends Component {
 
   get dialogSelectProfessionalClient () {
 
-    const professionalsClients = this.props.professionalsClients
+    const professionalsClients = this.props.professionalsClients || []
 
     return (
       <PopupDialog
@@ -401,9 +401,12 @@ class ExploreMapView extends Component {
         width={ width * 0.8 }
         dialogStyle={ styles.dialogContainer }
       >
+        {professionalsClients[this.state.selectedProfessionalClientIndex] &&
         <View style={ styles.professionalDialogContentContainer }>
           <View style={ styles.professionalDialogTopContainer }>
-            <Image source={ professionalsClients[this.state.selectedProfessionalClientIndex].avatar } style={ styles.avatar } />
+
+            <Image source={ professionalsClients[this.state.selectedProfessionalClientIndex].avatar }
+                   style={ styles.avatar }/>
             <View style={ styles.professionalTopSubContainer }>
               <View style={ styles.professionalNameRatingContainer }>
                 <Text style={ styles.textName }>{ professionalsClients[this.state.selectedProfessionalClientIndex].name }</Text>
@@ -456,6 +459,7 @@ class ExploreMapView extends Component {
             </TouchableOpacity>
           </View>
         </View>
+        }
       </PopupDialog>
     );
   }
@@ -469,34 +473,37 @@ class ExploreMapView extends Component {
       scrollY
     } = this.state;
 
-    const { professionalsClients, gymLocations, user } = this.props;
+    const { professionalsClients=[], gymLocations, user } = this.props;
 
-    this.region = new MapView.AnimatedRegion({
-      latitude: professionalsClients[0].coordinate.latitude,
-      longitude: professionalsClients[0].coordinate.longitude,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
-    });
-    
     const animations = professionalsClients.map( (item, index) =>
       getMarkerState(panX, panY, scrollY, index)
     );
 
-    panX.addListener(this.onPanXChange);
-    panY.addListener(this.onPanYChange);
+    if(professionalsClients.length){
+      this.region = new MapView.AnimatedRegion({
+        latitude: professionalsClients[0].coordinate.latitude,
+        longitude: professionalsClients[0].coordinate.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      });
 
-    this.region.stopAnimation();
-    this.region.timing({
-      latitude: scrollX.interpolate({
-        inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
-        outputRange: professionalsClients.map(item => item.coordinate.latitude),
-      }),
-      longitude: scrollX.interpolate({
-        inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
-        outputRange: professionalsClients.map( item => item.coordinate.longitude),
-      }),
-      duration: 0,
-    }).start();
+      panX.addListener(this.onPanXChange);
+      panY.addListener(this.onPanYChange);
+
+      this.region.stopAnimation();
+      this.region.timing({
+        latitude: scrollX.interpolate({
+          inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
+          outputRange: professionalsClients.map(item => item.coordinate.latitude),
+        }),
+        longitude: scrollX.interpolate({
+          inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
+          outputRange: professionalsClients.map( item => item.coordinate.longitude),
+        }),
+        duration: 0,
+      }).start();
+    }
+
 
 
     return (
@@ -533,7 +540,7 @@ class ExploreMapView extends Component {
               ))
             }
 
-            {
+            {professionalsClients.length >0 &&
               professionalsClients.map( (marker, index) => {
 
                 const {
@@ -580,7 +587,7 @@ class ExploreMapView extends Component {
               <View style={ [styles.itemContainer, { height: 0 }] }/>
             :
               <View style={ styles.itemContainer }>
-                {
+                {professionalsClients.length>1 &&
                   professionalsClients.map( (marker, index) => {
                     const {
                       translateY,

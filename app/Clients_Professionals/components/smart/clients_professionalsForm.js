@@ -34,7 +34,7 @@ export default class Clients_ProfessionalsForm extends Component {
   constructor(props) {
     super(props);
 
-    var dataSourceClients_Professionals = new ListView.DataSource(
+    const dataSourceClients_Professionals = new ListView.DataSource(
       { rowHasChanged: (r1, r2) => r1 !== r2 });
 
     isEven = item => item.myGuest === true;

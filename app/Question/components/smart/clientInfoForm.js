@@ -39,7 +39,6 @@ import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import { allProfessions } from '../../../Components/tempDataUsers'
 const background = require('../../../Assets/images/background.png');
-const markIcon = require('../../../Assets/images/flaxpro_mark.png');
 const avatar = require('../../../Assets/images/avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
 

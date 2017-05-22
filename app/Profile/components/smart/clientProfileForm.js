@@ -149,7 +149,7 @@ class ClientProfileForm extends Component {
             <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
           </TouchableOpacity>
 
-          <Text style={ styles.textTitle }>{ auth.user.name.toUpperCase() }</Text>
+          <Text style={ styles.textTitle }>{ auth.user.name && auth.user.name.toUpperCase() }</Text>
 
           <TouchableOpacity
             onPress={ () => this.onEdit() }
@@ -169,7 +169,7 @@ class ClientProfileForm extends Component {
               color="#fff"
             />
           </TouchableOpacity>
-          <Text style={ styles.textTitle }>{ auth.user.name.toUpperCase() }</Text>
+          <Text style={ styles.textTitle }>{ auth.user.name && auth.user.name.toUpperCase() }</Text>
           <View style={ styles.navButtonWrapper }/>          
         </View>
     );
@@ -197,7 +197,7 @@ class ClientProfileForm extends Component {
             <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
               <View style={ styles.workoutContainer }>
                 {
-                  auth.user.workouts.map((workout) => {
+                  auth.user.workouts && auth.user.workouts.map((workout) => {
                     countWorkouts += workout.count;
                     return <View style={ styles.workoutCell }>
                       <Image source={ this.getIconWorkout(workout.id) } style={ styles.imageWorkout } />
@@ -242,7 +242,7 @@ class ClientProfileForm extends Component {
                 </View>
 
                 <Text style={ [styles.textInfoTitle, { paddingHorizontal: 10 }] }>REVIEWS</Text>
-                { auth.user.reviews.map((review, index) => {
+                { auth.user.reviews && auth.user.reviews.map((review, index) => {
                     if (showMoreOrLess && index > 1) return null;
                     return <View style={ styles.infoContainer }>
                       <View style={ styles.starContainer }>

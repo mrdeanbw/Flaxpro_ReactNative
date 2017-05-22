@@ -161,7 +161,7 @@ export default class ProfessionalProfileForm extends Component {
             <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
           </TouchableOpacity>
           <View style={ styles.navBarTitleContainer }>
-            <Text style={ styles.textTitle }>{ this.user.name.toUpperCase() }</Text>
+            <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }</Text>
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
           <TouchableOpacity
@@ -183,7 +183,7 @@ export default class ProfessionalProfileForm extends Component {
             />
           </TouchableOpacity>
           <View style={ styles.navBarTitleContainer }>
-            <Text style={ styles.textTitle }>{ this.user.name.toUpperCase() }</Text>
+            <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }</Text>
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
           <View style={ styles.navButtonWrapper }/>          

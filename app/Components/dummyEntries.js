@@ -55,6 +55,7 @@ export const ProfessionalsClients = [
     profession: {
       name: 'Fitness Training',
       color: '#fec107',
+      _id: '591c1e632b185e1add2214d8'
     },
   },
   {
@@ -77,6 +78,7 @@ export const ProfessionalsClients = [
     profession: {
       name: 'Simply Yoga',
       color: '#ac6bbd',
+      _id: '591c1e632b185e1add2214d9'
     },
   },
   {
@@ -99,6 +101,7 @@ export const ProfessionalsClients = [
     profession: {
       name: 'Strength Training',
       color: '#ee4e42',
+      _id: '591c1e632b185e1add2214d7'
     },
   },
   {
@@ -119,8 +122,9 @@ export const ProfessionalsClients = [
     location: 'St Tropez',
     myGuest: true,
     profession: {
-      name: 'Yoga6',
-      color: '#4c64b4',
+      color: '#000000',
+      name: 'Massage',
+      _id: '591c1e632b185e1add2214db'
     },
   },
   {
@@ -143,6 +147,7 @@ export const ProfessionalsClients = [
     profession: {
       name: 'Strength Training',
       color: '#ee4e42',
+      _id: '591c1e632b185e1add2214d7'
     },
   },
   {
@@ -163,8 +168,9 @@ export const ProfessionalsClients = [
     location: 'St Tropez',
     myGuest: true,
     profession: {
-      name: 'Simply Yoga',
+      name: 'Yoga',
       color: '#ac6bbd',
+      _id: '591c1e632b185e1add2214d5'
     },
   },
   {
@@ -187,6 +193,7 @@ export const ProfessionalsClients = [
     profession: {
       name: 'Fitness Training',
       color: '#fec107',
+      _id: '591c1e632b185e1add2214d8'
     },
   },
   {
@@ -206,6 +213,11 @@ export const ProfessionalsClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,
+    profession: {
+      color: '#4c64b4',
+      name: 'Physiotherapist',
+      _id: '591c1e632b185e1add2214da'
+    },
   },
   {
     id: 8,
@@ -225,8 +237,101 @@ export const ProfessionalsClients = [
     location: 'St Tropez',
     myGuest: false,
     profession: {
-      name: 'Yoga6',
       color: '#4c64b4',
+      name: 'Physiotherapist',
+      _id: '591c1e632b185e1add2214da'
+    },
+  },
+  {
+    id: 7,
+    coordinate: {
+      latitude: LATITUDE + SPACE + 10,
+      longitude: LONGITUDE + SPACE + 10,
+    },
+    amount: 200,
+    avatar: require('../Assets/images/avatar2.png'),
+    rating: 5,
+    name: "Mark Carter",
+    description: "5 years experience independent",
+    date: 'MAR 25, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEW,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
+    profession: {
+      color: '#4c64b4',
+      _id: '591c1e632b185e1add2214dc',
+      name: 'Yoga8',
+    },
+  },
+  {
+    id: 8,
+    coordinate: {
+      latitude: LATITUDE + 20,
+      longitude: LONGITUDE + 20,
+    },
+    amount: 89,
+    avatar: require('../Assets/images/avatar3.png'),
+    rating: 5,
+    name: "John Smith",
+    description: "8 years experience independent",
+    date: 'MAR 26, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_REGULAR,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
+    profession: {
+      color: '#4c64b4',
+      _id: '591c1e632b185e1add2214dc',
+      name: 'Yoga8',
+    },
+  },
+  {
+    id: 7,
+    coordinate: {
+      latitude: LATITUDE + SPACE + 10,
+      longitude: LONGITUDE + SPACE + 10,
+    },
+    amount: 200,
+    avatar: require('../Assets/images/avatar2.png'),
+    rating: 5,
+    name: "Mark Carter",
+    description: "5 years experience independent",
+    date: 'MAR 25, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_NEW,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
+    profession: {
+      color: '#4c64b4',
+      _id: '591c1e632b185e1add2214d6',
+      name: 'Chiro',
+    },
+  },
+  {
+    id: 8,
+    coordinate: {
+      latitude: LATITUDE + 20,
+      longitude: LONGITUDE + 20,
+    },
+    amount: 89,
+    avatar: require('../Assets/images/avatar3.png'),
+    rating: 5,
+    name: "John Smith",
+    description: "8 years experience independent",
+    date: 'MAR 26, 2017',
+    duration: '09:00 AM - 12:00 PM',
+    type: USER_REGULAR,
+    time: 'DEC 13 18:45PM',
+    location: 'St Tropez',
+    myGuest: false,
+    profession: {
+      color: '#4c64b4',
+      _id: '591c1e632b185e1add2214d6',
+      name: 'Chiro',
     },
   },
   {
@@ -246,6 +351,11 @@ export const ProfessionalsClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,
+    profession: {
+      name: 'Simply Yoga',
+      color: '#ac6bbd',
+      _id: '591c1e632b185e1add2214d9'
+    },
   },
   {
     id: 10,
@@ -264,6 +374,11 @@ export const ProfessionalsClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,
+    profession: {
+      color: '#000000',
+      name: 'Massage',
+      _id: '591c1e632b185e1add2214db'
+    },
   },
   {
     id: 11,
@@ -282,6 +397,11 @@ export const ProfessionalsClients = [
     time: 'DEC 13 18:45PM',
     location: 'St Tropez',
     myGuest: false,
+    profession: {
+      name: 'Yoga',
+      color: '#ac6bbd',
+      _id: '591c1e632b185e1add2214d5'
+    },
   },
 ];
 

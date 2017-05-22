@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import Stars from 'react-native-stars-rating';
+import * as CommonConstant from '../../../Components/commonConstant';
 
 const propTypes = {
   style: PropTypes.array,
@@ -36,12 +37,13 @@ class AnimatedViewCell extends Component {
 
   render() {
     const { width, height, avatar, name, description, rating, amount, user, profession = {} } = this.props;
+    const client = user.role === CommonConstant.user_client
 
     const professionalClientData = {
-      backgroundColor: !user.professional && profession.name ? profession.color : '#45c7f1',
-      professionalProfessionBlock: !user.professional && profession.name &&
+      backgroundColor: client && profession.name ? profession.color : '#45c7f1',
+      professionalProfessionBlock: client && profession.name &&
         <Text style={ [styles.textDescription, { color: profession.color }] }>{ profession.name }</Text>,
-      professionalStarsBlock: user.professional &&
+      professionalStarsBlock: !client &&
         <View style={ styles.starContainer }>
           <Stars
             isActive={ false }
@@ -53,7 +55,7 @@ class AnimatedViewCell extends Component {
             color="gold"
           />
         </View>,
-      clientStarsBlock: !user.professional &&
+      clientStarsBlock: client &&
         <Stars
           isActive={ false }
           rateMax={ 5 }

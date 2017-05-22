@@ -26,6 +26,8 @@ export default function auth(state = initialState, action = {}) {
         ...state,
         user,
         token,
+        professions,
+        professionalsClients,
         error,
         loading: false,
       };

@@ -28,9 +28,9 @@ const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
 
 import * as CommonConstant from '../../../Components/commonConstant';
+import UploadFromCameraRoll from '../../../Components/imageUploader';
 const background = require('../../../Assets/images/background.png');
 const avatar = require('../../../Assets/images/avatar.png');
-const edit_avatar = require('../../../Assets/images/edit_avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
 
 //auth redux store
@@ -133,7 +133,7 @@ class ProfessionalInfoForm extends Component {
                 <View style={ styles.avatarBottomBackground }/>
                 <View style={ styles.avatarWrapper }>
                   <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
-                  <Image source={ edit_avatar } style={ styles.imageEditAvatar } resizeMode="cover"/>
+                  <UploadFromCameraRoll directlyUpload={true}/>
                 </View>
               </View>
               <View style={ styles.cellContainer }>

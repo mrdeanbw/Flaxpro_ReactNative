@@ -4,46 +4,32 @@ const initialState = {
   loading: false,
   error: null,
   professionals: [],
-  clients: []
+  clients: [],
+  professions: [],
 };
 
 export default function explore(state = initialState, action = {}) {
   switch (action.type) {
-    case types.EXPLORE_GET_PROFESSIONALS:
+    case types.EXPLORE_GET_REQUEST:
       return {
         ...state,
         error: null,
         loading: true,
       };
-    case types.EXPLORE_GET_PROFESSIONALS_SUCCESS:
-      console.log('=========EXPLORE_GET_PROFESSIONALS_SUCCESS=', action)
-      return {
-        ...state,
-        error: null,
-        loading: false,
-        professionals: action.professionals,
-      };
-    case types.EXPLORE_GET_PROFESSIONALS_ERROR:
-      console.log('=========EXPLORE_GET_PROFESSIONALS_ERROR=', action)
+    case types.EXPLORE_GET_ERROR:
+      console.error(action.error)
       return {
         ...state,
         error: action.error,
         loading: false,
       };
-    case types.EXPLORE_GET_CLIENTS_SUCCESS:
-      console.log('=========EXPLORE_GET_CLIENTS_SUCCESS=', action)
+    case types.EXPLORE_GET_SUCCESS:
       return {
-        ...state,
         error: null,
         loading: false,
-        clients: action.clients,
-      };
-    case types.EXPLORE_GET_CLIENTS_ERROR:
-      console.log('=========EXPLORE_GET_CLIENTS_ERROR=', action)
-      return {
-        ...state,
-        error: action.error,
-        loading: false,
+        clients: action.clients ? action.clients.map((e) => {e.coordinate = {latitude: e.location.lat, longitude: e.location.lon}; return e;}) : state.clients,
+        professionals: action.professionals ? action.professionals.map((e) => {e.coordinate = {latitude: e.location.lat, longitude: e.location.lon}; return e;}) : state.professionals,
+        professions: action.professions || state.professions,
       };
     default:
       return state;
