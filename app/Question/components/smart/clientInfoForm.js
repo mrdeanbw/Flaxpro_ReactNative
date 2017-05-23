@@ -157,8 +157,6 @@ class ClientInfoForm extends Component {
               </View>
               <ScrollView>
                 <View style={ styles.mainContainer }>
-
-
                   <View style={ styles.cellContainer }>
                     <View style={ styles.viewTwoText }>
                       <Text style={ styles.textCellTitle }>Visibility</Text>
