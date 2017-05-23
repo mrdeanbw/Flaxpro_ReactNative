@@ -99,6 +99,9 @@ class ProfessionalInfoForm extends Component {
     changeProfessionalForm({firstForm: false})
 
   }
+  addAvatarUri = (uri) => {
+    this.setState({ avatar: uri });
+  }
 
   onBack() {
     Actions.pop();
@@ -128,8 +131,16 @@ class ProfessionalInfoForm extends Component {
                 <View style={ styles.avatarTopBackground }/>
                 <View style={ styles.avatarBottomBackground }/>
                 <View style={ styles.avatarWrapper }>
-                  <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
-                  <UploadFromCameraRoll directlyUpload={true}/>
+                  { this.state.avatar ?
+                    <Image source={ {
+                      uri: this.state.avatar,
+                      height: 160,
+                      width: 160,
+                    } } style={ styles.imageAvatar } resizeMode="cover"/>
+                    :
+                    <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+                  }
+                  <UploadFromCameraRoll directlyUpload={true} addAvatarUri={this.addAvatarUri}/>
                 </View>
               </View>
               <View style={ styles.cellContainer }>

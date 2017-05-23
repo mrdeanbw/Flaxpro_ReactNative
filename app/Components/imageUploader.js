@@ -134,8 +134,6 @@ export default class UploadFromCameraRoll extends React.Component {
       const status = res.status;
       let responseString = res.data ? JSON.parse(res.data) : {};
 
-      console.log('Upload complete with status ' + status);
-      console.log(responseString);
       addAvatarUri(responseString.Location);
       this.setState({uploading: false, uploadStatus: status});
     });
