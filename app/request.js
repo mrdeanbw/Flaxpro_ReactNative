@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import { Actions } from 'react-native-router-flux';
+import { AsyncStorage } from 'react-native';
 
 /**
  * Parses the JSON returned by a network request
@@ -44,8 +45,9 @@ function checkStatus(response) {
  * @return {object}           The response data
  */
 export default function request(url, options, authState) {
-  const apiUrl = 'http://192.168.88.56:3000/api';
-  // const apiUrl = 'http://localhost:3000/api';
+  // const apiUrl = 'http://192.168.88.56:3000/api';
+  const apiUrl = 'http://localhost:3000/api';
+  AsyncStorage.setItem('apiUrl', apiUrl);
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',

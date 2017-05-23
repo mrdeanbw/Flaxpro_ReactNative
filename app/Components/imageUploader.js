@@ -50,10 +50,16 @@ export default class UploadFromCameraRoll extends React.Component {
 
   loadInitialState = async () => {
     try {
-      const value = await AsyncStorage.getItem('token');
-      if (value !== null){
-        this.setState({ token: value});
+      const state = {};
+      const [[, apiUrl], [, token]] = await AsyncStorage.multiGet(['apiUrl', 'token']);
+
+      if (apiUrl !== null){
+        state.apiUrl = apiUrl;
       }
+      if (token !== null){
+        state.token = token;
+      }
+      this.setState(state);
     } catch (error) {
       Alert.alert('AsyncStorage error: ' + error.message);
     }
@@ -119,7 +125,7 @@ export default class UploadFromCameraRoll extends React.Component {
         'Accept': 'application/json',
         'Authorization': this.state.token
       },
-      url: 'http://192.168.88.56:3000/api/profile/avatar-upload',
+      url: this.state.apiUrl+'/profile/avatar-upload',
       files: files,
       params: {name: 'test-app'}
     };
