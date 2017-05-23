@@ -23,6 +23,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
+import ImageProgress from 'react-native-image-progress';
+// import ProgressBar from 'react-native-progress/Bar';
 
 const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
@@ -36,7 +38,7 @@ import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import { allProfessions } from '../../../Components/tempDataUsers'
 const background = require('../../../Assets/images/background.png');
-const avatar = require('../../../Assets/images/avatar.png');
+const avatarDefault = require('../../../Assets/images/avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
 
 const professionalNames = allProfessions.map(item => item.name)
@@ -78,7 +80,8 @@ class ClientInfoForm extends Component {
           style={ styles.navButtonWrapper }
         >
           <EntypoIcons
-            name="chevron-thin-left"  size={ 25 }
+            name="chevron-thin-left"
+            size={ 25 }
             color="#fff"
           />
         </TouchableOpacity>
@@ -112,12 +115,11 @@ class ClientInfoForm extends Component {
     this.setState({ priceLevel: value });
   }
   addAvatarUri = (uri) => {
-    this.setState({ avatar: uri });
+    this.setState({ avatar: '' }, () => this.setState({ avatar: uri }));
   }
 
   render() {
-    const { status } = this.props,
-      { signUpRequest } = this.state;
+    const { signUpRequest, avatar } = this.state;
     let scale = (width * 3/4 -75) / 72 ;
     return (
       <View style={ styles.container }>
@@ -131,14 +133,10 @@ class ClientInfoForm extends Component {
                 <View style={ styles.avatarTopBackground }/>
                 <View style={ styles.avatarBottomBackground }/>
                 <View style={ styles.avatarWrapper }>
-                  { this.state.avatar ?
-                    <Image source={ {
-                      uri: this.state.avatar,
-                      height: 160,
-                      width: 160,
-                    } } style={ styles.imageAvatar } resizeMode="cover"/>
+                  { avatar ?
+                    <ImageProgress source={ {uri: avatar} } indicator={ActivityIndicator} style={ styles.imageAvatar } resizeMode="cover"/>
                     :
-                    <Image source={ avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+                    <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
                   }
                   <UploadFromCameraRoll directlyUpload={true} addAvatarUri={this.addAvatarUri}/>
                 </View>

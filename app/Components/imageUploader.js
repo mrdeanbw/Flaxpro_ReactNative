@@ -138,10 +138,13 @@ export default class UploadFromCameraRoll extends React.Component {
       }
 
       const status = res.status;
-      let responseString = res.data ? JSON.parse(res.data) : {};
+      const responseString = res.data ? JSON.parse(res.data) : {};
 
       addAvatarUri(responseString.Location);
       this.setState({uploading: false, uploadStatus: status});
+      if (status === 200){
+        this._closeUploadModal();
+      }
     });
 
   }
@@ -160,7 +163,7 @@ export default class UploadFromCameraRoll extends React.Component {
           </TouchableOpacity>
         </View>
       );
-    } else if (!this.state.uploading && this.state.uploadStatus) {
+    } else if (!this.state.uploading && this.state.uploadStatus && this.state.uploadStatus !== 200) {
       uploadProgress = (
         <View style={{ margin: 5, alignItems: 'center', }}>
           <Text style={{ marginBottom: 10, }}>

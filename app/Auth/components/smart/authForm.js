@@ -112,6 +112,11 @@ class AuthForm extends Component {
       return;
     }
 
+    if (!this.validateEmail(email)) {
+      Alert.alert('Not a valid e-mail address.');
+      return;
+    }
+
     if (password == '') {
       Alert.alert('Please enter password.');
       return;
@@ -278,18 +283,6 @@ class AuthForm extends Component {
         <Text style={ styles.lineOR }>OR</Text>
 
         <View style={ styles.socialContainer }>
-          <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onFacebook() }>
-            {/*<View style={ styles.socialButton }>*/}
-              {/*<EvilIcons*/}
-                {/*name="sc-facebook"*/}
-                {/*size={ 43 }*/}
-                {/*color={"#fff"}*/}
-                {/*style={{ backgroundColor:"#3a5999",height:40, overflow: 'hidden',paddingTop:3,*/}
-                  {/*width:40, borderRadius:20}}*/}
-              {/*/>*/}
-              {/*/!*<Image source={ facebookIcon } style={ styles.socialIcon } resizeMode="contain" />*!/*/}
-            {/*</View>*/}
-          </TouchableOpacity>
           <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onFacebook() }>
             <View style={ styles.socialButton }>
               <Image source={ facebookIcon } style={ styles.socialIcon } resizeMode="contain" />
