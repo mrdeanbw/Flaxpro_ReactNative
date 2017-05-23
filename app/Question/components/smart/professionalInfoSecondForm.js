@@ -44,7 +44,7 @@ class ProfessionalInfoForm extends Component {
     super(props);
 
     this.state = {
-      price: this.priceToString(200),
+      price: this.priceToFloat(200),
       insured: true,
       profession: professions[0],
       certification: certifications[0],
@@ -62,7 +62,7 @@ class ProfessionalInfoForm extends Component {
     try {
       const value = await AsyncStorage.getItem('professionalSecondForm');
       if (value !== null){
-        this.setState({ ...JSON.parse(value), price: this.priceToString(JSON.parse(value).price)});
+        this.setState({ ...JSON.parse(value), price: this.priceToFloat(JSON.parse(value).price)});
       }
     } catch (error) {
       Alert.alert('AsyncStorage error: ' + error.message);
@@ -128,7 +128,7 @@ class ProfessionalInfoForm extends Component {
       .then((data) => {
         AsyncStorage.multiRemove(['professionalFirstForm', 'professionalSecondForm']);
         createRole({ ...JSON.parse(data), ...this.state })
-        this.setState({ signUpRequest: true,  price: this.priceToString(200) });
+        this.setState({ signUpRequest: true,  price: this.priceToFloat(200) });
       })
   }
 
@@ -160,13 +160,17 @@ class ProfessionalInfoForm extends Component {
     this.setState({ price })
   }
   onBlurPrice() {
-    const price = this.priceToString(this.state.price);
+    const price = this.priceToFloat(this.state.price);
     this.setState({ price })
   }
-  priceToString(text) {
+  priceToFloat(text) {
+    text = ''+text;
+    if(text.includes('.')) return text;
     return text+'.00';
   }
   priceToInt(text) {
+    text = ''+text;
+    if(!text.includes('.')) return text;
     return text.slice(0,-3);
   }
   onChangePrice(text) {

@@ -102,7 +102,16 @@ class ProfessionalInfoForm extends Component {
   addAvatarUri = (uri) => {
     this.setState({ avatar: '' }, () => this.setState({ avatar: uri }));
   }
+  onChangePhone(text) {
+    text = this.checkForNumber(...text)
+    this.setState({ phone: text })
+  }
+  checkForNumber(...value){
+    const numbers = '0123456789';
 
+    value = value.filter((e) => numbers.includes(e))
+    return value.join('')
+  }
   onBack() {
     Actions.pop();
   }
@@ -164,7 +173,7 @@ class ProfessionalInfoForm extends Component {
                         style={ styles.textInputCenter }
                         value={ this.state.phone }
                         keyboardType='numeric'
-                        onChangeText={ (text) => this.setState({ phone: text }) }
+                        onChangeText={ (text) => this.onChangePhone(text) }
                        />
                     </View>
                   </View>
