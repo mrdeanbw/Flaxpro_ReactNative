@@ -100,7 +100,7 @@ class ProfessionalInfoForm extends Component {
 
   }
   addAvatarUri = (uri) => {
-    this.setState({ avatar: uri });
+    this.setState({ avatar: '' }, () => this.setState({ avatar: uri }));
   }
 
   onBack() {

@@ -52,6 +52,7 @@ class ClientInfoForm extends Component {
       visibility : false,
       gender : labelSex[0],
       age : 28,
+      address: '4 York st, Toronto',
       profession : professionalNames[0],
       priceLevel : prices[0].level,
       signUpRequest: false
@@ -251,6 +252,20 @@ class ClientInfoForm extends Component {
 
                     </View>
                   </View>
+                  <View style={ styles.cellContainer }>
+                    <Text style={ styles.textCellTitle }>Main Address</Text>
+                    <View style={ styles.viewInput }>
+                      <TextInput
+                        autoCapitalize="none"
+                        autoCorrect={ false }
+                        placeholder="Main Address"
+                        placeholderTextColor="#9e9e9e"
+                        style={ styles.textInputRight }
+                        value={ this.state.address }
+                        onChangeText={ (text) => this.setState({ address: text }) }
+                      />
+                    </View>
+                  </View>
 
                 </View>
               </ScrollView>
@@ -349,6 +364,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   priceButtonChecked: {
+    borderWidth: 1,
+    borderColor: '#19b8ff',
     backgroundColor: '#19b8ff',
     alignItems: 'center',
     borderRadius: 30,
@@ -467,7 +484,7 @@ const styles = StyleSheet.create({
   textCellValue: {
     fontFamily: 'Open Sans',
     color: '#707070',
-    fontSize: 12,
+    fontSize: 10,
   },
   avatarContainer: {
     position: 'relative',
@@ -635,6 +652,20 @@ const styles = StyleSheet.create({
     borderRadius: 28 / 2,
     backgroundColor: 'transparent',
     marginRight: 10,
+  },
+  textInputRight: {
+    fontFamily: 'Open Sans',
+    width: width*0.6,
+    color: '#1e1e1e',
+    fontSize: 14,
+    height: 20,
+    textAlign: 'right'
+  },
+  viewInput: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    borderBottomWidth: 1,
+    borderBottomColor: '#10c7f9'
   },
 });
 

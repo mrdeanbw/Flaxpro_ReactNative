@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
   },
   textInputRight: {
     fontFamily: 'Open Sans',
-    flex: 1,
+    width: width*0.6,
     color: '#1e1e1e',
     fontSize: 14,
     height: 20,
@@ -517,9 +517,7 @@ const styles = StyleSheet.create({
   },
   viewInput: {
     flexDirection: 'row',
-    // textAlign: 'right',
-    alignItems: 'center',
-    marginHorizontal: width/2 -125,
+    alignItems: 'flex-end',
     borderBottomWidth: 1,
     borderBottomColor: '#10c7f9'
   },
