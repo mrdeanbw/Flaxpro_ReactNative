@@ -10,32 +10,23 @@ const initialState = {
 };
 
 export default function auth(state = initialState, action = {}) {
-  const { user={}, professions=[], professionalsClients=[], error=null, token } = action;
   switch (action.type) {
-    case types.LOGIN:
-      return {
-        ...state,
-        // user,
-        // token,
-        error,
-        professions,
-        professionalsClients,
-      };
     case types.UPDATE_USER:
+      console.log('=======', action);
       return {
         ...state,
-        user,
-        error,
+        error: null,
+        user: action.user,
       };
     case types.AUTH_SUCCESS:
       return {
         ...state,
-        user,
-        token,
-        professions,
-        professionalsClients,
-        error,
+        error: null,
         loading: false,
+        user: action.user,
+        token: action.token,
+        professions: action.professions,
+        professionalsClients: action.professionalsClients,
       };
     case types.AUTH_ERROR:
       return {
@@ -48,18 +39,18 @@ export default function auth(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
-        token,
-        user,
-        error,
-        professions,
-        professionalsClients,
+        error: null,
+        user: action.user,
+        token: action.token,
+        professions: action.professions,
+        professionalsClients: action.professionalsClients,
       };
     case types.CREATE_USER_ERROR:
       return {
         ...state,
         loading: false,
-        user,
-        error,
+        user: {},
+        error: action.error,
       };
     case types.LOGOUT:
       return initialState;

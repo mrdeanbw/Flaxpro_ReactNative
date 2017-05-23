@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 
 const RNUploader = NativeModules.RNUploader;
 const edit_avatar = require('../Assets/images/edit_avatar.png');
@@ -58,26 +59,38 @@ export default class UploadFromCameraRoll extends React.Component {
     }
   };
   _addImage() {
-    const fetchParams = {
-      first: 25,
+    const optionsImagePicker = {
+      title: 'Select Avatar',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
     };
-    const { directlyUpload } = this.props
 
-    CameraRoll.getPhotos(fetchParams).then(
-      (data) => {
-        const assets = data.edges;
-        const index = parseInt(Math.random() * (assets.length));
-        const randomImage = assets[index];
+    const { directlyUpload } = this.props;
 
-        let images = this.state.images;
-        images.push(randomImage.node.image);
+    ImagePicker.showImagePicker(optionsImagePicker, (response) => {
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        const source = { uri: response.uri };
+
+        const images = this.state.images;
+        images.push(source);
 
         this.setState({images: images});
         directlyUpload && this._uploadImages()
-      },
-      (err) => {
-        console.log(err);
-      });
+
+      }
+    });
   }
 
   _closeUploadModal() {
@@ -90,7 +103,8 @@ export default class UploadFromCameraRoll extends React.Component {
   }
 
   _uploadImages() {
-    let files = this.state.images.map( (file) => {
+    const { addAvatarUri } = this.props;
+    const files = this.state.images.map( (file) => {
       return {
         name: 'file',
         filename: _generateUUID() + '.png',
@@ -99,13 +113,13 @@ export default class UploadFromCameraRoll extends React.Component {
       }
     });
 
-    let opts = {
+    const opts = {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Authorization': this.state.token
       },
-      url: 'http://localhost:3000/api/profile/avatar-upload',
+      url: 'http://192.168.88.56:3000/api/profile/avatar-upload',
       files: files,
       params: {name: 'test-app'}
     };
@@ -113,15 +127,16 @@ export default class UploadFromCameraRoll extends React.Component {
     this.setState({ uploading: true, showUploadModal: true, });
     RNUploader.upload(opts, (err, res) => {
       if (err) {
-        console.log(err);
+        console.error('RNUploader:Error',err);
         return;
       }
 
-      let status = res.status;
-      let responseString = res.data;
+      const status = res.status;
+      let responseString = res.data ? JSON.parse(res.data) : {};
 
       console.log('Upload complete with status ' + status);
       console.log(responseString);
+      addAvatarUri(responseString.Location);
       this.setState({uploading: false, uploadStatus: status});
     });
 

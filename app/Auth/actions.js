@@ -29,7 +29,7 @@ function createUserError(error) {
 /**
  * request to server
  */
-export const createUserServer = (email, password) => async (dispatch, store) => {
+export const createUserServer = (email, password, token=null) => async (dispatch, store) => {
   /**
    * fake data: 'professions', 'professionalsClients'
    */
