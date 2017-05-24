@@ -157,7 +157,7 @@ class AuthForm extends Component {
   }
 
   get showSignUp () {
-
+    const { registerRequest } = this.state;
     return (
       <View style={ styles.mainContentContainer }>
         <View style={ styles.inputWrap }>
@@ -211,11 +211,19 @@ class AuthForm extends Component {
           />
         </View>
         <View style={ styles.arrowButtonContainer }>
-          <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSignUp() }>
-            <View style={ styles.arrowButton }>
-              <Image source={ arrow } style={ styles.imageArrow } />
-            </View>
-          </TouchableOpacity>
+          {registerRequest ?
+            <ActivityIndicator
+              style={[styles.centering, styles.gray]}
+              color="#0000ff"
+              size="large"
+            />
+            :
+            <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSignUp() }>
+              <View style={ styles.arrowButton }>
+                <Image source={ arrow } style={ styles.imageArrow }/>
+              </View>
+            </TouchableOpacity>
+          }
         </View>
       </View>
     );
@@ -439,6 +447,7 @@ const styles = StyleSheet.create({
   arrowButtonContainer: {
     flex: 1.5,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   arrowButton: {
     alignItems: 'center',
