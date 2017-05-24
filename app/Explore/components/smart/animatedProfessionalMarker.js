@@ -72,7 +72,8 @@ class AnimatedProfessionalMarker extends Component {
 
 AnimatedProfessionalMarker.propTypes = {
   personName: PropTypes.string.isRequired,
-  amount: PropTypes.number.isRequired,
+  // TODO: temporary. So that the "warning" does not interfere with the work
+  // amount: PropTypes.number.isRequired,
   selected: PropTypes.object.isRequired,
   rating: PropTypes.number.isRequired,
   style: PropTypes.any,

@@ -17,7 +17,6 @@ export default function explore(state = initialState, action = {}) {
         loading: true,
       };
     case types.EXPLORE_GET_ERROR:
-      console.error(action.error)
       return {
         ...state,
         error: action.error,
