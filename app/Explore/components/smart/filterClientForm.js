@@ -54,7 +54,7 @@ export default class FilterForm extends Component {
       selectedVerified: labelVerified[0],
       selectedInsured: labelInsured[0],
       selectedAffiliation: labelAffiliation[0],
-      selectedYourOfExperience: labelYearOfExprience[0],
+      selectedYearOfExperience: labelYearOfExprience[0],
       selectedCertification: labelCertification[0],
       selectedLocation: labelLocation[0],
       selectedProfession: labelProfession[0],
@@ -283,15 +283,18 @@ export default class FilterForm extends Component {
                   <ModalDropdown
                     options={ labelYearOfExprience }
                     defaultValue={ this.state.selectedYourOfExperience }
-                    style={ styles.dropdown }
-                    textStyle ={ styles.dropDownText }
                     dropdownStyle={ styles.dropdownStyle }
                     onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }
-                  />
-                  <EvilIcons
-                    name="chevron-down"  size={ 30 }
-                    color="#fff"
-                  />
+                  >
+                    <Text style={ [styles.dropdown, styles.dropDownText] }>{this.state.selectedYearOfExperience}</Text>
+                    <EvilIcons
+                      style={ styles.iconDropDown }
+                      name="chevron-down"
+                      size={ 30 }
+                      color="#fff"
+                    />
+                  </ModalDropdown>
+
                 </View>
               </View>
               <View style={ styles.cellContainer }>
@@ -396,12 +399,16 @@ export default class FilterForm extends Component {
 
 const styles = StyleSheet.create({
 
+  iconDropDown: {
+    position: 'absolute',
+    right: 0,
+    top: -4,
+  },
   addButton: {
     marginLeft: 10,
   },
   starContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
   },
   cellContainerBlock: {
     flex: 0,
@@ -614,7 +621,10 @@ const styles = StyleSheet.create({
     width : width * 0.6,
     justifyContent: 'center',
     alignItems: 'center',
-
+    borderRadius:  10,
+    borderWidth: 1,
+    borderColor: '#6ad0fd',
+    marginTop: 6
   },
   dropDownText: {
     color: '#fff',
