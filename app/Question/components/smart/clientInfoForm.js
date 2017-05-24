@@ -221,18 +221,20 @@ class ClientInfoForm extends Component {
                     <View style={ styles.dropdownWrapper }>
                       <ModalDropdown
                         options={ professionalNames }
-                        // renderOption={ this.renderOption }
                         defaultValue={ this.state.profession }
-                        style={ styles.dropdown }
-                        textStyle ={ styles.dropDownText }
                         dropdownStyle={ styles.dropdownStyle }
                         onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
-                      />
-                      <EvilIcons
-                        name="chevron-down"
-                        size={ 20 }
-                        color="#10c7f9"
-                      />
+                      >
+                        <View style={styles.dropdownDisplay}>
+                          <Text  numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession}</Text>
+                          <EvilIcons
+                            style={ styles.iconDropDown }
+                            name="chevron-down"
+                            size={ 20 }
+                            color="#10c7f9"
+                          />
+                        </View>
+                      </ModalDropdown>
                     </View>
                   </View>
 
@@ -293,6 +295,10 @@ class ClientInfoForm extends Component {
 }
 
 const styles = StyleSheet.create({
+
+  dropdownDisplay: {
+    paddingHorizontal: 4
+  },
   container: {
     flex: 1,
     position: 'relative'
@@ -610,18 +616,22 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 5,
   },
 
   dropdown: {
-    width : width * 0.3,
+    width : width * 0.4,
   },
 
   dropdownStyle: {
     height: 100,
-    width : width * 0.3,
+    width : width * 0.4 + 4,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius:  10,
+    borderWidth: 1,
+    borderColor: '#6ad0fd',
+    marginTop: 2
+
 
   },
   dropDownText: {
@@ -629,6 +639,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Open Sans',
     textAlign: 'center',
+  },
+  iconDropDown: {
+    position: 'absolute',
+    right: 4,
+    top: 1
   },
   textSelectedCellValue: {
     color: '#4dc7fd',

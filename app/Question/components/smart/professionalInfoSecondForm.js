@@ -243,16 +243,17 @@ class ProfessionalInfoForm extends Component {
                     <ModalDropdown
                       options={ professions }
                       defaultValue={ this.state.profession }
-                      style={ styles.dropdown }
-                      textStyle ={ styles.dropDownText }
                       dropdownStyle={ styles.dropdownStyle }
                       onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
-                    />
+                    >
+                    <Text numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession}</Text>
                     <EvilIcons
+                      style={ styles.iconDropDown }
                       name="chevron-down"
                       size={ 20 }
                       color="#10c7f9"
                     />
+                    </ModalDropdown>
                   </View>
                 </View>
                 <View style={ styles.cellContainer }>
@@ -261,16 +262,17 @@ class ProfessionalInfoForm extends Component {
                     <ModalDropdown
                       options={ certifications }
                       defaultValue={ this.state.certification }
-                      style={ styles.dropdown }
-                      textStyle ={ styles.dropDownText }
                       dropdownStyle={ styles.dropdownStyle }
                       onSelect={ (rowId, rowData) => this.onSelectCertification(rowData) }
-                    />
+                    >
+                    <Text numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.certification}</Text>
                     <EvilIcons
+                      style={ styles.iconDropDown }
                       name="chevron-down"
                       size={ 20 }
                       color="#10c7f9"
                     />
+                    </ModalDropdown>
                   </View>
                 </View>
                 <View style={ styles.cellContainer }>
@@ -364,6 +366,11 @@ class ProfessionalInfoForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  iconDropDown: {
+    position: 'absolute',
+    right: 4,
+    top: 1
+  },
   experienceView: {
     paddingHorizontal: 10,
     width: width*0.4,
@@ -537,22 +544,26 @@ const styles = StyleSheet.create({
   dropdownWrapper: {
     flexDirection: 'row',
     height: 25,
-    // width: width*0.4,
     borderWidth: 1,
     borderColor: '#10c7f9',
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    width : width * 0.5,
   },
   dropdown: {
-    width : width * 0.3,
+    width : width * 0.45,
   },
   dropdownStyle: {
     height: 100,
-    width : width * 0.3,
+    width : width * 0.5,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius:  10,
+    borderWidth: 1,
+    borderColor: '#6ad0fd',
+    marginTop: 2,
+    marginLeft:-10
 
   },
   dropDownText: {
