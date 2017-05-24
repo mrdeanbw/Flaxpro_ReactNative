@@ -279,11 +279,11 @@ export default class FilterForm extends Component {
               {/*</View>*/}
               <View style={ styles.cellContainerBlock }>
                 <Text style={styles.textCellTitle}>Year of Experience</Text>
-                <View style={ styles.dropdownWrapper }>
+                <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
                     options={ labelYearOfExprience }
                     defaultValue={ this.state.selectedYourOfExperience }
-                    dropdownStyle={ styles.dropdownStyle }
+                    dropdownStyle={ [styles.dropdownStyle] }
                     onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }
                   >
                     <Text style={ [styles.dropdown, styles.dropDownText] }>{this.state.selectedYearOfExperience}</Text>
@@ -294,7 +294,6 @@ export default class FilterForm extends Component {
                       color="#fff"
                     />
                   </ModalDropdown>
-
                 </View>
               </View>
               <View style={ styles.cellContainer }>
@@ -367,20 +366,26 @@ export default class FilterForm extends Component {
               </View>
               <View style={ styles.cellContainerBlock }>
                 <Text style={ styles.textCellTitle }>Certification</Text>
-                <View style={ styles.dropdownWrapper }>
+
+                <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
                     options={ labelCertification }
                     defaultValue={ this.state.selectedCertification }
-                    style={ styles.dropdown }
-                    textStyle ={ styles.dropDownText }
-                    dropdownStyle={ styles.dropdownStyle }
+                    dropdownStyle={ [styles.dropdownStyle] }
                     onSelect={ (rowId, rowData) => this.onCertification(rowData) }
-                  />
-                  <EvilIcons
-                    name="chevron-down"  size={ 30 }
-                    color="#fff"
-                  />
+                  >
+                    <Text numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.selectedCetification}</Text>
+                    <EvilIcons
+                      style={ styles.iconDropDown }
+                      name="chevron-down"
+                      size={ 30 }
+                      color="#fff"
+                    />
+                  </ModalDropdown>
                 </View>
+
+
+
               </View>
               {/*<View style={ styles.buttonWrapper }>*/}
               {/*<TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onDone() }>*/}
@@ -398,11 +403,10 @@ export default class FilterForm extends Component {
 }
 
 const styles = StyleSheet.create({
-
   iconDropDown: {
     position: 'absolute',
     right: 0,
-    top: -4,
+    top: -3,
   },
   addButton: {
     marginLeft: 10,
@@ -630,6 +634,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     textAlign: 'center',
+    paddingHorizontal: 15
   },
   buttonWrapper: {
     flex: 1.3,

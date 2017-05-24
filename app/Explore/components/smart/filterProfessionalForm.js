@@ -18,9 +18,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import Slider from 'react-native-slider';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import { RadioButtons } from 'react-native-radio-buttons'
 import RadioButton from './radioButton';
-import ModalDropdown from 'react-native-modal-dropdown';
 import StarRating from 'react-native-stars-rating';
 
 const { width, height } = Dimensions.get('window');
