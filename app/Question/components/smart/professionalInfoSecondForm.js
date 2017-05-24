@@ -571,6 +571,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Open Sans',
     textAlign: 'center',
+    paddingHorizontal: 20
   }
 });
 

@@ -15,7 +15,6 @@ import {
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import ModalDropdown from 'react-native-modal-dropdown';
 import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
 
