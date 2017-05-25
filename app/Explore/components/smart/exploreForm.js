@@ -336,35 +336,31 @@ class ExploreForm extends Component {
         { user && user.role === CommonConstant.user_client ?
           <View style={ styles.filterRowContainer }>
             <View style={ styles.professionSearchContainer }>
-              {!professions.searchMode &&
+              {!professions.searchMode && professions.listSelected.length>0 &&
               <View style={styles.professionSearchContainer}>
-                {
-                  professions.listSelected.length>0 &&
-                  <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-                    <View style={ [styles.buttonWrapper,
-                      {
-                        backgroundColor: professions.selected._id === allLabel._id ? allLabel.color : '#fff',
-                        marginHorizontal:5,
-                        borderColor: '#4dc7fd',
-                      }
-                    ] }>
-                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.onSelectInListProfession(allLabel) } }>
-                        <View style={ [styles.cellButton] }>
-                          <Text style={ [styles.cellText, {color: professions.selected._id === allLabel._id ? '#fff' : allLabel.color}] }>
-                            {allLabel.name}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.onFindProfession() } }>
-                      <LineIcons
-                        name="magnifier"
-                        size={ 20 }
-                        color={ "#4dc7fd" }
-                      />
+                <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+                  <View style={ [styles.buttonWrapper,
+                    {
+                      backgroundColor: professions.selected._id === allLabel._id ? allLabel.color : '#fff',
+                      marginHorizontal:5,
+                      borderColor: '#4dc7fd',
+                    }
+                  ] }>
+                    <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.onSelectInListProfession(allLabel) } }>
+                      <View style={ [styles.cellButton] }>
+                        <Text style={ [styles.cellText, {color: professions.selected._id === allLabel._id ? '#fff' : allLabel.color}] }>
+                          {allLabel.name}</Text>
+                      </View>
                     </TouchableOpacity>
                   </View>
-                }
-
+                  <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.onFindProfession() } }>
+                    <LineIcons
+                      name="magnifier"
+                      size={ 20 }
+                      color={ "#4dc7fd" }
+                    />
+                  </TouchableOpacity>
+                </View>
                 <ScrollView
                   horizontal={ true }
                   showsHorizontalScrollIndicator={ false }
