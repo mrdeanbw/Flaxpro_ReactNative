@@ -28,8 +28,7 @@ import { connect } from 'react-redux';
 const { width, height } = Dimensions.get('window');
 const labelInsure = [{value:true, text:'Yes'}, {value: false, text:'No'}];
 const labelOwn = ['Go to client', 'Own space', 'Both'];
-const professions = ['Manager', 'Fitness Trainer123412341234134', 'Doctor'];
-const certifications = ['Certified personal trainer', 'No'];
+const certificationsDefault = ['Certified personal trainer', 'Certified', 'No Certified'];
 
 
 
@@ -46,8 +45,12 @@ class ProfessionalInfoForm extends Component {
     this.state = {
       price: this.priceToFloat(200),
       insured: true,
-      profession: professions[0],
-      certification: certifications[0],
+      profession: this.props.explore && this.props.explore.professions && this.props.explore.professions[0] || {},
+      certification:
+            this.props.explore &&
+            this.props.explore.professions &&
+            this.props.explore.professions[0].certification &&
+            this.props.explore.professions[0].certification[0] || certificationsDefault[0],
       address: '4 York st, Toronto',
       own: 'Both',
       experience: 5
@@ -110,6 +113,11 @@ class ProfessionalInfoForm extends Component {
      */
     this.state.price = +this.priceToInt(this.state.price);
 
+    /**
+     * 'profession' to {String} name
+     */
+    this.state.profession = this.state.profession.name;
+
     if(this.state.own === 'Both') {
       this.state.toClient = true;
       this.state.ownSpace = true;
@@ -128,7 +136,7 @@ class ProfessionalInfoForm extends Component {
       .then((data) => {
         AsyncStorage.multiRemove(['professionalFirstForm', 'professionalSecondForm']);
         createRole({ ...JSON.parse(data), ...this.state })
-        this.setState({ signUpRequest: true,  price: this.priceToFloat(200) });
+        this.setState({ signUpRequest: true,  price: this.priceToFloat(200), profession: this.props.explore.professions.filter((e)=>e.name===this.state.profession && e)[0]});
       })
   }
 
@@ -144,7 +152,8 @@ class ProfessionalInfoForm extends Component {
     this.setState({ own: value });
   }
   onSelectProfession(value) {
-    this.setState({ profession: value });
+    const profession = this.props.explore.professions.filter((e)=>e.name===value)[0];
+    this.setState({ profession });
   }
   onSelectCertification(value) {
     this.setState({ certification: value });
@@ -186,6 +195,7 @@ class ProfessionalInfoForm extends Component {
 
   render() {
     const { signUpRequest } = this.state;
+    const { explore: { professions } } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -241,12 +251,12 @@ class ProfessionalInfoForm extends Component {
                   <Text style={ styles.textCellTitle }>Profession</Text>
                   <View style={ styles.dropdownWrapper }>
                     <ModalDropdown
-                      options={ professions }
-                      defaultValue={ this.state.profession }
+                      options={ professions.map((e)=>e.name) }
+                      // defaultValue={ this.state.profession.name }
                       dropdownStyle={ styles.dropdownStyle }
                       onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
                     >
-                    <Text numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession}</Text>
+                    <Text numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession.name}</Text>
                     <EvilIcons
                       style={ styles.iconDropDown }
                       name="chevron-down"
@@ -260,8 +270,8 @@ class ProfessionalInfoForm extends Component {
                   <Text style={ styles.textCellTitle }>Certification</Text>
                   <View style={ styles.dropdownWrapper }>
                     <ModalDropdown
-                      options={ certifications }
-                      defaultValue={ this.state.certification }
+                      options={ this.state.profession.certification || certificationsDefault }
+                      // defaultValue={ this.state.certification }
                       dropdownStyle={ styles.dropdownStyle }
                       onSelect={ (rowId, rowData) => this.onSelectCertification(rowData) }
                     >
@@ -578,5 +588,6 @@ const styles = StyleSheet.create({
 export default connect(state => ({
     auth: state.auth,
     question: state.question,
+    explore: state.explore,
   }),
 )(ProfessionalInfoForm);
