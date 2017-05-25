@@ -270,7 +270,7 @@ class ProfessionalInfoForm extends Component {
                   <Text style={ styles.textCellTitle }>Certification</Text>
                   <View style={ styles.dropdownWrapper }>
                     <ModalDropdown
-                      options={ this.state.profession.certification || certificationsDefault }
+                      options={ this.state.profession.certification.length ? this.state.profession.certification : certificationsDefault }
                       // defaultValue={ this.state.certification }
                       dropdownStyle={ styles.dropdownStyle }
                       onSelect={ (rowId, rowData) => this.onSelectCertification(rowData) }
@@ -557,23 +557,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#10c7f9',
     borderRadius: 15,
+    overflow:'hidden',
     justifyContent: 'center',
     alignItems: 'center',
-    width : width * 0.5,
+    width : width * 0.4,
   },
   dropdown: {
-    width : width * 0.45,
+    width : width * 0.4,
   },
   dropdownStyle: {
     height: 100,
-    width : width * 0.5,
+    width : width * 0.4,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius:  10,
+    borderRadius:  15,
     borderWidth: 1,
     borderColor: '#6ad0fd',
-    marginTop: 2,
-    marginLeft:-10
+    marginTop: 3,
+    overflow:'hidden',
 
   },
   dropDownText: {

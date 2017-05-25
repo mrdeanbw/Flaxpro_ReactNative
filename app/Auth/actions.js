@@ -107,7 +107,7 @@ export const login = (email, password, token = null) => async (dispatch, store) 
 };
 
 export const logout = () => async (dispatch, store) => {
-  dispatch({ type: types.LOGIN });
+  dispatch({ type: types.LOGOUT });
 };
 
 function generateUsers(count, prof) {

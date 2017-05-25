@@ -607,6 +607,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#10c7f9',
     borderRadius: 15,
+    overflow:'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     width : width * 0.4,
@@ -619,10 +620,10 @@ const styles = StyleSheet.create({
     width : width * 0.4,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius:  10,
+    borderRadius:  15,
     borderWidth: 1,
     borderColor: '#6ad0fd',
-    marginTop: 2
+    marginTop: 1
   },
   dropDownText: {
     color: '#6b6b6b',
