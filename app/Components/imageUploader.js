@@ -133,7 +133,7 @@ export default class UploadFromCameraRoll extends React.Component {
     this.setState({ uploading: true, showUploadModal: true, });
     RNUploader.upload(opts, (err, res) => {
       if (err) {
-        console.error('RNUploader:Error',err);
+        Alert.alert('RNUploader Error: '+err);
         return;
       }
 
