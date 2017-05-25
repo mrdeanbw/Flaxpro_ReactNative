@@ -57,7 +57,7 @@ class ExploreForm extends Component {
         listOther: [],
       }
     };
-    this.filterAutocomplete = this.filterAutocomplete.bind(this)
+    this.onFilterAutocomplete = this.onFilterAutocomplete.bind(this)
   }
 
   componentWillMount(){
@@ -144,13 +144,23 @@ class ExploreForm extends Component {
       </View>
     );
   }
-
-  removeProfession (profession) {
+  
+  /**
+   * For "Client" role
+   * Calls when user click "cross button"on the professions  from horizontal scrollBar
+   * remove profession from selected professions list
+   *
+   * sets "this.state.professions.listSelected" to array without removed profession
+   * filtered professionals list by the new selected professions list:
+   *
+   * @param profession{Object} - profession
+   */
+  onRemoveProfession (profession) {
     let listSelected = this.state.professions.listSelected;
     const index = listSelected.indexOf(profession);
     listSelected.splice(index, 1);
     if(profession._id === listSelected._id) {
-      this.selectInListProfession({});
+      this.onSelectInListProfession({});
     }
     const filteredProfessionals = this.filterProfessionalList(listSelected);
     const professions = {...this.state.professions, listSelected};
@@ -158,6 +168,20 @@ class ExploreForm extends Component {
     this.setState({ professions, filteredProfessionals });
   }
 
+  /**
+   * For "Client" role
+   * Calls when user click on the one of the professions from autocomplete's dropdown,
+   * find selected profession and sets it on beginning of the selected professions list
+   *
+   * sets "this.state.professions.searchMode" to 'false' hide autocomplete and show horizontal scrollBar with selected professions
+   * sets "this.state.professions.listFiltered" to the empty array (not show dropdown)
+   * sets "this.state.professions.search" to the empty string
+   * sets "this.state.professions.listSelected":
+   *          if "profession" already exists on the list - remove it
+   *          sets "profession" on beginning of the selected professions list
+   *
+   * @param value{Object} - profession
+   */
   onSelectProfession (value) {
     let listSelected = this.state.professions.listSelected;
     const profession = R.find(R.propEq('_id', value._id))(this.props.explore.professions || allProfessions);
@@ -171,7 +195,19 @@ class ExploreForm extends Component {
     this.setState({ professions, filteredProfessionals });
   }
 
-  selectInListProfession(selected) {
+  /**
+   * For "Client" role
+   * Calls when user click on the one of the professions from horizontal scrollBar
+   *
+   * sets "this.state.professions.selected" to the chosen profession or an empty object if the same profession was chosen before
+   * filtered professionals list by the chosen profession:
+   *          if "profession" - sets professionals with this chosen profession
+   *          if "All" - sets all professionals
+   *          if "Other" - sets professionals with not 'origin' profession
+   *
+   * @param selected{Object} - profession (also can be 'otherLabel' or 'allLabel')
+   */
+  onSelectInListProfession(selected) {
     let filteredProfessionals = [ ...ProfessionalsClients, ...this.props.explore.professionals ].filter((e)=>(e.profession && e.profession._id===selected._id));
     if(selected._id === this.state.professions.selected._id) {
       filteredProfessionals = this.filterProfessionalList(this.state.professions.listSelected);
@@ -185,11 +221,17 @@ class ExploreForm extends Component {
       filteredProfessionals = [ ...ProfessionalsClients, ...this.props.explore.professionals];
       selected = allLabel;
     }
-    const professions = {...this.state.professions, selected, searchMode: false};
+    const professions = {...this.state.professions, selected};
 
     this.setState({ professions, filteredProfessionals });
   }
 
+  /**
+   * For "Client" role
+   * filters professionals list by professions list
+   *
+   * @param list{Array} - professions
+   */
   filterProfessionalList(list){
     let filteredList = [];
     if(list.length){
@@ -203,13 +245,29 @@ class ExploreForm extends Component {
 
   }
 
-  filterAutocomplete(search) {
+  /**
+   * For "Client" role
+   * Calls when user types in an autocomplete input
+   *
+   * sets "this.state.professions.search" to thetext which user types in the autocomplete input
+   * filtered professions list "this.state.professions.listFiltered" by the input text
+   *
+   * @param search{String} - text from the autocomplete input
+   */
+  onFilterAutocomplete(search) {
     const listFiltered = search ? (this.props.explore.professions || allProfessions).filter((e)=>e.name.toLowerCase().includes(search)) : [];
     const professions = {...this.state.professions, search, listFiltered};
 
     this.setState({ professions });
   }
 
+  /**
+   * For "Client" role
+   * Calls when user click on the Magnifying glass icon from right corner a horizontal scrollBar
+   *
+   * hides horizontal scrollBar and shows input for professions - autocomplete with dropdown
+   *
+   */
   onFindProfession() {
     const professions = {...this.state.professions, searchMode:true};
     this.setState({ professions }, () => this.searchProfessionInput.focus());
@@ -290,7 +348,7 @@ class ExploreForm extends Component {
                         borderColor: '#4dc7fd',
                       }
                     ] }>
-                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.selectInListProfession(allLabel) } }>
+                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => { this.onSelectInListProfession(allLabel) } }>
                         <View style={ [styles.cellButton] }>
                           <Text style={ [styles.cellText, {color: professions.selected._id === allLabel._id ? '#fff' : allLabel.color}] }>
                             {allLabel.name}</Text>
@@ -330,7 +388,7 @@ class ExploreForm extends Component {
                               }
                             ] }>
                               <TouchableOpacity onPress={ () => {
-                                this.selectInListProfession(profession)
+                                this.onSelectInListProfession(profession)
                               }}>
                                 <View style={ styles.cellButton }>
                                   <Text style={ [styles.cellText, {color: selected ? '#fff' : profession.color || '#4dc7fd' }] }>{ profession.name }</Text>
@@ -340,7 +398,7 @@ class ExploreForm extends Component {
                             </View>
 
                             <TouchableOpacity style={ styles.closeProfession} activeOpacity={ .5 } onPress={ () => {
-                              this.removeProfession(profession)
+                              this.onRemoveProfession(profession)
                             }}>
                               <View style={ styles.closeProfessionView }></View>
                               <EvilIcons
@@ -381,7 +439,7 @@ class ExploreForm extends Component {
                   ref={(ref) => {this.searchProfessionInput = ref}}
                   style={ styles.searchProfessionText }
                   value={ professions.search }
-                  onChangeText={ this.filterAutocomplete }
+                  onChangeText={ this.onFilterAutocomplete }
                 />
 
               </View>
