@@ -223,15 +223,13 @@ class ClientInfoForm extends Component {
                         dropdownStyle={ styles.dropdownStyle }
                         onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
                       >
-                        <View style={styles.dropdownDisplay}>
-                          <Text  numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession}</Text>
-                          <EvilIcons
-                            style={ styles.iconDropDown }
-                            name="chevron-down"
-                            size={ 20 }
-                            color="#10c7f9"
-                          />
-                        </View>
+                        <Text  numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession}</Text>
+                        <EvilIcons
+                          style={ styles.iconDropDown }
+                          name="chevron-down"
+                          size={ 20 }
+                          color="#10c7f9"
+                        />
                       </ModalDropdown>
                     </View>
                   </View>
@@ -294,9 +292,6 @@ class ClientInfoForm extends Component {
 
 const styles = StyleSheet.create({
 
-  dropdownDisplay: {
-    paddingHorizontal: 4
-  },
   container: {
     flex: 1,
     position: 'relative'
@@ -614,29 +609,28 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
+    width : width * 0.4,
   },
-
   dropdown: {
     width : width * 0.4,
   },
-
   dropdownStyle: {
     height: 100,
-    width : width * 0.4 + 4,
+    width : width * 0.4,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius:  10,
     borderWidth: 1,
     borderColor: '#6ad0fd',
     marginTop: 2
-
-
   },
   dropDownText: {
     color: '#6b6b6b',
     fontSize: 14,
     fontFamily: 'Open Sans',
     textAlign: 'center',
+    backgroundColor: 'transparent',
+    paddingHorizontal: 20
   },
   iconDropDown: {
     position: 'absolute',
@@ -647,7 +641,6 @@ const styles = StyleSheet.create({
     color: '#4dc7fd',
     fontSize: 14,
   },
-
   circleSelectNumberWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
