@@ -34,6 +34,7 @@ import * as CommonConstant from '../../../Components/commonConstant';
 const background = require('../../../Assets/images/background.png');
 const otherLabel = {_id: 0, name: 'Other', color:'#000000',icon:'../Assets/images/sport.png'};
 const allLabel = {_id: -1, name: 'All', color:'#4dc7fd'};
+const defaultProfessions = [ 'Fitness Training', 'Physiotherapist', 'Yoga', 'Massage' ];
 
 class ExploreForm extends Component {
   constructor(props) {
@@ -80,12 +81,13 @@ class ExploreForm extends Component {
   }
 
   setDefaultProfessions () {
-    if(this.props.explore && this.props.explore.professions) {
-      const listOriginal = this.props.explore.professions.filter((e) => e.original);
-      const listOther = this.props.explore.professions.filter((e) => !e.original);
+    if(this.props.explore) {
+      const listOriginal = (this.props.explore.professions || defaultProfessions).filter((e) => e.original && defaultProfessions.includes(e.name));
+      const listOther = (this.props.explore.professions || defaultProfessions).filter((e) => !e.original);
       const listSelected = [...listOriginal, otherLabel ];
       const professions = {...this.state.professions, listOriginal, listOther, listSelected};
-      this.setState({ professions })
+      const filteredProfessionals = this.filterProfessionalList(listSelected);
+      this.setState({ professions, filteredProfessionals })
     }
 
   }
@@ -110,7 +112,7 @@ class ExploreForm extends Component {
     this.setState({ selectedLocationSegment: option })
 
     if (option === 'ALL') {
-      this.setState({ professionalsClients: ProfessionalsClients });
+      this.setState({ professionalsClients: ProfessionalsClients, gymLocations: GymLocations });
       return;
     }
 
@@ -123,7 +125,17 @@ class ExploreForm extends Component {
   }
 
   onSelectPriceFilterMode(option) {
-    this.setState({ selectedPriceSegment: option })
+    let filterList = [];
+    if(option === "$50-$100"){
+      filterList = ProfessionalsClients.filter((e)=>(!e.amount || e.amount<100))
+    }
+    if(option === "$100-$300"){
+      filterList = ProfessionalsClients.filter((e)=>(e.amount && e.amount>=100 && e.amount<=300))
+    }
+    if(option === "$300+"){
+      filterList = ProfessionalsClients.filter((e)=>(e.amount && e.amount>300))
+    }
+    this.setState({ selectedPriceSegment: option, professionalsClients:filterList })
   }
 
   get showCloseTopBar () {
@@ -235,9 +247,12 @@ class ExploreForm extends Component {
   filterProfessionalList(list){
     let filteredList = [];
     if(list.length){
-      list.map((item)=>(
-        filteredList.push(...([ ...ProfessionalsClients, ...this.props.explore.professionals ]).filter((e)=>(e.profession && e.profession._id===item._id)))
-      ));
+      list.map((item)=> {
+        if(item._id === otherLabel._id){
+          filteredList.push(...this.filterProfessionalList(this.state.professions.listOther));
+        }
+        filteredList.push(...([...ProfessionalsClients, ...this.props.explore.professionals]).filter((e) => (e.profession && e.profession._id === item._id)))
+      });
       return R.uniq(filteredList);
     } else {
       return [ ...ProfessionalsClients, ...this.props.explore.professionals];
@@ -543,7 +558,7 @@ class ExploreForm extends Component {
                 onTapMap={ () => this.setState({ mapStandardMode:false }) }
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onList() }
-                professionalsClients={ this.state.filteredProfessionals }
+                professionalsClients={ user && user.role === CommonConstant.user_client ? this.state.filteredProfessionals : this.state.professionalsClients }
                 gymLocations={ this.state.gymLocations }
                 user={ user }
               />
@@ -551,7 +566,7 @@ class ExploreForm extends Component {
               <ExploreListView
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onMap() }
-                professionalsClients={ this.state.filteredProfessionals }
+                professionalsClients={ user && user.role === CommonConstant.user_client ? this.state.filteredProfessionals : this.state.professionalsClients }
                 user={ user }
               />
           }
