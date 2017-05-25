@@ -273,6 +273,11 @@ class ExploreForm extends Component {
     this.setState({ professions }, () => this.searchProfessionInput.focus());
   }
 
+  onCloseDropdown() {
+    const professions = {...this.state.professions, listFiltered:[], searchMode: false, search:''};
+    this.setState({ professions });
+  }
+
   today() {
     return (new Date()).toDateString();
   }
@@ -437,7 +442,15 @@ class ExploreForm extends Component {
                   value={ professions.search }
                   onChangeText={ this.onFilterAutocomplete }
                 />
-
+                <View style={ styles.searchProfessionCloseButon }>
+                  <TouchableOpacity onPress={ () => this.onCloseDropdown() }>
+                    <LineIcons
+                      name="close"
+                      size={ 20 }
+                      color={ "#acacac" }
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             }
           </View>
@@ -496,19 +509,27 @@ class ExploreForm extends Component {
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
+          {listFiltered.length > 0 &&
+            <View style={styles.dropdownWrapper}>
+              <View style={[styles.dropdown, listFiltered.length > 6 && styles.dropdownLimitHeight]}>
+                <ScrollView>
+                  {
+                    listFiltered.map((item) => (
+                      <TouchableOpacity key={item._id} activeOpacity={ .5 }
+                                        onPress={ (r) => this.onSelectProfession(item) }>
+                        <Text style={styles.dropdownText}>{item.name} </Text>
+                        <View style={styles.dropdownSeparator}/>
 
-          <View style={styles.dropdown}>
-            {
-              listFiltered.map((item) => (
-                <TouchableOpacity key={item._id} activeOpacity={ .5 } onPress={ (r) => this.onSelectProfession(item) }>
-                  <Text style={styles.dropdownText}>{item.name} </Text>
-                  <View style={styles.dropdownSeparator} />
-
-                </TouchableOpacity>
-              ))
-            }
-          </View>
-
+                      </TouchableOpacity>
+                    ))
+                  }
+                </ScrollView>
+              </View>
+              <TouchableOpacity onPress={ () => this.onCloseDropdown() }>
+                <View style={styles.dropdownBackground}></View>
+              </TouchableOpacity>
+            </View>
+          }
           {
             this.state.mapStandardMode ?
               this.showFullTopBar
@@ -605,17 +626,19 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   searchProfessionBlock: {
-    justifyContent: 'center',
+    flex:1,
     flexDirection: 'row',
-    alignItems: 'center',
+  },
+  searchProfessionCloseButon: {
+    flex:1,
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
   },
   searchProfessionText: {
-    // width:250,
+    margin:0,
     height:25,
     fontSize:12,
     paddingHorizontal: 5,
-    alignSelf: 'center',
-
   },
   closeProfession: {
     position: 'absolute',
@@ -696,12 +719,29 @@ const styles = StyleSheet.create({
     overflow:'hidden',
     borderRadius: 3,
     borderWidth: 1,
-    position: 'absolute',
-    top: 140,
     justifyContent: 'center',
     left: 10,
-    zIndex: 1
-  }
+    width:width-20,
+    zIndex: 3,
+    position: 'absolute',
+  },
+  dropdownLimitHeight: {
+    height: 210,
+  },
+  dropdownWrapper: {
+    position: 'absolute',
+    top: 140,
+    zIndex: 1,
+    width,
+    height: height-140
+  },
+  dropdownBackground:{
+    zIndex: 2,
+    position: 'relative',
+    backgroundColor: '#a3a4a7',
+    opacity: 0.5,
+    width,
+    height: height-140}
 });
 
 const mapStateToProps = (state) => ({

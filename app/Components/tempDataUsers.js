@@ -135,12 +135,12 @@ export const allProfessions = [{
   _id: '591c1e632b185e1add2214d8',
   name: 'Fitness Training',
   color: '#fec107',
-  icon: require('../Assets/images/sport.png')
+  icon: require('../Assets/images/sport.png'),
 }, {
   _id: '591c1e632b185e1add2214d9',
   name: 'Simply Yoga',
   color: '#ac6bbd',
-  icon: require('../Assets/images/sport.png')
+  icon: require('../Assets/images/sport.png'),
 }, {
   _id: '591c1e632b185e1add2214da',
   name: 'Physiotherapist',
@@ -149,9 +149,11 @@ export const allProfessions = [{
 }, {
   _id: '591c1e632b185e1add2214db',
   name: 'Massage',
-  icon: require('../Assets/images/sport.png')
+  icon: require('../Assets/images/sport.png'),
+  origin: false
 }, {
   _id: '591c1e632b185e1add2214dc',
   name: 'Yoga8',
-  icon: require('../Assets/images/sport.png')
+  icon: require('../Assets/images/sport.png'),
+  origin: false
 }]
