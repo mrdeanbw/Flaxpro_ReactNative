@@ -67,7 +67,7 @@ class ClientInfoForm extends Component {
       this.setState({ signUpRequest: false })
       return;
     }
-    if (user) {
+    if (user && this.state.signUpRequest) {
       Actions.Main({ user_mode: CommonConstant.user_client });
     }
     this.setState({ signUpRequest: false });
@@ -96,11 +96,7 @@ class ClientInfoForm extends Component {
 
   onContinue () {
     const { createRole } = this.props;
-    this.setState({ signUpRequest: true });
-    /**
-     * request to server
-     */
-    createRole(this.state)
+    this.setState({ signUpRequest: true }, () => createRole(this.state));
   }
 
   onBack() {

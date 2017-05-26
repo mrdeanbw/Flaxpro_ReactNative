@@ -54,7 +54,6 @@ class AuthForm extends Component {
       return;
     }
     token && AsyncStorage.setItem('token', token);
-    console.log('======aa=', user, this.state);
     if (user && this.state.loginRequest) {
         Actions.Main({ user_mode: user.role })
     }

@@ -80,7 +80,7 @@ class ProfessionalInfoForm extends Component {
       this.setState({ signUpRequest: false })
       return;
     }
-    if (user) {
+    if (user && this.state.signUpRequest) {
       Actions.Main({ user_mode: CommonConstant.user_trainer });
     }
     this.setState({ signUpRequest: false });
@@ -135,8 +135,14 @@ class ProfessionalInfoForm extends Component {
     AsyncStorage.getItem('professionalFirstForm')
       .then((data) => {
         AsyncStorage.multiRemove(['professionalFirstForm', 'professionalSecondForm']);
-        createRole({ ...JSON.parse(data), ...this.state })
-        this.setState({ signUpRequest: true,  price: this.priceToFloat(200), profession: this.props.explore.professions.filter((e)=>e.name===this.state.profession && e)[0]});
+
+        this.setState({
+          signUpRequest: true,
+          price: this.priceToFloat(200),
+          profession: this.props.explore.professions.filter((e)=>e.name===this.state.profession && e)[0]
+        },
+          () => createRole({ ...JSON.parse(data), ...this.state })
+        );
       })
   }
 

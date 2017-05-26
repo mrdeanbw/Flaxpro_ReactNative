@@ -63,14 +63,6 @@ class ProfessionalInfoForm extends Component {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
-    const { auth: { user } } = nextProps;
-
-    if (user) {
-      Actions.Main({ user_mode: CommonConstant.user_professional });
-    }
-  }
-
   get getShowNavBar() {
     return (
       <View style={ styles.navBarContainer }>
