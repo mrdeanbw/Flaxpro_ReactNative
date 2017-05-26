@@ -67,17 +67,10 @@ class ExploreForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { explore: { professionals, error } } = newProps;
+    const { explore: { error } } = newProps;
     if (error) {
       Alert.alert(error);
       return;
-    }
-    if (newProps.status == 'explore_request') {
-
-    } else if (newProps.status == 'explore_success') {
-
-    } else if (newProps.status == 'explore_error') {
-
     }
   }
 
@@ -202,7 +195,11 @@ class ExploreForm extends Component {
       listSelected.splice(listSelected.indexOf(profession), 1);
     }
     listSelected.unshift(profession);
-    const filteredProfessionals = this.filterProfessionalList(listSelected);
+
+    let filteredProfessionals = this.state.filteredProfessionals;
+    if(!this.state.professions.selected) {
+      filteredProfessionals = this.filterProfessionalList(listSelected);
+    }
     const professions = {...this.state.professions, listSelected, search:'', listFiltered:[], searchMode: false};
 
     this.setState({ professions, filteredProfessionals });
