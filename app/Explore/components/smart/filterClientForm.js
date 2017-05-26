@@ -80,7 +80,7 @@ export default class FilterForm extends Component {
       age: this.state.selectedAge,
       priceLevel: this.state.priceLevel,
       insured: this.state.selectedInsured === 'Yes',
-      profession: [this.state.selectedProfession],
+      // profession: [this.state.selectedProfession],
       certification: this.state.selectedCertification,
       experience: +this.state.selectedYearOfExperience,
       rating: this.state.selectedReview,
