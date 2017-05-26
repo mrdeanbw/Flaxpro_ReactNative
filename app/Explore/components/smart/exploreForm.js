@@ -97,7 +97,9 @@ class ExploreForm extends Component {
 
   onFilter () {
     ///Actions.FilterProfessionalForm();
-    Actions.FilterClientForm();
+    const { getProfessionals, explore: { professions } } = this.props;
+
+    Actions.FilterClientForm({ getProfessionals, professions });
   }
 
   onMap () {

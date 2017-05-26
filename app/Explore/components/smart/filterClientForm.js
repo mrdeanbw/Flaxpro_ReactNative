@@ -18,7 +18,6 @@ import {
 import { Actions } from 'react-native-router-flux';
 import Slider from 'react-native-slider';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import { RadioButtons } from 'react-native-radio-buttons'
 import RadioButton from './radioButton';
 import ModalDropdown from 'react-native-modal-dropdown';
 import StarRating from 'react-native-stars-rating';
@@ -28,7 +27,6 @@ const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
 
 const labelSex = ['Male', 'Female'];
-const labelAge = ['16', '17', '18', '19', '20', '21'];
 const labelVerified = ['Yes', 'No'];
 const labelInsured = ['Yes', 'No'];
 const labelAffiliation = ['Gym', 'Independent', 'All'];
@@ -53,7 +51,6 @@ export default class FilterForm extends Component {
       selectedAge: 28,
       selectedVerified: labelVerified[0],
       selectedInsured: labelInsured[0],
-      selectedAffiliation: labelAffiliation[0],
       selectedYearOfExperience: labelYearOfExprience[0],
       selectedCertification: labelCertification[0],
       selectedLocation: labelLocation[0],
@@ -77,17 +74,33 @@ export default class FilterForm extends Component {
   onClose() {
     Actions.pop();
   }
+  prepareData(){
+    const data = {
+      gender: this.state.selectedSex,
+      age: this.state.selectedAge,
+      priceLevel: this.state.priceLevel,
+      insured: this.state.selectedInsured === 'Yes',
+      profession: [this.state.selectedProfession],
+      certification: this.state.selectedCertification,
+      experience: +this.state.selectedYearOfExperience,
+      rating: this.state.selectedReview,
+      availability: {
+        toClient: this.state.selectedLocation === 'Meet at Home',
+        ownSpace: this.state.selectedLocation === 'One place'
+      }
+    };
+    return data;
+  }
 
   onDone () {
+    const { getProfessionals } = this.props;
+    const data = this.prepareData();
+    getProfessionals(data);
     Actions.pop();
   }
 
   onSex(value) {
     this.setState({ selectedSex: value });
-  }
-
-  onAge(value) {
-    this.setState({ selectedAge: value });
   }
 
   onVerified(value) {
@@ -96,10 +109,6 @@ export default class FilterForm extends Component {
 
   onInsured(value) {
     this.setState({ selectedInsured: value });
-  }
-
-  onAffiliation(value) {
-    this.setState({ selectedAffiliation: value });
   }
 
   onYearOfExperience(value) {
@@ -118,27 +127,14 @@ export default class FilterForm extends Component {
     this.setState({ selectedProfession: value });
   }
 
+  onRating(value) {
+    this.setState({ selectedReview: value });
+  }
+
 
   onCheckPrice(value) {
     this.setState({ priceLevel: value });
   }
-
-  renderOption(option, selected, onSelect, index){
-    const styleText = selected ? styles.textSelectedCellValue : styles.textCellValue;
-    const styleView = selected ? styles.circleSelectNumberWrapper : styles.circleNumberWrapper;
-
-    return (
-      <TouchableWithoutFeedback onPress={ onSelect } key={ index }>
-        <View style={ styleView }>
-          <Text style={ styleText }>{ option }</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  }
-
-  // renderContainer(optionNodes){
-  //   return <View style={ styles.cellValueContainer }>{ optionNodes }</View>
-  // }
 
   render() {
     const { status } = this.props;
@@ -230,16 +226,7 @@ export default class FilterForm extends Component {
 
                 </View>
               </View>
-              {/*<View style={ styles.cellContainer }>*/}
-              {/*<Text style={ [styles.textCellTitle, styles.labelLine] }>Age</Text>*/}
-              {/*<RadioButtons*/}
-              {/*options={ labelAge }*/}
-              {/*onSelection={ this.onAge.bind(this) }*/}
-              {/*selectedOption={ this.state.selectedAge }*/}
-              {/*renderOption={ this.renderOption }*/}
-              {/*renderContainer={ this.renderContainer }*/}
-              {/*/>*/}
-              {/*</View>*/}
+
               <View style={ styles.cellContainer }>
                 <Text style={ [styles.textCellTitle, styles.labelLine] }>Verified</Text>
                 <View style={ styles.cellValueContainer }>
@@ -259,24 +246,7 @@ export default class FilterForm extends Component {
                   }
                 </View>
               </View>
-              {/*<View style={ styles.cellContainer }>*/}
-              {/*<Text style={ styles.textCellTitle }>Affiliation</Text>*/}
-              {/*<View style={ styles.cellValueContainer }>*/}
-              {/*{*/}
-              {/*labelAffiliation.map(value => {*/}
-              {/*return (*/}
-              {/*<RadioButton*/}
-              {/*style={ styles.paddingThree }*/}
-              {/*key={ value }*/}
-              {/*label={ value }*/}
-              {/*checked={ this.state.selectedAffiliation == value }*/}
-              {/*onPress={ () => this.onAffiliation(value) }*/}
-              {/*/>*/}
-              {/*);*/}
-              {/*})*/}
-              {/*}*/}
-              {/*</View>*/}
-              {/*</View>*/}
+
               <View style={ styles.cellContainerBlock }>
                 <Text style={styles.textCellTitle}>Year of Experience</Text>
                 <View style={ [styles.dropdownWrapper] }>
@@ -337,8 +307,8 @@ export default class FilterForm extends Component {
                     isActive={ true }
                     rateMax={ 5 }
                     isHalfStarEnabled={ false }
-                    onStarPress={ (rating) => console.log(rating) }
-                    rate={ 5 }
+                    onStarPress={ (rating) => this.onRating(rating) }
+                    rate={ this.state.selectedReview }
                     size={ 30 }
                     rating={this.state.selectedReview}
                   />
@@ -370,11 +340,10 @@ export default class FilterForm extends Component {
                 <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
                     options={ labelCertification }
-                    defaultValue={ this.state.selectedCertification }
                     dropdownStyle={ [styles.dropdownStyle] }
                     onSelect={ (rowId, rowData) => this.onCertification(rowData) }
                   >
-                    <Text numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.selectedCetification}</Text>
+                    <Text numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.selectedCertification}</Text>
                     <EvilIcons
                       style={ styles.iconDropDown }
                       name="chevron-down"
@@ -383,17 +352,7 @@ export default class FilterForm extends Component {
                     />
                   </ModalDropdown>
                 </View>
-
-
-
               </View>
-              {/*<View style={ styles.buttonWrapper }>*/}
-              {/*<TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onDone() }>*/}
-              {/*<View style={ styles.doneButton }>*/}
-              {/*<Text style={ styles.buttonText }>Done</Text>*/}
-              {/*</View>*/}
-              {/*</TouchableOpacity>*/}
-              {/*</View>*/}
             </View>
           </ScrollView>
         </Image>
