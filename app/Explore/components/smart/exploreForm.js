@@ -63,7 +63,7 @@ class ExploreForm extends Component {
   }
 
   componentWillMount(){
-    this.setDefaultProfessions()
+    this.setDefaultData()
   }
 
   componentWillReceiveProps(newProps) {
@@ -74,14 +74,20 @@ class ExploreForm extends Component {
     }
   }
 
-  setDefaultProfessions () {
-    if(this.props.explore) {
-      const listOriginal = (this.props.explore.professions || defaultProfessions).filter((e) => e.original && defaultProfessions.includes(e.name));
-      const listOther = (this.props.explore.professions || defaultProfessions).filter((e) => !e.original);
-      const listSelected = [...listOriginal, otherLabel ];
-      const professions = {...this.state.professions, listOriginal, listOther, listSelected};
-      const filteredProfessionals = this.filterProfessionalList(listSelected);
-      this.setState({ professions, filteredProfessionals })
+  setDefaultData () {
+    const { auth: { user } , explore } = this.props;
+    if(explore && user) {
+      if(user.role === CommonConstant.user_client) {
+        const listOriginal = (this.props.explore.professions || defaultProfessions).filter((e) => e.original && defaultProfessions.includes(e.name));
+        const listOther = (this.props.explore.professions || defaultProfessions).filter((e) => !e.original);
+        const listSelected = [...listOriginal, otherLabel];
+        const professions = {...this.state.professions, listOriginal, listOther, listSelected};
+        const filteredProfessionals = this.filterProfessionalsList(listSelected);
+        this.setState({professions, filteredProfessionals})
+      }
+      if(user.role === CommonConstant.user_professional) {
+        this.filterClientsList();
+      }
     }
 
   }
@@ -102,34 +108,35 @@ class ExploreForm extends Component {
     this.setState({ mapStandardMode:true });
   }
 
-  onSelectLocationFilterMode(option) {
-    this.setState({ selectedLocationSegment: option })
-
-    if (option === 'ALL') {
-      this.setState({ professionalsClients: ProfessionalsClients, gymLocations: GymLocations });
-      return;
+  filterClientsList() {
+    let filteredClients = [ ...ProfessionalsClients, ...this.props.explore.clients ];
+    let gymLocations = GymLocations;
+    if(this.state.selectedLocationSegment){
+      if (this.state.selectedLocationSegment !== 'ALL') {
+        filteredClients = filteredClients.filter((item => item.type === this.state.selectedLocationSegment));
+        gymLocations = [];
+      }
     }
+    if(this.state.selectedPriceSegment){
+      if(this.state.selectedPriceSegment === "$50-$100"){
+        filteredClients = filteredClients.filter((e)=>(!e.amount || e.amount<=100))
+      }
+      if(this.state.selectedPriceSegment === "$100-$300"){
+        filteredClients = filteredClients.filter((e)=>(e.amount && e.amount>=100 && e.amount<=300))
+      }
+      if(this.state.selectedPriceSegment === "$300+"){
+        filteredClients = filteredClients.filter((e)=>(e.amount && e.amount>=300))
+      }
+    }
+    this.setState({ filteredClients, gymLocations })
+  };
 
-    const filterValue = R.filter(item => item.type === option, ProfessionalsClients);
-    this.setState({
-      selectedLocationSegment: option,
-      professionalsClients: filterValue,
-      gymLocations: [],
-    });
+  onSelectLocationFilterMode(option) {
+    this.setState({ selectedLocationSegment: option }, () => this.filterClientsList())
   }
 
   onSelectPriceFilterMode(option) {
-    let filterList = [];
-    if(option === "$50-$100"){
-      filterList = ProfessionalsClients.filter((e)=>(!e.amount || e.amount<100))
-    }
-    if(option === "$100-$300"){
-      filterList = ProfessionalsClients.filter((e)=>(e.amount && e.amount>=100 && e.amount<=300))
-    }
-    if(option === "$300+"){
-      filterList = ProfessionalsClients.filter((e)=>(e.amount && e.amount>300))
-    }
-    this.setState({ selectedPriceSegment: option, professionalsClients:filterList })
+    this.setState({ selectedPriceSegment: option }, () => this.filterClientsList())
   }
 
   get showCloseTopBar () {
@@ -168,7 +175,7 @@ class ExploreForm extends Component {
     if(profession._id === listSelected._id) {
       this.onSelectInListProfession({});
     }
-    const filteredProfessionals = this.filterProfessionalList(listSelected);
+    const filteredProfessionals = this.filterProfessionalsList(listSelected);
     const professions = {...this.state.professions, listSelected};
 
     this.setState({ professions, filteredProfessionals });
@@ -198,7 +205,7 @@ class ExploreForm extends Component {
 
     let filteredProfessionals = this.state.filteredProfessionals;
     if(!this.state.professions.selected) {
-      filteredProfessionals = this.filterProfessionalList(listSelected);
+      filteredProfessionals = this.filterProfessionalsList(listSelected);
     }
     const professions = {...this.state.professions, listSelected, search:'', listFiltered:[], searchMode: false};
 
@@ -220,11 +227,11 @@ class ExploreForm extends Component {
   onSelectInListProfession(selected) {
     let filteredProfessionals = [ ...ProfessionalsClients, ...this.props.explore.professionals ].filter((e)=>(e.profession && e.profession._id===selected._id));
     if(selected._id === this.state.professions.selected._id) {
-      filteredProfessionals = this.filterProfessionalList(this.state.professions.listSelected);
+      filteredProfessionals = this.filterProfessionalsList(this.state.professions.listSelected);
       selected = {};
     }
     if(selected._id === otherLabel._id) {
-      filteredProfessionals = this.filterProfessionalList(this.state.professions.listOther);
+      filteredProfessionals = this.filterProfessionalsList(this.state.professions.listOther);
       selected = otherLabel;
     }
     if(selected._id === allLabel._id) {
@@ -242,12 +249,12 @@ class ExploreForm extends Component {
    *
    * @param list{Array} - professions
    */
-  filterProfessionalList(list){
+  filterProfessionalsList(list){
     let filteredList = [];
     if(list.length){
       list.map((item)=> {
         if(item._id === otherLabel._id){
-          filteredList.push(...this.filterProfessionalList(this.state.professions.listOther));
+          filteredList.push(...this.filterProfessionalsList(this.state.professions.listOther));
         }
         filteredList.push(...([...ProfessionalsClients, ...this.props.explore.professionals]).filter((e) => (e.profession && e.profession._id === item._id)))
       });
@@ -556,7 +563,7 @@ class ExploreForm extends Component {
                 onTapMap={ () => this.setState({ mapStandardMode:false }) }
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onList() }
-                professionalsClients={ user && user.role === CommonConstant.user_client ? this.state.filteredProfessionals : this.state.professionalsClients }
+                professionalsClients={ user && user.role === CommonConstant.user_client ? this.state.filteredProfessionals : this.state.filteredClients }
                 gymLocations={ this.state.gymLocations }
                 user={ user }
               />
@@ -564,7 +571,7 @@ class ExploreForm extends Component {
               <ExploreListView
                 onFilter={ () => this.onFilter() }
                 onList={ () => this.onMap() }
-                professionalsClients={ user && user.role === CommonConstant.user_client ? this.state.filteredProfessionals : this.state.professionalsClients }
+                professionalsClients={ user && user.role === CommonConstant.user_client ? this.state.filteredProfessionals : this.state.filteredClients }
                 user={ user }
               />
           }

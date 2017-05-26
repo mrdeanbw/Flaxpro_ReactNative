@@ -13,9 +13,12 @@ class Main extends Component {
   }
 
   componentWillMount(){
-    const { auth: { user }, getExploreClient } = this.props;
+    const { auth: { user }, getExploreClient, getExploreProfessional } = this.props;
     if(user && user.role === CommonConstant.user_client){
       getExploreClient();
+    }
+    if(user && user.role === CommonConstant.user_professional){
+      getExploreProfessional();
     }
   }
 
@@ -33,6 +36,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getExploreClient: () => dispatch(mainActions.getExploreClient()),
+  getExploreProfessional: () => dispatch(mainActions.getExploreProfessional()),
   actions: bindActionCreators(mainActions, dispatch),
 });
 
