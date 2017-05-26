@@ -252,7 +252,6 @@ class ProfessionalInfoForm extends Component {
                   <View style={ styles.dropdownWrapper }>
                     <ModalDropdown
                       options={ professions.map((e)=>e.name) }
-                      // defaultValue={ this.state.profession.name }
                       dropdownStyle={ styles.dropdownStyle }
                       onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
                     >
@@ -270,8 +269,7 @@ class ProfessionalInfoForm extends Component {
                   <Text style={ styles.textCellTitle }>Certification</Text>
                   <View style={ styles.dropdownWrapper }>
                     <ModalDropdown
-                      options={ this.state.profession.certification.length ? this.state.profession.certification : certificationsDefault }
-                      // defaultValue={ this.state.certification }
+                      options={ this.state.profession.certification && this.state.profession.certification.length ? this.state.profession.certification : certificationsDefault }
                       dropdownStyle={ styles.dropdownStyle }
                       onSelect={ (rowId, rowData) => this.onSelectCertification(rowData) }
                     >

@@ -47,6 +47,7 @@ class ExploreForm extends Component {
       showContentMode: 0,
       professionalsClients: ProfessionalsClients,
       gymLocations: GymLocations,
+      filteredClients: [ ...ProfessionalsClients, ...this.props.explore.clients, ],
       filteredProfessionals: [ ...ProfessionalsClients, ...this.props.explore.professionals, ],
       professions: {
         selected: {},

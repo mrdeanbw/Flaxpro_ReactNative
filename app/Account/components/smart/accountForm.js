@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   StyleSheet,
   Text,
   View,
@@ -48,8 +49,8 @@ class AccountForm extends Component {
 
   onLogOut() {
     const { authActions: { logout } } = this.props;
-
-    localStorage.save('authData', null).then(() => {
+    AsyncStorage.clear()
+      .then(() => {
         logout();
         Actions.Auth();
       })
