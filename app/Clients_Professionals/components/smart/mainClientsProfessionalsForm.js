@@ -66,7 +66,7 @@ export default class MainClientsProfessionalsForm extends Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { status, user } = this.props;
 
     return (
         <View style={ styles.container }>
@@ -106,7 +106,7 @@ export default class MainClientsProfessionalsForm extends Component {
               onOpen={ () => this.onOpenMenu() }
               onClose={ () => this.onCloseMenu() }
             >
-              <Clients_ProfessionalsForm/>
+              <Clients_ProfessionalsForm user={user}/>
               
            </Drawer>
 

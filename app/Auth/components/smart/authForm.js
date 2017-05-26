@@ -54,6 +54,7 @@ class AuthForm extends Component {
       return;
     }
     token && AsyncStorage.setItem('token', token);
+    console.log('======aa=', user, this.state);
     if (user && this.state.loginRequest) {
         Actions.Main({ user_mode: user.role })
     }
@@ -68,7 +69,9 @@ class AuthForm extends Component {
       selectedButton: 2,
       email : 'client@mail.com',
       password : 'password',
-      confirmPassword : 'password'
+      confirmPassword : 'password',
+      loginRequest: false,
+      registerRequest: false
     });
   }
 
@@ -77,7 +80,9 @@ class AuthForm extends Component {
       selectedButton: 1,
       email : 'client@mail.com',
       password : 'password',
-      confirmPassword : 'password'
+      confirmPassword : 'password',
+      loginRequest: false,
+      registerRequest: false
     });
   }
 

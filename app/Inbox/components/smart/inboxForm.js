@@ -13,11 +13,9 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 import InboxListCell from './inboxListCell';
-import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,9 +24,7 @@ const edit = require('../../../Assets/images/edit.png');
 const call = require('../../../Assets/images/inbox_call.png');
 const remove = require('../../../Assets/images/inbox_delete.png');
 
-
 import { Messages } from '../../../Components/dummyEntries';
-
 
 export default class InboxForm extends Component {
   constructor(props) {

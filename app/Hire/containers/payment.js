@@ -12,15 +12,16 @@ class Payment extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
+    const { actions, status, user } = this.props;
     return (
-      <PaymentForm { ...actions } status/>
+      <PaymentForm { ...actions } status user={user}/>
     );
   }
 }
 
 export default connect(state => ({
-    status: state.hire.status
+    status: state.hire.status,
+    user: state.auth.user
   }),
   (dispatch) => ({
     actions: bindActionCreators(paymentActions, dispatch)

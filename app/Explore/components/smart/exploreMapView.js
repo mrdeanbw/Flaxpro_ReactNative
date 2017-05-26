@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
 
 import MapView from 'react-native-maps';
@@ -317,17 +316,14 @@ class ExploreMapView extends Component {
 
   onExpandProfessional ( key ) {
     this.popupDialogProfessional.closeDialog ();
-
-    localStorage.get(CommonConstant.user_mode)
-      .then((data) => {
-        if (data == CommonConstant.user_client) {
-          Actions.ProfessionalProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
-          return;
-        } else if (data == CommonConstant.user_professional){
-          Actions.ClientProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
-          return;
-        }
-      });
+    const { user } = this.props;
+    if (user && user.role === CommonConstant.user_client) {
+      Actions.ProfessionalProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
+      return;
+    } else if (user && user.role === CommonConstant.user_professional){
+      Actions.ClientProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
+      return;
+    }
   }
 
   onTapMap () {

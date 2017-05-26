@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';

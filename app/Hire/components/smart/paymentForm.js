@@ -15,8 +15,6 @@ import {
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import localStorage from 'react-native-local-storage';
-import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
@@ -44,11 +42,8 @@ export default class Payment extends Component {
   }
 
   onClose () {
-
-    localStorage.get(CommonConstant.user_mode)
-      .then((data) => {
-        Actions.Main({ user_mode: data });
-      });    
+    const { user } = this.props;
+    Actions.Main({ user_mode: user.role });
   }
 
   onSelectPaymentMethod(key) {
@@ -150,7 +145,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
   },
   sectionContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -160,7 +154,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   cellContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',

@@ -13,16 +13,12 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { GiftedChat } from 'react-native-gifted-chat';
-
-import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/images/background.png');
-// const avatar = require('../../Assets/avatar1.png');
 
 
 export default class ChatForm extends Component {

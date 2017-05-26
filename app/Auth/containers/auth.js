@@ -1,8 +1,8 @@
 'use strict';
+import { AsyncStorage } from 'react-native';
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import localStorage from 'react-native-local-storage';
 import { connect } from 'react-redux';
 
 import AuthForm from '../components/smart/authForm';
@@ -15,7 +15,9 @@ class Auth extends Component {
 
   componentWillMount() {
     const {auth: {user}, login} = this.props;
-    localStorage.get('authData').then((data) => {
+
+    AsyncStorage.getItem('token')
+      .then((data) => {
       // login(data.email, null, data.token)
     })
   }

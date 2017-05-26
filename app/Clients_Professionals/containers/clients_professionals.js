@@ -12,15 +12,16 @@ class Clients_Professionals extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
+    const { actions, status, user } = this.props;
     return (
-      <MainClientsProfessionalsForm { ...actions } status/>
+      <MainClientsProfessionalsForm { ...actions } status user={user}/>
     );
   }
 }
 
 export default connect(state => ({
-    status: state.clients_professionals.status
+    status: state.clients_professionals.status,
+    user: state.auth.user
   }),
   (dispatch) => ({
     actions: bindActionCreators(clients_professionalsActions, dispatch)

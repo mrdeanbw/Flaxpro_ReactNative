@@ -18,7 +18,6 @@ import ProfessionalProfile from '../../../Profile/containers/professionalProfile
 import Inbox from '../../../Inbox/containers/inbox';
 
 import { connect } from 'react-redux';
-import localStorage from 'react-native-local-storage';
 import * as CommonConstant from '../../../Components/commonConstant';
 import { ProfessionalsClients } from '../../../Components/dummyEntries';
 
@@ -53,11 +52,7 @@ class MainForm extends Component {
   }
 
   componentWillMount() {
-    const {auth: {user}} = this.props;
-    localStorage.save('authData', {
-      token: user.token,
-      email: user.email
-    })
+
   }
 
   render() {

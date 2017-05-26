@@ -13,8 +13,6 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
-import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
 
@@ -32,23 +30,10 @@ export default class WhoAReYouForm extends Component {
   }
 
   onSelectClient () {
-
-    // localStorage.get('userData')
-    //   .then((data) => {
-    //     localStorage.save([CommonConstant.user_mode, 'userData'], [
-    //       CommonConstant.user_client, { ...data, professional: false }
-    //     ])
-    localStorage.save(CommonConstant.user_mode, CommonConstant.user_client)
     Actions.ClientInfo();
-      // });
   }
 
   onSelectProfessional () {
-
-    localStorage.save(CommonConstant.user_mode, CommonConstant.user_professional)
-    //   .then(() => {
-    //     Actions.Main({ user_mode: CommonConstant.user_professional });
-    // })
     Actions.ProfessionalInfo();
   }
 

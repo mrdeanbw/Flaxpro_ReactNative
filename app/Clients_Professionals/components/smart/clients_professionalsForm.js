@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import localStorage from 'react-native-local-storage';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import * as CommonConstant from '../../../Components/commonConstant';
 import SearchBar from '../../../Components/searchBar';
@@ -78,16 +77,14 @@ export default class Clients_ProfessionalsForm extends Component {
   }
 
   onCellPressed (rowID) {
-    localStorage.get(CommonConstant.user_mode)
-      .then((data) => {
-        if (data == CommonConstant.user_client) {
-          Actions.ProfessionalProfile({ editable: false, user: this.filterValue[rowID] });
-          return;
-        } else if (data == CommonConstant.user_professional){
-          Actions.ClientProfile({ editable: false, user: this.filterValue[rowID] });
-          return;
-        }
-      });
+    const { user } = this.props;
+    if (user && user.role == CommonConstant.user_client) {
+      Actions.ProfessionalProfile({ editable: false, user: this.filterValue[rowID] });
+      return;
+    } else if (user && user.role == CommonConstant.user_professional){
+      Actions.ClientProfile({ editable: false, user: this.filterValue[rowID] });
+      return;
+    }
   }
 
   onAllDays() {
