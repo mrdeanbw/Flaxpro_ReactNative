@@ -24,22 +24,20 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
 import ImageProgress from 'react-native-image-progress';
-// import ProgressBar from 'react-native-progress/Bar';
 
+import * as CommonConstant from '../../../Components/commonConstant';
+import UploadFromCameraRoll from '../../../Components/imageUploader';
+import RadioButton from '../../../Explore/components/smart/radioButton';
+
+const background = require('../../../Assets/images/background.png');
+const avatarDefault = require('../../../Assets/images/avatar.png');
 const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
 const prices = [
   {item: '$', price: '$50-100', level: 1},
   {item: '$$', price: '$100-300', level: 2},
   {item: '$$$', price: '$300+', level: 3}
-  ];
-
-import * as CommonConstant from '../../../Components/commonConstant';
-import UploadFromCameraRoll from '../../../Components/imageUploader';
-import { allProfessions } from '../../../Components/tempDataUsers'
-const background = require('../../../Assets/images/background.png');
-const avatarDefault = require('../../../Assets/images/avatar.png');
-import RadioButton from '../../../Explore/components/smart/radioButton';
+];
 
 class ClientInfoForm extends Component {
   constructor(props) {
@@ -178,7 +176,7 @@ class ClientInfoForm extends Component {
                               color="#19b8ff"
                               iconStyle={ styles.iconButton }
                               labelStyle={ styles.textInput }
-                              checked={ this.state.gender == value }
+                              checked={ this.state.gender === value }
                               onPress={ () => this.onSex(value) }
                             />
                           );
