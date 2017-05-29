@@ -31,8 +31,15 @@ function checkStatus(response) {
 
   const error = new Error({message:response._bodyText});
   error.response = response;
-  const body = (response._bodyText && typeof response._bodyText === 'string') ? JSON.parse(response._bodyText) : {};
-  error.message = body.error || `Status: ${response.status}`;
+  error.message = `Status: ${response.status}`;
+  if(response._bodyText && typeof response._bodyText === 'string') {
+    try {
+      const body = JSON.parse(response._bodyText) || {};
+      error.message = body.error;
+    } catch (error) {
+      error.message = response._bodyText;
+    }
+  }
   throw error;
 }
 
