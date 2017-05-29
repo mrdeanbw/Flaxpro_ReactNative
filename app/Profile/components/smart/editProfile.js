@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import {
+  Alert,
+  ActivityIndicator,
   StyleSheet,
   Text,
   View,
@@ -15,9 +17,11 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import Slider from 'react-native-slider';
 
 import RadioButton from '../../../Explore/components/smart/radioButton';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
+import * as clientProfileActions from '../../actions';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
@@ -40,16 +44,26 @@ class EditProfile extends Component {
   constructor(props) {
     super(props);
 
+    props.auth.user.age = props.auth.user.age || 15;
     this.state = {
       user: props.auth.user,
       selectedOption: constants.BASIC_INFO,
     };
+  }
 
-    //binds
+  componentWillReceiveProps(nextProps) {
+    const { auth: { user }, profile: { error } } = nextProps;
+
+    if (error) {
+      Alert.alert(error);
+      return;
+    }
   }
 
   saveProfile() {
-    alert( 'save profile!');
+    const { updateProfile } = this.props;
+    const { user } = this.state;
+    updateProfile(user)
   }
 
   onBack() {
@@ -125,7 +139,6 @@ class EditProfile extends Component {
 
   render() {
     const { avatar, user } = this.state;
-    console.log('===========', user);
 
     return (
       <View style={ styles.container }>
@@ -187,8 +200,29 @@ class EditProfile extends Component {
                 }
               </View>
             </View>
-            <View style={ styles.gender }>
-
+            <View style={ styles.cellContainer }>
+              <Text style={ [styles.fontStyles, styles.textCellTitle] }>Age</Text>
+              <View style={ styles.viewSlider }>
+                {/*<Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.age -15) * scale}] }>*/}
+                  {/*<Animated.View style={ styles.bubble }>*/}
+                    {/*<Animated.Text style={ [styles.textAboveSlider, styles.priceButtonText] }>{ this.state.age }</Animated.Text>*/}
+                  {/*</Animated.View>*/}
+                  {/*<Animated.View style={ styles.arrowBorder } />*/}
+                  {/*<Animated.View style={ styles.arrow } />*/}
+                {/*</Animated.View>*/}
+                <Slider style={ styles.slider }
+                        maximumTrackTintColor="#9be5ff"
+                        minimumTrackTintColor="#10c7f9"
+                        trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);'}}
+                        thumbTouchSize={{width: 40, height: 60}}
+                        thumbStyle={ styles.thumbStyle }
+                        minimumValue={ 15 }
+                        maximumValue={ 85 }
+                        step={ 1 }
+                        value = { user.age }
+                        onValueChange={ (value) => this.setState({ user: {...user, age: value }}) }
+                />
+              </View>
             </View>
             <View style={ styles.age }>
 
@@ -415,6 +449,7 @@ const styles = StyleSheet.create({
   textCellTitle: {
     color: '#1e1e1e',
   },
+
   textCellValue: {
     color: '#707070',
     fontSize: 18,
@@ -431,6 +466,32 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginLeft: -5,
   },
+
+  viewSlider:{
+    flex: 1,
+    flexDirection: 'column',
+    marginLeft: width/4,
+  },
+  slider: {
+    marginRight: 15,
+    height: 20,
+    marginBottom: -8,
+  },
+  // textAboveSlider: {
+  //   textAlign: 'center',
+  //   height: 15,
+  //   width: 20,
+  //   color: '#6b6b6b',
+  //   fontSize: 13,
+  // },
+  thumbStyle:{
+    top:11,
+    width: 20,
+    height: 20,
+    backgroundColor: '#fff',
+    borderColor: '#10c7f9',
+    borderWidth: 1
+  },
   fontStyles: {
     fontFamily: 'Open Sans',
     fontSize: 20,
@@ -439,7 +500,10 @@ const styles = StyleSheet.create({
 
 
 export default connect(state => ({
-    auth: state.auth
+    auth: state.auth,
+    profile: state.profile,
   }),
-    (dispatch) => ({})
+    (dispatch) => ({
+      updateProfile: (data) => dispatch(clientProfileActions.updateProfile(data)),
+    })
 )(EditProfile);
