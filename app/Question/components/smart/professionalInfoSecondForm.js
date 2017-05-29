@@ -45,12 +45,12 @@ class ProfessionalInfoForm extends Component {
     this.state = {
       price: this.priceToFloat(200),
       insured: true,
-      profession: this.props.explore && this.props.explore.professions && this.props.explore.professions[0] || {},
+      profession: props.explore && props.explore.professions && props.explore.professions[0] || {},
       certification:
-            this.props.explore &&
-            this.props.explore.professions &&
-            this.props.explore.professions[0].certification &&
-            this.props.explore.professions[0].certification[0] || certificationsDefault[0],
+            props.explore &&
+            props.explore.professions &&
+            props.explore.professions[0].certification &&
+            props.explore.professions[0].certification[0] || certificationsDefault[0],
       address: '4 York st, Toronto',
       own: 'Both',
       experience: 5
@@ -83,7 +83,7 @@ class ProfessionalInfoForm extends Component {
     if (user && this.state.signUpRequest) {
       Actions.Main({ user_mode: CommonConstant.user_trainer });
     }
-    this.setState({ signUpRequest: false });
+    this.setState({ signUpRequest: false, price: this.priceToFloat(200)});
   }
 
   get getShowNavBar() {
@@ -111,7 +111,7 @@ class ProfessionalInfoForm extends Component {
     /**
      * 'price' to {number}
      */
-    this.state.price = +this.priceToInt(this.state.price);
+    this.state.price = this.priceToInt(this.state.price);
 
     /**
      * 'profession' to {String} name
@@ -136,13 +136,7 @@ class ProfessionalInfoForm extends Component {
       .then((data) => {
         AsyncStorage.multiRemove(['professionalFirstForm', 'professionalSecondForm']);
 
-        this.setState({
-          signUpRequest: true,
-          price: this.priceToFloat(200),
-          profession: this.props.explore.professions.filter((e)=>e.name===this.state.profession && e)[0]
-        },
-          () => createRole({ ...JSON.parse(data), ...this.state })
-        );
+        this.setState({ signUpRequest: true }, () => createRole({ ...JSON.parse(data), ...this.state }) );
       })
   }
 

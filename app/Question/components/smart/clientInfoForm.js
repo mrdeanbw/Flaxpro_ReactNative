@@ -41,8 +41,6 @@ const background = require('../../../Assets/images/background.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
 import RadioButton from '../../../Explore/components/smart/radioButton';
 
-const professionalNames = allProfessions.map(item => item.name)
-
 class ClientInfoForm extends Component {
   constructor(props) {
     super(props);
@@ -53,7 +51,7 @@ class ClientInfoForm extends Component {
       gender : labelSex[0],
       age : 28,
       address: '4 York st, Toronto',
-      profession : professionalNames[0],
+      profession : props.explore && props.explore.professions && props.explore.professions[0] || {},
       priceLevel : prices[0].level,
       signUpRequest: false
     };
@@ -96,6 +94,8 @@ class ClientInfoForm extends Component {
 
   onContinue () {
     const { createRole } = this.props;
+    this.state.professions= [{profession: this.state.profession._id, priceLevel: this.state.priceLevel}];
+
     this.setState({ signUpRequest: true }, () => createRole(this.state));
   }
 
@@ -106,7 +106,8 @@ class ClientInfoForm extends Component {
     this.setState({ gender: value });
   }
   onSelectProfession(value) {
-    this.setState({ profession: value });
+    const profession = this.props.explore.professions.filter((e)=>e.name===value)[0];
+    this.setState({ profession });
   }
   onCheckPrice(value) {
     this.setState({ priceLevel: value });
@@ -117,6 +118,7 @@ class ClientInfoForm extends Component {
 
   render() {
     const { signUpRequest, avatar } = this.state;
+    const { explore: { professions } } = this.props;
     let scale = (width * 3/4 -75) / 72 ;
     return (
       <View style={ styles.container }>
@@ -214,12 +216,11 @@ class ClientInfoForm extends Component {
                     <Text style={ styles.textCellTitle }>Looking for</Text>
                     <View style={ styles.dropdownWrapper }>
                       <ModalDropdown
-                        options={ professionalNames }
-                        defaultValue={ this.state.profession }
+                        options={ professions.map((e)=>e.name) }
                         dropdownStyle={ styles.dropdownStyle }
                         onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
                       >
-                        <Text  numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession}</Text>
+                        <Text  numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession.name}</Text>
                         <EvilIcons
                           style={ styles.iconDropDown }
                           name="chevron-down"
@@ -530,7 +531,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: width/2 -100,
+    marginHorizontal: 70,
     borderBottomWidth: 1,
     borderBottomColor: '#9e9e9e',
   },
@@ -619,7 +620,8 @@ const styles = StyleSheet.create({
     borderRadius:  15,
     borderWidth: 1,
     borderColor: '#6ad0fd',
-    marginTop: 1
+    marginTop: 1,
+    overflow: 'hidden',
   },
   dropDownText: {
     color: '#6b6b6b',
@@ -675,5 +677,6 @@ const styles = StyleSheet.create({
 export default connect(state => ({
   auth: state.auth,
   question: state.question,
+  explore: state.explore,
   }),
 )(ClientInfoForm);

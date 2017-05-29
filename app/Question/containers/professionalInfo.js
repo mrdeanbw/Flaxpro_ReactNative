@@ -6,15 +6,11 @@ import { bindActionCreators } from 'redux';
 import ProfessionalInfoForm from '../components/smart/professionalInfoForm';
 import ProfessionalInfoSecondForm from '../components/smart/professionalInfoSecondForm';
 import * as professionalAction from '../actions';
-import * as exploreActions from '../../Explore/actions';
 import { connect } from 'react-redux';
 
 class ProfessionalInfo extends Component {
   constructor(props) {
     super(props);
-  }
-  componentDidMount(){
-    this.props.getProfessions()
   }
 
   render() {
@@ -42,7 +38,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(professionalAction, dispatch),
-  getProfessions: () => dispatch(exploreActions.getProfessions()),
 });
 
 export default connect(
