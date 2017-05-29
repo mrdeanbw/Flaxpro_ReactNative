@@ -10,21 +10,28 @@ import {
   Switch
 } from 'react-native';
 
-import { bindActionCreators } from 'redux';
+import ImageProgress from 'react-native-image-progress';
 import { connect } from 'react-redux';
-
 import { Actions } from 'react-native-router-flux';
-
 import { SegmentedControls } from 'react-native-radio-buttons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 
-const { width, height } = Dimensions.get('window');
+import RadioButton from '../../../Explore/components/smart/radioButton';
+import UploadFromCameraRoll from '../../../Components/imageUploader';
 
+const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
+const avatarDefault = require('../../../Assets/images/avatar.png');
+const labelSex = ['Male', 'Female'];
+const prices = [
+  {item: '$', price: '$50-100', level: 1},
+  {item: '$$', price: '$100-300', level: 2},
+  {item: '$$$', price: '$300+', level: 3}
+];
 
 //const variable
 const constants = {
-  BASIC_INFO: 'BASIC_INFO',
+  BASIC_INFO: 'BASIC INFO',
   CALENDAR: 'CALENDAR'
 };
 
@@ -36,8 +43,6 @@ class EditProfile extends Component {
     this.state = {
       user: props.auth.user,
       selectedOption: constants.BASIC_INFO,
-      yourTitle: '',
-      profileVisibility: true
     };
 
     //binds
@@ -64,56 +69,63 @@ class EditProfile extends Component {
   get getShowNavBar() {
     const { selectedOption } = this.state;
 
-    return <View style={ styles.navBarContainer }>
-          <View style={ styles.navigateButtons }>
-              <TouchableOpacity
-                onPress={ () => this.onBack() }
-                style={ styles.navButtonWrapper }
-              >
-                <EntypoIcons
-                  name="chevron-thin-left"  size={ 25 }
-                  color="#fff"
-                />
-              </TouchableOpacity>
+    return (
+      <View style={ styles.navBarContainer }>
+        <View style={ styles.navigateButtons }>
+          <TouchableOpacity
+            onPress={ () => this.onBack() }
+            style={ styles.navButtonWrapper }
+          >
+            <EntypoIcons
+              name="chevron-thin-left"  size={ 25 }
+              color="#fff"
+            />
+          </TouchableOpacity>
 
-              <Text style={ styles.textTitle }>PROFILE EDIT</Text>
+          <Text style={ styles.textTitle }>PROFILE EDIT</Text>
 
-              <TouchableOpacity
-                onPress={ () => this.saveProfile() }
-                style={ styles.navButtonWrapper }
-              >
-                <EntypoIcons
-                  name="check"  size={ 25 }
-                  color="#fff"
-                />
-              </TouchableOpacity>
-          </View>
-          <SegmentedControls
-            tint={ "#fff" }
-            selectedTint= { "#41c3fd" }
-            backTint= { "#41c3fd" }
-            options={ [constants.BASIC_INFO, constants.CALENDAR] }
-            onSelection={ (option) => this.onChangeOptions(option) }
-            selectedOption={ selectedOption }
-            allowFontScaling={ true }
-            optionStyle={{
-              fontSize: 12,
-              height: 25,
-            }}
-            containerStyle= {{
-              height: 30,
-              alignItems: 'flex-end',
-              justifyContent: 'center',
-              marginHorizontal: 10,
-              marginVertical: 5,
-            }}
-          />
-        </View>;
+          <TouchableOpacity
+            onPress={ () => this.saveProfile() }
+            style={ styles.navButtonWrapper }
+          >
+            <EntypoIcons
+              name="check"  size={ 25 }
+              color="#fff"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <SegmentedControls
+          tint={ "#fff" }
+          selectedTint= { "#41c3fd" }
+          backTint= { "#41c3fd" }
+          options={ [constants.BASIC_INFO, constants.CALENDAR] }
+          onSelection={ (option) => this.onChangeOptions(option) }
+          selectedOption={ selectedOption }
+          allowFontScaling={ true }
+          optionStyle={{
+            fontSize: 12,
+            height: 20,
+            paddingTop:3,
+          }}
+          containerStyle= {{
+            borderRadius:10,
+            height: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginHorizontal: 10,
+            marginVertical: 5,
+          }}
+        />
+        </View>);
+  }
+  addAvatarUri = (uri) => {
+    this.setState({ user: {...user, avatar: '' }}, () => this.setState({ user: {...user, avatar: uri }}));
   }
 
   render() {
-    const { auth: { user }} = this.props,
-      { yourTitle, profileVisibility } = this.state;
+    const { avatar, user } = this.state;
+    console.log('===========', user);
 
     return (
       <View style={ styles.container }>
@@ -122,35 +134,57 @@ class EditProfile extends Component {
           <View style={ styles.contentContainer }>
             <View style={ styles.avatarContainer }>
               <View style={ styles.avatarWrapper }>
-                <Image
-                  source={ user.avatar }
-                  style={ styles.imageAvatar }
-                  resizeMode="cover"/>
+                { avatar ?
+                  <ImageProgress source={ {uri: avatar} } indicator={ActivityIndicator} style={ styles.imageAvatar } resizeMode="cover"/>
+                  :
+                  <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
+                }
+                <UploadFromCameraRoll directlyUpload={true} addAvatarUri={this.addAvatarUri}/>
               </View>
             </View>
-            <View style={ styles.inputWrap }>
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={ false }
-                placeholder="Add your title here"
-                placeholderTextColor="#9e9e9e"
-                color="#000"
-                style={ styles.textInput }
-                value={ yourTitle }
-                onChangeText={ (yourTitle) => this.setState({ yourTitle }) }
-              />
-            </View>
-            <View style={ [styles.profileVisibility, styles.mHProfileField] }>
-              <View style={ [styles.profileVisibilityTitle, styles.mHProfileField] }>
-                <Text style={ styles.profileVisibilityText }>Profile visibility</Text>
+
+            <View style={ styles.cellContainer }>
+              <View style={ styles.viewInputCenter }>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={ false }
+                  placeholder="Add your name here"
+                  placeholderTextColor="#9e9e9e"
+                  style={ [styles.fontStyles, styles.textInputCenter] }
+                  value={ user.name }
+                  onChangeText={ (name) => this.setState({ user: {...user, name}}) }
+                />
               </View>
-              <View style={ [styles.profileVisibilitySwitch, styles.mHProfileField] }>
+            </View>
+            <View style={ [styles.cellContainer, styles.profileVisibility] }>
+              <View style={ styles.profileVisibilityTitle }>
+                <Text style={ styles.fontStyles }>Profile visibility</Text>
+              </View>
+              <View style={ styles.profileVisibilitySwitch }>
                 <Switch
-                  // onTintColor="#fff"
-                  thumbTintColor="#0000ff"
-                  tintColor="#e3e3e3"
-                  onValueChange={(profileVisibility) => this.setState({ profileVisibility })}
-                  value={ profileVisibility } />
+                  onValueChange={(visibility) => this.setState({ user: {...user, visibility }})}
+                  value={ user.visibility } />
+              </View>
+            </View>
+            <View style={ styles.cellContainer }>
+              <Text style={ [styles.fontStyles, styles.textCellTitle] }>Gender</Text>
+              <View style={ styles.cellValueContainer }>
+                {
+                  labelSex.map(value => {
+                    return (
+                      <RadioButton
+                        style={ styles.paddingTwo }
+                        key={ value }
+                        label={ value }
+                        color="#19b8ff"
+                        iconStyle={ styles.iconButton }
+                        labelStyle={ [styles.fontStyles, styles.textCellValue] }
+                        checked={ user.gender === value }
+                        onPress={ () => this.setState({ user: {...user, gender: value }}) }
+                      />
+                    );
+                  })
+                }
               </View>
             </View>
             <View style={ styles.gender }>
@@ -217,11 +251,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderBottomWidth: 2,
   },
-  textSectionTitle: {
-    paddingLeft: 5,
-    textAlign: 'center',
-    color: '#565656',
-  },
   timeMainContainer: {
     flex: 3,
     backgroundColor: '#fff',
@@ -277,35 +306,27 @@ const styles = StyleSheet.create({
   },
   //avatar
   avatarContainer: {
-    height: 140,
+    marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarWrapper: {
-    // flex: 1,
-    // paddingVertical: 5,
-    // paddingHorizontal: 15,
     backgroundColor: '#fff',
-    // position: 'absolute',
-    height: 130,
-    width: 130,
-    borderRadius: 65,
     justifyContent: 'center',
     alignItems: 'center',
   },
   imageAvatar: {
-    height: 128,
-    width: 128,
-    borderRadius: 64,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
   },
   //end avatar
   //inputWrap
   inputWrap: {
-    // height: 30,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     borderBottomColor: '#e3e3e3',
     marginHorizontal: 80,
     marginVertical: 10
@@ -320,17 +341,12 @@ const styles = StyleSheet.create({
   },
   profileVisibility: {
     flex: 1,
-    borderTopWidth: 2,
-    borderTopColor: '#e3e3e3',
     flexDirection: 'row'
   },
   profileVisibilityTitle: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start'
-  },
-  profileVisibilityText: {
-    fontSize: 20
   },
   profileVisibilitySwitch: {
     flex: 1,
@@ -339,7 +355,7 @@ const styles = StyleSheet.create({
   },
   gender: {
     flex: 1,
-    borderTopWidth: 2,
+    borderTopWidth: 1,
     borderTopColor: '#e3e3e3',
   },
   age: {
@@ -361,7 +377,64 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopWidth: 2,
     borderTopColor: '#e3e3e3',
-  }
+  },
+
+  cellContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#fff',
+    paddingHorizontal: 10,
+    paddingVertical: 11,
+  },
+  viewInputCenter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e3e3e3',
+    marginHorizontal: 70,
+  },
+  textInputCenter: {
+    paddingHorizontal:10,
+    flex: 1,
+    color: '#1e1e1e',
+    // fontSize: 18,
+    height: 32,
+  },
+  viewTwoText: {
+    flexDirection: 'column',
+  },
+  textSectionTitle: {
+    fontFamily: 'Open Sans',
+    color: '#6b6b6b',
+    fontSize: 20,
+  },
+  textCellTitle: {
+    color: '#1e1e1e',
+  },
+  textCellValue: {
+    color: '#707070',
+    fontSize: 18,
+  },
+  cellValueContainer: {
+    flexDirection: 'row',
+  },
+  paddingTwo: {
+    marginRight: 10,
+    paddingVertical: 0,
+  },
+  iconButton: {
+    fontSize: 25,
+    marginRight: 5,
+    marginLeft: -5,
+  },
+  fontStyles: {
+    fontFamily: 'Open Sans',
+    fontSize: 20,
+  },
 });
 
 
