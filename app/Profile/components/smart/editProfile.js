@@ -180,7 +180,13 @@ class EditProfile extends Component {
   }
   onAddProfession() {
     const { user, defaultProfession } = this.state;
-    let professions = [...user.professions, {...defaultProfession}];
+    const professions = [...user.professions, {...defaultProfession}];
+    this.setState({ user: {...user, professions } });
+  }
+  onRemoveProfession(index) {
+    const { user } = this.state;
+    user.professions.splice(index, 1)
+    const professions = [...user.professions];
     this.setState({ user: {...user, professions } });
   }
 
@@ -200,9 +206,7 @@ class EditProfile extends Component {
         <Image source={ background } style={ styles.background } resizeMode="cover">
           { this.getShowNavBar }
           <View style={ styles.contentContainer }>
-            <KeyboardAwareScrollView
-              // showsVerticalScrollIndicator={ false }
-            >
+            <KeyboardAwareScrollView>
               <View style={ styles.avatarContainer }>
                 <View style={ styles.avatarWrapper }>
                   { avatar ?
@@ -266,7 +270,7 @@ class EditProfile extends Component {
                 <View style={ styles.viewSlider }>
                   <Animated.View style={ [styles.animateContainer, {paddingLeft: paddingLeft}] }>
                     <Animated.View style={ styles.bubble }>
-                      <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonText] }>{ user.age }</Animated.Text>
+                      <Animated.Text style={ [styles.textAboveSlider] }>{ user.age }</Animated.Text>
                     </Animated.View>
                     <Animated.View style={ styles.arrowBorder } />
                     <Animated.View style={ styles.arrow } />
@@ -306,6 +310,15 @@ class EditProfile extends Component {
                         />
                       </ModalDropdown>
                     </View>
+                    <View style={styles.iconClose}>
+                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onRemoveProfession(index) }>
+                        <EvilIcons
+                          name="close"
+                          size={ 24 }
+                          color={"#10c7f9"}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                   <View style={ [styles.cellContainer, styles.withoutBorder] }>
                     <Text style={ [styles.fontStyles, styles.textCellTitle] }>Price</Text>
@@ -322,7 +335,7 @@ class EditProfile extends Component {
                       }
                     </View>
                   </View>
-                  <View style={ [styles.cellContainer, styles.marginHorizontal30] }/>
+                  <View style={ [styles.cellContainer, styles.marginHorizontal20, styles.withoutPaddings] }/>
                 </View>
               ))}
 
@@ -344,7 +357,7 @@ class EditProfile extends Component {
                   numberOfLines = {4}
                   autoCapitalize="none"
                   autoCorrect={ false }
-                  style={ [styles.textInputDesc, styles.textCellTitle] }
+                  style={ [styles.fontStyles, styles.textInputDesc, styles.textCellTitle] }
                   value={ user.description }
                   onChangeText={ (text) => this.setState({ user: {...user, description: text } }) }
                 />
@@ -508,8 +521,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   //end inputWrap
-  marginHorizontal30: {
-    marginHorizontal: 30
+  marginHorizontal20: {
+    marginHorizontal: 20
+  },
+  withoutPaddings: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
   },
   profileVisibility: {
     flex: 1,
@@ -649,7 +666,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     height: 15,
     width: 20,
-    color: '#6b6b6b',
+    color: '#fff',
     fontSize: 13,
   },
   thumbStyle:{
@@ -670,7 +687,7 @@ const styles = StyleSheet.create({
   },
   dropdownWrapper: {
     flexDirection: 'row',
-    // height: 25,
+    marginRight: 35,
     borderWidth: 1,
     borderColor: '#10c7f9',
     borderRadius: 15,
@@ -683,7 +700,7 @@ const styles = StyleSheet.create({
     width : width * 0.4,
   },
   dropdownStyle: {
-    height: 100,
+    height: 200,
     width : width * 0.4,
     justifyContent: 'center',
     alignItems: 'center',
@@ -699,7 +716,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: 'transparent',
     paddingHorizontal: 20,
-    paddingVertical: 2,
+    paddingVertical: 4,
   },
   dropDownOptions: {
     color: '#6b6b6b',
@@ -711,7 +728,16 @@ const styles = StyleSheet.create({
   iconDropDown: {
     position: 'absolute',
     right: 4,
-    top: 1
+    top: 5
+  },
+  iconClose: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    position:'absolute',
+    right: 0,
+    top: -1,
+    borderTopColor: '#f0f0f0',
+    borderTopWidth:1,
   },
 
   priceButtonChecked: {
@@ -721,6 +747,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 30,
     width: 80,
+    paddingVertical:2,
     marginLeft: 10,
     overflow:'hidden',
   },
@@ -729,6 +756,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 30,
     width: 80,
+    paddingVertical:2,
     marginLeft: 10,
     borderWidth: 1,
     borderColor: '#19b8ff',
@@ -746,11 +774,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   textSubTitle: {
+    paddingTop: 2,
     color: '#707070',
     fontSize: 12,
   },
 
   textSubValue: {
+    paddingBottom:2,
     color: '#707070',
     fontSize: 13,
   },
@@ -768,7 +798,8 @@ const styles = StyleSheet.create({
     borderColor: '#d0d0d0',
     height: 100,
     borderRadius: 5,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    fontSize:16,
   },
   descLabel: {
     marginBottom: 10
