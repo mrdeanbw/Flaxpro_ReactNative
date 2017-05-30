@@ -179,14 +179,23 @@ class EditProfile extends Component {
     this.setState({ user: {...user, professions } });
   }
   onAddProfession() {
-    const { user, defaultProfession } = this.state;
-    const professions = [...user.professions, {...defaultProfession}];
-    this.setState({ user: {...user, professions } });
+    const { user } = this.state;
+    const remainingProfessions = this.props.explore.professions.filter((e)=> {
+      const data = user.professions.filter((item) => (item.profession._id === e._id))
+      return !data.length
+    });
+    if(remainingProfessions[0]){
+      const professions = [...user.professions, {profession: remainingProfessions[0], price: prices[0]}];
+      this.setState({ user: {...user, professions } });
+    }
   }
   onRemoveProfession(index) {
-    const { user } = this.state;
-    user.professions.splice(index, 1)
-    const professions = [...user.professions];
+    const { user, defaultProfession } = this.state;
+    user.professions.splice(index, 1);
+    let professions = [...user.professions];
+    if(!professions.length){
+      professions = [{...defaultProfession}];
+    }
     this.setState({ user: {...user, professions } });
   }
 
@@ -296,7 +305,12 @@ class EditProfile extends Component {
                     <Text style={ [styles.fontStyles, styles.textCellTitle] }>Looking for</Text>
                     <View style={ styles.dropdownWrapper }>
                       <ModalDropdown
-                        options={ professions.map((e)=>e.name) }
+                        options={
+                          professions.filter((e)=> {
+                            const data = user.professions.filter((item) => (item.profession._id === e._id))
+                            return !data.length
+                          }).map((e)=>e.name)
+                        }
                         renderRow={(value)=>(<Text  numberOfLines={1} style={ [styles.fontStyles, styles.dropDownOptions] }>{value}</Text>)}
                         dropdownStyle={ styles.dropdownStyle }
                         onSelect={ (rowId, rowData) => this.onSelectProfession(rowData, index) }
@@ -343,7 +357,7 @@ class EditProfile extends Component {
                 <Text style={ [styles.fontStyles, styles.textSubValue] }>Are you looking for more professionals?</Text>
                 <View style={ styles.pricesBlock }>
                   <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onAddProfession() }>
-                    <View style={ [ styles.priceButton, {width:50}] }>
+                    <View style={ [ styles.priceButton, {width:50, backgroundColor: '#fff'}] }>
                       <Text style={ [styles.fontStyles, styles.textSubTitle, styles.priceButtonText] }>+</Text>
                     </View>
                   </TouchableOpacity>
@@ -752,7 +766,7 @@ const styles = StyleSheet.create({
     overflow:'hidden',
   },
   priceButton: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
     alignItems: 'center',
     borderRadius: 30,
     width: 80,
