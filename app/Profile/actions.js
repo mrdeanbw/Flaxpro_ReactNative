@@ -2,8 +2,8 @@ import * as types from './actionTypes';
 import * as authTypes from '../Auth/actionTypes';
 import request, { toQueryString } from '../request';
 
-function updateProfileSuccess({user}) {
-  return { type: authTypes.UPDATE_USER, user };
+function updateProfileSuccess(data) {
+  return { type: authTypes.UPDATE_USER, ...data };
 }
 
 function profileError(error) {
@@ -20,7 +20,7 @@ export const updateProfile = (userData) => async (dispatch, store) => {
 
   try {
     const response = await request(url, options, auth);
-    dispatch(updateProfileSuccess({user: userData}));
+    dispatch(updateProfileSuccess({...auth, user: userData}));
   } catch (error) {
     const error =
       `Profile Error: updateProfile(${userData.professional ? 'Professional' : 'Client'})
