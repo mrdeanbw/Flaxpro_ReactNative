@@ -112,7 +112,7 @@ class ClientProfileForm extends Component {
             onPress={ () => this.onShowMoreLess( false ) }
             style={ styles.showButtonWrapper }
           >
-            <Text style={ styles.textGray }>Show More</Text>
+            <Text style={ [styles.fontStyles, styles.textGray] }>Show More</Text>
             <EntypoIcons
               name="chevron-thin-down"  size={ 15 }
               color="#7e7e7e"
@@ -129,7 +129,7 @@ class ClientProfileForm extends Component {
               name="chevron-thin-up"  size={ 15 }
               color="#7e7e7e"
             />
-            <Text style={ styles.textGray }>Show Less</Text>
+            <Text style={ [styles.fontStyles, styles.textGray] }>Show Less</Text>
           </TouchableOpacity>
         </View>
     );
@@ -171,7 +171,7 @@ class ClientProfileForm extends Component {
               />
             </TouchableOpacity>
 
-            <Text style={ styles.textTitle }> PROFILE </Text>
+            <Text style={ [styles.fontStyles, styles.textTitle] }> PROFILE </Text>
 
             <TouchableOpacity
               onPress={ () => this.onEdit() }
@@ -206,7 +206,7 @@ class ClientProfileForm extends Component {
               color="#fff"
             />
           </TouchableOpacity>
-          <Text style={ styles.textTitle }>{ user.name && user.name.toUpperCase() }</Text>
+          <Text style={ [styles.fontStyles, styles.textTitle] }>{ user.name && user.name.toUpperCase() }</Text>
           <View style={ styles.navButtonWrapper }/>          
         </View>
     );
@@ -232,50 +232,29 @@ class ClientProfileForm extends Component {
                   <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
                 }
               </View>
-              <Text style={ [styles.textTitle, styles.blackText] }>{ user.name && user.name.toUpperCase() }</Text>
+              <Text style={ [styles.fontStyles, styles.textTitle, styles.blackText] }>{ user.name && user.name.toUpperCase() }</Text>
             </View>
+
             <View style={ [styles.contentMainContainer]}>
-              {/*<View style={ styles.workoutContainer }>*/}
-                {/*{*/}
-                  {/*user.workouts && user.workouts.map((workout) => {*/}
-                    {/*countWorkouts += workout.count;*/}
-                    {/*return <View style={ styles.workoutCell }>*/}
-                      {/*<Image source={ this.getIconWorkout(workout.id) } style={ styles.imageWorkout } />*/}
-                      {/*<Text style={ styles.textWorkoutTitle }>{ workout.workout }</Text>*/}
-                      {/*<Text style={ [styles.textWorkoutValue, { color: '#41ce59'}] }>{ workout.count } WORKOUTS</Text>*/}
-                    {/*</View>*/}
-                  {/*})*/}
-                {/*}*/}
-                {/*<View style={ styles.workoutCell }>*/}
-                  {/*<Image source={ totalWorkout } style={ styles.imageWorkout } />*/}
-                  {/*<Text style={ styles.textWorkoutTitle }>Total Workout</Text>*/}
-                  {/*<Text style={ [styles.textWorkoutValue, { color: '#0fc8fb'}] }>{countWorkouts}</Text>*/}
-                {/*</View>*/}
-              {/*</View>*/}
               <ScrollView>
-                <View style={ styles.infoContainer }>
-                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>                  
-                  <View style={ styles.infoRowContainer }>
+                <View style={ [styles.infoContainer, styles.infoBlock] }>
+                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
+                  <View style={ styles.columnContainer }>
                     <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Sex : </Text>
-                      <Text style={ styles.textInfoValue }>{user.gender}</Text>
+                      <Text style={ [styles.fontStyles, styles.textInfoField] }>Gender : </Text>
+                      <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.gender}</Text>
                     </View>
-                    <View style={ styles.infoRowRightContainer }>
-                      <Text style={ styles.textInfoField }>Year of experience : </Text>
-                      <Text style={ styles.textInfoValue }> --- </Text>
-                    </View>
-                  </View>
-                  <View style={ styles.infoRowContainer }>
                     <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Affiliation : </Text>
-                      <Text style={ styles.textInfoValue }>Gym</Text>
+                      <Text style={ [styles.fontStyles, styles.textInfoField] }>Age : </Text>
+                      <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.age}</Text>
                     </View>
-                    <View style={ styles.infoRowRightContainer }>
-                      <Text style={ styles.textInfoField }>Certification : </Text>
-                      <Text style={ styles.textInfoValue }>{user.certification ? user.certification : '---'}</Text>
+                    <View style={ styles.infoRowLeftContainer }>
+                      <Text style={ [styles.fontStyles, styles.textInfoField] }>Address : </Text>
+                      <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.location.city}</Text>
                     </View>
                   </View>
                 </View>
+
                 <View style={ styles.infoContainer }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
                   <Text style={ styles.textInfoValue }>{user.description}</Text>
@@ -373,6 +352,10 @@ const styles = StyleSheet.create({
     height,
   },
 
+  fontStyles: {
+    fontFamily: 'Open Sans',
+    fontSize: 18,
+  },
   navigateButtons: {
     flex:1.5,
     alignItems: 'center',
@@ -415,28 +398,13 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: '#fff',
   },
-  // imageAvatar: {
-  //   height: 60,
-  //   width: 60,
-  //   borderRadius: 30,
-  // },
-  // avatarWrapper: {
-  //   backgroundColor: '#fff',
-  //   position: 'absolute',
-  //   left: width / 2 - 32,
-  //   height: 64,
-  //   width: 64,
-  //   borderRadius: 32,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
   contentContainer: {
     flex: 8.5,
     backgroundColor: 'transparent',
   },
   contentMainContainer: {
     flex: 8.5,
-    backgroundColor: '#fff',
+    backgroundColor: '#f7f9fa',
   },
   workoutContainer: {
     alignSelf: 'stretch',
@@ -470,10 +438,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
-    infoRowContainer: {
+  infoRowContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingTop: 5,
+  },
+   columnContainer: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     paddingTop: 5,
   },
   infoRowLeftContainer: {
@@ -489,16 +463,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInfoTitle: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold',
     paddingVertical: 5,
   },
-    textInfoField: {
-    fontSize: 12,
+  textInfoField: {
+    fontSize: 14,
     color: '#11c6f8',
   },
   textInfoValue: {
-    fontSize: 10,
+    fontSize: 14,
   },
   starContainer: {
     flexDirection: 'row',
@@ -554,6 +528,12 @@ const styles = StyleSheet.create({
   },
   blackText:{
     color: '#000'
+  },
+  infoBlock: {
+    borderWidth: 1,
+    borderColor: '#f0f1f1',
+    backgroundColor: '#fff',
+    marginBottom: 10
   },
 });
 
