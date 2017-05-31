@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   StyleSheet,
+  ActivityIndicator,
   Text,
   View,
   Image,
@@ -12,9 +13,11 @@ import {
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
+import { SegmentedControls } from 'react-native-radio-buttons';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import ImageProgress from 'react-native-image-progress';
+
 import Calendar from './calendar/Calendar';
 
 const { width, height } = Dimensions.get('window');
@@ -26,7 +29,12 @@ const strengthTraining = require('../../../Assets/images/strength_training.png')
 const pilates = require('../../../Assets/images/pilates.png');
 const yoga = require('../../../Assets/images/yoga.png');
 const totalWorkout = require('../../../Assets/images/total_workout.png');
+const avatarDefault = require('../../../Assets/images/avatar.png');
 
+const constants = {
+  BASIC_INFO: 'BASIC INFO',
+  CALENDAR: 'CALENDAR'
+};
 //auth redux store
 import * as authActions from '../../../Auth/actions';
 
@@ -47,6 +55,7 @@ class ClientProfileForm extends Component {
 
     this.state = {
       showMoreOrLess: true,
+      selectedOption: constants.BASIC_INFO,
     };
   }
 
@@ -75,6 +84,14 @@ class ClientProfileForm extends Component {
 
   onBack() {
     Actions.pop();
+  }
+
+  onChangeOptions(option) {
+    const { selectedOption } = this.state;
+
+    if (selectedOption != option) {
+      this.setState({selectedOption: option})
+    }
   }
 
   getIconWorkout(id) {
@@ -138,25 +155,45 @@ class ClientProfileForm extends Component {
 
   get getShowNavBar() {
     const { editable, auth } = this.props;
+    const { selectedOption } = this.state;
 
     return (
       editable ?
-        <View style={ styles.navBarContainer }>
-          <TouchableOpacity
-            onPress={ () => this.onSchdule() }
-            style={ styles.navButtonWrapper }
-          >
-            <Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>
-          </TouchableOpacity>
+        <View style={ styles.navigateButtons }>
+          <View style={ styles.navBarContainer }>
+            <TouchableOpacity
+              onPress={ () => this.onBack() }
+              style={ styles.navButtonWrapper }
+            >
+              <EntypoIcons
+                name="chevron-thin-left"  size={ 25 }
+                color="#fff"
+              />
+            </TouchableOpacity>
 
-          <Text style={ styles.textTitle }>{ auth.user.name && auth.user.name.toUpperCase() }</Text>
+            <Text style={ styles.textTitle }> PROFILE </Text>
 
-          <TouchableOpacity
-            onPress={ () => this.onEdit() }
-            style={ styles.navButtonWrapper }
-          >
-            <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={ () => this.onEdit() }
+              style={ styles.navButtonWrapper }
+            >
+              <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
+            </TouchableOpacity>
+          </View>
+          <View style={ styles.navigateButtons }>
+
+          <SegmentedControls
+            tint={ "#fff" }
+            selectedTint= { "#41c3fd" }
+            backTint= { "#41c3fd" }
+            options={ [constants.BASIC_INFO, constants.CALENDAR] }
+            onSelection={ (option) => this.onChangeOptions(option) }
+            selectedOption={ selectedOption }
+            allowFontScaling={ true }
+            optionStyle={styles.segmentedControlsOptions}
+            containerStyle= {styles.segmentedControlsContainer}
+          />
+          </View>
         </View>
         :
         <View style={ styles.navBarContainer }>
@@ -169,14 +206,14 @@ class ClientProfileForm extends Component {
               color="#fff"
             />
           </TouchableOpacity>
-          <Text style={ styles.textTitle }>{ auth.user.name && auth.user.name.toUpperCase() }</Text>
+          <Text style={ styles.textTitle }>{ user.name && user.name.toUpperCase() }</Text>
           <View style={ styles.navButtonWrapper }/>          
         </View>
     );
   }
 
   render() {
-    const { editable, auth } = this.props,
+    const { editable, auth: { user } } = this.props,
       { showMoreOrLess } = this.state;
 
     let countWorkouts = 0;
@@ -188,37 +225,40 @@ class ClientProfileForm extends Component {
 
           <View style={ styles.contentContainer }>
             <View style={ styles.avatarContainer }>
-              <View style={ styles.avatarTopBackground }/>
-              <View style={ styles.avatarBottomBackground }/>
               <View style={ styles.avatarWrapper }>
-                <Image source={ auth.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
-              </View>
-            </View>
-            <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
-              <View style={ styles.workoutContainer }>
-                {
-                  auth.user.workouts && auth.user.workouts.map((workout) => {
-                    countWorkouts += workout.count;
-                    return <View style={ styles.workoutCell }>
-                      <Image source={ this.getIconWorkout(workout.id) } style={ styles.imageWorkout } />
-                      <Text style={ styles.textWorkoutTitle }>{ workout.workout }</Text>
-                      <Text style={ [styles.textWorkoutValue, { color: '#41ce59'}] }>{ workout.count } WORKOUTS</Text>
-                    </View>
-                  })
+                { user.avatar ?
+                  <ImageProgress source={ {uri: user.avatar} } indicator={ActivityIndicator} style={ styles.imageAvatar } resizeMode="cover"/>
+                  :
+                  <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
                 }
-                <View style={ styles.workoutCell }>
-                  <Image source={ totalWorkout } style={ styles.imageWorkout } />
-                  <Text style={ styles.textWorkoutTitle }>Total Workout</Text>
-                  <Text style={ [styles.textWorkoutValue, { color: '#0fc8fb'}] }>{countWorkouts}</Text>
-                </View>
               </View>
+              <Text style={ [styles.textTitle, styles.blackText] }>{ user.name && user.name.toUpperCase() }</Text>
+            </View>
+            <View style={ [styles.contentMainContainer]}>
+              {/*<View style={ styles.workoutContainer }>*/}
+                {/*{*/}
+                  {/*user.workouts && user.workouts.map((workout) => {*/}
+                    {/*countWorkouts += workout.count;*/}
+                    {/*return <View style={ styles.workoutCell }>*/}
+                      {/*<Image source={ this.getIconWorkout(workout.id) } style={ styles.imageWorkout } />*/}
+                      {/*<Text style={ styles.textWorkoutTitle }>{ workout.workout }</Text>*/}
+                      {/*<Text style={ [styles.textWorkoutValue, { color: '#41ce59'}] }>{ workout.count } WORKOUTS</Text>*/}
+                    {/*</View>*/}
+                  {/*})*/}
+                {/*}*/}
+                {/*<View style={ styles.workoutCell }>*/}
+                  {/*<Image source={ totalWorkout } style={ styles.imageWorkout } />*/}
+                  {/*<Text style={ styles.textWorkoutTitle }>Total Workout</Text>*/}
+                  {/*<Text style={ [styles.textWorkoutValue, { color: '#0fc8fb'}] }>{countWorkouts}</Text>*/}
+                {/*</View>*/}
+              {/*</View>*/}
               <ScrollView>
                 <View style={ styles.infoContainer }>
                   <Text style={ styles.textInfoTitle }>BASIC INFO</Text>                  
                   <View style={ styles.infoRowContainer }>
                     <View style={ styles.infoRowLeftContainer }>
                       <Text style={ styles.textInfoField }>Sex : </Text>
-                      <Text style={ styles.textInfoValue }>{auth.user.gender}</Text>
+                      <Text style={ styles.textInfoValue }>{user.gender}</Text>
                     </View>
                     <View style={ styles.infoRowRightContainer }>
                       <Text style={ styles.textInfoField }>Year of experience : </Text>
@@ -232,17 +272,17 @@ class ClientProfileForm extends Component {
                     </View>
                     <View style={ styles.infoRowRightContainer }>
                       <Text style={ styles.textInfoField }>Certification : </Text>
-                      <Text style={ styles.textInfoValue }>{auth.user.certification ? auth.user.certification : '---'}</Text>
+                      <Text style={ styles.textInfoValue }>{user.certification ? user.certification : '---'}</Text>
                     </View>
                   </View>
                 </View>
                 <View style={ styles.infoContainer }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                  <Text style={ styles.textInfoValue }>{auth.user.about}</Text>
+                  <Text style={ styles.textInfoValue }>{user.description}</Text>
                 </View>
 
                 <Text style={ [styles.textInfoTitle, { paddingHorizontal: 10 }] }>REVIEWS</Text>
-                { auth.user.reviews && auth.user.reviews.map((review, index) => {
+                { user.reviews && user.reviews.map((review, index) => {
                     if (showMoreOrLess && index > 1) return null;
                     return <View style={ styles.infoContainer }>
                       <View style={ styles.starContainer }>
@@ -332,8 +372,14 @@ const styles = StyleSheet.create({
     width,
     height,
   },
+
+  navigateButtons: {
+    flex:1.5,
+    alignItems: 'center',
+    flexDirection: 'column'
+  },
   navBarContainer: {
-    flex: 0.7,
+    // flex: 1,
     flexDirection: 'row',
     backgroundColor: 'transparent',
     paddingTop: 20,
@@ -349,7 +395,7 @@ const styles = StyleSheet.create({
     flex: 10,
     textAlign: 'center',
     color: '#fff',
-    fontSize: 20
+    fontSize: 20,
   },
   imageSchedule: {
     width: 26,
@@ -358,11 +404,6 @@ const styles = StyleSheet.create({
   imageEdit: {
     width: 24,
     height: 24,
-  },
-  avatarContainer: {
-    height: 64,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   avatarTopBackground: {
     width: width,
@@ -374,21 +415,21 @@ const styles = StyleSheet.create({
     height: 32,
     backgroundColor: '#fff',
   },
-  imageAvatar: {
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-  },
-  avatarWrapper: {
-    backgroundColor: '#fff',
-    position: 'absolute',
-    left: width / 2 - 32,
-    height: 64,
-    width: 64,
-    borderRadius: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  // imageAvatar: {
+  //   height: 60,
+  //   width: 60,
+  //   borderRadius: 30,
+  // },
+  // avatarWrapper: {
+  //   backgroundColor: '#fff',
+  //   position: 'absolute',
+  //   left: width / 2 - 32,
+  //   height: 64,
+  //   width: 64,
+  //   borderRadius: 32,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
   contentContainer: {
     flex: 8.5,
     backgroundColor: 'transparent',
@@ -479,6 +520,40 @@ const styles = StyleSheet.create({
   showButtonWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  segmentedControlsOptions: {
+    fontSize: 12,
+    height: 20,
+    paddingTop:3,
+  },
+  segmentedControlsContainer:{
+    borderRadius:10,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
+  avatarContainer: {
+    height: 135,
+    backgroundColor: '#F7F9FA',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  imageAvatar: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+  },
+  avatarWrapper: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    marginVertical: 10
+  },
+  blackText:{
+    color: '#000'
   },
 });
 
