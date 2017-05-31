@@ -40,8 +40,35 @@ import * as authActions from '../../../Auth/actions';
 
 import { allProfessions } from '../../../Components/tempDataUsers'
 
-class ClientProfileForm extends Component {
+const temporary_reviews = [{
+  rating: 5,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Alex'
+}, {
+  rating: 3,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Mark'
+}, {
+  rating: 5,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Tony'
+}, {
+  rating: 4,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Daniel'
+}, {
+  rating: 5,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Dick'
+}]
 
+
+class ClientProfileForm extends Component {
   static propTypes = {
     editable: PropTypes.bool,
   };
@@ -216,6 +243,7 @@ class ClientProfileForm extends Component {
     const { editable, auth: { user } } = this.props,
       { showMoreOrLess } = this.state;
 
+    const reviews = (user.reviews && user.reviews.length) ? user.reviews : temporary_reviews;
     let countWorkouts = 0;
     return (
       <View style={ styles.container }>
@@ -235,7 +263,7 @@ class ClientProfileForm extends Component {
               <Text style={ [styles.fontStyles, styles.textTitle, styles.blackText] }>{ user.name && user.name.toUpperCase() }</Text>
             </View>
 
-            <View style={ [styles.contentMainContainer]}>
+            <View style={ [styles.contentMainContainer, { paddingBottom: 50 }] }>
               <ScrollView>
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
                   <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
@@ -255,36 +283,37 @@ class ClientProfileForm extends Component {
                   </View>
                 </View>
 
-                <View style={ styles.infoContainer }>
+                <View style={ [styles.infoContainer, styles.infoBlock] }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                  <Text style={ styles.textInfoValue }>{user.description}</Text>
+                  <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.description}</Text>
                 </View>
 
-                <Text style={ [styles.textInfoTitle, { paddingHorizontal: 10 }] }>REVIEWS</Text>
-                { user.reviews && user.reviews.map((review, index) => {
-                    if (showMoreOrLess && index > 1) return null;
-                    return <View style={ styles.infoContainer }>
-                      <View style={ styles.starContainer }>
-                        <Text style={ styles.textProfessionalName }>{ review.author }</Text>
-                        <Stars
-                          isActive={ false }
-                          rateMax={ 5 }
-                          isHalfStarEnabled={ false }
-                          // onStarPress={ (rating) => console.log(rating) }
-                          rate={ review.rating }
-                          size={ 16 }
-                        />
+                <View style={ [styles.infoContainer, styles.infoBlock] }>
+                  <Text style={ [styles.textInfoTitle] }>REVIEWS</Text>
+                  { reviews && reviews.map((review, index) => {
+                    if (showMoreOrLess && index >= 1) return null;
+                    return (
+                      <View style={ styles.columnContainer } key={index}>
+                        <View style={ styles.starContainer }>
+                          <Text style={ styles.textProfessionalName }>{ review.author }</Text>
+                          <Stars
+                            isActive={ false }
+                            rateMax={ 5 }
+                            isHalfStarEnabled={ false }
+                            onStarPress={ (rating) => console.log(rating) }
+                            rate={ review.rating }
+                            size={ 16 }
+                          />
+                        </View>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{ review.review }</Text>
+                        <Text style={ [styles.fontStyles, styles.textGray] }>{ review.date }</Text>
                       </View>
-                      <Text style={ styles.textInfoValue }>{ review.review }</Text>
-                      <Text style={ styles.textGray }>{ review.date }</Text>
-                    </View>
+                    )
                   })
-                }
+                  }
+                </View>
+                { this.showMoreOrLessButton }
               </ScrollView>
-
-              { this.showMoreOrLessButton }
-              { this.showCalendar }
-
             </View>
           </View>
         </Image>
@@ -434,7 +463,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   infoContainer: {
-    paddingVertical: 5,
+    paddingTop: 5,
+    paddingBottom: 10,
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
@@ -478,7 +508,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   textProfessionalName: {
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: 'bold',
     paddingRight: 5,
   },
