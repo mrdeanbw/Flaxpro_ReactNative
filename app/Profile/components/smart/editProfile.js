@@ -130,7 +130,7 @@ class EditProfile extends Component {
             style={ styles.navButtonWrapper }
           >
             <MaterialIcons
-              name="check"  size={ 25 }
+              name="check"  size={ 27 }
               color="#fff"
             />
           </TouchableOpacity>
@@ -144,19 +144,8 @@ class EditProfile extends Component {
           onSelection={ (option) => this.onChangeOptions(option) }
           selectedOption={ selectedOption }
           allowFontScaling={ true }
-          optionStyle={{
-            fontSize: 12,
-            height: 20,
-            paddingTop:3,
-          }}
-          containerStyle= {{
-            borderRadius:10,
-            height: 30,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginHorizontal: 10,
-            marginVertical: 5,
-          }}
+          optionStyle={styles.segmentedControlsOptions}
+          containerStyle= {styles.segmentedControlsContainer}
         />
         </View>);
   }
@@ -218,8 +207,8 @@ class EditProfile extends Component {
             <KeyboardAwareScrollView>
               <View style={ styles.avatarContainer }>
                 <View style={ styles.avatarWrapper }>
-                  { avatar ?
-                    <ImageProgress source={ {uri: avatar} } indicator={ActivityIndicator} style={ styles.imageAvatar } resizeMode="cover"/>
+                  { user.avatar ?
+                    <ImageProgress source={ {uri: user.avatar} } indicator={ActivityIndicator} style={ styles.imageAvatar } resizeMode="cover"/>
                     :
                     <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
                   }
@@ -436,7 +425,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     fontSize: 20,
-    paddingBottom: 10,
+    paddingBottom: 5,
   },
   contentContainer: {
     flex: 6.4,
@@ -817,6 +806,19 @@ const styles = StyleSheet.create({
   },
   descLabel: {
     marginBottom: 10
+  },
+  segmentedControlsOptions: {
+    fontSize: 12,
+    height: 20,
+    paddingTop:3,
+  },
+  segmentedControlsContainer:{
+    borderRadius:10,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
 
   fontStyles: {
