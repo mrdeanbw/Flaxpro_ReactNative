@@ -35,9 +35,13 @@ const constants = {
   BASIC_INFO: 'BASIC INFO',
   CALENDAR: 'CALENDAR'
 };
+const prices = [
+  {item: '$', price: '$50-100', level: '1'},
+  {item: '$$', price: '$100-300', level: '2'},
+  {item: '$$$', price: '$300+', level: '3'}
+];
 //auth redux store
 import * as authActions from '../../../Auth/actions';
-
 import { allProfessions } from '../../../Components/tempDataUsers'
 
 const temporary_reviews = [{
@@ -238,10 +242,22 @@ class ClientProfileForm extends Component {
         </View>
     );
   }
+  prepareProfessions(){
+    const { explore: { professions }, auth: { user } } = this.props;
+    const data = [...user.professions.map((e)=>(
+      {
+        profession: professions.filter((item)=>item._id===e.profession)[0] || {},
+        price: prices.filter((item)=>(item.level===e.priceLevel))[0] || {},
+      })
+    )
+    ];
+    return data;
+  }
 
   render() {
-    const { editable, auth: { user } } = this.props,
-      { showMoreOrLess } = this.state;
+    const { editable, auth: { user } } = this.props;
+    const { showMoreOrLess } = this.state;
+    const professions = this.prepareProfessions();
 
     const reviews = (user.reviews && user.reviews.length) ? user.reviews : temporary_reviews;
     let countWorkouts = 0;
@@ -280,6 +296,22 @@ class ClientProfileForm extends Component {
                       <Text style={ [styles.fontStyles, styles.textInfoField] }>Address : </Text>
                       <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.location.city}</Text>
                     </View>
+                  </View>
+                </View>
+
+                <View style={ [styles.infoContainer, styles.infoBlock] }>
+                  <Text style={ styles.textInfoTitle }>LOOKING FOR</Text>
+                  <View style={ styles.infoRowLeftContainer }>
+                    <ScrollView horizontal={ true }>
+                    {
+                      professions.map((item, index) => (
+                        <View style={ [styles.columnContainer, styles.blueBorderBlock] } key={index}>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{item.profession.name}</Text>
+                          <Text style={ [styles.textInfoTitle, styles.blueText] }>{item.price.price}</Text>
+                        </View>
+                      ))
+                    }
+                    </ScrollView>
                   </View>
                 </View>
 
@@ -501,6 +533,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#11c6f8',
   },
+  blueBorderBlock: {
+    borderWidth: 2,
+    borderColor: '#11c6f8',
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingHorizontal: 10,
+    marginVertical: 10,
+    marginRight: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   textInfoValue: {
     fontSize: 14,
   },
@@ -556,8 +601,11 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     marginVertical: 10
   },
+  blueText:{
+    color: '#11c6f8',
+  },
   blackText:{
-    color: '#000'
+    color: '#000',
   },
   infoBlock: {
     borderWidth: 1,
@@ -568,7 +616,8 @@ const styles = StyleSheet.create({
 });
 
 export default connect(state => ({
-    auth: state.auth
+    auth: state.auth,
+    explore: state.explore,
   }),
   (dispatch) => ({
     actions: bindActionCreators(authActions, dispatch)
