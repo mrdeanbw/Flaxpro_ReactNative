@@ -283,18 +283,24 @@ class ClientProfileForm extends Component {
               <ScrollView>
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
                   <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
-                  <View style={ styles.columnContainer }>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ [styles.fontStyles, styles.textInfoField] }>Gender : </Text>
-                      <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.gender}</Text>
+                  <View style={ [styles.spaceBetweenContainer] }>
+                    <View style={ styles.columnContainer }>
+                      <View style={ styles.infoRowLeftContainer }>
+                        <Text style={ [styles.fontStyles, styles.textInfoField] }>Gender : </Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.gender}</Text>
+                      </View>
+                      <View style={ styles.infoRowLeftContainer }>
+                        <Text style={ [styles.fontStyles, styles.textInfoField] }>Age : </Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.age}</Text>
+                      </View>
+                      <View style={ styles.infoRowLeftContainer }>
+                        <Text style={ [styles.fontStyles, styles.textInfoField] }>Address : </Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.location.city}</Text>
+                      </View>
                     </View>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ [styles.fontStyles, styles.textInfoField] }>Age : </Text>
-                      <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.age}</Text>
-                    </View>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ [styles.fontStyles, styles.textInfoField] }>Address : </Text>
-                      <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.location.city}</Text>
+                    <View style={ [styles.infoRowRightContainer, styles.blueBorderBlock] }>
+                      <Text style={ [styles.fontStyles, styles.textInfoValue] }>Total Sessions   </Text>
+                      <Text style={ [styles.textInfoTitle, styles.blueText] }>{professions.length}</Text>
                     </View>
                   </View>
                 </View>
@@ -467,7 +473,7 @@ const styles = StyleSheet.create({
     flex: 8.5,
     backgroundColor: '#f7f9fa',
   },
-  workoutContainer: {
+  spaceBetweenContainer: {
     alignSelf: 'stretch',
     flexDirection: 'row',
     alignItems: 'center',
@@ -519,9 +525,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   infoRowRightContainer: {
-    flex: 2,
+    // flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   textInfoTitle: {
