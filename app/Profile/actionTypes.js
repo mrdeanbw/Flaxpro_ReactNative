@@ -1,1 +1,2 @@
 export const PROFILE_ERROR = 'PROFILE_ERROR';
+export const PROFILE_UPDATE = 'PROFILE_UPDATE';

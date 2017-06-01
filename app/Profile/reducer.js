@@ -2,6 +2,7 @@ import * as types from './actionTypes';
 
 const initialState = {
   error: null,
+  sessions: [],
 };
 
 export default function question(state = initialState, action = {}) {
@@ -10,6 +11,12 @@ export default function question(state = initialState, action = {}) {
       return {
         ...state,
         error: action.error,
+      };
+    case types.PROFILE_UPDATE:
+      return {
+        ...state,
+        error: null,
+        sessions: action.sessions,
       };
     default:
       return state;
