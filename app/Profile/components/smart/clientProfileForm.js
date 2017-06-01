@@ -242,22 +242,28 @@ class ClientProfileForm extends Component {
         </View>
     );
   }
-  prepareProfessions(){
+  prepareProfessions() {
     const { explore: { professions }, auth: { user } } = this.props;
-    const data = [...user.professions.map((e)=>(
+    const workouts = [...user.professions.map((e)=>(
       {
         profession: professions.filter((item)=>item._id===e.profession)[0] || {},
         price: prices.filter((item)=>(item.level===e.priceLevel))[0] || {},
       })
     )
     ];
-    return data;
+    return workouts;
+  }
+
+  onShowSessions() {
+    const { getSessions } = this.props;
+    getSessions({byField: 'profession'})
+    Actions.Sessions();
   }
 
   render() {
     const { editable, auth: { user } } = this.props;
     const { showMoreOrLess } = this.state;
-    const professions = this.prepareProfessions();
+    const workouts = this.prepareProfessions();
 
     const reviews = (user.reviews && user.reviews.length) ? user.reviews : temporary_reviews;
     let countWorkouts = 0;
@@ -298,10 +304,12 @@ class ClientProfileForm extends Component {
                         <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.location.city}</Text>
                       </View>
                     </View>
-                    <View style={ [styles.infoRowRightContainer, styles.blueBorderBlock] }>
-                      <Text style={ [styles.fontStyles, styles.textInfoValue] }>Total Sessions   </Text>
-                      <Text style={ [styles.textInfoTitle, styles.blueText] }>{professions.length}</Text>
-                    </View>
+                    <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowSessions() }>
+                      <View style={ [styles.infoRowRightContainer, styles.blueBorderBlock] }>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>Total Sessions   </Text>
+                          <Text style={ [styles.textInfoTitle, styles.blueText] }>{user.totalSessions}</Text>
+                      </View>
+                    </TouchableOpacity>
                   </View>
                 </View>
 
@@ -310,7 +318,7 @@ class ClientProfileForm extends Component {
                   <View style={ styles.infoRowLeftContainer }>
                     <ScrollView horizontal={ true }>
                     {
-                      professions.map((item, index) => (
+                      workouts.map((item, index) => (
                         <View style={ [styles.columnContainer, styles.blueBorderBlock] } key={index}>
                           <Text style={ [styles.fontStyles, styles.textInfoValue] }>{item.profession.name}</Text>
                           <Text style={ [styles.textInfoTitle, styles.blueText] }>{item.price.price}</Text>
@@ -545,7 +553,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingHorizontal: 10,
-    marginVertical: 10,
     marginRight: 10,
     borderRadius: 10,
     overflow: 'hidden',

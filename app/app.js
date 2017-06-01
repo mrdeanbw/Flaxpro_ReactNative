@@ -20,6 +20,7 @@ import ScheduleForm from './Profile/components/smart/scheduleForm';
 import ClientProfile from './Profile/containers/clientProfile';
 import ProfessionalProfile from './Profile/containers/professionalProfile';
 import EditProfile from './Profile/components/smart/editProfile';
+import Sessions from './Profile/components/smart/sessions';
 import ChatForm from './Inbox/components/smart/chatForm';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -44,6 +45,7 @@ const scenes = Actions.create(
     <Scene key="ProfessionalProfile" component={ ProfessionalProfile } />
     <Scene key="ChatForm" component={ ChatForm } />
     <Scene key="EditProfile" component={ EditProfile }/>
+    <Scene key="Sessions" component={ Sessions }/>
   </Scene>
 );
 
