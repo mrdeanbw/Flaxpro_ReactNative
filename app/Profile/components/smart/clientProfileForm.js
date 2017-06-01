@@ -266,7 +266,7 @@ class ClientProfileForm extends Component {
     const workouts = this.prepareProfessions();
 
     const reviews = (user.reviews && user.reviews.length) ? user.reviews : temporary_reviews;
-    let countWorkouts = 0;
+
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">

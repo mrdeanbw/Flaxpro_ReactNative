@@ -49,7 +49,8 @@ class EditProfile extends Component {
   constructor(props) {
     super(props);
 
-    let { auth: { user }, explore: { professions } } = props;
+    let {  explore: { professions } } = props;
+    let user = {...props.auth};
     const defaultProfession = {
       profession: professions && professions[0] || {},
       price: prices[0],
@@ -149,10 +150,26 @@ class EditProfile extends Component {
         />
         </View>);
   }
+  /**
+   * Calls when user click on the add avatar button
+   *
+   * sets "this.state.user.avatar" before to empty string and then on new url
+   * (need for changing avatar and showing activity indicator)
+   *
+   * @param uri {string} - url from uploaded avatar image
+   */
   addAvatarUri = (uri) => {
     const { user } = this.state;
     this.setState({ user: {...user, avatar: '' }}, () => this.setState({ user: {...user, avatar: uri }}));
   }
+  /**
+   * Calls when user click on the profession in the dropdown list
+   *
+   * find profession by name and update it in "user.professions" array
+   *
+   * @param name {string} - name of profession
+   * @param index {number} - index of block where user selected profession
+   */
   onSelectProfession(name, index) {
     const { user } = this.state;
     const newProfession = this.props.explore.professions.filter((e) => e.name === name)[0];
@@ -160,6 +177,14 @@ class EditProfile extends Component {
     professions[index].profession = newProfession;
     this.setState({ user: {...user, professions } });
   }
+  /**
+   * Calls when user click on the one of the prices buttons
+   *
+   * find price by level and update it in "user.professions" array
+   *
+   * @param price {string} - name of profession
+   * @param index {number} - index of block where user selected profession
+   */
   onSelectPrice(price, index) {
     const { user } = this.state;
     const newPrice = prices.filter((e) => e.level === price.level)[0];
@@ -167,6 +192,13 @@ class EditProfile extends Component {
     professions[index].price = newPrice;
     this.setState({ user: {...user, professions } });
   }
+  /**
+   * Calls when user click on plus button for adding new "looking for" block
+   *
+   * find remaining professions(not added to "user.professions" array)
+   * and add first remaining profession with price to "user.professions" array
+   *
+   */
   onAddProfession() {
     const { user } = this.state;
     const remainingProfessions = this.props.explore.professions.filter((e)=> {
@@ -178,6 +210,14 @@ class EditProfile extends Component {
       this.setState({ user: {...user, professions } });
     }
   }
+  /**
+   * Calls when user click on cross button for remove some "looking for" block
+   *
+   * remove profession from "user.professions" array
+   * if user removed last block, adding default profession with price
+   *
+   * @param index {number} - index of block which user want remove
+   */
   onRemoveProfession(index) {
     const { user, defaultProfession } = this.state;
     user.professions.splice(index, 1);
@@ -186,6 +226,22 @@ class EditProfile extends Component {
       professions = [{...defaultProfession}];
     }
     this.setState({ user: {...user, professions } });
+  }
+  /**
+   * Calls when user open dropdown menu
+   *
+   * find remaining professions(not added to "user.professions" array)
+   * and returned array from names of professions
+   *
+   */
+  onModalOptions() {
+    const { explore: { professions } } = this.props;
+    const { user } = this.state;
+
+    return professions.filter((e) => {
+      const data = user.professions.filter((item) => (item.profession._id === e._id));
+      return !data.length
+    }).map((e) => e.name)
   }
 
   render() {
@@ -294,12 +350,7 @@ class EditProfile extends Component {
                     <Text style={ [styles.fontStyles, styles.textCellTitle] }>Looking for</Text>
                     <View style={ styles.dropdownWrapper }>
                       <ModalDropdown
-                        options={
-                          professions.filter((e)=> {
-                            const data = user.professions.filter((item) => (item.profession._id === e._id))
-                            return !data.length
-                          }).map((e)=>e.name)
-                        }
+                        options={ this.onModalOptions() }
                         renderRow={(value)=>(<Text  numberOfLines={1} style={ [styles.fontStyles, styles.dropDownOptions] }>{value}</Text>)}
                         dropdownStyle={ styles.dropdownStyle }
                         onSelect={ (rowId, rowData) => this.onSelectProfession(rowData, index) }
