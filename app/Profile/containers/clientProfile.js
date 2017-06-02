@@ -10,6 +10,9 @@ class ClientProfile extends Component {
   constructor(props) {
     super(props);
   }
+  componentWillMount() {
+    this.props.actions.getFullProfile();
+  }
 
   render() {
     const { actions, status, editable, user } = this.props;

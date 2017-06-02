@@ -42,7 +42,7 @@ const prices = [
 ];
 //auth redux store
 import * as authActions from '../../../Auth/actions';
-import Reviews from '../../../Components/dummyEntries'
+import { Reviews } from '../../../Components/dummyEntries'
 
 class ClientProfileForm extends Component {
   static propTypes = {
@@ -93,7 +93,8 @@ class ClientProfileForm extends Component {
     const { selectedOption } = this.state;
 
     if (selectedOption != option) {
-      this.onSchedule()
+      this.onSchedule();
+      this.setState({ selectedOption });
     }
   }
 
@@ -174,7 +175,6 @@ class ClientProfileForm extends Component {
             </TouchableOpacity>
           </View>
           <View style={ styles.navigateButtons }>
-
             <SegmentedControls
               tint={ "#fff" }
               selectedTint= { "#41c3fd" }

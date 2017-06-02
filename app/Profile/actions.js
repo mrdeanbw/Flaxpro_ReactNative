@@ -56,3 +56,22 @@ export const getSessions = (data) => async (dispatch, store) => {
   }
 
 };
+
+export const getFullProfile = () => async (dispatch, store) => {
+  const { auth } = store();
+  let url = '/client/'+auth.user._id;
+  const options = {
+    method: 'get',
+  };
+
+  try {
+    const response = await request(url, options, auth);
+    dispatch(updateUserSuccess({...auth, user: response.client}));
+  } catch (error) {
+    const error =
+      `Profile Error: getFullProfile()
+      Message: ${error.message}`;
+    dispatch(profileError(error));
+  }
+
+};
