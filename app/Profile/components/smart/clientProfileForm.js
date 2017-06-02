@@ -93,6 +93,8 @@ class ClientProfileForm extends Component {
     const { selectedOption } = this.state;
 
     if (selectedOption != option) {
+      const { getSessions } = this.props;
+      getSessions({byField: 'day'})
       this.onSchedule();
       this.setState({ selectedOption });
     }

@@ -18,6 +18,7 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-datepicker';
+import { connect } from 'react-redux';
 
 import Calendar from './calendar/Calendar';
 
@@ -25,9 +26,11 @@ import Ramda from 'ramda';
 import Moment from 'moment';
 
 const { width, height } = Dimensions.get('window');
-
+import * as CommonConstant from '../../../Components/commonConstant';
 const background = require('../../../Assets/images/background.png');
 const downArrow = require('../../../Assets/images/down_arrow.png');
+const avatarDefault = require('../../../Assets/images/avatar.png');
+
 const constants = {
   BASIC_INFO: 'BASIC INFO',
   CALENDAR: 'CALENDAR'
@@ -75,7 +78,7 @@ const schedules = [
   
 ];
 
-export default class ScheduleForm extends Component {
+class ScheduleForm extends Component {
 
   constructor(props) {
     super(props);
@@ -95,6 +98,49 @@ export default class ScheduleForm extends Component {
     } else if (newProps.status == 'ClientScheduleError') {
 
     }
+  }
+
+  addTimeTemplate() {
+    return(
+      <View>
+        <View style={ styles.sectionTitleContainer }>
+          <Ionicons
+            name="ios-time-outline"
+            size={ 30 }
+            color="#565656"
+            style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
+          />
+          <Text style={ styles.textSectionTitle }>Select Time</Text>
+        </View>
+
+        <View style={ styles.timeMainContainer }>
+          <ScrollView>
+            { this.showSchedule() }
+
+            <View style={ styles.buttonWrapper }>
+              <TouchableOpacity
+                onPress={ () => this.onAddTime() }
+              >
+                <Ionicons
+                  name="ios-add-circle-outline"
+                  size={ 40 }
+                  color="#717171"
+                  style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
+                />
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
+
+        <View style={ styles.buttonWrapper }>
+          <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSetSchedule() }>
+            <View style={ styles.scheduleButton }>
+              <Text style={ styles.buttonText }>Set Schedule</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
   }
 
   onAddTime() {
@@ -117,7 +163,7 @@ export default class ScheduleForm extends Component {
       schedules[index].times.push({ start: '08:00 AM', end: '09:00 AM' });
     }
 
-    this.setState({ schdules: schedules });
+    this.setState({ schedules: schedules });
   }
 
   onSelectDate(date) {
@@ -130,7 +176,7 @@ export default class ScheduleForm extends Component {
 
     const { schedules } = this.state;
     schedules[index].times[entryIndex].start = time;
-    this.setState({ schdules: schedules });
+    this.setState({ schedules: schedules });
   }
 
   onChangeEndTime(time, entryIndex) {
@@ -138,8 +184,9 @@ export default class ScheduleForm extends Component {
 
     const { schedules } = this.state;
     schedules[index].times[entryIndex].end = time;
-    this.setState({ schdules: schedules });
+    this.setState({ schedules: schedules });
   }
+
 
   onSetSchedule() {
     Actions.pop();
@@ -155,7 +202,6 @@ export default class ScheduleForm extends Component {
       Actions.pop();
     }
   }
-
 
   get getShowNavBar() {
     const { selectedOption } = this.state;
@@ -262,22 +308,14 @@ export default class ScheduleForm extends Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { user, profile: { sessions } } = this.props;
 
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
           { this.getShowNavBar }
           <View style={ styles.contentContainer }>
-            <View style={ styles.sectionTitleContainer }>
-              <EvilIcons                
-                name="calendar"  
-                size={ 35 }
-                color="#565656"
-                style={{ paddingTop: 5 }}
-              />
-              <Text style={ styles.textSectionTitle }>Select Date</Text>
-            </View>
+
             <Calendar
               customStyle={ customStyle }
               dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
@@ -289,43 +327,34 @@ export default class ScheduleForm extends Component {
               isSelectableDay={ true }
               onDateSelect={ (date) => this.onSelectDate(date) }
             />
-            <View style={ styles.sectionTitleContainer }>
-              <Ionicons                
-                name="ios-time-outline"  
-                size={ 30 }
-                color="#565656"
-                style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
-              />
-              <Text style={ styles.textSectionTitle }>Select Time</Text>
-            </View>
+            <ScrollView>
+            {
+              sessions.map((day, index) => (
+                <View key={index}>
+                  <View style={ styles.sectionTitleContainer }>
 
-            <View style={ styles.timeMainContainer }>
-              <ScrollView>
-                { this.showSchedule() }
-
-                <View style={ styles.buttonWrapper }>
-                  <TouchableOpacity
-                      onPress={ () => this.onAddTime() }                
-                  >
-                    <Ionicons                
-                      name="ios-add-circle-outline"  
-                      size={ 40 }
-                      color="#717171"
-                      style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
-                    />
-                  </TouchableOpacity>
+                    <Text style={ styles.textSectionTitle }>{day.date}</Text>
+                  </View>
+                  {
+                    day.sessions.map((session) => (
+                      <View style={ styles.timeMainContainer } key={session._id}>
+                        <View style={ styles.timeRowContainer}>
+                          <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
+                          <View style={ styles.separator}>
+                            <Text style={ [styles.textSectionTitle] }>{session.profession.name}</Text>
+                          </View>
+                        </View>
+                        <View style={ styles.timeRowContainer}>
+                          <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
+                          <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_client ? 'professional': 'client'].name || 'No Name'}</Text>
+                        </View>
+                      </View>
+                    ))
+                  }
                 </View>
-              </ScrollView>  
-            </View>
-
-            <View style={ styles.buttonWrapper }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSetSchedule() }>
-                <View style={ styles.scheduleButton }>
-                  <Text style={ styles.buttonText }>Set Schedule</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-
+              ))
+            }
+            </ScrollView>
           </View>
         </Image>
       </View>
@@ -422,19 +451,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     borderColor: '#d9d9d9',
-    borderTopWidth: 2,
-    borderBottomWidth: 2,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
   },
   textSectionTitle: {
-    paddingLeft: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
     textAlign: 'center',
     color: '#565656',
   },
   timeMainContainer: {
     flex: 3,
+    flexDirection: 'row',
     backgroundColor: '#fff',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    borderColor: '#d9d9d9',
+    borderBottomWidth: 1,
+  },
+  separator: {
+    marginVertical:2,
+    marginLeft:1,
+    borderColor: '#d9d9d9',
+    borderLeftWidth: 1,
   },
   buttonWrapper: {
     flex: 1,
@@ -501,4 +540,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 5,
   },
+  imageAvatar: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+  },
 });
+export default connect(state => ({
+    profile: state.profile,
+    user: state.auth.user,
+  }),
+  (dispatch) => ({
+  })
+)(ScheduleForm);
