@@ -73,7 +73,7 @@ class ClientProfileForm extends Component {
     }
   }
 
-  onSchdule() {
+  onSchedule() {
     Actions.ScheduleForm(); 
   }
 
@@ -93,8 +93,7 @@ class ClientProfileForm extends Component {
     const { selectedOption } = this.state;
 
     if (selectedOption != option) {
-      this.onSchdule()
-      this.setState({selectedOption: option})
+      this.onSchedule()
     }
   }
 
@@ -176,17 +175,17 @@ class ClientProfileForm extends Component {
           </View>
           <View style={ styles.navigateButtons }>
 
-          <SegmentedControls
-            tint={ "#fff" }
-            selectedTint= { "#41c3fd" }
-            backTint= { "#41c3fd" }
-            options={ [constants.BASIC_INFO, constants.CALENDAR] }
-            onSelection={ (option) => this.onChangeOptions(option) }
-            selectedOption={ selectedOption }
-            allowFontScaling={ true }
-            optionStyle={styles.segmentedControlsOptions}
-            containerStyle= {styles.segmentedControlsContainer}
-          />
+            <SegmentedControls
+              tint={ "#fff" }
+              selectedTint= { "#41c3fd" }
+              backTint= { "#41c3fd" }
+              options={ [constants.BASIC_INFO, constants.CALENDAR] }
+              onSelection={ (option) => this.onChangeOptions(option) }
+              selectedOption={ selectedOption }
+              allowFontScaling={ true }
+              optionStyle={styles.segmentedControlsOptions}
+              containerStyle= {styles.segmentedControlsContainer}
+            />
           </View>
         </View>
         :

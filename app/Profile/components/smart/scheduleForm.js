@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import Stars from 'react-native-stars-rating';
+import { SegmentedControls } from 'react-native-radio-buttons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -24,13 +24,14 @@ import Calendar from './calendar/Calendar';
 import Ramda from 'ramda';
 import Moment from 'moment';
 
-
-
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/images/background.png');
 const downArrow = require('../../../Assets/images/down_arrow.png');
-
+const constants = {
+  BASIC_INFO: 'BASIC INFO',
+  CALENDAR: 'CALENDAR'
+};
 const schedules = [
   {
     date: '2017-03-10',
@@ -81,6 +82,7 @@ export default class ScheduleForm extends Component {
     this.state = {
       schedules: schedules,
       selectedDate: schedules[0].date,
+      selectedOption: constants.CALENDAR,
     };
   }
 
@@ -146,23 +148,48 @@ export default class ScheduleForm extends Component {
   onBack() {
     Actions.pop();
   }
+  onChangeOptions(option) {
+    const { selectedOption } = this.state;
+
+    if (selectedOption != option) {
+      Actions.pop();
+    }
+  }
+
 
   get getShowNavBar() {
+    const { selectedOption } = this.state;
     return (
-      <View style={ styles.navBarContainer }>
-        <TouchableOpacity
-          onPress={ () => this.onBack() }
-          style={ styles.navButtonWrapper }
-        >
-          <EntypoIcons
-            name="chevron-thin-left"  size={ 25 }
-            color="#fff"
+      <View style={ styles.navigateButtons }>
+        <View style={ styles.navBarContainer }>
+          <TouchableOpacity
+            onPress={ () => this.onBack() }
+            style={ styles.navButtonWrapper }
+          >
+            <EntypoIcons
+              name="chevron-thin-left"  size={ 25 }
+              color="#fff"
+            />
+          </TouchableOpacity>
+
+          <Text style={ styles.textTitle }>SCHEDULE</Text>
+
+          <View style={ styles.navButtonWrapper }/>
+        </View>
+
+        <View style={ styles.navigateButtons }>
+          <SegmentedControls
+            tint={ "#fff" }
+            selectedTint= { "#41c3fd" }
+            backTint= { "#41c3fd" }
+            options={ [constants.BASIC_INFO, constants.CALENDAR] }
+            onSelection={ (option) => this.onChangeOptions(option) }
+            selectedOption={ selectedOption }
+            allowFontScaling={ true }
+            optionStyle={styles.segmentedControlsOptions}
+            containerStyle= {styles.segmentedControlsContainer}
           />
-        </TouchableOpacity>
-
-        <Text style={ styles.textTitle }>SCHEDULE</Text>
-
-        <View style={ styles.navButtonWrapper }/>
+        </View>
       </View>
     );
   }
@@ -367,11 +394,12 @@ const styles = StyleSheet.create({
     height,
   },
   navBarContainer: {
-    flex: 1,
+    // flex: 1,
+    paddingTop: 20,
     flexDirection: 'row',
     backgroundColor: 'transparent',
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   navButtonWrapper: {
     flex: 1,
@@ -386,7 +414,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },  
   contentContainer: {
-    flex: 9.2,
+    flex: 8.5,
     backgroundColor: '#efefef',
   },
   sectionTitleContainer: {
@@ -455,5 +483,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#565656',
   },
-
+  navigateButtons: {
+    flex:1.5,
+    alignItems: 'center',
+    flexDirection: 'column'
+  },
+  segmentedControlsOptions: {
+    fontSize: 12,
+    height: 20,
+    paddingTop:3,
+  },
+  segmentedControlsContainer:{
+    borderRadius:10,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
 });

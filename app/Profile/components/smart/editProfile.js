@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'flex-end',
-    paddingVertical: 10,
+    paddingTop: 10,
   },
   navigateButtons: {
     alignItems: 'flex-end',
