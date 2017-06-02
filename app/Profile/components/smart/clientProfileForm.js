@@ -121,18 +121,9 @@ class ClientProfileForm extends Component {
     const { selectedOption } = this.state;
 
     if (selectedOption != option) {
+      this.onSchdule()
       this.setState({selectedOption: option})
     }
-  }
-
-  getIconWorkout(id) {
-    for (let i = 0; i < allProfessions.length; i++) {
-      const prof = allProfessions[i];
-      if (prof.id == id) {
-        return prof.icon;
-      }
-    }
-    return null
   }
 
   get showMoreOrLessButton() {

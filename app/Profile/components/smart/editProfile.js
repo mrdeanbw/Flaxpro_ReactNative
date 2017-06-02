@@ -50,7 +50,7 @@ class EditProfile extends Component {
     super(props);
 
     let {  explore: { professions } } = props;
-    let user = {...props.auth};
+    let user = {...props.auth.user};
     const defaultProfession = {
       profession: professions && professions[0] || {},
       price: prices[0],

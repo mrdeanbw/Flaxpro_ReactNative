@@ -116,7 +116,7 @@ class ProfessionalInfoForm extends Component {
     /**
      * 'profession' to {String} name
      */
-    this.state.profession = this.state.profession.name;
+    this.state.profession = this.state.profession && this.state.profession.name;
 
     if(this.state.own === 'Both') {
       this.state.toClient = true;
