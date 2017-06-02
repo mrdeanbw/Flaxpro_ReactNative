@@ -469,3 +469,30 @@ export const Messages = [
   },
 ];
 
+export const Reviews = [{
+  rating: 5,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Alex'
+}, {
+  rating: 3,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Mark'
+}, {
+  rating: 5,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Tony'
+}, {
+  rating: 4,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Daniel'
+}, {
+  rating: 5,
+  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
+  date: 'SEP 18, 2016',
+  author: 'Dick'
+}]
+

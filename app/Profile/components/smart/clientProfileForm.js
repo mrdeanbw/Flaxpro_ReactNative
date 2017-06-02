@@ -42,35 +42,7 @@ const prices = [
 ];
 //auth redux store
 import * as authActions from '../../../Auth/actions';
-import { allProfessions } from '../../../Components/tempDataUsers'
-
-const temporary_reviews = [{
-  rating: 5,
-  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
-  date: 'SEP 18, 2016',
-  author: 'Alex'
-}, {
-  rating: 3,
-  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
-  date: 'SEP 18, 2016',
-  author: 'Mark'
-}, {
-  rating: 5,
-  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
-  date: 'SEP 18, 2016',
-  author: 'Tony'
-}, {
-  rating: 4,
-  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
-  date: 'SEP 18, 2016',
-  author: 'Daniel'
-}, {
-  rating: 5,
-  review: "O spent foor months with him and helped me reached my goal in no time. I love him.",
-  date: 'SEP 18, 2016',
-  author: 'Dick'
-}]
-
+import Reviews from '../../../Components/dummyEntries'
 
 class ClientProfileForm extends Component {
   static propTypes = {
@@ -256,7 +228,7 @@ class ClientProfileForm extends Component {
     const { showMoreOrLess } = this.state;
     const workouts = this.prepareProfessions();
 
-    const reviews = (user.reviews && user.reviews.length) ? user.reviews : temporary_reviews;
+    const reviews = (user.reviews && user.reviews.length) ? user.reviews : Reviews;
 
     return (
       <View style={ styles.container }>
@@ -306,8 +278,8 @@ class ClientProfileForm extends Component {
 
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
                   <Text style={ styles.textInfoTitle }>LOOKING FOR</Text>
-                  <View style={ styles.infoRowLeftContainer }>
-                    <ScrollView horizontal={ true }>
+                  <View style={ [styles.infoRowLeftContainer, styles.negativeMargin] }>
+                    <ScrollView horizontal={ true } showsHorizontalScrollIndicator={false}>
                     {
                       workouts.map((item, index) => (
                         <View style={ [styles.columnContainer, styles.blueBorderBlock] } key={index}>
@@ -544,7 +516,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingHorizontal: 10,
-    marginRight: 10,
+    marginLeft: 10,
     borderRadius: 10,
     overflow: 'hidden',
     justifyContent: 'center',
@@ -617,6 +589,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 10
   },
+  negativeMargin: {
+    marginHorizontal: -10,
+  }
 });
 
 export default connect(state => ({
