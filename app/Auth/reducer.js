@@ -15,7 +15,6 @@ export default function auth(state = initialState, action = {}) {
       return {
         ...state,
         error: null,
-        token: action.token,
         user: {...state.user, ...action.user},
       };
     case types.AUTH_SUCCESS:

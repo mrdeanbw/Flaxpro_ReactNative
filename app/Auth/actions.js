@@ -12,13 +12,9 @@ function loginSuccess(data) {
   return { type: types.AUTH_SUCCESS, ...data };
 }
 
-function createUserSuccess({user, token, professions, professionalsClients}) {
+function createUserSuccess(data) {
   return {
-    type: types.CREATE_USER_SUCCESS,
-    user,
-    token,
-    professions,
-    professionalsClients
+    type: types.CREATE_USER_SUCCESS, ...data
   };
 }
 
@@ -60,7 +56,10 @@ export const createUserServer = (email, password, token=null) => async (dispatch
     const response = await request(url, options);
     dispatch(createUserSuccess({...response, professions, professionalsClients}))
   } catch (error) {
-    dispatch(createUserError(error.message))
+    const error =
+      `Auth Error: createUserServer 
+      Message: ${error.message}`;
+    dispatch(createUserError(error))
   }
 
 };
