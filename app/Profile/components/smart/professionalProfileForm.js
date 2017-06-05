@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import R from 'ramda';
+import { SegmentedControls } from 'react-native-radio-buttons';
 
 import Calendar from './calendar/Calendar';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
@@ -39,6 +40,11 @@ const pilates = require('../../../Assets/images/pilates.png');
 const yoga = require('../../../Assets/images/yoga.png');
 const totalWorkout = require('../../../Assets/images/total_workout.png');
 
+const constants = {
+  BASIC_INFO: 'BASIC INFO',
+  CALENDAR: 'CALENDAR'
+};
+
 class ProfessionalProfileForm extends Component {
 
   static propTypes = {
@@ -53,6 +59,7 @@ class ProfessionalProfileForm extends Component {
     super(props);
     this.state = {
       showMoreOrLess: true,
+      selectedOption: constants.BASIC_INFO,
     };
   }
 
@@ -67,12 +74,23 @@ class ProfessionalProfileForm extends Component {
     }
   }
 
-  onSchdule() {
-    Actions.ScheduleForm();
+  onSchedule() {
+    Actions.ScheduleForm({getSessions: this.props.getSessions});
   }
 
   onEdit() {
-    alert( 'Tapped onEdit!');
+    // Actions.EditProfile();
+  }
+
+  onChangeOptions(option) {
+    const { selectedOption } = this.state;
+
+    if (selectedOption != option) {
+      const { getSessions } = this.props;
+      getSessions({byField: 'day'})
+      this.onSchedule();
+      this.setState({ selectedOption });
+    }
   }
 
   onShowMoreLess(showMode) {
@@ -154,48 +172,38 @@ class ProfessionalProfileForm extends Component {
 
   get showNavBar() {
     const { editable } = this.props;
+    const { selectedOption } = this.state;
 
-    console.log('===========', editable);
     return (
       editable ?
-        <View style={ styles.navBarContainer }>
-          <TouchableOpacity
-            onPress={ () => this.onBack() }
-            style={ styles.navButtonWrapper }
-          >
-            <EntypoIcons
-              name="chevron-thin-left"  size={ 25 }
-              color="#fff"
-            />
-          </TouchableOpacity>
-          {/*<TouchableOpacity*/}
-            {/*onPress={ () => this.onSchdule() }*/}
-            {/*style={ styles.navButtonWrapper }*/}
-          {/*>*/}
-            {/*<Image source={ schedule } style={ styles.imageSchedule } resizeMode="cover"/>*/}
-          {/*</TouchableOpacity>*/}
-          <View style={ styles.navBarTitleContainer }>
-            <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }
-              <Image source={ verified } style={ styles.imageVerified }/>
-            </Text>
+        <View style={ styles.navigateButtons }>
+          <View style={ styles.navBarContainer }>
+            <View style={ styles.navButtonWrapper }/>
 
-            <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
+            <View style={ styles.navBarTitleContainer }>
+              <Text style={ styles.textTitle }>TITLE</Text>
+
+            </View>
+            <TouchableOpacity
+              onPress={ () => this.onEdit() }
+              style={ styles.navButtonWrapper }
+            >
+              <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
+            </TouchableOpacity>
           </View>
-          {/*<TouchableOpacity*/}
-            {/*onPress={ () => this.onEdit() }*/}
-            {/*style={ styles.navButtonWrapper }*/}
-          {/*>*/}
-            {/*<Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>*/}
-          {/*</TouchableOpacity>*/}
-          <TouchableOpacity
-            onPress={ () => this.onBack() }
-            style={ styles.navButtonWrapper }
-          >
-            <EntypoIcons
-              name="dots-three-vertical"  size={ 25 }
-              color="#fff"
+          <View style={ styles.navigateButtons }>
+            <SegmentedControls
+              tint={ "#fff" }
+              selectedTint= { "#41c3fd" }
+              backTint= { "#41c3fd" }
+              options={ [constants.BASIC_INFO, constants.CALENDAR] }
+              onSelection={ (option) => this.onChangeOptions(option) }
+              selectedOption={ selectedOption }
+              allowFontScaling={ true }
+              optionStyle={styles.segmentedControlsOptions}
+              containerStyle= {styles.segmentedControlsContainer}
             />
-          </TouchableOpacity>
+          </View>
         </View>
         :
         <View style={ styles.navBarContainer }>
@@ -212,7 +220,15 @@ class ProfessionalProfileForm extends Component {
             <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }</Text>
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
-          <View style={ styles.navButtonWrapper }/>
+          <TouchableOpacity
+            onPress={ () => this.onBack() }
+            style={ styles.navButtonWrapper }
+          >
+            <EntypoIcons
+              name="dots-three-vertical"  size={ 25 }
+              color="#fff"
+            />
+          </TouchableOpacity>
         </View>
     );
   }
@@ -273,7 +289,6 @@ class ProfessionalProfileForm extends Component {
   render() {
     const { editable, user } = this.props;
     this.user = user;
-    console.log('================', user);
 
     return (
       R.isEmpty(user) ?
@@ -536,17 +551,24 @@ const styles = StyleSheet.create({
     height,
   },
   navBarContainer: {
-    flex: 0.7,
+    // flex: 0.7,
     flexDirection: 'row',
     backgroundColor: 'transparent',
     paddingTop: 20,
+    paddingBottom: 5,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  navigateButtons: {
+    flex:1.4,
+    alignItems: 'center',
+    flexDirection: 'column',
+    paddingHorizontal: 5,
   },
   navButtonWrapper: {
     flex: 1,
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
   },
   navBarTitleContainer: {
     flex: 10,
