@@ -43,6 +43,8 @@ const strengthTraining = require('../../../Assets/images/strength_training.png')
 const pilates = require('../../../Assets/images/pilates.png');
 const yoga = require('../../../Assets/images/yoga.png');
 const totalWorkout = require('../../../Assets/images/total_workout.png');
+import { Reviews } from '../../../Components/dummyEntries'
+import Moment from 'moment';
 
 const constants = {
   BASIC_INFO: 'BASIC INFO',
@@ -176,7 +178,7 @@ class ProfessionalProfileForm extends Component {
 
   get showNavBar() {
     const { editable } = this.props;
-    const { selectedOption } = this.state;
+    const { showMoreOrLess, selectedOption } = this.state;
 
     return (
       editable ?
@@ -292,9 +294,73 @@ class ProfessionalProfileForm extends Component {
     );
   }
 
+  get showNoEditableInfo() {
+    return (
+      <View style={ styles.infoRowContainer }>
+        <View style={ styles.columnContainer }>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Gender : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.gender}</Text>
+          </View>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Age : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.age} years old</Text>
+          </View>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Insured : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.insured ? 'Yes':'No'}</Text>
+          </View>
+        </View>
+        <View style={ [styles.columnContainer, styles.leftPadding] }>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Profession : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.profession.name}</Text>
+          </View>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Certification : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.certification}</Text>
+          </View>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Years of experience : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{Moment().format('Y') - this.user.experience}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  get showEditableInfo() {
+    return (
+      <View style={ styles.infoRowContainer }>
+        <View style={ styles.columnContainer }>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Sex : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.gender}</Text>
+          </View>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Affiliation : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.affiliation || 'Gym'}</Text>
+          </View>
+        </View>
+        <View style={ [styles.columnContainer, styles.leftPadding] }>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Years of experience : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{Moment().format('Y') - this.user.experience}</Text>
+          </View>
+          <View style={ styles.infoRowLeftContainer }>
+            <Text style={ [styles.fontStyles, styles.textInfoField] }>Certification : </Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.certification}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   render() {
     const { editable, user } = this.props;
+    const { showMoreOrLess } = this.state;
     this.user = user;
+    const reviews = (user.reviews && user.reviews.length) ? user.reviews : Reviews;
 
     return (
       R.isEmpty(user) ?
@@ -347,36 +413,10 @@ class ProfessionalProfileForm extends Component {
                 <ScrollView>
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
                     <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
-                    <View style={ styles.infoRowContainer }>
-                      <View style={ styles.columnContainer }>
-                        <View style={ styles.infoRowLeftContainer }>
-                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Gender : </Text>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.gender}</Text>
-                        </View>
-                        <View style={ styles.infoRowLeftContainer }>
-                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Age : </Text>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.age} years old</Text>
-                        </View>
-                        <View style={ styles.infoRowLeftContainer }>
-                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Insured : </Text>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.insured ? 'Yes':'No'}</Text>
-                        </View>
-                      </View>
-                      <View style={ [styles.columnContainer, styles.leftPadding] }>
-                        <View style={ styles.infoRowLeftContainer }>
-                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Profession : </Text>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.profession.name}</Text>
-                        </View>
-                        <View style={ styles.infoRowLeftContainer }>
-                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Certification : </Text>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.certification}</Text>
-                        </View>
-                        <View style={ styles.infoRowLeftContainer }>
-                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Years of experience : </Text>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.experience}</Text>
-                        </View>
-                      </View>
-                    </View>
+                    {
+                      editable ? this.showEditableInfo : this.showNoEditableInfo
+                    }
+
 
                     <View style={ styles.infoRowContainer }>
                       <View style={ styles.infoRowLeftContainer }>
@@ -409,46 +449,30 @@ class ProfessionalProfileForm extends Component {
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
                     <Text style={ [styles.textInfoTitle] }>REVIEWS</Text>
-
-                    <View style={ styles.infoContainer }>
-                      <View style={ styles.starContainer }>
-                        <Text style={ styles.textProfessionalName }>Mark</Text>
-                        <Stars
-                          isActive={ false }
-                          rateMax={ 5 }
-                          isHalfStarEnabled={ false }
-                          onStarPress={ (rating) => console.log(rating) }
-                          rate={ 5 }
-                          size={ 16 }
-                        />
-                      </View>
-                      <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-                      <Text style={ styles.textGray }>SEP 18, 2016</Text>
-                    </View>
-
-                    <View style={ styles.infoContainer }>
-                      <View style={ styles.starContainer }>
-                        <Text style={ styles.textProfessionalName }>Alex</Text>
-                        <Stars
-                          isActive={ false }
-                          rateMax={ 5 }
-                          isHalfStarEnabled={ false }
-                          onStarPress={ (rating) => console.log(rating) }
-                          rate={ 5 }
-                          size={ 16 }
-                        />
-                      </View>
-                      <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-                      <Text style={ styles.textGray }>SEP 18, 2016</Text>
-                    </View>
+                    { reviews && reviews.map((review, index) => {
+                      if (showMoreOrLess && index >= 1) return null;
+                      return (
+                        <View style={ styles.columnContainer } key={index}>
+                          <View style={ styles.starContainer }>
+                            <Text style={ styles.textProfessionalName }>{ review.author }</Text>
+                            <Stars
+                              isActive={ false }
+                              rateMax={ 5 }
+                              isHalfStarEnabled={ false }
+                              onStarPress={ (rating) => console.log(rating) }
+                              rate={ review.rating }
+                              size={ 16 }
+                            />
+                          </View>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{ review.review }</Text>
+                          <Text style={ [styles.fontStyles, styles.textGray] }>{ review.date }</Text>
+                        </View>
+                      )
+                    })
+                    }
                   </View>
-
-
+                  { this.showMoreOrLessButton }
                 </ScrollView>
-
-                { this.showMoreOrLessButton }
-                { this.showCalendar }
-
               </View>
             </View>
           </Image>

@@ -208,7 +208,6 @@ class ClientProfileForm extends Component {
   }
   prepareProfessions() {
     const { explore: { professions }, user } = this.props;
-    console.log('==========', user);
     if(!user.professions) return [];
     const workouts = [...user.professions.map((e)=>(
       {
