@@ -36,6 +36,8 @@ const hire = require('../../../Assets/images/hire.png');
 const offer = require('../../../Assets/images/offer.png');
 const verified = require('../../../Assets/images/verified.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
+const goToClient = require('../../../Assets/images/go_to_client.png');
+const ownSpace = require('../../../Assets/images/own_space.png');
 
 const strengthTraining = require('../../../Assets/images/strength_training.png');
 const pilates = require('../../../Assets/images/pilates.png');
@@ -346,55 +348,63 @@ class ProfessionalProfileForm extends Component {
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
                     <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
                     <View style={ styles.infoRowContainer }>
-                      <View style={ styles.infoRowLeftContainer }>
-                        <Text style={ styles.textInfoField }>Gender : </Text>
-                        <Text style={ styles.textInfoValue }>Female</Text>
+                      <View style={ styles.columnContainer }>
+                        <View style={ styles.infoRowLeftContainer }>
+                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Gender : </Text>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.gender}</Text>
+                        </View>
+                        <View style={ styles.infoRowLeftContainer }>
+                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Age : </Text>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.age} years old</Text>
+                        </View>
+                        <View style={ styles.infoRowLeftContainer }>
+                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Insured : </Text>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.insured ? 'Yes':'No'}</Text>
+                        </View>
                       </View>
-                      <View style={ styles.infoRowLeftContainer }>
-                        <Text style={ styles.textInfoField }>Profession : </Text>
-                        <Text style={ styles.textInfoValue }>Fitnes trenner</Text>
+                      <View style={ [styles.columnContainer, styles.leftPadding] }>
+                        <View style={ styles.infoRowLeftContainer }>
+                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Profession : </Text>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.profession.name}</Text>
+                        </View>
+                        <View style={ styles.infoRowLeftContainer }>
+                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Certification : </Text>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.certification}</Text>
+                        </View>
+                        <View style={ styles.infoRowLeftContainer }>
+                          <Text style={ [styles.fontStyles, styles.textInfoField] }>Years of experience : </Text>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.experience}</Text>
+                        </View>
                       </View>
                     </View>
-                    <View style={ styles.infoRowContainer }>
-                      <View style={ styles.infoRowRightContainer }>
-                        <Text style={ styles.textInfoField }>Age : </Text>
-                        <Text style={ styles.textInfoValue }>26 years old</Text>
-                      </View>
-                      <View style={ styles.infoRowRightContainer }>
-                        <Text style={ styles.textInfoField }>Certification : </Text>
-                        <Text style={ styles.textInfoValue }>Certified Personal Professional</Text>
-                      </View>
-                    </View>
+
                     <View style={ styles.infoRowContainer }>
                       <View style={ styles.infoRowLeftContainer }>
-                        <Text style={ styles.textInfoField }>Insured : </Text>
-                        <Text style={ styles.textInfoValue }>true</Text>
-                      </View>
-                      <View style={ styles.infoRowLeftContainer }>
-                        <Text style={ styles.textInfoField }>Years of experience : </Text>
-                        <Text style={ styles.textInfoValue }>2008</Text>
-                      </View>
-                    </View>
-                    <View style={ styles.infoRowContainer }>
-                      <View style={ styles.infoRowLeftContainer }>
-                        <Text style={ styles.textInfoField }>Location : </Text>
-                        <Text style={ [styles.textInfoValue, styles.locationStyle] }>4 York st, Toronto ON L54 N7</Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoField] }>Location : </Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }>{this.user.address.formattedAddress || this.user.location.city}</Text>
                       </View>
                     </View>
                     <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>
-                      <View style={styles.actionIcon}>
-                        <Image source={ this.user.avatar } style={ styles.actionIconImage } resizeMode="cover"/>
-                        <Text>Go to client</Text>
-                      </View>
-                      <View style={styles.actionIcon}>
-                        <Image source={ this.user.avatar } style={ styles.actionIconImage } resizeMode="cover"/>
-                        <Text>Own space</Text>
-                      </View>
+                      {
+                        this.user.toClient &&
+                        <View style={styles.actionIcon}>
+                          <Image source={ goToClient } style={ styles.actionIconImage } resizeMode="cover"/>
+                          <Text>Go to client</Text>
+                        </View>
+                      }
+                      {
+                        this.user.ownSpace &&
+                        <View style={styles.actionIcon}>
+                          <Image source={ ownSpace } style={ styles.actionIconImage } resizeMode="cover"/>
+                          <Text>Own space</Text>
+                        </View>
+                      }
                     </View>
                   </View>
+
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
                     <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                    <Text style={ styles.textInfoValue }>O trained for many years, and I'm very confident about the skullset I developed over the years.</Text>
+                    <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.description}</Text>
                   </View>
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
@@ -697,7 +707,8 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   infoContainer: {
-    paddingVertical: 5,
+    paddingTop: 5,
+    paddingBottom: 10,
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
@@ -720,16 +731,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInfoTitle: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold',
     paddingVertical: 5,
   },
   textInfoField: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#11c6f8',
   },
   textInfoValue: {
-    fontSize: 12,
+    fontSize: 14,
   },
   starContainer: {
     flexDirection: 'row',
@@ -754,6 +765,13 @@ const styles = StyleSheet.create({
   },
   blackText:{
     color: '#000',
+  },
+  leftPadding:{
+    paddingLeft: 20,
+  },
+  fontStyles: {
+    fontFamily: 'Open Sans',
+    fontSize: 18,
   },
 });
 
