@@ -26,6 +26,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import RadioButton from '../../../Explore/components/smart/radioButton';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 import * as clientProfileActions from '../../actions';
 
 const { width, height } = Dimensions.get('window');
@@ -419,14 +420,7 @@ class EditProfile extends Component {
             </KeyboardAwareScrollView>
           </View>
         </Image>
-        { updateRequest ? <View
-          style={styles.activityIndicatorContainer}>
-          <ActivityIndicator
-            style={styles.activityIndicator}
-            color="#0000ff"
-            size="large"
-          />
-        </View> : null }
+        { updateRequest ? <FullScreenLoader/> : null }
       </View>
     );
   }
@@ -439,22 +433,6 @@ const styles = StyleSheet.create({
   background: {
     width,
     height,
-  },
-  activityIndicator: {
-    flex: 1,
-    position: 'relative'
-  },
-  activityIndicatorContainer: {
-    flex: 1,
-    position: 'absolute',
-    backgroundColor: '#a3a4a7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    opacity: 0.5,
-    width,
-    height
   },
   navBarContainer: {
     flex: 1,

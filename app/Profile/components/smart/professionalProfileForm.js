@@ -16,7 +16,10 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import R from 'ramda';
+
 import Calendar from './calendar/Calendar';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 
 const { width, height } = Dimensions.get('window');
 
@@ -152,6 +155,7 @@ class ProfessionalProfileForm extends Component {
   get showNavBar() {
     const { editable } = this.props;
 
+    console.log('===========', editable);
     return (
       editable ?
         <View style={ styles.navBarContainer }>
@@ -267,141 +271,145 @@ class ProfessionalProfileForm extends Component {
   }
 
   render() {
-    const { editable, auth: { user } } = this.props;
+    const { editable, user } = this.props;
     this.user = user;
+    console.log('================', user);
 
     return (
-      <View style={ styles.container }>
-        <Image source={ background } style={ styles.background } resizeMode="cover">
+      R.isEmpty(user) ?
+        <FullScreenLoader/>
+        :
+        <View style={ styles.container }>
+          <Image source={ background } style={ styles.background } resizeMode="cover">
 
-          { this.showNavBar }
+            { this.showNavBar }
 
-          <View style={ styles.contentContainer }>
-            <View style={ styles.avatarContainer }>
-              <View style={ styles.avatarWrapper }>
-                <Image source={ this.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+            <View style={ styles.contentContainer }>
+              <View style={ styles.avatarContainer }>
+                <View style={ styles.avatarWrapper }>
+                  <Image source={ this.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+                </View>
+                <View style={ styles.actionBtnContainer }>
+                  <View style={ styles.emptyGreenBtn }>
+                    <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
+                    <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
+                  </View>
+                  <View style={ styles.greenBtn }>
+                    <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
+
+                    <Text style={ [styles.greenBtnText, styles.btnText, styles.textWhite] } >
+                      <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>$50 </Text>
+                      / PER SESSION
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <View style={ styles.actionBtnContainer }>
-                <View style={ styles.emptyGreenBtn }>
-                  <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
-                  <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
-                </View>
-                <View style={ styles.greenBtn }>
-                  <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
 
-                  <Text style={ [styles.greenBtnText, styles.btnText, styles.textWhite] } >
-                    <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>$50 </Text>
-                    / PER SESSION
-                  </Text>
-                </View>
+              <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
+                {
+                  editable ? <View style={ styles.actionContainer }/> : this.showActions
+                }
+                <ScrollView>
+                  <View style={ [styles.infoContainer, styles.infoBlock] }>
+                    <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
+                    <View style={ styles.infoRowContainer }>
+                      <View style={ styles.infoRowLeftContainer }>
+                        <Text style={ styles.textInfoField }>Gender : </Text>
+                        <Text style={ styles.textInfoValue }>Female</Text>
+                      </View>
+                      <View style={ styles.infoRowLeftContainer }>
+                        <Text style={ styles.textInfoField }>Profession : </Text>
+                        <Text style={ styles.textInfoValue }>Fitnes trenner</Text>
+                      </View>
+                    </View>
+                    <View style={ styles.infoRowContainer }>
+                      <View style={ styles.infoRowRightContainer }>
+                        <Text style={ styles.textInfoField }>Age : </Text>
+                        <Text style={ styles.textInfoValue }>26 years old</Text>
+                      </View>
+                      <View style={ styles.infoRowRightContainer }>
+                        <Text style={ styles.textInfoField }>Certification : </Text>
+                        <Text style={ styles.textInfoValue }>Certified Personal Professional</Text>
+                      </View>
+                    </View>
+                    <View style={ styles.infoRowContainer }>
+                      <View style={ styles.infoRowLeftContainer }>
+                        <Text style={ styles.textInfoField }>Insured : </Text>
+                        <Text style={ styles.textInfoValue }>true</Text>
+                      </View>
+                      <View style={ styles.infoRowLeftContainer }>
+                        <Text style={ styles.textInfoField }>Years of experience : </Text>
+                        <Text style={ styles.textInfoValue }>2008</Text>
+                      </View>
+                    </View>
+                    <View style={ styles.infoRowContainer }>
+                      <View style={ styles.infoRowLeftContainer }>
+                        <Text style={ styles.textInfoField }>Location : </Text>
+                        <Text style={ [styles.textInfoValue, styles.locationStyle] }>4 York st, Toronto ON L54 N7</Text>
+                      </View>
+                    </View>
+                    <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>
+                      <View style={styles.actionIcon}>
+                        <Image source={ this.user.avatar } style={ styles.actionIconImage } resizeMode="cover"/>
+                        <Text>Go to client</Text>
+                      </View>
+                      <View style={styles.actionIcon}>
+                        <Image source={ this.user.avatar } style={ styles.actionIconImage } resizeMode="cover"/>
+                        <Text>Own space</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={ [styles.infoContainer, styles.infoBlock] }>
+                    <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
+                    <Text style={ styles.textInfoValue }>O trained for many years, and I'm very confident about the skullset I developed over the years.</Text>
+                  </View>
+
+                  <View style={ [styles.infoContainer, styles.infoBlock] }>
+                    <Text style={ [styles.textInfoTitle] }>REVIEWS</Text>
+
+                    <View style={ styles.infoContainer }>
+                      <View style={ styles.starContainer }>
+                        <Text style={ styles.textProfessionalName }>Mark</Text>
+                        <Stars
+                          isActive={ false }
+                          rateMax={ 5 }
+                          isHalfStarEnabled={ false }
+                          onStarPress={ (rating) => console.log(rating) }
+                          rate={ 5 }
+                          size={ 16 }
+                        />
+                      </View>
+                      <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
+                      <Text style={ styles.textGray }>SEP 18, 2016</Text>
+                    </View>
+
+                    <View style={ styles.infoContainer }>
+                      <View style={ styles.starContainer }>
+                        <Text style={ styles.textProfessionalName }>Alex</Text>
+                        <Stars
+                          isActive={ false }
+                          rateMax={ 5 }
+                          isHalfStarEnabled={ false }
+                          onStarPress={ (rating) => console.log(rating) }
+                          rate={ 5 }
+                          size={ 16 }
+                        />
+                      </View>
+                      <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
+                      <Text style={ styles.textGray }>SEP 18, 2016</Text>
+                    </View>
+                  </View>
+
+
+                </ScrollView>
+
+                { this.showMoreOrLessButton }
+                { this.showCalendar }
+
               </View>
             </View>
-
-            <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
-              {
-                editable ? <View style={ styles.actionContainer }/> : this.showActions
-              }
-              <ScrollView>
-                <View style={ [styles.infoContainer, styles.infoBlock] }>
-                  <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
-                  <View style={ styles.infoRowContainer }>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Gender : </Text>
-                      <Text style={ styles.textInfoValue }>Female</Text>
-                    </View>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Profession : </Text>
-                      <Text style={ styles.textInfoValue }>Fitnes trenner</Text>
-                    </View>
-                  </View>
-                  <View style={ styles.infoRowContainer }>
-                    <View style={ styles.infoRowRightContainer }>
-                      <Text style={ styles.textInfoField }>Age : </Text>
-                      <Text style={ styles.textInfoValue }>26 years old</Text>
-                    </View>
-                    <View style={ styles.infoRowRightContainer }>
-                      <Text style={ styles.textInfoField }>Certification : </Text>
-                      <Text style={ styles.textInfoValue }>Certified Personal Professional</Text>
-                    </View>
-                  </View>
-                  <View style={ styles.infoRowContainer }>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Insured : </Text>
-                      <Text style={ styles.textInfoValue }>true</Text>
-                    </View>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Years of experience : </Text>
-                      <Text style={ styles.textInfoValue }>2008</Text>
-                    </View>
-                  </View>
-                  <View style={ styles.infoRowContainer }>
-                    <View style={ styles.infoRowLeftContainer }>
-                      <Text style={ styles.textInfoField }>Location : </Text>
-                      <Text style={ [styles.textInfoValue, styles.locationStyle] }>4 York st, Toronto ON L54 N7</Text>
-                    </View>
-                  </View>
-                  <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>
-                    <View style={styles.actionIcon}>
-                      <Image source={ this.user.avatar } style={ styles.actionIconImage } resizeMode="cover"/>
-                      <Text>Go to client</Text>
-                    </View>
-                    <View style={styles.actionIcon}>
-                      <Image source={ this.user.avatar } style={ styles.actionIconImage } resizeMode="cover"/>
-                      <Text>Own space</Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={ [styles.infoContainer, styles.infoBlock] }>
-                  <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                  <Text style={ styles.textInfoValue }>O trained for many years, and I'm very confident about the skullset I developed over the years.</Text>
-                </View>
-
-                <View style={ [styles.infoContainer, styles.infoBlock] }>
-                  <Text style={ [styles.textInfoTitle] }>REVIEWS</Text>
-
-                  <View style={ styles.infoContainer }>
-                    <View style={ styles.starContainer }>
-                      <Text style={ styles.textProfessionalName }>Mark</Text>
-                      <Stars
-                        isActive={ false }
-                        rateMax={ 5 }
-                        isHalfStarEnabled={ false }
-                        onStarPress={ (rating) => console.log(rating) }
-                        rate={ 5 }
-                        size={ 16 }
-                      />
-                    </View>
-                    <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-                    <Text style={ styles.textGray }>SEP 18, 2016</Text>
-                  </View>
-
-                  <View style={ styles.infoContainer }>
-                    <View style={ styles.starContainer }>
-                      <Text style={ styles.textProfessionalName }>Alex</Text>
-                      <Stars
-                        isActive={ false }
-                        rateMax={ 5 }
-                        isHalfStarEnabled={ false }
-                        onStarPress={ (rating) => console.log(rating) }
-                        rate={ 5 }
-                        size={ 16 }
-                      />
-                    </View>
-                    <Text style={ styles.textInfoValue }>O spent foor months with him and helped me reached my goal in no time. I love him.</Text>
-                    <Text style={ styles.textGray }>SEP 18, 2016</Text>
-                  </View>
-                </View>
-
-
-              </ScrollView>
-
-              { this.showMoreOrLessButton }
-              { this.showCalendar }
-
-            </View>
-          </View>
-        </Image>
-      </View>
+          </Image>
+        </View>
     );
   }
 }
@@ -704,5 +712,6 @@ const styles = StyleSheet.create({
 export default connect(state => ({
     auth: state.auth,
     explore: state.explore,
+    user: state.profile.user,
   })
 )(ProfessionalProfileForm);

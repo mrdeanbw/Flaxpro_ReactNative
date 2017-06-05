@@ -1,10 +1,5 @@
 import * as types from './actionTypes';
-import * as authTypes from '../Auth/actionTypes';
 import request, { toQueryString } from '../request';
-
-function updateUserSuccess(data) {
-  return { type: authTypes.UPDATE_USER, ...data };
-}
 
 function updateSessionsSuccess(data) {
   return { type: types.PROFILE_UPDATE, ...data };
@@ -24,7 +19,7 @@ export const updateProfile = (userData) => async (dispatch, store) => {
 
   try {
     await request(url, options, auth);
-    dispatch(updateUserSuccess({...auth, user: userData}));
+    dispatch(updateSessionsSuccess({...auth, user: userData}));
   } catch (error) {
     const error =
       `Profile Error: updateProfile(${userData.professional ? 'Professional' : 'Client'})
@@ -67,7 +62,7 @@ export const getFullProfile = () => async (dispatch, store) => {
 
   try {
     const response = await request(url, options, auth);
-    dispatch(updateUserSuccess({...auth, user: response.client}));
+    dispatch(updateSessionsSuccess({...auth, user: response.user}));
   } catch (error) {
     const error =
       `Profile Error: getFullProfile()

@@ -27,6 +27,7 @@ import ImageProgress from 'react-native-image-progress';
 
 import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 import RadioButton from '../../../Explore/components/smart/radioButton';
 
 const background = require('../../../Assets/images/background.png');
@@ -272,14 +273,7 @@ class ClientInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
-        { signUpRequest ? <View
-          style={styles.activityIndicatorContainer}>
-            <ActivityIndicator
-            style={styles.activityIndicator}
-            color="#0000ff"
-            size="large"
-          />
-        </View> : null }
+        { signUpRequest ? <FullScreenLoader/> : null }
       </View>
     );
   }
@@ -290,22 +284,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative'
-  },
-  activityIndicator: {
-    flex: 1,
-    position: 'relative'
-  },
-  activityIndicatorContainer: {
-    flex: 1,
-    position: 'absolute',
-    backgroundColor: '#a3a4a7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    opacity: 0.5,
-    width,
-    height
   },
   markWrap: {
     flex: 2,

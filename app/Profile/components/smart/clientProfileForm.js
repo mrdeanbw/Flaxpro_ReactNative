@@ -16,8 +16,10 @@ import { SegmentedControls } from 'react-native-radio-buttons';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import ImageProgress from 'react-native-image-progress';
+import R from 'ramda';
 
 import Calendar from './calendar/Calendar';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 
 const { width, height } = Dimensions.get('window');
 
@@ -205,7 +207,9 @@ class ClientProfileForm extends Component {
     );
   }
   prepareProfessions() {
-    const { explore: { professions }, auth: { user } } = this.props;
+    const { explore: { professions }, user } = this.props;
+    console.log('==========', user);
+    if(!user.professions) return [];
     const workouts = [...user.professions.map((e)=>(
       {
         profession: professions.filter((item)=>item._id===e.profession)[0] || {},
@@ -223,14 +227,17 @@ class ClientProfileForm extends Component {
   }
 
   render() {
-    const { editable, auth: { user } } = this.props;
+    const { editable, user } = this.props;
     const { showMoreOrLess } = this.state;
     const workouts = this.prepareProfessions();
 
     const reviews = (user.reviews && user.reviews.length) ? user.reviews : Reviews;
 
     return (
-      <View style={ styles.container }>
+      R.isEmpty(user) ?
+        <FullScreenLoader/>
+        :
+        <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
           
           { this.getShowNavBar }
@@ -596,5 +603,6 @@ const styles = StyleSheet.create({
 export default connect(state => ({
     auth: state.auth,
     explore: state.explore,
+    user: state.profile.user,
   })
 )(ClientProfileForm);

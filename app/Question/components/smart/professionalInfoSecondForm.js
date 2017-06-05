@@ -31,7 +31,7 @@ const labelOwn = ['Go to client', 'Own space', 'Both'];
 const certificationsDefault = ['Certified personal trainer', 'Certified', 'No Certified'];
 
 
-
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 import * as CommonConstant from '../../../Components/commonConstant';
 const background = require('../../../Assets/images/background.png');
 const avatar = require('../../../Assets/images/avatar.png');
@@ -360,14 +360,7 @@ class ProfessionalInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
-        { signUpRequest ? <View
-          style={styles.activityIndicatorContainer}>
-          <ActivityIndicator
-            style={styles.activityIndicator}
-            color="#0000ff"
-            size="large"
-          />
-        </View> : null }
+        { signUpRequest ? <FullScreenLoader/> : null }
       </View>
     );
   }
@@ -382,22 +375,6 @@ const styles = StyleSheet.create({
   experienceView: {
     paddingHorizontal: 10,
     width: width*0.4,
-  },
-  activityIndicator: {
-    flex: 1,
-    position: 'relative'
-  },
-  activityIndicatorContainer: {
-    flex: 1,
-    position: 'absolute',
-    backgroundColor: '#a3a4a7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    opacity: 0.5,
-    width,
-    height
   },
   experienceText: {
     width: width * 0.28

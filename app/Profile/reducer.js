@@ -3,6 +3,7 @@ import * as types from './actionTypes';
 const initialState = {
   error: null,
   sessions: [],
+  user: {},
 };
 
 export default function question(state = initialState, action = {}) {
@@ -16,7 +17,8 @@ export default function question(state = initialState, action = {}) {
       return {
         ...state,
         error: null,
-        sessions: action.sessions,
+        sessions: action.sessions || [...state.sessions],
+        user: action.user || {...state.user},
       };
     default:
       return state;
