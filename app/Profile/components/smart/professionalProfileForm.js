@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   AppRegistry,
+  ActivityIndicator,
   StyleSheet,
   Text,
   View,
@@ -18,6 +19,7 @@ import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import R from 'ramda';
 import { SegmentedControls } from 'react-native-radio-buttons';
+import ImageProgress from 'react-native-image-progress';
 
 import Calendar from './calendar/Calendar';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
@@ -33,7 +35,7 @@ const refer = require('../../../Assets/images/refer.png');
 const hire = require('../../../Assets/images/hire.png');
 const offer = require('../../../Assets/images/offer.png');
 const verified = require('../../../Assets/images/verified.png');
-
+const avatarDefault = require('../../../Assets/images/avatar.png');
 
 const strengthTraining = require('../../../Assets/images/strength_training.png');
 const pilates = require('../../../Assets/images/pilates.png');
@@ -217,7 +219,9 @@ class ProfessionalProfileForm extends Component {
             />
           </TouchableOpacity>
           <View style={ styles.navBarTitleContainer }>
-            <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }</Text>
+            <Text style={ styles.textTitle }>{ this.user.name && this.user.name.toUpperCase() }
+              <Image source={ verified } style={ styles.imageVerified }/>
+            </Text>
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
           <TouchableOpacity
@@ -300,24 +304,38 @@ class ProfessionalProfileForm extends Component {
             { this.showNavBar }
 
             <View style={ styles.contentContainer }>
-              <View style={ styles.avatarContainer }>
+              <View style={ editable ? styles.avatarContainer : styles.avatarContainerWithBtn }>
                 <View style={ styles.avatarWrapper }>
-                  <Image source={ this.user.avatar } style={ styles.imageAvatar } resizeMode="cover"/>
+                  { this.user.avatar ?
+                    <ImageProgress source={ {uri: this.user.avatar} } indicator={ActivityIndicator} style={ styles.imageAvatar } resizeMode="cover"/>
+                    :
+                    <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
+                  }
                 </View>
-                <View style={ styles.actionBtnContainer }>
-                  <View style={ styles.emptyGreenBtn }>
-                    <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
-                    <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
-                  </View>
-                  <View style={ styles.greenBtn }>
-                    <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
+                {
+                  editable ?
+                    <View style={ styles.navBarTitleContainer }>
+                      <Text style={ [styles.textTitle, styles.blackText] }>{ this.user.name && this.user.name.toUpperCase() }
+                        <Image source={ verified } style={ styles.imageVerified }/>
+                      </Text>
+                    </View>
+                    :
+                    <View style={ styles.actionBtnContainer }>
+                      <View style={ styles.emptyGreenBtn }>
+                        <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
+                        <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
+                      </View>
+                      <View style={ styles.greenBtn }>
+                        <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
 
-                    <Text style={ [styles.greenBtnText, styles.btnText, styles.textWhite] } >
-                      <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>$50 </Text>
-                      / PER SESSION
-                    </Text>
-                  </View>
-                </View>
+                        <Text style={ [styles.greenBtnText, styles.btnText, styles.textWhite] } >
+                          <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>$50 </Text>
+                          / PER SESSION
+                        </Text>
+                      </View>
+                    </View>
+                }
+
               </View>
 
               <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
@@ -595,8 +613,16 @@ const styles = StyleSheet.create({
     height: 24,
   },
   avatarContainer: {
+    height: 135,
+    backgroundColor: '#F7F9FA',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarContainerWithBtn: {
     height: 155,
-    backgroundColor: '#F7F9FA'
+    backgroundColor: '#F7F9FA',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   imageAvatar: {
@@ -611,13 +637,10 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   avatarWrapper: {
-    backgroundColor: '#fff',
-    marginLeft: width / 2 - 32,
-    height: 64,
-    width: 64,
-    borderRadius: 32,
-    marginTop: 10,
-    marginBottom: 30
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    marginVertical: 10
   },
   contentContainer: {
     flex: 8.5,
@@ -728,6 +751,9 @@ const styles = StyleSheet.create({
   showButtonWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  blackText:{
+    color: '#000',
   },
 });
 
