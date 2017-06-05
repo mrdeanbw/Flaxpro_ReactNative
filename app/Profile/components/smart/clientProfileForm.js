@@ -74,7 +74,7 @@ class ClientProfileForm extends Component {
   }
 
   onSchedule() {
-    Actions.ScheduleForm(); 
+    Actions.ScheduleForm({getSessions: this.props.getSessions});
   }
 
   onEdit() {

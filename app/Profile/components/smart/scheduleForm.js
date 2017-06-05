@@ -168,6 +168,7 @@ class ScheduleForm extends Component {
 
   onSelectDate(date) {
     let day = Moment(date).format('YYYY-MM-DD');
+    this.props.getSessions({byField: 'day', day: Moment(date).format('D')});
     this.setState({ selectedDate: day });
   }
 
@@ -544,6 +545,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     borderRadius: 20,
+    marginVertical: 5,
   },
 });
 export default connect(state => ({
