@@ -10,11 +10,14 @@ class ProfessionalProfile extends Component {
   constructor(props) {
     super(props);
   }
+  componentWillMount() {
+    this.props.actions.getFullProfile();
+  }
 
   render() {
-    const { actions, status, editable, user } = this.props;
+    const { actions, editable } = this.props;
     return (
-      <ProfessionalProfileForm { ...actions } status={ status } editable={ editable } user={ user }/>
+      <ProfessionalProfileForm { ...actions } editable={ editable }/>
     );
   }
 }

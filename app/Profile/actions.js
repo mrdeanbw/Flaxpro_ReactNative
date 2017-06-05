@@ -59,7 +59,8 @@ export const getSessions = (data) => async (dispatch, store) => {
 
 export const getFullProfile = () => async (dispatch, store) => {
   const { auth } = store();
-  let url = '/client/'+auth.user._id;
+  const role = auth.user.role.toLowerCase();
+  const url = `/${role}/${auth.user._id}`;
   const options = {
     method: 'get',
   };

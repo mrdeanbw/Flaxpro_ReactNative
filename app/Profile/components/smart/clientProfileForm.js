@@ -12,7 +12,6 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
@@ -41,7 +40,6 @@ const prices = [
   {item: '$$$', price: '$300+', level: '3'}
 ];
 //auth redux store
-import * as authActions from '../../../Auth/actions';
 import { Reviews } from '../../../Components/dummyEntries'
 
 class ClientProfileForm extends Component {
@@ -598,8 +596,5 @@ const styles = StyleSheet.create({
 export default connect(state => ({
     auth: state.auth,
     explore: state.explore,
-  }),
-  (dispatch) => ({
-    actions: bindActionCreators(authActions, dispatch)
   })
 )(ClientProfileForm);

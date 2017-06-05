@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import Calendar from './calendar/Calendar';
@@ -35,7 +36,7 @@ const pilates = require('../../../Assets/images/pilates.png');
 const yoga = require('../../../Assets/images/yoga.png');
 const totalWorkout = require('../../../Assets/images/total_workout.png');
 
-export default class ProfessionalProfileForm extends Component {
+class ProfessionalProfileForm extends Component {
 
   static propTypes = {
     editable: PropTypes.bool,
@@ -266,7 +267,7 @@ export default class ProfessionalProfileForm extends Component {
   }
 
   render() {
-    const { status, editable, user } = this.props;
+    const { editable, auth: { user } } = this.props;
     this.user = user;
 
     return (
@@ -699,3 +700,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default connect(state => ({
+    auth: state.auth,
+    explore: state.explore,
+  })
+)(ProfessionalProfileForm);

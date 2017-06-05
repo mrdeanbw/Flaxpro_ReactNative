@@ -99,7 +99,7 @@ class MainForm extends Component {
         renderIcon: () => (<Image source={ profileIcon } style={ styles.iconTabbarProfile }/>),
         renderSelectedIcon: () => (<Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/>),
         onPress: () => this.setState({ selectedTab: 'profile' }),
-        children: user_mode === CommonConstant.user_client ? <ClientProfile user={ ProfessionalsClients[0] }/> : <ProfessionalProfile user={ ProfessionalsClients[0] }/>,
+        children: user_mode === CommonConstant.user_client ? <ClientProfile/> : <ProfessionalProfile/>,
       },
       /* Account*/
       {

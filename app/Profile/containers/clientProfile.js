@@ -15,9 +15,9 @@ class ClientProfile extends Component {
   }
 
   render() {
-    const { actions, status, editable, user } = this.props;
+    const { actions, editable } = this.props;
     return (
-      <ClientProfileForm { ...actions } status={ status } editable={ editable } user={ user }/>
+      <ClientProfileForm { ...actions } editable={ editable }/>
     );
   }
 }
