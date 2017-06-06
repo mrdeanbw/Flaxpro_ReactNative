@@ -85,7 +85,7 @@ class ProfessionalProfileForm extends Component {
   }
 
   onEdit() {
-    // Actions.EditProfile();
+    Actions.EditProfile();
   }
 
   onChangeOptions(option) {

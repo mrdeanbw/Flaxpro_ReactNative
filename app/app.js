@@ -19,7 +19,7 @@ import Clients_Professionals from './Clients_Professionals/containers/clients_pr
 import ScheduleForm from './Profile/components/smart/scheduleForm';
 import ClientProfile from './Profile/containers/clientProfile';
 import ProfessionalProfile from './Profile/containers/professionalProfile';
-import EditProfile from './Profile/components/smart/editProfile';
+import EditProfile from './Profile/containers/editProfile';
 import Sessions from './Profile/components/smart/sessions';
 import ChatForm from './Inbox/components/smart/chatForm';
 
