@@ -6,14 +6,17 @@ import ClientEditProfile from '../components/smart/clientEditProfile';
 import ProfessionalEditProfile from '../components/smart/professionalEditProfile';
 import * as CommonConstant from '../../Components/commonConstant';
 
-import * as clientProfileActions from '../actions';
+import * as editProfileActions from '../actions';
+import * as exploreActions from '../../Explore/actions';
 import { connect } from 'react-redux';
 
 class EditProfile extends Component {
   constructor(props) {
     super(props);
   }
-
+  componentWillMount() {
+    this.props.exploreActions.getProfessions();
+  }
   render() {
     const { auth: { user } } = this.props;
     return (
@@ -29,6 +32,7 @@ export default connect(state => ({
     auth: state.auth
   }),
   (dispatch) => ({
-    actions: bindActionCreators(clientProfileActions, dispatch)
+    actions: bindActionCreators(editProfileActions, dispatch),
+    exploreActions: bindActionCreators(exploreActions, dispatch)
   })
 )(EditProfile);

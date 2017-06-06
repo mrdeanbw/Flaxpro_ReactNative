@@ -23,6 +23,7 @@ import Slider from 'react-native-slider';
 import ModalDropdown from 'react-native-modal-dropdown';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import RadioButton from '../../../Explore/components/smart/radioButton';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
@@ -39,6 +40,9 @@ const prices = [
   {item: '$$', price: '$100-300', level: '2'},
   {item: '$$$', price: '$300+', level: '3'}
 ];
+const labelInsure = [{value:true, text:'Yes'}, {value: false, text:'No'}];
+const labelOwn = ['Go to client', 'Own space', 'Both'];
+const certificationsDefault = ['Certified personal trainer', 'Certified', 'No Certified'];
 
 //const variable
 const constants = {
@@ -51,16 +55,21 @@ class EditProfile extends Component {
   constructor(props) {
     super(props);
 
-    let user = {...props.auth.user};
+    let user = {...props.profile.user};
 
     this.state = {
-      user,
+      ...user,
+      price: this.priceToFloat(user.price),
       selectedOption: constants.BASIC_INFO,
-    };
+      professional: true,
+      own: user.toClient && user.ownSpace ? 'Both' : (user.toClient ? 'Go to client' : 'Own space'),
+      address: user.address.formattedAddress,
+    }
+
   }
 
   componentWillReceiveProps(nextProps) {
-    const { auth: { user }, profile: { error } } = nextProps;
+    const { profile: { error } } = nextProps;
 
     if (error) {
       Alert.alert(error);
@@ -72,9 +81,28 @@ class EditProfile extends Component {
 
   saveProfile() {
     const { updateProfile } = this.props;
-    const { user } = this.state;
+    /**
+     * 'price' to {number}
+     */
+    this.state.price = this.priceToInt(this.state.price);
 
-    this.setState({updateRequest: true}, () => updateProfile({...user, professional: true}));
+    /**
+     * 'profession' to {String} name
+     */
+    this.state.profession = this.state.profession && this.state.profession.name;
+
+    if(this.state.own === 'Both') {
+      this.state.toClient = true;
+      this.state.ownSpace = true;
+    }
+    if(this.state.own === 'Go to client') {
+      this.state.toClient = true;
+    }
+    if(this.state.own === 'Own space') {
+      this.state.ownSpace = true;
+    }
+
+    this.setState({updateRequest: true}, () => updateProfile(this.state));
   }
 
   onBack() {
@@ -82,11 +110,9 @@ class EditProfile extends Component {
   }
 
   onChangeOptions(option) {
-    const { selectedOption } = this.state,
-      { auth: { user } } = this.props;
+    const { selectedOption } = this.state;
 
-
-    if (selectedOption != option) {
+    if (selectedOption !== option) {
       this.setState({selectedOption: option})
     }
   }
@@ -226,16 +252,67 @@ class EditProfile extends Component {
       return !data.length
     }).map((e) => e.name)
   }
+  onChangePhone(text) {
+    text = this.checkForNumber(...text)
+    this.setState({ phone: text })
+  }
+  checkForNumber(...value){
+    const numbers = '0123456789';
+
+    value = value.filter((e) => numbers.includes(e))
+    return value.join('')
+  }
+  onFocusPrice() {
+    const price = this.priceToInt(this.state.price);
+    this.setState({ price })
+  }
+  onBlurPrice() {
+    const price = this.priceToFloat(this.state.price);
+    this.setState({ price })
+  }
+  priceToFloat(text) {
+    text = ''+text;
+    if(text.includes('.')) return text;
+    return text+'.00';
+  }
+  priceToInt(text) {
+    text = ''+text;
+    if(!text.includes('.')) return text;
+    return text.slice(0,-3);
+  }
+  onChangePrice(text) {
+    text = this.checkForNumber(...text)
+    this.setState({price: text})
+  }
+  onInsured(value) {
+    this.setState({ insured: value });
+  }
+  onOwn(value) {
+    this.setState({ own: value });
+  }
+  onSelectProfession(value) {
+    const profession = this.props.explore.professions.filter((e)=>e.name===value)[0];
+    this.setState({ profession });
+  }
+  onSelectCertification(value) {
+    this.setState({ certification: value });
+  }
+  updateExperience(value) {
+    let experience = this.state.experience + value;
+    experience = experience < 0 ? 0 : experience;
+    this.setState({ experience });
+  }
 
   render() {
     const { avatar, user, updateRequest } = this.state;
+    const { explore: { professions } } = this.props;
 
     const sliderWidth = width * 1/4;
     const ageInitialValue = 15;
     const numberDivisions = 72;
     const allPaddingsMargings = 85;
     let scale = (width - sliderWidth - allPaddingsMargings) / numberDivisions ;
-    const paddingLeft =(user.age - ageInitialValue) * scale;
+    const paddingLeft =(this.state.age - ageInitialValue) * scale;
 
     return (
       <View style={ styles.container }>
@@ -245,8 +322,8 @@ class EditProfile extends Component {
             <KeyboardAwareScrollView>
               <View style={ styles.avatarContainer }>
                 <View style={ styles.avatarWrapper }>
-                  { user.avatar ?
-                    <ImageProgress source={ {uri: user.avatar} } indicator={ActivityIndicator} style={ styles.imageAvatar } resizeMode="cover"/>
+                  { this.state.avatar ?
+                    <ImageProgress source={ {uri: this.state.avatar} } indicator={ActivityIndicator} style={ styles.imageAvatar } resizeMode="cover"/>
                     :
                     <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
                   }
@@ -255,7 +332,25 @@ class EditProfile extends Component {
               </View>
 
               <View style={ styles.cellContainer }>
-                <InputCenter value={ user.name } onChangeText={ (name) => this.setState({ user: {...user, name}}) }/>
+                <InputCenter value={ this.state.name } onChangeText={ (name) => this.setState({ name }) }/>
+              </View>
+
+              <View style={ styles.cellContainer }>
+                <View style={ styles.profileVisibilityTitle }>
+                  <Text style={ styles.fontStyles }>Phone Number</Text>
+                </View>
+                <View style={ styles.viewInput }>
+                  <TextInput
+                    autoCapitalize="none"
+                    autoCorrect={ false }
+                    placeholder="+1"
+                    placeholderTextColor="#9e9e9e"
+                    style={ styles.textInputCenter }
+                    value={ this.state.phone }
+                    keyboardType='numeric'
+                    onChangeText={ (text) => this.onChangePhone(text) }
+                  />
+                </View>
               </View>
 
               <View style={ [styles.cellContainer, styles.profileVisibility] }>
@@ -264,8 +359,8 @@ class EditProfile extends Component {
                 </View>
                 <View style={ styles.profileVisibilitySwitch }>
                   <Switch
-                    onValueChange={(visibility) => this.setState({ user: {...user, visibility }})}
-                    value={ user.visibility } />
+                    onValueChange={(visibility) => this.setState({ visibility })}
+                    value={ this.state.visibility } />
                 </View>
               </View>
 
@@ -282,8 +377,8 @@ class EditProfile extends Component {
                           color="#19b8ff"
                           iconStyle={ styles.iconButton }
                           labelStyle={ [styles.fontStyles, styles.textCellValue] }
-                          checked={ user.gender === value }
-                          onPress={ () => this.setState({ user: {...user, gender: value }}) }
+                          checked={ this.state.gender === value }
+                          onPress={ () => this.setState({ gender: value }) }
                         />
                       );
                     })
@@ -296,7 +391,7 @@ class EditProfile extends Component {
                 <View style={ styles.viewSlider }>
                   <Animated.View style={ [styles.animateContainer, {paddingLeft: paddingLeft}] }>
                     <Animated.View style={ styles.bubble }>
-                      <Animated.Text style={ [styles.textAboveSlider] }>{ user.age }</Animated.Text>
+                      <Animated.Text style={ [styles.textAboveSlider] }>{ this.state.age }</Animated.Text>
                     </Animated.View>
                     <Animated.View style={ styles.arrowBorder } />
                     <Animated.View style={ styles.arrow } />
@@ -310,33 +405,152 @@ class EditProfile extends Component {
                           minimumValue={ 15 }
                           maximumValue={ 85 }
                           step={ 1 }
-                          value = { user.age }
-                          onValueChange={ (value) => this.setState({ user: {...user, age: value }}) }
+                          value = { this.state.age }
+                          onValueChange={ (value) => this.setState({ age: value }) }
                   />
                 </View>
               </View>
 
-              <View style={ [styles.cellContainer, {justifyContent: 'center'}] }>
-                <Text style={ [styles.fontStyles, styles.textSubValue] }>Are you looking for more professionals?</Text>
-                <View style={ styles.pricesBlock }>
-                  <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onAddProfession() }>
-                    <View style={ [ styles.priceButton, {width:50, backgroundColor: '#fff'}] }>
-                      <Text style={ [styles.fontStyles, styles.textSubTitle, styles.priceButtonText] }>+</Text>
-                    </View>
-                  </TouchableOpacity>
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.fontStyles, styles.textCellTitle] }>My price</Text>
+                <View style={ [styles.priceWrapper, styles.thirdFlex] }>
+                  <Text style={ styles.textPrice }>$</Text>
+                  <TextInput
+                    autoCapitalize="none"
+                    style={ styles.priceInput }
+                    autoCorrect={ false }
+                    placeholder="0.00"
+                    placeholderTextColor="#9e9e9e"
+                    value={ this.state.price }
+                    keyboardType='numeric'
+                    onChangeText={ (text) => this.onChangePrice(text) }
+                    onFocus={ () => this.onFocusPrice() }
+                    onBlur={ () => this.onBlurPrice() }
+                  />
+                  <Text style={ [styles.textPrice, styles.textLabelPrice] }>/per session</Text>
+                </View>
+              </View>
+
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.fontStyles, styles.textCellTitle] }>Insured</Text>
+                <View style={ styles.cellValueContainer }>
+                  {
+                    labelInsure.map(item => {
+                      return (
+                        <RadioButton
+                          style={ styles.paddingTwo }
+                          key={ item.text }
+                          label={ item.text }
+                          color="#19b8ff"
+                          iconStyle={ styles.iconButton }
+                          labelStyle={ [styles.fontStyles, styles.textCellValue] }
+                          checked={ this.state.insured == item.value }
+                          onPress={ () => this.onInsured(item.value) }
+                        />
+                      );
+                    })
+                  }
+                </View>
+              </View>
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.fontStyles,styles.textCellTitle] }>Profession</Text>
+                <View style={ styles.dropdownWrapper }>
+                  <ModalDropdown
+                    options={ professions.map((e)=>e.name) }
+                    dropdownStyle={ styles.dropdownStyle }
+                    onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
+                  >
+                    <Text numberOfLines={1} style={ [styles.fontStyles, styles.dropdown, styles.dropDownText] }>{this.state.profession.name}</Text>
+                    <EvilIcons
+                      style={ styles.iconDropDown }
+                      name="chevron-down"
+                      size={ 20 }
+                      color="#10c7f9"
+                    />
+                  </ModalDropdown>
+                </View>
+              </View>
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.fontStyles, styles.textCellTitle] }>Certification</Text>
+                <View style={ styles.dropdownWrapper }>
+                  <ModalDropdown
+                    options={ this.state.profession.certification && this.state.profession.certification.length ? this.state.profession.certification : certificationsDefault }
+                    dropdownStyle={ styles.dropdownStyle }
+                    onSelect={ (rowId, rowData) => this.onSelectCertification(rowData) }
+                  >
+                    <Text numberOfLines={1} style={ [styles.fontStyles, styles.dropdown, styles.dropDownText] }>{this.state.certification}</Text>
+                    <EvilIcons
+                      style={ styles.iconDropDown }
+                      name="chevron-down"
+                      size={ 20 }
+                      color="#10c7f9"
+                    />
+                  </ModalDropdown>
+                </View>
+              </View>
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.fontStyles, styles.textCellTitle] }>Years of experience</Text>
+                <View style={ [styles.dropdownWrapper, styles.experienceView] }>
+                  <FontAwesome
+                    name="minus"
+                    size={ 12 }
+                    color="#10c7f9"
+                    onPress={ () => this.updateExperience(-1) }
+                  />
+                  <Text style={ [styles.fontStyles, styles.dropDownText, styles.experienceText] }>{this.state.experience} years</Text>
+                  <FontAwesome
+                    name="plus"
+                    size={ 12 }
+                    color="#10c7f9"
+                    onPress={ () => this.updateExperience(1) }
+                  />
+                </View>
+              </View>
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.fontStyles, styles.textCellTitle] }>Location</Text>
+                <View style={ styles.viewInput }>
+                  <TextInput
+                    autoCapitalize="none"
+                    autoCorrect={ false }
+                    placeholder="Location"
+                    placeholderTextColor="#9e9e9e"
+                    style={ styles.textInputRight }
+                    value={ this.state.address }
+                    onChangeText={ (text) => this.setState({ address: text }) }
+                  />
+                </View>
+              </View>
+              <View style={ styles.cellContainer }>
+                <View style={ styles.cellValueContainer }>
+                  {
+                    labelOwn.map(value => {
+                      return (
+                        <RadioButton
+                          style={ styles.paddingTwo }
+                          key={ value }
+                          label={ value }
+                          color="#19b8ff"
+                          iconStyle={ styles.iconButton }
+                          labelStyle={ [styles.fontStyles, styles.textCellValue] }
+                          checked={ this.state.own == value }
+                          onPress={ () => this.onOwn(value) }
+                        />
+                      );
+                    })
+                  }
                 </View>
               </View>
 
               <View style={ styles.cellDescriptionContainer }>
-                <Text style={ [styles.fontStyles, styles.textCellTitle, styles.descLabel] }>About me</Text>
+                <Text style={ [styles.fontStyles, styles.textCellTitle, styles.descLabel] }>Description</Text>
                 <TextInput
                   multiline = {true}
                   numberOfLines = {4}
                   autoCapitalize="none"
                   autoCorrect={ false }
                   style={ [styles.fontStyles, styles.textInputDesc, styles.textCellTitle] }
-                  value={ user.description }
-                  onChangeText={ (text) => this.setState({ user: {...user, description: text } }) }
+                  value={ this.state.description }
+                  onChangeText={ (text) => this.setState({ description: text }) }
                 />
               </View>
             </KeyboardAwareScrollView>
@@ -496,6 +710,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end'
   },
+
+  textInputRight: {
+    fontFamily: 'Open Sans',
+    width: width*0.6,
+    color: '#1e1e1e',
+    fontSize: 14,
+    height: 20,
+    textAlign: 'right'
+  },
   gender: {
     flex: 1,
     borderTopWidth: 1,
@@ -532,13 +755,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 11,
   },
-  viewInputCenter: {
+  // viewInputCenter: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: '#e3e3e3',
+  //   marginHorizontal: 70,
+  // },
+  viewInput: {
+    flex:1,
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     borderBottomWidth: 1,
-    borderBottomColor: '#e3e3e3',
-    marginHorizontal: 70,
+    borderBottomColor: '#e3e3e3'
   },
   textInputCenter: {
     paddingHorizontal:10,
@@ -641,7 +871,7 @@ const styles = StyleSheet.create({
   },
   dropdownWrapper: {
     flexDirection: 'row',
-    marginRight: 35,
+    // marginRight: 35,
     borderWidth: 1,
     borderColor: '#10c7f9',
     borderRadius: 15,
@@ -776,7 +1006,34 @@ const styles = StyleSheet.create({
     fontFamily: 'Open Sans',
     fontSize: 18,
   },
-
+  textPrice: {
+    color: '#10c7f9'
+  },
+  textLabelPrice: {
+    fontSize: 12,
+    color: '#10c7f9'
+  },
+  priceInput: {
+    fontSize: 16,
+    width: width * 0.2,
+    height: 15,
+    justifyContent: 'flex-end',
+    alignSelf: 'center',
+    textAlign: 'center',
+  },
+  thirdFlex:{
+    width: width * 0.5,
+  },
+  priceWrapper: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#10c7f9',
+    borderRadius: 15,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5
+  },
 });
 
 
