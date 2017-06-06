@@ -26,6 +26,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import RadioButton from '../../../Explore/components/smart/radioButton';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
+import InputCenter from '../../../Components/inputCenter';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import * as clientProfileActions from '../../actions';
 
@@ -50,29 +51,11 @@ class EditProfile extends Component {
   constructor(props) {
     super(props);
 
-    let {  explore: { professions } } = props;
     let user = {...props.auth.user};
-    const defaultProfession = {
-      profession: professions && professions[0] || {},
-      price: prices[0],
-    };
-
-    if (!user.professions.length){
-      user.professions = [{...defaultProfession}]
-    } else {
-      user.professions = [...user.professions.map((e)=>(
-        {
-          profession: professions.filter((item)=>item._id===e.profession)[0] || {},
-          price: prices.filter((item)=>(item.level===e.priceLevel))[0] || {},
-        })
-      )
-      ]
-    }
 
     this.state = {
       user,
       selectedOption: constants.BASIC_INFO,
-      defaultProfession
     };
   }
 
@@ -90,9 +73,8 @@ class EditProfile extends Component {
   saveProfile() {
     const { updateProfile } = this.props;
     const { user } = this.state;
-    const professions = user.professions.map((e) => ({profession: e.profession._id, priceLevel: e.price.level}));
-    const data = {...user, professions};
-    this.setState({updateRequest: true}, () => updateProfile(data));
+
+    this.setState({updateRequest: true}, () => updateProfile({...user, professional: true}));
   }
 
   onBack() {
@@ -125,7 +107,7 @@ class EditProfile extends Component {
             />
           </TouchableOpacity>
 
-          <Text style={ [styles.fontStyles, styles.textTitle] }>!!PROFILE EDIT</Text>
+          <Text style={ [styles.fontStyles, styles.textTitle] }>PROFILE EDIT</Text>
 
           <TouchableOpacity
             onPress={ () => this.saveProfile() }
@@ -247,7 +229,6 @@ class EditProfile extends Component {
 
   render() {
     const { avatar, user, updateRequest } = this.state;
-    const { explore: { professions } } = this.props;
 
     const sliderWidth = width * 1/4;
     const ageInitialValue = 15;
@@ -274,17 +255,7 @@ class EditProfile extends Component {
               </View>
 
               <View style={ styles.cellContainer }>
-                <View style={ styles.viewInputCenter }>
-                  <TextInput
-                    autoCapitalize="none"
-                    autoCorrect={ false }
-                    placeholder="Add your name here"
-                    placeholderTextColor="#9e9e9e"
-                    style={ [styles.fontStyles, styles.textInputCenter] }
-                    value={ user.name }
-                    onChangeText={ (name) => this.setState({ user: {...user, name}}) }
-                  />
-                </View>
+                <InputCenter value={ user.name } onChangeText={ (name) => this.setState({ user: {...user, name}}) }/>
               </View>
 
               <View style={ [styles.cellContainer, styles.profileVisibility] }>
@@ -344,55 +315,6 @@ class EditProfile extends Component {
                   />
                 </View>
               </View>
-
-              {user.professions.map((item, index) => (
-                <View key={index}>
-                  <View style={ [styles.cellContainer, styles.withoutBorder] }>
-                    <Text style={ [styles.fontStyles, styles.textCellTitle] }>Looking for</Text>
-                    <View style={ styles.dropdownWrapper }>
-                      <ModalDropdown
-                        options={ this.onModalOptions() }
-                        renderRow={(value)=>(<Text  numberOfLines={1} style={ [styles.fontStyles, styles.dropDownOptions] }>{value}</Text>)}
-                        dropdownStyle={ styles.dropdownStyle }
-                        onSelect={ (rowId, rowData) => this.onSelectProfession(rowData, index) }
-                      >
-                        <Text  numberOfLines={1} style={ [styles.fontStyles, styles.dropdown, styles.dropDownText] }>{item.profession.name}</Text>
-                        <EvilIcons
-                          style={ styles.iconDropDown }
-                          name="chevron-down"
-                          size={ 24 }
-                          color="#10c7f9"
-                        />
-                      </ModalDropdown>
-                    </View>
-                    <View style={styles.iconClose}>
-                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onRemoveProfession(index) }>
-                        <EvilIcons
-                          name="close"
-                          size={ 24 }
-                          color={"#10c7f9"}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View style={ [styles.cellContainer, styles.withoutBorder] }>
-                    <Text style={ [styles.fontStyles, styles.textCellTitle] }>Price</Text>
-                    <View style={ styles.pricesBlock }>
-                      {
-                        prices.map((priceItem, priceIndex) =>(
-                          <TouchableOpacity key={ priceIndex } activeOpacity={ .5 } onPress={ () => this.onSelectPrice(priceItem, index) }>
-                            <View style={ [styles.viewTwoText, priceItem.level === item.price.level ? styles.priceButtonChecked : styles.priceButton] }>
-                              <Text style={ [styles.fontStyles, styles.textSubTitle, priceItem.level === item.price.level ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ priceItem.item }</Text>
-                              <Text style={ [styles.fontStyles, styles.textSubValue, priceItem.level === item.price.level ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ priceItem.price }</Text>
-                            </View>
-                          </TouchableOpacity>
-                        ))
-                      }
-                    </View>
-                  </View>
-                  <View style={ [styles.cellContainer, styles.marginHorizontal20, styles.withoutPaddings] }/>
-                </View>
-              ))}
 
               <View style={ [styles.cellContainer, {justifyContent: 'center'}] }>
                 <Text style={ [styles.fontStyles, styles.textSubValue] }>Are you looking for more professionals?</Text>
