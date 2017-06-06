@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 import request, { toQueryString } from '../request';
 
-function updateSessionsSuccess(data) {
+function updateProfileSuccess(data) {
   return { type: types.PROFILE_UPDATE, ...data };
 }
 
@@ -19,7 +19,7 @@ export const updateProfile = (userData) => async (dispatch, store) => {
 
   try {
     await request(url, options, auth);
-    dispatch(updateSessionsSuccess({...auth, user: userData}));
+    dispatch(updateProfileSuccess({ user: userData }));
   } catch (error) {
     const error =
       `Profile Error: updateProfile(${userData.professional ? 'Professional' : 'Client'})
@@ -42,7 +42,7 @@ export const getSessions = (data) => async (dispatch, store) => {
 
   try {
     const response = await request(url, options, auth);
-    dispatch(updateSessionsSuccess({sessions: response}));
+    dispatch(updateProfileSuccess({sessions: response}));
   } catch (error) {
     const error =
       `Profile Error: getSessions()
@@ -62,7 +62,7 @@ export const getFullProfile = () => async (dispatch, store) => {
 
   try {
     const response = await request(url, options, auth);
-    dispatch(updateSessionsSuccess({...auth, user: response.user}));
+    dispatch(updateProfileSuccess({ user: response.user }));
   } catch (error) {
     const error =
       `Profile Error: getFullProfile()
