@@ -10,7 +10,7 @@ import {
   Dimensions,
   TouchableOpacity,
   TextInput,
-  Switch
+  Switch,
 } from 'react-native';
 
 import ImageProgress from 'react-native-image-progress';

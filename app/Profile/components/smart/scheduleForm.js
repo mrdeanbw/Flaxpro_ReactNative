@@ -37,7 +37,7 @@ const constants = {
 };
 const schedules = [
   {
-    date: '2017-03-10',
+    date: '2017-06-10',
     times: [
       {
         start: '08:00 AM',
@@ -50,7 +50,7 @@ const schedules = [
     ],
   },
   {
-    date: '2017-03-15',
+    date: '2017-06-15',
     times: [
       {
         start: '08:30 AM',
@@ -63,7 +63,7 @@ const schedules = [
     ],
   },
   {
-    date: '2017-03-20',
+    date: '2017-06-20',
     times: [
       {
         start: '08:20 AM',
@@ -168,7 +168,7 @@ class ScheduleForm extends Component {
 
   onSelectDate(date) {
     let day = Moment(date).format('YYYY-MM-DD');
-    this.props.getSessions({byField: 'day', day: Moment(date).format('D')});
+    // this.props.getSessions({byField: 'day', day: Moment(date).format('D')});
     this.setState({ selectedDate: day });
   }
 
@@ -328,9 +328,9 @@ class ScheduleForm extends Component {
               isSelectableDay={ true }
               onDateSelect={ (date) => this.onSelectDate(date) }
             />
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={true}>
             {
-              sessions.map((day, index) => (
+              sessions.filter((e)=>Moment(new Date(e.date)).format('YYYY-MM-DD') === this.state.selectedDate).map((day, index) => (
                 <View key={index}>
                   <View style={ styles.sectionTitleContainer }>
 
@@ -391,10 +391,10 @@ const customStyle = {
   hasEventCircle: {
     backgroundColor: '#45c7f1',
     borderWidth: 1,
-    borderColor: '#34aadc',
+    borderColor: '#efefef',
   },
   hasEventText: {
-    color: '#fff',
+    color: '#8d99a6',
   },
   selectedDayCircle: {
     backgroundColor: '#45c7f1',
@@ -469,6 +469,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#d9d9d9',
     borderBottomWidth: 1,
+    paddingHorizontal: 5,
   },
   separator: {
     marginVertical:2,
