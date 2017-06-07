@@ -263,7 +263,7 @@ class EditProfile extends Component {
         <Image source={ background } style={ styles.background } resizeMode="cover">
           { this.getShowNavBar }
           <View style={ styles.contentContainer }>
-            <KeyboardAwareScrollView>
+            <KeyboardAwareScrollView extraScrollHeight={40} showsVerticalScrollIndicator={true}>
               <View style={ styles.avatarContainer }>
                 <View style={ styles.avatarWrapper }>
                   { user.avatar ?
@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     borderBottomWidth: 1,
-    borderBottomColor: '#e3e3e3'
+    borderBottomColor: '#10c7f9'
   },
   textInputCenter: {
     paddingHorizontal:10,

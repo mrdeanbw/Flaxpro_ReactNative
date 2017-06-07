@@ -324,7 +324,7 @@ class EditProfile extends Component {
         <Image source={ background } style={ styles.background } resizeMode="cover">
           { this.getShowNavBar }
           <View style={ styles.contentContainer }>
-            <KeyboardAwareScrollView>
+            <KeyboardAwareScrollView extraScrollHeight={40}>
               <View style={ styles.avatarContainer }>
                 <View style={ styles.avatarWrapper }>
                   { this.state.avatar ?
@@ -341,9 +341,7 @@ class EditProfile extends Component {
               </View>
 
               <View style={ styles.cellContainer }>
-                {/*<View style={ styles.profileVisibilityTitle }>*/}
-                  <Text style={ styles.fontStyles }>Phone Number</Text>
-                {/*</View>*/}
+                <Text style={ styles.fontStyles }>Phone Number</Text>
                 <View style={ [styles.viewInput, styles.halfWidth] }>
                   <TextInput
                     autoCapitalize="none"
@@ -773,7 +771,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     borderBottomWidth: 1,
-    borderBottomColor: '#e3e3e3'
+    borderBottomColor: '#10c7f9',
+    height: 32,
+
   },
   textInputCenter: {
     paddingHorizontal:10,
