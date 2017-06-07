@@ -63,7 +63,8 @@ class EditProfile extends Component {
       selectedOption: constants.BASIC_INFO,
       professional: true,
       own: user.toClient && user.ownSpace ? 'Both' : (user.toClient ? 'Go to client' : 'Own space'),
-      address: user.address.formattedAddress,
+      address: user.address.formattedAddress || user.address,
+      updateRequest: false
     }
 
   }
@@ -75,6 +76,15 @@ class EditProfile extends Component {
       Alert.alert(error);
     } else if (this.state.updateRequest) {
       Alert.alert('Update Successful');
+      let user = {...nextProps.profile.user};
+
+      const state = {
+        ...user,
+        price: this.priceToFloat(user.price),
+        own: user.toClient && user.ownSpace ? 'Both' : (user.toClient ? 'Go to client' : 'Own space'),
+        address: user.address.formattedAddress || user.address,
+      }
+      this.setState({...state})
     }
     this.setState({updateRequest: false})
   }
@@ -97,8 +107,10 @@ class EditProfile extends Component {
     }
     if(this.state.own === 'Go to client') {
       this.state.toClient = true;
+      this.state.ownSpace = false;
     }
     if(this.state.own === 'Own space') {
+      this.state.toClient = false;
       this.state.ownSpace = true;
     }
 
@@ -336,9 +348,9 @@ class EditProfile extends Component {
               </View>
 
               <View style={ styles.cellContainer }>
-                <View style={ styles.profileVisibilityTitle }>
+                {/*<View style={ styles.profileVisibilityTitle }>*/}
                   <Text style={ styles.fontStyles }>Phone Number</Text>
-                </View>
+                {/*</View>*/}
                 <View style={ styles.viewInput }>
                   <TextInput
                     autoCapitalize="none"
@@ -713,7 +725,7 @@ const styles = StyleSheet.create({
 
   textInputRight: {
     fontFamily: 'Open Sans',
-    width: width*0.6,
+    width: width*0.5,
     color: '#1e1e1e',
     fontSize: 14,
     height: 20,

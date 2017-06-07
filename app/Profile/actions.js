@@ -18,8 +18,9 @@ export const updateProfile = (userData) => async (dispatch, store) => {
   };
 
   try {
-    await request(url, options, auth);
-    dispatch(updateProfileSuccess({ user: userData }));
+    const response = await request(url, options, auth);
+    const compositeData = response ? {...userData, ...response.user} : userData;
+    dispatch(updateProfileSuccess({ user: compositeData }));
   } catch (error) {
     const error =
       `Profile Error: updateProfile(${userData.professional ? 'Professional' : 'Client'})
