@@ -76,15 +76,8 @@ class EditProfile extends Component {
       Alert.alert(error);
     } else if (this.state.updateRequest) {
       Alert.alert('Update Successful');
-      let user = {...nextProps.profile.user};
+      this.onBack();
 
-      const state = {
-        ...user,
-        price: this.priceToFloat(user.price),
-        own: user.toClient && user.ownSpace ? 'Both' : (user.toClient ? 'Go to client' : 'Own space'),
-        address: user.address.formattedAddress || user.address,
-      }
-      this.setState({...state})
     }
     this.setState({updateRequest: false})
   }
@@ -351,7 +344,7 @@ class EditProfile extends Component {
                 {/*<View style={ styles.profileVisibilityTitle }>*/}
                   <Text style={ styles.fontStyles }>Phone Number</Text>
                 {/*</View>*/}
-                <View style={ styles.viewInput }>
+                <View style={ [styles.viewInput, styles.halfWidth] }>
                   <TextInput
                     autoCapitalize="none"
                     autoCorrect={ false }
@@ -425,7 +418,7 @@ class EditProfile extends Component {
 
               <View style={ styles.cellContainer }>
                 <Text style={ [styles.fontStyles, styles.textCellTitle] }>My price</Text>
-                <View style={ [styles.priceWrapper, styles.thirdFlex] }>
+                <View style={ [styles.priceWrapper, styles.halfWidth] }>
                   <Text style={ styles.textPrice }>$</Text>
                   <TextInput
                     autoCapitalize="none"
@@ -466,7 +459,7 @@ class EditProfile extends Component {
               </View>
               <View style={ styles.cellContainer }>
                 <Text style={ [styles.fontStyles,styles.textCellTitle] }>Profession</Text>
-                <View style={ styles.dropdownWrapper }>
+                <View style={ [styles.dropdownWrapper, styles.halfWidth] }>
                   <ModalDropdown
                     options={ professions.map((e)=>e.name) }
                     dropdownStyle={ styles.dropdownStyle }
@@ -484,7 +477,7 @@ class EditProfile extends Component {
               </View>
               <View style={ styles.cellContainer }>
                 <Text style={ [styles.fontStyles, styles.textCellTitle] }>Certification</Text>
-                <View style={ styles.dropdownWrapper }>
+                <View style={ [styles.dropdownWrapper, styles.halfWidth] }>
                   <ModalDropdown
                     options={ this.state.profession.certification && this.state.profession.certification.length ? this.state.profession.certification : certificationsDefault }
                     dropdownStyle={ styles.dropdownStyle }
@@ -776,7 +769,7 @@ const styles = StyleSheet.create({
   //   marginHorizontal: 70,
   // },
   viewInput: {
-    flex:1,
+    // flex:1,
     flexDirection: 'row',
     alignItems: 'flex-end',
     borderBottomWidth: 1,
@@ -1033,7 +1026,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'center',
   },
-  thirdFlex:{
+  halfWidth:{
     width: width * 0.5,
   },
   priceWrapper: {

@@ -68,6 +68,7 @@ class EditProfile extends Component {
       )
       ]
     }
+    user.address= user.address.formattedAddress || user.address,
 
     this.state = {
       user,
@@ -83,6 +84,7 @@ class EditProfile extends Component {
       Alert.alert(error);
     } else if (this.state.updateRequest) {
       Alert.alert('Update Successful');
+      this.onBack();
     }
     this.setState({updateRequest: false})
   }
@@ -405,6 +407,21 @@ class EditProfile extends Component {
                 </View>
               </View>
 
+              <View style={ styles.cellContainer }>
+                <Text style={ [styles.fontStyles, styles.textCellTitle] }>Location</Text>
+                <View style={ styles.viewInput }>
+                  <TextInput
+                    autoCapitalize="none"
+                    autoCorrect={ false }
+                    placeholder="Location"
+                    placeholderTextColor="#9e9e9e"
+                    style={ styles.textInputRight }
+                    value={ user.address }
+                    onChangeText={ (text) => this.setState({ user: {...user,  address: text }}) }
+                  />
+                </View>
+              </View>
+
               <View style={ styles.cellDescriptionContainer }>
                 <Text style={ [styles.fontStyles, styles.textCellTitle, styles.descLabel] }>About me</Text>
                 <TextInput
@@ -521,6 +538,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#565656',
   },
+
+  textInputRight: {
+    fontFamily: 'Open Sans',
+    width: width*0.5,
+    color: '#1e1e1e',
+    fontSize: 14,
+    height: 20,
+    textAlign: 'right'
+  },
   //avatar
   avatarContainer: {
     marginVertical: 10,
@@ -617,6 +643,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#e3e3e3',
     marginHorizontal: 70,
+  },
+  viewInput: {
+    // flex:1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e3e3e3'
   },
   textInputCenter: {
     paddingHorizontal:10,
