@@ -78,8 +78,8 @@ class ExploreForm extends Component {
     const { auth: { user } , explore } = this.props;
     if(explore && user) {
       if(user.role === CommonConstant.user_client) {
-        const listOriginal = (this.props.explore.professions || defaultProfessions).filter((e) => e.original && defaultProfessions.includes(e.name));
-        const listOther = (this.props.explore.professions || defaultProfessions).filter((e) => !e.original);
+        const listOriginal = (this.props.explore.professions || allProfessions).filter((e) => e.original && defaultProfessions.includes(e.name));
+        const listOther = (this.props.explore.professions || allProfessions).filter((e) => !e.original);
         const listSelected = [...listOriginal, otherLabel];
         const professions = {...this.state.professions, listOriginal, listOther, listSelected};
         const filteredProfessionals = this.filterProfessionalsList(listSelected);

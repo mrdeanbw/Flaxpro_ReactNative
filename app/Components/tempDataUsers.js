@@ -121,47 +121,53 @@ export const allProfessions = [{
   name: 'Yoga',
   color: '#ac6bbd',
   icon: require('../Assets/images/yoga.png'),
+  original: true,
   certification: []
 }, {
   _id: '591c1e632b185e1add2214d6',
   name: 'Chiro',
   color: '#51c9b0',
   icon: require('../Assets/images/pilates.png'),
+  original: true,
   certification: []
 }, {
   _id: '591c1e632b185e1add2214d7',
   name: 'Strength Training',
   color: '#ee4e42',
   icon: require('../Assets/images/strength_training.png'),
+  original: true,
   certification: []
 }, {
   _id: '591c1e632b185e1add2214d8',
   name: 'Fitness Training',
   color: '#fec107',
   icon: require('../Assets/images/sport.png'),
+  original: true,
   certification: []
 }, {
   _id: '591c1e632b185e1add2214d9',
   name: 'Simply Yoga',
   color: '#ac6bbd',
   icon: require('../Assets/images/sport.png'),
+  original: false,
   certification: []
 }, {
   _id: '591c1e632b185e1add2214da',
   name: 'Physiotherapist',
   color: '#4c64b4',
   icon: require('../Assets/images/sport.png'),
+  original: true,
   certification: []
 }, {
   _id: '591c1e632b185e1add2214db',
   name: 'Massage',
   icon: require('../Assets/images/sport.png'),
-  origin: false,
+  original: true,
   certification: []
 }, {
   _id: '591c1e632b185e1add2214dc',
   name: 'Yoga8',
   icon: require('../Assets/images/sport.png'),
-  origin: false,
+  original: false,
   certification: []
 }]
