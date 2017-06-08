@@ -13,6 +13,7 @@ import TabNavigator from 'react-native-tab-navigator';
 import Explore from '../../../Explore/containers/explore';
 import Account from '../../../Account/containers/account';
 import Clients_Professionals from '../../../Clients_Professionals/containers/clients_professionals';
+import UI_static from '../../../Schedule/pages/Clients';
 import ClientProfile from '../../../Profile/containers/clientProfile';
 import ProfessionalProfile from '../../../Profile/containers/professionalProfile';
 import Inbox from '../../../Inbox/containers/inbox';
@@ -80,7 +81,7 @@ class MainForm extends Component {
                  style={ user_mode === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
         ),
         onPress: () => this.setState({ selectedTab: 'clients_professionals' }),
-        children: <Clients_Professionals/>,
+        children: <UI_static/>,
       },
       /* Inbox */
       {

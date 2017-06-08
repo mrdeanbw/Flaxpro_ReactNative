@@ -10,7 +10,7 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-    BackHandler.addEventListener('hardwareBackPress', function() {
+    BackAndroid.addEventListener('hardwareBackPress', function() {
      return true;
     });
   }
