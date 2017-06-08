@@ -460,10 +460,11 @@ class EditProfile extends Component {
                 <View style={ [styles.dropdownWrapper, styles.halfWidth] }>
                   <ModalDropdown
                     options={ professions.map((e)=>e.name) }
-                    dropdownStyle={ styles.dropdownStyle }
+                    dropdownStyle={ [styles.dropdownStyle, styles.halfWidth] }
+                    renderRow={(value)=>(<Text  numberOfLines={1} style={ [styles.fontStyles, styles.dropDownOptions] }>{value}</Text>)}
                     onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
                   >
-                    <Text numberOfLines={1} style={ [styles.fontStyles, styles.dropdown, styles.dropDownText] }>{this.state.profession.name}</Text>
+                    <Text numberOfLines={1} style={ [styles.fontStyles, styles.dropdown, styles.dropDownText, styles.halfWidth] }>{this.state.profession.name}</Text>
                     <EvilIcons
                       style={ styles.iconDropDown }
                       name="chevron-down"
@@ -478,10 +479,11 @@ class EditProfile extends Component {
                 <View style={ [styles.dropdownWrapper, styles.halfWidth] }>
                   <ModalDropdown
                     options={ this.state.profession.certification && this.state.profession.certification.length ? this.state.profession.certification : certificationsDefault }
-                    dropdownStyle={ styles.dropdownStyle }
+                    dropdownStyle={ [styles.dropdownStyle, styles.halfWidth] }
+                    renderRow={(value)=>(<Text  numberOfLines={1} style={ [styles.fontStyles, styles.dropDownOptions] }>{value}</Text>)}
                     onSelect={ (rowId, rowData) => this.onSelectCertification(rowData) }
                   >
-                    <Text numberOfLines={1} style={ [styles.fontStyles, styles.dropdown, styles.dropDownText] }>{this.state.certification}</Text>
+                    <Text numberOfLines={1} style={ [styles.fontStyles, styles.dropdown, styles.dropDownText, styles.halfWidth] }>{this.state.certification}</Text>
                     <EvilIcons
                       style={ styles.iconDropDown }
                       name="chevron-down"
