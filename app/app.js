@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {BackHandler} from "react-native"
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -50,6 +51,11 @@ const scenes = Actions.create(
 );
 
 export default class App extends Component {
+  componentDidMount(){
+    BackHandler.addEventListener('hardwareBackPress', function() {
+      return true;
+    });
+  }
   render() {
     return (
       <Provider store={ store }>
