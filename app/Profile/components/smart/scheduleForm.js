@@ -84,7 +84,7 @@ class ScheduleForm extends Component {
     super(props);
     this.state = {
       schedules: props.sessions,
-      selectedDate: Moment().format('YYYY-MM-DD'),
+      selectedDates: [Moment().format('YYYY-MM-DD')],
       selectedOption: constants.CALENDAR,
     };
   }
@@ -144,13 +144,13 @@ class ScheduleForm extends Component {
   }
 
   onAddTime() {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
+    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDates))(this.state.schedules);
 
     const { schedules } = this.state;
       
     if (index == -1 ) {
       const data = {
-        date: this.state.selectedDate,
+        date: this.state.selectedDates,
         times: [
           {
             start: '08:00 AM',
@@ -167,9 +167,14 @@ class ScheduleForm extends Component {
   }
 
   onSelectDate(date) {
-    let day = Moment(date).format('YYYY-MM-DD');
-    // this.props.getSessions({byField: 'day', day: Moment(date).format('D')});
-    this.setState({ selectedDate: day });
+    const day = Moment(date).format('YYYY-MM-DD');
+    const selectedDates = [...this.state.selectedDates];
+    if(selectedDates.includes(day)){
+      selectedDates.splice(selectedDates.indexOf(day), 1)
+    } else {
+      selectedDates.push(day)
+    }
+    this.setState({ selectedDates });
   }
 
   onChangeStartTime(time, entryIndex) {
@@ -330,7 +335,7 @@ class ScheduleForm extends Component {
             />
             <ScrollView showsVerticalScrollIndicator={true}>
             {
-              sessions.filter((e)=>Moment(new Date(e.date)).format('YYYY-MM-DD') === this.state.selectedDate).map((day, index) => (
+              sessions.filter((e)=>this.state.selectedDates.includes(Moment(new Date(e.date)).format('YYYY-MM-DD'))).map((day, index) => (
                 <View key={index}>
                   <View style={ styles.sectionTitleContainer }>
 
@@ -389,7 +394,7 @@ const customStyle = {
     color: '#2e343b',
   },
   hasEventCircle: {
-    backgroundColor: '#45c7f1',
+    backgroundColor: '#efefef',
     borderWidth: 1,
     borderColor: '#efefef',
   },
@@ -469,7 +474,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#d9d9d9',
     borderBottomWidth: 1,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
   },
   separator: {
     marginVertical:2,

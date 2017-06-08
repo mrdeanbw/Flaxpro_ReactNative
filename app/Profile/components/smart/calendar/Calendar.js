@@ -25,7 +25,7 @@ export default class Calendar extends Component {
 
   state = {
     currentMonthMoment: moment(this.props.startDate),
-    selectedMoment: moment(this.props.selectedDate),
+    selectedMoment: this.props.selectedDate || [moment().format('YYYY-MM-DD')],
     rowHeight: null,
   };
 
@@ -48,7 +48,7 @@ export default class Calendar extends Component {
       PropTypes.object
     ]),
     scrollEnabled: PropTypes.bool,
-    selectedDate: PropTypes.any,
+    selectedDate: PropTypes.array,
     showControls: PropTypes.bool,
     showEventIndicators: PropTypes.bool,
     startDate: PropTypes.any,
@@ -130,7 +130,15 @@ export default class Calendar extends Component {
 
   selectDate(date) {
     if (this.props.selectedDate === undefined) {
-      this.setState({ selectedMoment: date });
+      const day = moment(date).format('YYYY-MM-DD');
+      const selectedMoment = [...this.state.selectedMoment];
+      console.log('===========selectedMoment=',selectedMoment, day)
+      if(selectedMoment.includes(day)){
+        selectedMoment.splice(selectedMoment.indexOf(day), 1)
+      } else {
+        selectedMoment.push(day)
+      }
+      this.setState({ selectedMoment });
     }
     this.props.onDateSelect && this.props.onDateSelect(date ? date.format(): null );
   }
@@ -182,15 +190,16 @@ export default class Calendar extends Component {
       startOfArgMonthMoment = argMoment.startOf('month');
 
     const
-      selectedMoment = moment(this.state.selectedMoment),
+      selectedMoment = this.state.selectedMoment.map(e => moment(e)),
       weekStart = this.props.weekStart,
       todayMoment = moment(this.props.today),
       todayIndex = todayMoment.date() - 1,
       argMonthDaysCount = argMoment.daysInMonth(),
       offset = (startOfArgMonthMoment.isoWeekday() - weekStart + 7) % 7,
       argMonthIsToday = argMoment.isSame(todayMoment, 'month'),
-      selectedIndex = moment(selectedMoment).date() - 1,
-      selectedMonthIsArg = selectedMoment.isSame(argMoment, 'month');
+      selectedIndex = selectedMoment.map(e => moment(e).date() - 1)
+      // selectedMonthIsArg = selectedMoment.map(e => e.isSame(argMoment, 'month'));
+    console.log('===========selectedIndex=',selectedIndex)
 
     const events = (eventsMap !== null)
       ? eventsMap[argMoment.startOf('month').format()]
@@ -211,7 +220,7 @@ export default class Calendar extends Component {
             }}
             caption={ `${dayIndex + 1}` }
             isToday={ argMonthIsToday && (dayIndex === todayIndex) }
-            isSelected={ this.props.isSelectableDay ? selectedMonthIsArg && (dayIndex === selectedIndex) : false }
+            isSelected={ this.props.isSelectableDay ? selectedIndex.includes(dayIndex) : false }
             event={ events && events[dayIndex] }
             showEventIndicators={ this.props.showEventIndicators }
             customStyle={ this.props.customStyle }
