@@ -1,13 +1,19 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
+const PADDING_H = 10;
 
 const styles = StyleSheet.create({
   calendarContainer: {
     backgroundColor: '#f7f7f7',
   },
   monthContainer: {
-    width: DEVICE_WIDTH,
+    width: (DEVICE_WIDTH-PADDING_H*2),
+  },
+  scrollingBlock: {
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#d9d9d9',
   },
   calendarControls: {
     flexDirection: 'row',
@@ -31,31 +37,35 @@ const styles = StyleSheet.create({
   },
   dayHeading: {
     flex: 1,
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: 5,
+    marginVertical: 10,
   },
   weekendHeading: {
     flex: 1,
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: 5,
+    marginVertical: 10,
     color: '#cccccc',
+  },
+  paddingHorizontal: {
+    paddingHorizontal: PADDING_H
   },
   weekRow: {
     flexDirection: 'row',
-    paddingVertical: 1,
+    paddingVertical: 2,
+    paddingHorizontal: PADDING_H,
   },
   dayButton: {
     alignItems: 'center',
-    width: DEVICE_WIDTH / 7,
+    width: (DEVICE_WIDTH-PADDING_H*2) / 7,
     // borderTopWidth: 1,
     // borderTopColor: '#e9e9e9',
   },
   dayButtonFiller: {
-    width: DEVICE_WIDTH / 7,
+    width: (DEVICE_WIDTH-PADDING_H*2) / 7,
   },
   day: {
     fontSize: 12,

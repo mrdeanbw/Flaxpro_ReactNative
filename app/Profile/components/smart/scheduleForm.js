@@ -83,8 +83,8 @@ class ScheduleForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      schedules: schedules,
-      selectedDate: schedules[0].date,
+      schedules: props.sessions,
+      selectedDate: Moment().format('YYYY-MM-DD'),
       selectedOption: constants.CALENDAR,
     };
   }
@@ -320,7 +320,7 @@ class ScheduleForm extends Component {
             <Calendar
               customStyle={ customStyle }
               dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-              eventDates={ Ramda.pluck('date')(this.state.schedules) }
+              eventDates={ Ramda.pluck('date')(sessions) }
               nextButtonText={ '>' }
               prevButtonText={'<'}
               showControls={ true }
@@ -377,10 +377,10 @@ const customStyle = {
     color: '#8e9296',
   },
   currentDayCircle: {
-    backgroundColor: '#fff',
+    backgroundColor: '#efefef',
   },
   currentDayText: {
-    color: '#8d99a6',
+    color: '#000',
   },
   day: {
     color: '#8d99a6',

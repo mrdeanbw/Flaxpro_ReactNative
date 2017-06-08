@@ -108,7 +108,7 @@ export default class Calendar extends Component {
 
     // Dates without any custom properties
     eventDates.forEach(event => {
-      const date = moment(event);
+      const date = moment(new  Date(event));
       const month = moment(date).startOf('month').format();
       parsedDates[month] = parsedDates[month] || {};
       parsedDates[month][date.date() - 1] = {};
@@ -306,7 +306,9 @@ export default class Calendar extends Component {
     return (
       <View style={ [styles.calendarContainer, this.props.customStyle.calendarContainer] }>
         { this.renderTopBar() }
+        <View style={styles.paddingHorizontal}>
         { this.renderHeading(this.props.titleFormat) }
+        </View>
         { this.props.scrollEnabled ?
           <ScrollView
             ref={ calendar => this._calendar = calendar }
@@ -318,14 +320,14 @@ export default class Calendar extends Component {
             showsHorizontalScrollIndicator={ false }
             automaticallyAdjustContentInsets
             onMomentumScrollEnd={ (event) => this.scrollEnded(event) }
-            style={{
+            style={[styles.scrollingBlock, {
               height: this.state.rowHeight ? this.state.rowHeight * numOfWeeks : null,
-            }}
+            }]}
           >
             { calendarDates.map((date) => this.renderMonthView(moment(date), eventDatesMap)) }
           </ScrollView>
           :
-          <View ref={ calendar => this._calendar = calendar }>
+          <View ref={ calendar => this._calendar = calendar }  style={[styles.scrollingBlock]}>
             { calendarDates.map((date) => this.renderMonthView(moment(date), eventDatesMap)) }
           </View>
         }

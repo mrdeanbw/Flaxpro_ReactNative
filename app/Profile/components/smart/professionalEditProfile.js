@@ -63,7 +63,7 @@ class EditProfile extends Component {
       selectedOption: constants.BASIC_INFO,
       professional: true,
       own: user.toClient && user.ownSpace ? 'Both' : (user.toClient ? 'Go to client' : 'Own space'),
-      address: user.address.formattedAddress || user.address,
+      address: user.location.originalAddress,
       updateRequest: false
     }
 

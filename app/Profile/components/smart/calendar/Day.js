@@ -29,21 +29,33 @@ export default class Day extends Component {
     const { customStyle } = this.props;
     const dayCircleStyle = [styles.dayCircleFiller, customStyle.dayCircleFiller];
 
-    if (isSelected) {
-      if (isToday) {
-        dayCircleStyle.push(styles.currentDayCircle, customStyle.currentDayCircle);
-      } else {
+    switch (true) {
+      case isSelected && event:
+        dayCircleStyle.push(styles.hasEventDaySelectedCircle, customStyle.hasEventDaySelectedCircle, event.hasEventDaySelectedCircle);
+        break;
+      case isSelected:
         dayCircleStyle.push(styles.selectedDayCircle, customStyle.selectedDayCircle);
-      }
+        break;
+      case !!event:
+        dayCircleStyle.push(styles.hasEventCircle, customStyle.hasEventCircle, event.hasEventCircle);
+        break;
     }
 
-    if (event) {
-      if (isSelected) {
-        dayCircleStyle.push(styles.hasEventDaySelectedCircle, customStyle.hasEventDaySelectedCircle, event.hasEventDaySelectedCircle);
-      } else {
-        dayCircleStyle.push(styles.hasEventCircle, customStyle.hasEventCircle, event.hasEventCircle);
-      }
-    }
+    // if (isSelected) {
+    //   if (isToday) {
+    //     dayCircleStyle.push(styles.currentDayCircle, customStyle.currentDayCircle);
+    //   } else {
+    //     dayCircleStyle.push(styles.selectedDayCircle, customStyle.selectedDayCircle);
+    //   }
+    // }
+    //
+    // if (event) {
+    //   if (isSelected) {
+    //     dayCircleStyle.push(styles.hasEventDaySelectedCircle, customStyle.hasEventDaySelectedCircle, event.hasEventDaySelectedCircle);
+    //   } else {
+    //     dayCircleStyle.push(styles.hasEventCircle, customStyle.hasEventCircle, event.hasEventCircle);
+    //   }
+    // }
     return dayCircleStyle;
   }
 
@@ -51,17 +63,32 @@ export default class Day extends Component {
     const { customStyle } = this.props;
     const dayTextStyle = [styles.day, customStyle.day];
 
-    if (isToday && !isSelected) {
-      dayTextStyle.push(styles.currentDayText, customStyle.currentDayText);
-    } else if (isToday || isSelected) {
-      dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
-    } else if (isWeekend) {
-      dayTextStyle.push(styles.weekendDayText, customStyle.weekendDayText);
+    switch (true) {
+      case isSelected:
+        dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
+        break;
+      case isToday:
+        dayTextStyle.push(styles.currentDayText, customStyle.currentDayText);
+        break;
+      case !!event:
+        dayTextStyle.push(styles.hasEventText, customStyle.hasEventText, event.hasEventText)
+        break;
+      case isWeekend:
+        dayTextStyle.push(styles.weekendDayText, customStyle.weekendDayText);
+        break;
     }
 
-    if (event) {
-      dayTextStyle.push(styles.hasEventText, customStyle.hasEventText, event.hasEventText)
-    }
+    // if (isToday && !isSelected) {
+    //   dayTextStyle.push(styles.currentDayText, customStyle.currentDayText);
+    // } else if (isToday || isSelected) {
+    //   dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
+    // } else if (isWeekend) {
+    //   dayTextStyle.push(styles.weekendDayText, customStyle.weekendDayText);
+    // }
+    //
+    // if (event) {
+    //   dayTextStyle.push(styles.hasEventText, customStyle.hasEventText, event.hasEventText)
+    // }
     return dayTextStyle;
   }
 

@@ -421,7 +421,7 @@ class ProfessionalProfileForm extends Component {
                     <View style={ styles.infoRowContainer }>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Location : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }>{this.user.address.formattedAddress || this.user.location.city}</Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }>{this.user.location.originalAddress || this.user.location.city}</Text>
                       </View>
                     </View>
                     <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>

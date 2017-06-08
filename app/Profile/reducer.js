@@ -18,7 +18,7 @@ export default function question(state = initialState, action = {}) {
         ...state,
         error: null,
         sessions: action.sessions || [...state.sessions],
-        user: action.user || {...state.user},
+        user: {...state.user, ...action.user},
       };
     default:
       return state;
