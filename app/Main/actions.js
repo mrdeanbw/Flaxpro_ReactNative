@@ -42,8 +42,8 @@ export const getExploreProfessional = () => async (dispatch, store) => {
   };
 
   try {
-    const clients = await request(clientsUrl, options, auth);
-    dispatch(mainSuccess({clients}));
+    const clients  = await request(clientsUrl, options, auth);
+    dispatch(mainSuccess(clients));
   } catch (error) {
     const error =
       `Explore Error: getExploreProfessional 

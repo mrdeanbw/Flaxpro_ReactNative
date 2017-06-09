@@ -77,10 +77,10 @@ export const getSessionsById = (data) => async (dispatch, store) => {
 
 };
 
-export const getFullProfile = () => async (dispatch, store) => {
+export const getFullProfile = (user) => async (dispatch, store) => {
   const { auth } = store();
-  const role = auth.user.role.toLowerCase();
-  const url = `/${role}/${auth.user._id}`;
+  const role = (user || auth.user).role.toLowerCase();
+  const url = `/${role}/${user ? user._id : auth.user._id}`;
   const options = {
     method: 'get',
   };

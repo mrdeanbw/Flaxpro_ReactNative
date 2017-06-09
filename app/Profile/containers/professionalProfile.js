@@ -11,7 +11,7 @@ class ProfessionalProfile extends Component {
     super(props);
   }
   componentWillMount() {
-    this.props.actions.getFullProfile();
+    this.props.actions.getFullProfile(this.props.user);
   }
 
   render() {
@@ -23,7 +23,7 @@ class ProfessionalProfile extends Component {
 }
 
 export default connect(state => ({
-    status: state.profile.status
+    status: state.profile.status,
   }),
   (dispatch) => ({
     actions: bindActionCreators(professionalProfileActions, dispatch)
