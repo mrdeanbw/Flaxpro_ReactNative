@@ -74,7 +74,7 @@ class ClientProfileForm extends Component {
   }
 
   onSchedule() {
-    Actions.ScheduleForm({getSessions: this.props.getSessions});
+    Actions.ScheduleForm({getMySessions: this.props.getMySessions});
   }
 
   onEdit() {
@@ -93,8 +93,8 @@ class ClientProfileForm extends Component {
     const { selectedOption } = this.state;
 
     if (selectedOption != option) {
-      const { getSessions } = this.props;
-      getSessions({byField: 'day'})
+      const { getMySessions } = this.props;
+      getMySessions({byField: 'day'})
       this.onSchedule();
       this.setState({ selectedOption });
     }
@@ -220,8 +220,8 @@ class ClientProfileForm extends Component {
   }
 
   onShowSessions() {
-    const { getSessions } = this.props;
-    getSessions({byField: 'profession'})
+    const { getMySessions } = this.props;
+    getMySessions({byField: 'profession'})
     Actions.Sessions();
   }
 

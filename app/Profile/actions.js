@@ -30,7 +30,7 @@ export const updateProfile = (userData) => async (dispatch, store) => {
 
 };
 
-export const getSessions = (data) => async (dispatch, store) => {
+export const getMySessions = (data) => async (dispatch, store) => {
   let url = '/session/getMy';
   const { auth } = store();
   const options = {
@@ -46,7 +46,31 @@ export const getSessions = (data) => async (dispatch, store) => {
     dispatch(updateProfileSuccess({sessions: response}));
   } catch (error) {
     const error =
-      `Profile Error: getSessions()
+      `Profile Error: getMySessions()
+      Message: ${error.message}`;
+    dispatch(profileError(error));
+  }
+
+};
+
+export const getSessionsById = (data) => async (dispatch, store) => {
+  if (!data.user) return;
+  const { auth } = store();
+  let url = '/session/'+data.user.role.toLowerCase()+'/'+data.user._id;
+  const options = {
+    method: 'get',
+  };
+  if(data.options){
+    const queryString = toQueryString(data.options);
+    url += '?' + queryString;
+  }
+
+  try {
+    const response = await request(url, options, auth);
+    dispatch(updateProfileSuccess({sessions: response}));
+  } catch (error) {
+    const error =
+      `Profile Error: getMySessions()
       Message: ${error.message}`;
     dispatch(profileError(error));
   }
