@@ -13,12 +13,7 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import Icons from 'react-native-vector-icons/MaterialIcons';
-import * as CommonConstant from '../../../Components/commonConstant';
-import SearchBar from '../../../Components/searchBar';
 import Clients_ProfessionalsListCell from './clients_professionalsListCell';
-import ClientProfile from '../../../Profile/containers/clientProfile';
-import ProfessionalProfile from '../../../Profile/containers/professionalProfile';
 import R from 'ramda';
 
 const { width, height } = Dimensions.get('window');
@@ -77,14 +72,7 @@ export default class Clients_ProfessionalsForm extends Component {
   }
 
   onCellPressed (rowID) {
-    const { user } = this.props;
-    if (user && user.role == CommonConstant.user_client) {
-      Actions.ProfessionalProfile({ editable: false, user: this.filterValue[rowID] });
-      return;
-    } else if (user && user.role == CommonConstant.user_professional){
-      Actions.ClientProfile({ editable: false, user: this.filterValue[rowID] });
-      return;
-    }
+    Actions.ViewProfile({ editable: false, user: this.filterValue[rowID] });
   }
 
   onAllDays() {

@@ -21,7 +21,7 @@ const yoga = require('../../../Assets/images/yoga.png');
 const workoutDefault = require('../../../Assets/images/total_workout.png');
 
 
-class ClientProfileForm extends Component {
+class SessionsProfile extends Component {
   constructor(props) {
     super(props);
   }
@@ -183,4 +183,4 @@ export default connect(state => ({
   }),
   (dispatch) => ({
   })
-)(ClientProfileForm);
+)(SessionsProfile);

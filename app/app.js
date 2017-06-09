@@ -16,10 +16,8 @@ import FilterClientForm from './Explore/components/smart/filterClientForm';
 import FilterProfessionalForm from './Explore/components/smart/filterProfessionalForm';
 import ProposeTerms from './Hire/containers/proposeTerms';
 import Payment from './Hire/containers/payment';
-import Clients_Professionals from './Clients_Professionals/containers/clients_professionals';
 import ScheduleForm from './Profile/components/smart/scheduleForm';
-import ClientProfile from './Profile/containers/clientProfile';
-import ProfessionalProfile from './Profile/containers/professionalProfile';
+import ViewProfile from './Profile/containers/viewProfile';
 import EditProfile from './Profile/containers/editProfile';
 import Sessions from './Profile/components/smart/sessions';
 import ChatForm from './Inbox/components/smart/chatForm';
@@ -43,8 +41,7 @@ const scenes = Actions.create(
     <Scene key="Payment" component={ Payment } />
     <Scene key="Clients_Professionals" component={ UI_static } />
     <Scene key="ScheduleForm" component={ ScheduleForm } />
-    <Scene key="ClientProfile" component={ ClientProfile } />
-    <Scene key="ProfessionalProfile" component={ ProfessionalProfile } />
+    <Scene key="ViewProfile" component={ ViewProfile } />
     <Scene key="ChatForm" component={ ChatForm } />
     <Scene key="EditProfile" component={ EditProfile }/>
     <Scene key="Sessions" component={ Sessions }/>

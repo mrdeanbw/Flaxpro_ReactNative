@@ -12,15 +12,12 @@ import TabNavigator from 'react-native-tab-navigator';
 
 import Explore from '../../../Explore/containers/explore';
 import Account from '../../../Account/containers/account';
-import Clients_Professionals from '../../../Clients_Professionals/containers/clients_professionals';
 import UI_static from '../../../Schedule/pages/Clients';
-import ClientProfile from '../../../Profile/containers/clientProfile';
-import ProfessionalProfile from '../../../Profile/containers/professionalProfile';
+import ViewProfile from '../../../Profile/containers/viewProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 
 import { connect } from 'react-redux';
 import * as CommonConstant from '../../../Components/commonConstant';
-import { ProfessionalsClients } from '../../../Components/dummyEntries';
 
 const { width, height } = Dimensions.get('window');
 
@@ -100,7 +97,7 @@ class MainForm extends Component {
         renderIcon: () => (<Image source={ profileIcon } style={ styles.iconTabbarProfile }/>),
         renderSelectedIcon: () => (<Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/>),
         onPress: () => this.setState({ selectedTab: 'profile' }),
-        children: user_mode === CommonConstant.user_client ? <ClientProfile/> : <ProfessionalProfile/>,
+        children: <ViewProfile/>,
       },
       /* Account*/
       {

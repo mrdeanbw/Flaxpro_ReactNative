@@ -27,7 +27,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import RadioButton from '../../../Explore/components/smart/radioButton';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
-import * as clientProfileActions from '../../actions';
+import * as profileActions  from '../../actions';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
@@ -897,6 +897,6 @@ export default connect(state => ({
     explore: state.explore,
   }),
     (dispatch) => ({
-      updateProfile: (data) => dispatch(clientProfileActions.updateProfile(data)),
+      updateProfile: (data) => dispatch(profileActions .updateProfile(data)),
     })
 )(EditProfile);

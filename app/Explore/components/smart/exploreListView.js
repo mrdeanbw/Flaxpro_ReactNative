@@ -80,13 +80,7 @@ class ExploreListView extends Component {
   }
 
   onClickAnimatedViewCell(rowData) {
-    if (rowData.role === CommonConstant.user_professional) {
-      Actions.ProfessionalProfile({ editable: false, user: rowData });
-      return;
-    } else if (rowData.role === CommonConstant.user_client){
-      Actions.ClientProfile({ editable: false, user: rowData });
-      return;
-    }
+   Actions.ViewProfile({ editable: false, user: rowData });
   }
 
   render() {

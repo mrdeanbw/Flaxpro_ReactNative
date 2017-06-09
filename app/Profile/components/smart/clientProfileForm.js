@@ -150,7 +150,7 @@ class ClientProfileForm extends Component {
   }
 
   get getShowNavBar() {
-    const { editable, auth } = this.props;
+    const { editable, user } = this.props;
     const { selectedOption } = this.state;
 
     return (

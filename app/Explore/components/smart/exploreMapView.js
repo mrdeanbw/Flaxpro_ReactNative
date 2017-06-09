@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import * as CommonConstant from '../../../Components/commonConstant';
 
 import MapView from 'react-native-maps';
 import PanController from './panController';
@@ -316,14 +315,7 @@ class ExploreMapView extends Component {
 
   onExpandProfessional ( key ) {
     this.popupDialogProfessional.closeDialog ();
-    const { user } = this.props;
-    if (user && user.role === CommonConstant.user_client) {
-      Actions.ProfessionalProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
-      return;
-    } else if (user && user.role === CommonConstant.user_professional){
-      Actions.ClientProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
-      return;
-    }
+    Actions.ViewProfile({ editable: false, user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
   }
 
   onTapMap () {

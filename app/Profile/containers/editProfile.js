@@ -2,13 +2,13 @@
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 import ClientEditProfile from '../components/smart/clientEditProfile';
 import ProfessionalEditProfile from '../components/smart/professionalEditProfile';
 import * as CommonConstant from '../../Components/commonConstant';
-
 import * as editProfileActions from '../actions';
 import * as exploreActions from '../../Explore/actions';
-import { connect } from 'react-redux';
 
 class EditProfile extends Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class EditProfile extends Component {
     this.props.exploreActions.getProfessions();
   }
   render() {
-    const { auth: { user } } = this.props;
+    const { user } = this.props;
     return (
       user.role === CommonConstant.user_client ?
         <ClientEditProfile />
@@ -29,7 +29,7 @@ class EditProfile extends Component {
 }
 
 export default connect(state => ({
-    auth: state.auth
+    user: state.auth.user
   }),
   (dispatch) => ({
     actions: bindActionCreators(editProfileActions, dispatch),
