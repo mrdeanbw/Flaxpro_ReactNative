@@ -109,7 +109,11 @@ class ExploreListView extends Component {
           />
           :
           <View>
-            <Text style={ styles.textSectionTitle }>We couldn't find anybody that match those criteria</Text>
+            {this.props.user.role == CommonConstant.user_professional ?
+              <Text style={ styles.textSectionTitle }>We couldn't find anybody that match those criteria</Text>
+              :
+              <Text style={ styles.textSectionTitle }>Nothing selected - please select a profession</Text>
+            }
           </View>
         }
 

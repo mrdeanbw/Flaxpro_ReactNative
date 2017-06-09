@@ -78,10 +78,11 @@ class ExploreForm extends Component {
     const { auth: { user } , explore } = this.props;
     if(explore && user) {
       if(user.role === CommonConstant.user_client) {
-        const listOriginal = (this.props.explore.professions || allProfessions).filter((e) => e.original && defaultProfessions.includes(e.name));
+        const listOriginal = (this.props.explore.professions || allProfessions).filter((e) => defaultProfessions.includes(e.name));
         const listOther = (this.props.explore.professions || allProfessions).filter((e) => !e.original);
         const listSelected = [...listOriginal, otherLabel];
-        const professions = {...this.state.professions, listOriginal, listOther, listSelected};
+        const selected = allLabel;
+        const professions = {...this.state.professions, listOriginal, listOther, listSelected, selected};
         const filteredProfessionals = this.filterProfessionalsList(listSelected);
         this.setState({professions, filteredProfessionals})
       }
@@ -110,6 +111,14 @@ class ExploreForm extends Component {
     this.setState({ mapStandardMode:true });
   }
 
+  /**
+   * For "Professional" role
+   * Calls when user click on the one of the filters from topBar
+   *
+   * filtered "this.state.gymLocations" by the chosen filters
+   * filtered clients list by the chosen filters:
+   *
+   */
   filterClientsList() {
     let filteredClients = [ ...ProfessionalsClients, ...this.props.explore.clients ];
     let gymLocations = GymLocations;
@@ -229,7 +238,7 @@ class ExploreForm extends Component {
   onSelectInListProfession(selected) {
     let filteredProfessionals = [ ...ProfessionalsClients, ...this.props.explore.professionals ].filter((e)=>(e.profession && e.profession._id===selected._id));
     if(selected._id === this.state.professions.selected._id) {
-      filteredProfessionals = this.filterProfessionalsList(this.state.professions.listSelected);
+      filteredProfessionals = [];
       selected = {};
     }
     if(selected._id === otherLabel._id) {
