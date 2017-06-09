@@ -121,9 +121,7 @@ class ClientInfoForm extends Component {
     let scale = (width * 3/4 -75) / 72 ;
     return (
       <View style={ styles.container }>
-        <KeyboardAwareScrollView
-          showsVerticalScrollIndicator={ false }
-        >
+        <KeyboardAwareScrollView>
           <Image source={ background } style={ styles.background } resizeMode="cover">
             { this.getShowNavBar }
             <View style={ styles.contentContainer }>

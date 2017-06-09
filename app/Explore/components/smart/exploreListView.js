@@ -100,12 +100,19 @@ class ExploreListView extends Component {
 
     return (
       <View style={ styles.container }>
-        <ListView
-          pageSize = { this.props.professionalsClients.length }
-          dataSource={ this.state.dataSource }
-          renderRow={ this.renderRow.bind(this) }
-          contentContainerStyle={ styles.list }
-        />
+        {this.props.professionalsClients.length>0 ?
+          <ListView
+            pageSize = { this.props.professionalsClients.length }
+            dataSource={ this.state.dataSource }
+            renderRow={ this.renderRow.bind(this) }
+            contentContainerStyle={ styles.list }
+          />
+          :
+          <View>
+            <Text style={ styles.textSectionTitle }>We couldn't find anybody that match those criteria</Text>
+          </View>
+        }
+
 
         <View style={ styles.mainContentContainer }>
           <BottomBar
@@ -137,6 +144,14 @@ const styles = StyleSheet.create({
   container: {
     flex : 1,
     backgroundColor: '#efefef',
+  },
+  textSectionTitle: {
+    fontFamily: 'Open Sans',
+    color: '#6b6b6b',
+    fontSize: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    textAlign: 'center',
   },
   list: {
     flexDirection:'row',
