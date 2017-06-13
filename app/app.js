@@ -14,7 +14,7 @@ import Main from './Main/containers/main';
 import ExploreMapView from './Explore/components/smart/exploreMapView';
 import FilterClientForm from './Explore/components/smart/filterClientForm';
 import FilterProfessionalForm from './Explore/components/smart/filterProfessionalForm';
-import ProposeTerms from './Hire/containers/proposeTerms';
+import Contract from './Hire/containers/contract';
 import Payment from './Hire/containers/payment';
 import ScheduleForm from './Profile/components/smart/scheduleForm';
 import ViewProfile from './Profile/containers/viewProfile';
@@ -37,7 +37,7 @@ const scenes = Actions.create(
     <Scene key="ExploreMapView" component={ ExploreMapView } />
     <Scene key="FilterClientForm" component={ FilterClientForm } direction="vertical" />
     <Scene key="FilterProfessionalForm" component={ FilterProfessionalForm } direction="vertical" />
-    <Scene key="ProposeTerms" component={ ProposeTerms } />
+    <Scene key="Contract" component={ Contract } />
     <Scene key="Payment" component={ Payment } />
     <Scene key="Clients_Professionals" component={ UI_static } />
     <Scene key="ScheduleForm" component={ ScheduleForm } />

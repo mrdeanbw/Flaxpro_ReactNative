@@ -18,11 +18,11 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 const { width, height } = Dimensions.get('window');
-const background = require('../../../Assets/images/background.png');
+const background = require('../../../../Assets/images/background.png');
 
 const duration = ['1 Months', '2 Months', '3 Months'];
 
-export default class ProposeTermsForm extends Component {
+export default class ContractFirstForm extends Component {
   constructor(props) {
     super(props);
 
@@ -77,8 +77,8 @@ export default class ProposeTermsForm extends Component {
               </View>
               <View style={ styles.rowContainer }>
                 <Slider style={ styles.slider }
-                  minimumTrackTintColor={ '10c7fa' }
-                  maximumTrackTintColor={ 'a1a1a1' }
+                  minimumTrackTintColor={ '#10c7fa' }
+                  maximumTrackTintColor={ '#a1a1a1' }
                   minimumValue={ 0 }
                   maximumValue={ 30 }
                   step={ 1 }

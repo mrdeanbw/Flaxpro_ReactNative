@@ -220,7 +220,7 @@ class ClientProfileForm extends Component {
   }
 
   onCustomOffer() {
-    Actions.ProposeTerms({ user: this.props.user });
+    Actions.Contract({ user: this.props.user });
   }
 
   onShowSessions() {

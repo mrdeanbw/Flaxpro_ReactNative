@@ -2,8 +2,8 @@
 
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import ProposeTermsForm from '../components/smart/proposeTermsForm';
-import * as proposeTermsActions from '../actions';
+import ContractFirstForm from '../components/smart/contract/contractFirstForm';
+import * as contractActions from '../actions';
 import { connect } from 'react-redux';
 
 class ProposeTerms extends Component {
@@ -15,7 +15,7 @@ class ProposeTerms extends Component {
     const { actions, status, user } = this.props;
 
     return (
-      <ProposeTermsForm { ...actions } status={ status } user={ user }/>
+      <ContractFirstForm { ...actions } status={ status } user={ user }/>
     );
   }
 }
@@ -24,6 +24,6 @@ export default connect(state => ({
     status: state.hire.status
   }),
   (dispatch) => ({
-    actions: bindActionCreators(proposeTermsActions, dispatch)
+    actions: bindActionCreators(contractActions, dispatch)
   })
 )(ProposeTerms);

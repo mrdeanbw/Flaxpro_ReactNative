@@ -120,7 +120,7 @@ class ProfessionalProfileForm extends Component {
   }
 
   onMakeAnOffer() {
-    Actions.ProposeTerms({ user: this.user });
+    Actions.Contract({ user: this.user });
   }
 
   onBack() {
