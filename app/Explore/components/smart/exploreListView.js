@@ -50,7 +50,7 @@ class ExploreListView extends Component {
     return (
       <AnimatedViewCell
         key={ rowData.id }
-        style={ [styles.item, ] }
+        style={ [styles.item] }
         avatar={ rowData.avatar }
         width={ ITEM_WIDTH }
         height={ ITEM_WIDTH }

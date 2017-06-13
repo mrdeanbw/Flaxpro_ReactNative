@@ -603,6 +603,7 @@ class ExploreMapView extends Component {
                         description={ marker.description }
                         amount={ marker.amount }
                         user={ user }
+                        profession={ marker.profession }
                         onPress={ () => this.onClickAnimatedViewCell(index) }
                       />
                     );
