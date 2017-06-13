@@ -394,12 +394,16 @@ class ProfessionalProfileForm extends Component {
                         <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
                       </View>
                       <View style={ styles.greenBtn }>
-                        <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
+                        <TouchableOpacity
+                          onPress={ () => this.onMakeAnOffer() }
+                        >
+                          <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
 
-                        <Text style={ [styles.greenBtnText, styles.btnText, styles.textWhite] } >
-                          <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>$50 </Text>
-                          / PER SESSION
-                        </Text>
+                          <Text style={ [styles.greenBtnText, styles.btnText, styles.textWhite] } >
+                            <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>${this.user.price || this.user.amount} </Text>
+                            / PER SESSION
+                          </Text>
+                        </TouchableOpacity>
                       </View>
                     </View>
                 }

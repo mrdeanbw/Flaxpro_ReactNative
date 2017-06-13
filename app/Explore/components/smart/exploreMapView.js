@@ -550,7 +550,7 @@ class ExploreMapView extends Component {
                           { scale: markerScale },
                         ],
                       }}
-                      amount={ marker.amount }
+                      amount={ marker.amount || marker.price }
                       personName={ marker.name }
                       rating={ marker.rating }
                       profession={ marker.profession }

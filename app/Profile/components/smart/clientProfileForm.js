@@ -219,6 +219,10 @@ class ClientProfileForm extends Component {
     return workouts;
   }
 
+  onCustomOffer() {
+    Actions.ProposeTerms({ user: this.props.user });
+  }
+
   onShowSessions() {
     const { getMySessions } = this.props;
     getMySessions({byField: 'profession'})
@@ -250,7 +254,18 @@ class ClientProfileForm extends Component {
                   <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
                 }
               </View>
-              <Text style={ [styles.fontStyles, styles.textTitle, styles.blackText] }>{ user.name && user.name.toUpperCase() }</Text>
+              {
+                editable ?
+                  <Text style={ [styles.fontStyles, styles.textTitle, styles.blackText] }>{ user.name && user.name.toUpperCase() }</Text>
+                  :
+                  <View style={ [styles.borderStyle, styles.customOffer] }>
+                    <TouchableOpacity
+                      onPress={ () => this.onCustomOffer() }
+                    >
+                      <Text style={ styles.textActionMiddle }>CUSTOM OFFER</Text>
+                    </TouchableOpacity>
+                  </View>
+              }
             </View>
 
             <View style={ [styles.contentMainContainer, { paddingBottom: 50 }] }>
@@ -269,34 +284,39 @@ class ClientProfileForm extends Component {
                       </View>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Address : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.location.city}</Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue, !editable && styles.borderStyle] }>{user.location.originalAddress || user.location.city}</Text>
                       </View>
                     </View>
-                    <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowSessions() }>
-                      <View style={ [styles.infoRowRightContainer, styles.blueBorderBlock] }>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>Total Sessions   </Text>
-                          <Text style={ [styles.textInfoTitle, styles.blueText] }>{user.totalSessions}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                <View style={ [styles.infoContainer, styles.infoBlock] }>
-                  <Text style={ styles.textInfoTitle }>LOOKING FOR</Text>
-                  <View style={ [styles.infoRowLeftContainer, styles.negativeMargin] }>
-                    <ScrollView horizontal={ true } showsHorizontalScrollIndicator={false}>
                     {
-                      workouts.map((item, index) => (
-                        <View style={ [styles.columnContainer, styles.blueBorderBlock] } key={index}>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>{item.profession.name}</Text>
-                          <Text style={ [styles.textInfoTitle, styles.blueText] }>{item.price.price}</Text>
+                      editable &&
+                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowSessions() }>
+                        <View style={ [styles.infoRowRightContainer, styles.blueBorderBlock] }>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>Total Sessions </Text>
+                          <Text style={ [styles.textInfoTitle, styles.blueText] }>{user.totalSessions}</Text>
                         </View>
-                      ))
+                      </TouchableOpacity>
                     }
-                    </ScrollView>
                   </View>
                 </View>
 
+                {
+                  editable &&
+                  <View style={ [styles.infoContainer, styles.infoBlock] }>
+                    <Text style={ styles.textInfoTitle }>LOOKING FOR</Text>
+                    <View style={ [styles.infoRowLeftContainer, styles.negativeMargin] }>
+                      <ScrollView horizontal={ true } showsHorizontalScrollIndicator={false}>
+                        {
+                          workouts.map((item, index) => (
+                            <View style={ [styles.columnContainer, styles.blueBorderBlock] } key={index}>
+                              <Text style={ [styles.fontStyles, styles.textInfoValue] }>{item.profession.name}</Text>
+                              <Text style={ [styles.textInfoTitle, styles.blueText] }>{item.price.price}</Text>
+                            </View>
+                          ))
+                        }
+                      </ScrollView>
+                    </View>
+                  </View>
+                }
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
                   <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.description}</Text>
@@ -394,7 +414,12 @@ const styles = StyleSheet.create({
     width,
     height,
   },
-
+  borderStyle: {
+    borderWidth: 1,
+    borderColor: '#0fcefc',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+  },
   fontStyles: {
     fontFamily: 'Open Sans',
     fontSize: 18,
@@ -565,7 +590,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   avatarContainer: {
-    height: 135,
+    height: 140,
     backgroundColor: '#F7F9FA',
     alignItems: 'center',
     justifyContent: 'center',
@@ -596,6 +621,11 @@ const styles = StyleSheet.create({
   },
   negativeMargin: {
     marginHorizontal: -10,
+  },
+  customOffer: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15
   }
 });
 

@@ -20,7 +20,10 @@ const propTypes = {
   name: PropTypes.string,
   description: PropTypes.string,
   rating: PropTypes.number,
-  amount: PropTypes.number,
+  amount: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   onPress: PropTypes.func,
 };
 
@@ -94,7 +97,7 @@ class AnimatedViewCell extends Component {
             {
               professionalClientData.clientStarsBlock
             }
-            <Text style={ styles.textPrice }>${ amount }</Text>
+            <Text style={ styles.textPrice }>{client ? '$'+amount : amount }</Text>
           </View>
         </TouchableOpacity>
       </Animated.View>
