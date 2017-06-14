@@ -49,11 +49,11 @@ const scenes = Actions.create(
 );
 
 export default class App extends Component {
-  componentDidMount(){
-    BackHandler.addEventListener('hardwareBackPress', function() {
-      return true;
-    });
-  }
+  // componentDidMount(){
+  //   BackHandler.addEventListener('hardwareBackPress', function() {
+  //     return true;
+  //   });
+  // }
   render() {
     return (
       <Provider store={ store }>

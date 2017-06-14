@@ -46,6 +46,9 @@ export default class ContractFirstForm extends Component {
 
     Actions.Payment();
   }
+  onBack() {
+    Actions.pop();
+  }
 
   onYearOfExperience (data) {
 
@@ -57,23 +60,24 @@ export default class ContractFirstForm extends Component {
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
           <View style={ styles.navBarContainer }>
-            <View style={ styles.nextButtonWrapper } />
-            <Text style={ styles.textTitle }>PROPOSE TERMS</Text>
             <TouchableOpacity
-              onPress={ () => this.onNext() }
-              style={ styles.nextButtonWrapper }
+              onPress={ () => this.onBack() }
+              style={ styles.navButtonWrapper }
             >
               <EntypoIcons
-                name="chevron-thin-right"  size={ 25 }
+                name="chevron-thin-left"  size={ 25 }
                 color="#fff"
               />
             </TouchableOpacity>
+            <Text style={ styles.textTitle }>CONTRACT</Text>
+            <View style={ styles.navButtonWrapper } />
+
           </View>
           <View style={ styles.mainContainer }>
             <View style={ styles.topContainer }>
               <View style={ styles.rowContainer }>
-                <Text style={ styles.textDescription }>Number of sessions per week</Text>
-                <Text style={ styles.textHours }>{ this.state.numberOfSessions }:00 h</Text>
+                <Text style={ styles.textDescription }>Total number of sessions</Text>
+                <Text style={ styles.textHours }>{ this.state.numberOfSessions } sessions</Text>
               </View>
               <View style={ styles.rowContainer }>
                 <Slider style={ styles.slider }
@@ -156,7 +160,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
-  nextButtonWrapper: {
+  navButtonWrapper: {
     flex: 1,
     paddingVertical: 5,
     paddingHorizontal: 15,

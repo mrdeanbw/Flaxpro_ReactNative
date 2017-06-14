@@ -423,7 +423,7 @@ class ExploreMapView extends Component {
             <View style={ styles.leftButtonContainer }>
               <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onHireProfessional() }>
                 <View style={ styles.buttonWrapper }>
-                  <Text style={ styles.professionalButton }>HIRE ${ professionalsClients[this.state.selectedProfessionalClientIndex].amount }/HR</Text>
+                  <Text style={ styles.professionalButton }>HIRE ${ professionalsClients[this.state.selectedProfessionalClientIndex].amount || professionalsClients[this.state.selectedProfessionalClientIndex].price }/HR</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -601,7 +601,7 @@ class ExploreMapView extends Component {
                         rating={ marker.rating }
                         name={ marker.name }
                         description={ marker.description }
-                        amount={ marker.amount }
+                        amount={ marker.amount || marker.price }
                         user={ user }
                         profession={ marker.profession }
                         onPress={ () => this.onClickAnimatedViewCell(index) }

@@ -57,7 +57,7 @@ class AnimatedProfessionalMarker extends Component {
 
         </Animated.View>
         <Animated.View style={ [styles.bubbleAmount, {backgroundColor: professionalClientData.backgroundColor}] }>
-          <Animated.Text style={ styles.amount }>${ amount }</Animated.Text>
+          <Animated.Text style={ styles.amount }>{user.role === CommonConstant.user_client ? '$'+amount : amount }</Animated.Text>
         </Animated.View>
         <Animated.View
           style={ [styles.arrowBorder, { borderTopColor: border }]}
@@ -72,8 +72,10 @@ class AnimatedProfessionalMarker extends Component {
 
 AnimatedProfessionalMarker.propTypes = {
   personName: PropTypes.string.isRequired,
-  // TODO: temporary. So that the "warning" does not interfere with the work
-  // amount: PropTypes.number.isRequired,
+  amount: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   selected: PropTypes.object.isRequired,
   rating: PropTypes.number.isRequired,
   style: PropTypes.any,
