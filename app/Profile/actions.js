@@ -56,7 +56,7 @@ export const getMySessions = (data) => async (dispatch, store) => {
 export const getSessionsById = (data) => async (dispatch, store) => {
   if (!data.user) return;
   const { auth } = store();
-  let url = '/session/'+data.user.role.toLowerCase()+'/'+data.user._id;
+  let url = `/session/${data.user.role.toLowerCase()}/${data.user._id}`;
   const options = {
     method: 'get',
   };

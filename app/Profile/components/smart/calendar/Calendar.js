@@ -25,7 +25,7 @@ export default class Calendar extends Component {
 
   state = {
     currentMonthMoment: moment(this.props.startDate),
-    selectedMoment: this.props.selectedDate || [moment().format('YYYY-MM-DD')],
+    selectedMoment: this.props.selectedDate || [],
     rowHeight: null,
   };
 
