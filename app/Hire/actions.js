@@ -1,13 +1,41 @@
 import * as types from './actionTypes';
+import request, { toQueryString } from '../request';
 
-export function proposeTerms() {
+export function updateHireSuccess(data) {
   return {
-    type: [types.PROPOSE_TERMS_REQUEST, types.PROPOSE_TERMS_SUCCESS, types.PROPOSE_TERMS_ERROR]
+    type: types.HIRE_SUCCESS, ...data
   };
 }
-export function payment() {
+export function updateHireError() {
   return {
-    type: [types.PAYMENT_REQUEST, types.PAYMENT_SUCCESS, types.PAYMENT_ERROR]
+    type: types.HIRE_ERROR
   };
 }
 
+export const getScheduleById = (data) => async (dispatch, store) => {
+  if (!data.user) return;
+  const { auth } = store();
+  let url = `/schedule/${data.user.role.toLowerCase()}/${data.user._id}`;
+  const options = {
+    method: 'get',
+  };
+  if(data.options){
+    const queryString = toQueryString(data.options);
+    url += '?' + queryString;
+  }
+
+  try {
+    const response = await request(url, options, auth);
+    dispatch(updateHireSuccess({schedule: response}));
+  } catch (error) {
+    const error =
+      `Profile Error: getMySessions()
+      Message: ${error.message}`;
+    dispatch(updateHireError(error));
+  }
+
+};
+
+export function changeContractForm(data) {
+  return { type: types.CONTRACT_CHANGEFORM, ...data };
+}

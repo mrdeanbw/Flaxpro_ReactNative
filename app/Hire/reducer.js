@@ -2,41 +2,36 @@ import * as types from './actionTypes';
 
 const initialState = {
   status: null,
+  error: null,
+  firstForm: true,
+  numberOfSessions: 1,
+  numberOfPeople: 1,
+  selectedDates: [],
+  schedule: [],
 };
 
 export default function hire(state = initialState, action = {}) {
   switch (action.type) {
-    case types.PROPOSE_TERMS_REQUEST:
+    case types.CONTRACT_CHANGEFORM:
       return {
         ...state,
-        status: 'ProposeTermsRequest',
+        error: null,
+        firstForm: action.firstForm,
+        numberOfSessions: action.numberOfSessions,
+        numberOfPeople: action.numberOfPeople,
+        selectedDates: action.selectedDates,
       };
-    case types.PROPOSE_TERMS_SUCCESS:
+    case types.HIRE_SUCCESS:
       return {
         ...state,
-        status: 'ProposeTermsSuccess',
+        error: null,
+        schedule: action.schedule,
       };
-    case types.PROPOSE_TERMS_ERROR:
+    case types.HIRE_ERROR:
       return {
         ...state,
-        status: 'ProposeTermsError',
+        error: action.error,
       };
-    case types.PAMENT_REQUEST:
-      return {
-        ...state,
-        status: 'PaymentRequest',
-      };
-    case types.PAYMENT_SUCCESS:
-      return {
-        ...state,
-        status: 'PaymentSuccess',
-      };
-    case types.PAYMENT_ERROR:
-      return {
-        ...state,
-        status: 'PaymentError',
-      };
-
     default:
       return state;
   }
