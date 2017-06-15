@@ -35,10 +35,10 @@ export default class ContractSecondForm extends Component {
       numberOfSessions: props.hire.numberOfSessions,
       numberOfPeople: props.hire.numberOfPeople,
       selectedDates: props.hire.selectedDates,
-      availableDates: props.profile.sessions,
-      selectedDay: { schedule: [] }
+      selectedDay: { schedule: [] },
+      selectedTimes: [],
     };
-    console.log('========', this.state, props.profile.sessions)
+    console.log('========', this.state)
   }
 
   componentWillReceiveProps(newProps) {
@@ -57,7 +57,8 @@ export default class ContractSecondForm extends Component {
     Actions.Payment();
   }
   onBack() {
-    Actions.pop();
+    const { changeContractForm } = this.props;
+    changeContractForm({...this.state, firstForm: true})
   }
   onChangePeople(value) {
     const numberOfPeople = this.state.numberOfPeople + value;
@@ -78,7 +79,7 @@ export default class ContractSecondForm extends Component {
 
   }
   render() {
-    const { user, hire: {schedule}, profile: { sessions } } = this.props;
+    const { user, hire: {schedule} } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -101,7 +102,7 @@ export default class ContractSecondForm extends Component {
             <View style={ [styles.borderBottom, styles.topContainer] }>
               <View style={ [ styles.rowContainer, customStyle.selectedDayCircle, styles.dropdownWrapper] }>
                 <Text style={ [fontStyles, styles.textDescription, styles.whiteText] }>
-                  {this.state.selectedDates.length} dates selected out of {this.state.numberOfSessions}
+                  {this.state.selectedDay.schedule.length} dates selected out of {this.state.numberOfSessions}
                 </Text>
               </View>
               <View style={ [ styles.rowContainer, styles.dropdownWrapper] }>
@@ -109,13 +110,10 @@ export default class ContractSecondForm extends Component {
                             showsHorizontalScrollIndicator={ false }
                             ref={(ref) => {this.datesScroll = ref}}>
                   {
-                    schedule.map((day, index) => (
-                      <View key={index}>
-                        <View style={ styles.sectionTitleContainer }>
-                          <Text style={ styles.textSectionTitle }>{Moment(day.date).format('ddd')}</Text>
-                          <Text style={ styles.textSectionTitle }>{Moment(day.date).format('D')}</Text>
-                        </View>
-
+                    this.state.selectedDates.map((day, index) => (
+                      <View style={ styles.sectionTitleContainer } key={index}>
+                        <Text style={ styles.textSectionTitle }>{Moment(day).format('ddd')}</Text>
+                        <Text style={ styles.textSectionTitle }>{Moment(day).format('D')}</Text>
                       </View>
                     ))
                   }
@@ -192,6 +190,7 @@ const customStyle = {
     color: '#8d99a6',
   },
   selectedDayCircle: {
+    flex:0.8,
     backgroundColor: '#45c7f1',
     borderWidth: 1,
     borderColor: '#34aadc',
@@ -230,11 +229,17 @@ const styles = StyleSheet.create({
   },
   sectionTitleContainer: {
     flexDirection: 'column',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
+    // paddingVertical: 5,
+    marginVertical: 5,
+    marginRight: 10,
     alignItems: 'center',
+    justifyContent: 'center',
     borderColor: '#d9d9d9',
     borderWidth: 1,
-    borderRadius: 10,
+    height:50,
+    width:50,
+    borderRadius: 25,
   },
   navButtonWrapper: {
     flex: 1,

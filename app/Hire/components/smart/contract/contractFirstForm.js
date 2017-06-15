@@ -36,7 +36,7 @@ export default class ContractFirstForm extends Component {
       numberOfSessions: props.hire.numberOfSessions,
       numberOfPeople: props.hire.numberOfPeople,
       selectedDates: props.hire.selectedDates,
-      availableDates: props.profile.sessions
+      availableDates: props.hire.schedule
     };
   }
 
@@ -80,7 +80,7 @@ export default class ContractFirstForm extends Component {
 
   }
   render() {
-    const { user, hire: {schedule}, profile: { sessions } } = this.props;
+    const { user, hire: {schedule} } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -192,7 +192,7 @@ export default class ContractFirstForm extends Component {
               <Calendar
                 customStyle={ customStyle }
                 dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-                eventDates={ Ramda.pluck('date')(sessions) }
+                eventDates={ Ramda.pluck('date')(schedule) }
                 nextButtonText={ '>' }
                 prevButtonText={'<'}
                 showControls={ true }
