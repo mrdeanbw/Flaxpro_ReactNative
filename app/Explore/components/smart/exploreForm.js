@@ -18,6 +18,8 @@ import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
+import PopupDialog from 'react-native-popup-dialog';
+
 import R from 'ramda';
 
 import { SegmentedControls } from 'react-native-radio-buttons';
@@ -49,6 +51,7 @@ class ExploreForm extends Component {
       gymLocations: GymLocations,
       filteredClients: [ ...ProfessionalsClients, ...this.props.explore.clients, ],
       filteredProfessionals: [ ...ProfessionalsClients, ...this.props.explore.professionals, ],
+      activeLocation: 'nearby',
       professions: {
         selected: {},
         search:'',
@@ -109,6 +112,62 @@ class ExploreForm extends Component {
 
   onClose () {
     this.setState({ mapStandardMode:true });
+  }
+
+  openLocationPopup () {
+    this.popupDialogLocation.openDialog ();
+  }
+
+  onLocation (value) {
+    this.setState({ activeLocation: value });
+  }
+
+  closeLocationPopup () {
+    this.popupDialogLocation.closeDialog ();
+  }
+
+  get dialogSelectProfessionalClient () {
+
+    return (
+      <PopupDialog
+        ref={ (popupDialogLocation) => { this.popupDialogLocation = popupDialogLocation; }}
+        width={ width * 0.95 }
+        dialogStyle={ styles.dialogContainer }
+      >
+        <View style={ styles.locationDialogContentContainer }>
+          <View style={ styles.locationDialogTopContainer }>
+              <Text style={ styles.locationHeaderText }>
+                My location
+              </Text>
+              <Text style={ styles.locationClose } onPress={ () => this.closeLocationPopup() }>V</Text>
+              <Text style={ styles.locationStreetText } >4567 West North avenue</Text>
+          </View>
+          <View style={ styles.locationMiddleContainer }>
+            <Text style={ styles.locationBlueText }>Show Professionals</Text>
+          </View>
+          <View  style={ styles.locationBtnBlock }>
+            <View style={ styles.locationBtnContainer } onPress={ () => this.onLocation( "nearby") }>
+              <View
+                style={ [styles.locationBtn, this.state.activeLocation == "nearby"  && styles.activeLocation] }>
+              </View>
+              <Text style={ styles.locationBtnText }>Nearby to me</Text>
+            </View>
+            <View style={ styles.locationBtnContainer } onClick={ () => this.onLocation( "enter") }>
+              <View
+                style={ [styles.locationBtn, this.state.activeLocation == "enter"  && styles.activeLocation] }>
+              </View>
+              <Text style={ styles.locationBtnText }>Enter an Address</Text>
+            </View>
+            <View style={ styles.locationBtnContainer }>
+              <View
+                style={ [styles.locationBtn, this.state.activeLocation == "all"  && styles.activeLocation] }>
+              </View>
+              <Text style={ styles.locationBtnText }>All locations</Text>
+            </View>
+          </View>
+        </View>
+      </PopupDialog>
+    );
   }
 
   /**
@@ -321,7 +380,7 @@ class ExploreForm extends Component {
       <View style={ styles.navContainer }>
         <View style={ styles.searchBarWrap }>
           <SearchBar
-            onSearchChange={ () => console.log('On Focus') }
+            onSearchChange={ () => this.openLocationPopup() }
             height={ 20 }
             autoCorrect={ false }
             returnKeyType={ "search" }
@@ -586,14 +645,84 @@ class ExploreForm extends Component {
                 user={ user }
               />
           }
-
         </Image>
+        { this.dialogSelectProfessionalClient }
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  activeLocation: {
+    backgroundColor: '#48C7F2',
+  },
+  locationBtnBlock: {
+    flexDirection: 'row',
+    marginBottom: 20
+  },
+  locationBtnContainer: {
+    width: width * 0.3,
+    alignItems: 'center',
+  },
+  locationBtn: {
+    width: width * 0.15,
+    height: width * 0.15,
+    borderRadius: (width * 0.15)/2,
+    borderWidth: 1,
+    borderColor: '#f2f2f2',
+  },
+  locationBtnText: {
+    fontWeight: '500',
+    fontSize: 12,
+  },
+  locationHeaderText: {
+    fontWeight: 'bold',
+    marginBottom: 4
+  },
+  locationClose: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    right: 7,
+    top: 5,
+    color: '#48c7f2'
+  },
+  locationDialogContentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    width: width * 0.95,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  locationDialogTopContainer: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderColor: '#f2f2f2',
+    alignSelf: 'stretch',
+
+  },
+  locationMiddleContainer: {
+    paddingTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  locationBlueText: {
+    color: '#85D9F3'
+  },
+  dialogContainer: {
+    backgroundColor: 'transparent',
+    marginBottom: 100,
+    marginTop: -200,
+  },
   container: {
     // width,
     // height,
