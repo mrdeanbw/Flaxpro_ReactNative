@@ -33,9 +33,10 @@ export default class ContractFirstForm extends Component {
     super(props);
 
     this.state = {
-      numberOfSessions: 1,
-      numberOfPeople: 1,
-      selectedDates: [Moment().format('YYYY-MM-DD')],
+      numberOfSessions: props.hire.numberOfSessions,
+      numberOfPeople: props.hire.numberOfPeople,
+      selectedDates: props.hire.selectedDates,
+      availableDates: props.profile.sessions
     };
   }
 
@@ -51,8 +52,11 @@ export default class ContractFirstForm extends Component {
   }
 
   onNext () {
-
-    Actions.Payment();
+    const { changeContractForm } = this.props;
+    if (this.state.selectedDates.length !== this.state.numberOfSessions) {
+      return Alert.alert('Please select all dates or change number of sessions')
+    }
+    changeContractForm({...this.state, firstForm: false})
   }
   onBack() {
     Actions.pop();
@@ -76,7 +80,7 @@ export default class ContractFirstForm extends Component {
 
   }
   render() {
-    const { status, user } = this.props;
+    const { user, hire: {schedule}, profile: { sessions } } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -186,10 +190,9 @@ export default class ContractFirstForm extends Component {
             </View>
             <View style={ styles.bottomContainer }>
               <Calendar
-                // calendarContainer={}
                 customStyle={ customStyle }
                 dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-                // eventDates={ Ramda.pluck('date')(sessions) }
+                eventDates={ Ramda.pluck('date')(sessions) }
                 nextButtonText={ '>' }
                 prevButtonText={'<'}
                 showControls={ true }
@@ -197,6 +200,18 @@ export default class ContractFirstForm extends Component {
                 isSelectableDay={ true }
                 onDateSelect={ (date) => this.onSelectDate(date) }
               />
+              <View style={ [ styles.rowContainer, customStyle.selectedDayCircle, styles.dropdownWrapper] }>
+                <Text style={ [fontStyles, styles.textDescription, styles.whiteText] }>
+                  {this.state.selectedDates.length} dates selected out of {this.state.numberOfSessions}
+                </Text>
+              </View>
+            </View>
+            <View style={ styles.bottomButtonWrapper }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onNext() }>
+                <View style={ styles.saveButton }>
+                  <Text style={ styles.whiteText }>NEXT</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </Image>
@@ -264,6 +279,9 @@ const styles = StyleSheet.create({
     width,
     height,
   },
+  whiteText: {
+    color: '#fff'
+  },
   navBarContainer: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
@@ -276,6 +294,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 5,
     paddingHorizontal: 15,
+  },
+  textCenter: {
+    textAlign: 'center',
   },
   textTitle: {
     flex: 10,
@@ -299,7 +320,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   middleContainer: {
-    flex: 2,
+    flex: 1.5,
     backgroundColor: '#fff',
   },
   bottomContainer: {
@@ -346,6 +367,19 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  bottomButtonWrapper: {
+    marginHorizontal: 30,
+    justifyContent: 'flex-end',
+  },
+  saveButton: {
+    backgroundColor: '#19b8ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 40,
+    height: 40,
+    marginVertical: 20,
+    marginHorizontal: 20,
   },
   locationBorderContainer: {
     flex: 1,
