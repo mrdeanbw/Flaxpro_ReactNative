@@ -5,7 +5,7 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
+  ScrollView,
   TextInput,
   TouchableOpacity,
   Slider,
@@ -17,7 +17,7 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Calendar from '../../../../Profile/components/smart/calendar/Calendar';
-import R from 'ramda';
+import Ramda from 'ramda';
 import Moment from 'moment';
 
 const background = require('../../../../Assets/images/background.png');
@@ -26,9 +26,8 @@ const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
 
-const duration = ['1 Months', '2 Months', '3 Months'];
 
-export default class ContractFirstForm extends Component {
+export default class ContractSecondForm extends Component {
   constructor(props) {
     super(props);
 
@@ -36,12 +35,13 @@ export default class ContractFirstForm extends Component {
       numberOfSessions: props.hire.numberOfSessions,
       numberOfPeople: props.hire.numberOfPeople,
       selectedDates: props.hire.selectedDates,
-      availableDates: props.hire.schedule
+      selectedDay: { schedule: [] },
+      selectedTimes: [],
     };
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({availableDates: newProps.hire.schedule})
+
     if (newProps.status == 'ProposeTermsRequest') {
 
     } else if (newProps.status == 'ProposeTermsSuccess') {
@@ -52,22 +52,19 @@ export default class ContractFirstForm extends Component {
   }
 
   onNext () {
-    const { changeContractForm } = this.props;
-    if (this.state.selectedDates.length !== this.state.numberOfSessions) {
-      return Alert.alert('Please select all dates or change number of sessions')
-    }
-    changeContractForm({...this.state, firstForm: false})
+
+    Actions.Payment();
   }
   onBack() {
-    Actions.pop();
+    const { changeContractForm } = this.props;
+    changeContractForm({...this.state, firstForm: true})
   }
   onChangePeople(value) {
     const numberOfPeople = this.state.numberOfPeople + value;
     this.setState({numberOfPeople});
   }
   onSelectDate(date) {
-    const day = Moment(date).format('ddd, DD MMM YYYY');
-    if(!R.find(R.propEq('date', day))(this.state.availableDates)) return;
+    const day = Moment(date).format('YYYY-MM-DD');
     const selectedDates = [...this.state.selectedDates];
     if(selectedDates.includes(day)){
       selectedDates.splice(selectedDates.indexOf(day), 1)
@@ -96,120 +93,57 @@ export default class ContractFirstForm extends Component {
                 color="#fff"
               />
             </TouchableOpacity>
-            <Text style={ styles.textTitle }>CONTRACT</Text>
+            <Text style={ styles.textTitle }>CUSTOM OFFER</Text>
             <View style={ styles.navButtonWrapper } />
 
           </View>
           <View style={ styles.mainContainer }>
             <View style={ [styles.borderBottom, styles.topContainer] }>
-              <View style={ styles.rowContainer }>
-                <Text style={ [fontStyles, styles.textDescription] }>Total number of sessions</Text>
-                <Text style={ styles.textHours }>{ this.state.numberOfSessions } sessions</Text>
+              <View style={ [ styles.rowContainer, customStyle.selectedDayCircle, styles.dropdownWrapper] }>
+                <Text style={ [fontStyles, styles.textDescription, styles.whiteText] }>
+                  {this.state.selectedDay.schedule.length} dates selected out of {this.state.numberOfSessions}
+                </Text>
               </View>
-              <View style={ styles.rowContainer }>
-                <Slider style={ styles.slider }
-                  minimumTrackTintColor={ '#10c7fa' }
-                  maximumTrackTintColor={ '#a1a1a1' }
-                  minimumValue={ 0 }
-                  maximumValue={ 30 }
-                  step={ 1 }
-                  value = { this.state.numberOfSessions }
-                  onValueChange={ (value) => this.setState({ numberOfSessions: value }) }
-                />
+              <View style={ [ styles.rowContainer, styles.dropdownWrapper] }>
+                <ScrollView horizontal={ true }
+                            showsHorizontalScrollIndicator={ false }
+                            ref={(ref) => {this.datesScroll = ref}}>
+                  {
+                    this.state.selectedDates.map((day, index) => (
+                      <View style={ styles.sectionTitleContainer } key={index}>
+                        <Text style={ styles.textSectionTitle }>{Moment(new Date(day)).format('ddd')}</Text>
+                        <Text style={ styles.textSectionTitle }>{Moment(new Date(day)).format('D')}</Text>
+                      </View>
+                    ))
+                  }
+                </ScrollView>
               </View>
             </View>
 
             <View style={ styles.middleContainer }>
+              {
+                this.state.selectedDay.schedule.map((session) => (
+                  <View style={ styles.timeMainContainer } key={session._id}>
+                    <View style={ styles.timeRowContainer}>
+                      <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
+                      <View style={ styles.separator}>
+                        <Text style={ [styles.textSectionTitle] }>{session.profession.name}</Text>
+                      </View>
+                    </View>
+                    <View style={ styles.timeRowContainer}>
+                      <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
+                      <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_client ? 'professional': 'client'].name || 'No Name'}</Text>
+                    </View>
+                  </View>
+                ))
+              }
 
-              <View style={ [styles.borderBottom, styles.rowContainer] }>
-                <Text style={ [fontStyles, styles.textDescription] }>Hourly Rate</Text>
-                <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textValue }>$ { user.amount || user.price }</Text>
-                </View>
-              </View>
-
-              <View style={ [styles.borderBottom, styles.rowContainer] }>
-                <Text style={ [fontStyles, styles.textDescription] }>Number of People</Text>
-
-                <View style={ [styles.valueWrapper, styles.row] }>
-                  <TouchableOpacity
-                    onPress={ () => this.onChangePeople(-1) }
-                  >
-                    <EntypoIcons
-                      name="circle-with-minus"  size={ 25 }
-                      color={CommonConstant.APP_COLOR}
-                      on
-                    />
-                  </TouchableOpacity>
-                  <Text style={ [styles.textValue, styles.padding10] }>{ this.state.numberOfPeople }</Text>
-                  <TouchableOpacity
-                    onPress={ () => this.onChangePeople(1) }
-                  >
-                    <EntypoIcons
-                      name="circle-with-plus"  size={ 25 }
-                      color={CommonConstant.APP_COLOR}
-                    />
-                  </TouchableOpacity>
-                </View>
-
-              </View>
-
-              <View style={ [styles.borderBottom, styles.rowContainer] }>
-                <Text style={ [fontStyles, styles.textDescription] }>Total Payment</Text>
-                <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textValue }>$ { this.state.numberOfSessions * this.state.numberOfPeople * (user.amount || user.price) }</Text>
-                </View>
-              </View>
-
-
-              {/*<View style={ styles.rowContainer }>*/}
-                {/*<Text style={ styles.textDescription }>Duration</Text>*/}
-                {/*<View style={ styles.valueWrapper }>*/}
-                  {/*<View style={ styles.dropdownWrapper }>*/}
-                    {/*<ModalDropdown*/}
-                      {/*options={ duration }*/}
-                      {/*defaultValue={ duration[2] }*/}
-                      {/*textStyle ={ styles.textValue }*/}
-                      {/*dropdownStyle={ styles.dropdownStyle }*/}
-                      {/*onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }*/}
-                    {/*/>*/}
-                    {/*<EntypoIcons*/}
-                      {/*name="chevron-thin-down"  size={ 20 }*/}
-                      {/*color="#4d4d4d"*/}
-                    {/*/>*/}
-                  {/*</View>*/}
-                {/*</View>*/}
-              {/*</View>*/}
-
-              {/*<View style={ styles.locationBorderContainer }>*/}
-                {/*<EvilIcons*/}
-                  {/*name="location"  size={ 30 }*/}
-                  {/*color="#4d4d4d"*/}
-                {/*/>*/}
-                {/*<Text style={ styles.textDescription }>4 york st, Toronto Ontario MSJ 4C2</Text>*/}
-              {/*</View>*/}
             </View>
             <View style={ styles.bottomContainer }>
-              <Calendar
-                customStyle={ customStyle }
-                dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-                eventDates={ R.pluck('date')(schedule) }
-                nextButtonText={ '>' }
-                prevButtonText={'<'}
-                showControls={ true }
-                onlyEvent={ true }
-                showEventIndicators={ true }
-                isSelectableDay={ true }
-                onDateSelect={ (date) => this.onSelectDate(date) }
-              />
-              <View style={ [ styles.rowContainer, customStyle.selectedDayCircle, styles.dropdownWrapper] }>
-                <Text style={ [fontStyles, styles.textDescription, styles.whiteText] }>
-                  {this.state.selectedDates.length} dates selected out of {this.state.numberOfSessions}
-                </Text>
-              </View>
+
             </View>
             <View style={ styles.bottomButtonWrapper }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onNext() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onContinue() }>
                 <View style={ styles.saveButton }>
                   <Text style={ styles.whiteText }>NEXT</Text>
                 </View>
@@ -255,6 +189,7 @@ const customStyle = {
     color: '#8d99a6',
   },
   selectedDayCircle: {
+    flex:0.8,
     backgroundColor: '#45c7f1',
     borderWidth: 1,
     borderColor: '#34aadc',
@@ -290,7 +225,20 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
-
+  },
+  sectionTitleContainer: {
+    flexDirection: 'column',
+    // paddingHorizontal: 10,
+    // paddingVertical: 5,
+    marginVertical: 5,
+    marginRight: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: '#d9d9d9',
+    borderWidth: 1,
+    height:50,
+    width:50,
+    borderRadius: 25,
   },
   navButtonWrapper: {
     flex: 1,

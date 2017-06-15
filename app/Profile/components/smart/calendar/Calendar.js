@@ -25,7 +25,7 @@ export default class Calendar extends Component {
 
   state = {
     currentMonthMoment: moment(this.props.startDate),
-    selectedMoment: this.props.selectedDate || [moment().format('YYYY-MM-DD')],
+    selectedMoment: this.props.selectedDate || [],
     rowHeight: null,
   };
 
@@ -56,6 +56,7 @@ export default class Calendar extends Component {
     today: PropTypes.any,
     weekStart: PropTypes.number,
     isSelectableDay: PropTypes.bool,
+    onlyEvent: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -75,6 +76,7 @@ export default class Calendar extends Component {
     today: moment(),
     weekStart: 1,
     isSelectableDay: true,
+    onlyEvent: false,
   };
 
   componentDidMount() {
@@ -222,6 +224,7 @@ export default class Calendar extends Component {
             event={ events && events[dayIndex] }
             showEventIndicators={ this.props.showEventIndicators }
             customStyle={ this.props.customStyle }
+            onlyEvent={ this.props.onlyEvent }
           />
         ));
       } else {

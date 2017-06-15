@@ -314,7 +314,7 @@ class ProfessionalProfileForm extends Component {
         <View style={ [styles.columnContainer, styles.leftPadding] }>
           <View style={ styles.infoRowLeftContainer }>
             <Text style={ [styles.fontStyles, styles.textInfoField] }>Profession : </Text>
-            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.profession.name}</Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.profession && this.user.profession.name}</Text>
           </View>
           <View style={ styles.infoRowLeftContainer }>
             <Text style={ [styles.fontStyles, styles.textInfoField] }>Certification : </Text>

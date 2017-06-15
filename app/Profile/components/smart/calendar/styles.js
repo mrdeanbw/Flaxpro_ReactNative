@@ -100,6 +100,9 @@ const styles = StyleSheet.create({
   hasEventCircle: {
   },
   hasEventDaySelectedCircle: {
+    backgroundColor: '#45c7f1',
+    borderWidth: 1,
+    borderColor: '#34aadc',
   },
   hasEventText: {
   },
