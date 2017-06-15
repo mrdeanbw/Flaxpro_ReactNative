@@ -17,7 +17,7 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Calendar from '../../../../Profile/components/smart/calendar/Calendar';
-import Ramda from 'ramda';
+import R from 'ramda';
 import Moment from 'moment';
 
 const background = require('../../../../Assets/images/background.png');
@@ -41,7 +41,7 @@ export default class ContractFirstForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-
+    this.setState({availableDates: newProps.hire.schedule})
     if (newProps.status == 'ProposeTermsRequest') {
 
     } else if (newProps.status == 'ProposeTermsSuccess') {
@@ -66,7 +66,8 @@ export default class ContractFirstForm extends Component {
     this.setState({numberOfPeople});
   }
   onSelectDate(date) {
-    const day = Moment(date).format('YYYY-MM-DD');
+    const day = Moment(date).format('ddd, DD MMM YYYY');
+    if(!R.find(R.propEq('date', day))(this.state.availableDates)) return;
     const selectedDates = [...this.state.selectedDates];
     if(selectedDates.includes(day)){
       selectedDates.splice(selectedDates.indexOf(day), 1)
@@ -192,10 +193,11 @@ export default class ContractFirstForm extends Component {
               <Calendar
                 customStyle={ customStyle }
                 dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-                eventDates={ Ramda.pluck('date')(schedule) }
+                eventDates={ R.pluck('date')(schedule) }
                 nextButtonText={ '>' }
                 prevButtonText={'<'}
                 showControls={ true }
+                onlyEvent={ true }
                 showEventIndicators={ true }
                 isSelectableDay={ true }
                 onDateSelect={ (date) => this.onSelectDate(date) }

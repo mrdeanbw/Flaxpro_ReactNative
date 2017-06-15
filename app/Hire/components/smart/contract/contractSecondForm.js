@@ -38,7 +38,6 @@ export default class ContractSecondForm extends Component {
       selectedDay: { schedule: [] },
       selectedTimes: [],
     };
-    console.log('========', this.state)
   }
 
   componentWillReceiveProps(newProps) {
@@ -112,8 +111,8 @@ export default class ContractSecondForm extends Component {
                   {
                     this.state.selectedDates.map((day, index) => (
                       <View style={ styles.sectionTitleContainer } key={index}>
-                        <Text style={ styles.textSectionTitle }>{Moment(day).format('ddd')}</Text>
-                        <Text style={ styles.textSectionTitle }>{Moment(day).format('D')}</Text>
+                        <Text style={ styles.textSectionTitle }>{Moment(new Date(day)).format('ddd')}</Text>
+                        <Text style={ styles.textSectionTitle }>{Moment(new Date(day)).format('D')}</Text>
                       </View>
                     ))
                   }
