@@ -71,7 +71,7 @@ class SessionsProfile extends Component {
                 sessions.map((item, index) => (
                   <View style={ [styles.columnContainer, styles.workoutBlock] } key={index}>
                     {
-                      item.profession.icon ?
+                      item.profession && item.profession.icon ?
                         <Image source={this.getIcon(item.profession.icon) } style={ styles.imageAvatar } resizeMode="cover"/>
                         :
                         <Image source={ workoutDefault } style={ styles.imageAvatar } resizeMode="cover"/>

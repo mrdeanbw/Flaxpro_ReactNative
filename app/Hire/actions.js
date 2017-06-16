@@ -36,6 +36,28 @@ export const getScheduleById = (data) => async (dispatch, store) => {
 
 };
 
+export const createContract = (data) => async (dispatch, store) => {
+  const { auth } = store();
+  const url = '/contract/new';
+  const options = {
+    method: 'post',
+    body: JSON.stringify(data),
+  };
+
+  console.log('===========', options)
+  try {
+    const response = await request(url, options, auth);
+    // dispatch(updateHireSuccess({schedule: response}));
+    console.log('===========', response)
+  } catch (error) {
+    const error =
+      `Profile Error: createContract()
+      Message: ${error.message}`;
+    dispatch(updateHireError(error));
+  }
+
+};
+
 export function changeContractForm(data) {
   return { type: types.CONTRACT_CHANGEFORM, ...data };
 }
