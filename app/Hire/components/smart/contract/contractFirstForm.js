@@ -53,9 +53,6 @@ export default class ContractFirstForm extends Component {
 
   onNext () {
     const { changeContractForm } = this.props;
-    if (this.state.selectedDates.length !== this.state.numberOfSessions) {
-      return Alert.alert('Please select all dates or change number of sessions')
-    }
     changeContractForm({...this.state, firstForm: false})
   }
   onBack() {
@@ -161,6 +158,7 @@ export default class ContractFirstForm extends Component {
                 </View>
               </View>
 
+              {/*ToDo: Commented code will be use when will be created offer part*/}
 
               {/*<View style={ styles.rowContainer }>*/}
                 {/*<Text style={ styles.textDescription }>Duration</Text>*/}

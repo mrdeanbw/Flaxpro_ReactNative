@@ -15,10 +15,9 @@ import {
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import ModalDropdown from 'react-native-modal-dropdown';
-import Calendar from '../../../../Profile/components/smart/calendar/Calendar';
-import Ramda from 'ramda';
+import R from 'ramda';
 import Moment from 'moment';
+import RadioButton from '../../../../Explore/components/smart/radioButton';
 
 const background = require('../../../../Assets/images/background.png');
 import * as CommonConstant from '../../../../Components/commonConstant';
@@ -35,7 +34,8 @@ export default class ContractSecondForm extends Component {
       numberOfSessions: props.hire.numberOfSessions,
       numberOfPeople: props.hire.numberOfPeople,
       selectedDates: props.hire.selectedDates,
-      selectedDay: { schedule: [] },
+      availableDates: props.hire.schedule,
+      selectedDay: { schedules: [] },
       selectedTimes: [],
     };
   }
@@ -52,7 +52,21 @@ export default class ContractSecondForm extends Component {
   }
 
   onNext () {
+    const { createContract } = this.props;
+    if (this.state.selectedTimes.length !== this.state.numberOfSessions) {
+      return Alert.alert('Please select more dates/times or change number of sessions')
+    }
+    const data = {
+      userTo: this.props.user._id,
+      rate: this.props.user.price,
+      numberOfPeople: this.state.numberOfPeople,
+      sessions: this.state.selectedTimes,
+      paymentMethod: '',
+      location: '',
+      address: ''
 
+    };
+    createContract(data)
     Actions.Payment();
   }
   onBack() {
@@ -63,20 +77,24 @@ export default class ContractSecondForm extends Component {
     const numberOfPeople = this.state.numberOfPeople + value;
     this.setState({numberOfPeople});
   }
-  onSelectDate(date) {
-    const day = Moment(date).format('YYYY-MM-DD');
-    const selectedDates = [...this.state.selectedDates];
-    if(selectedDates.includes(day)){
-      selectedDates.splice(selectedDates.indexOf(day), 1)
-    } else {
-      selectedDates.push(day)
-    }
-    this.setState({ selectedDates });
+  onSelectDay(date) {
+    this.setState({ selectedDay: R.find(R.propEq('date', date))(this.state.availableDates) });
   }
 
   onYearOfExperience (data) {
 
   }
+  onSelectTime(value) {
+    const selectedTimes = this.state.selectedTimes;
+
+    if(selectedTimes.includes(value)){
+      selectedTimes.splice(selectedTimes.indexOf(value), 1)
+    } else {
+      selectedTimes.push(value)
+    }
+    this.setState({ selectedTimes });
+  }
+  
   render() {
     const { user, hire: {schedule} } = this.props;
 
@@ -99,9 +117,9 @@ export default class ContractSecondForm extends Component {
           </View>
           <View style={ styles.mainContainer }>
             <View style={ [styles.borderBottom, styles.topContainer] }>
-              <View style={ [ styles.rowContainer, customStyle.selectedDayCircle, styles.dropdownWrapper] }>
+              <View style={ [ styles.rowContainer, customStyle.selectedDayCircle, styles.dropdownWrapper, styles.flex08] }>
                 <Text style={ [fontStyles, styles.textDescription, styles.whiteText] }>
-                  {this.state.selectedDay.schedule.length} dates selected out of {this.state.numberOfSessions}
+                  {this.state.selectedTimes.length} dates selected out of {this.state.numberOfSessions}
                 </Text>
               </View>
               <View style={ [ styles.rowContainer, styles.dropdownWrapper] }>
@@ -110,30 +128,40 @@ export default class ContractSecondForm extends Component {
                             ref={(ref) => {this.datesScroll = ref}}>
                   {
                     this.state.selectedDates.map((day, index) => (
-                      <View style={ styles.sectionTitleContainer } key={index}>
-                        <Text style={ styles.textSectionTitle }>{Moment(new Date(day)).format('ddd')}</Text>
-                        <Text style={ styles.textSectionTitle }>{Moment(new Date(day)).format('D')}</Text>
-                      </View>
+                      <TouchableOpacity
+                        onPress={ () => this.onSelectDay(day) }
+                        key={index}
+                      >
+                        <View style={ [styles.sectionTitleContainer, this.state.selectedDay.date === day ? customStyle.selectedDayCircle : {}] }>
+                          <Text style={ [styles.textSectionTitle, this.state.selectedDay.date === day && styles.whiteText] }>{Moment(new Date(day)).format('ddd')}</Text>
+                          <Text style={ [styles.textSectionTitle, this.state.selectedDay.date === day && styles.whiteText] }>{Moment(new Date(day)).format('D')}</Text>
+                        </View>
+                      </TouchableOpacity>
                     ))
                   }
                 </ScrollView>
               </View>
             </View>
 
-            <View style={ styles.middleContainer }>
+            <View style={ [styles.middleContainer, styles.columnContainer] }>
               {
-                this.state.selectedDay.schedule.map((session) => (
-                  <View style={ styles.timeMainContainer } key={session._id}>
-                    <View style={ styles.timeRowContainer}>
-                      <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
-                      <View style={ styles.separator}>
-                        <Text style={ [styles.textSectionTitle] }>{session.profession.name}</Text>
-                      </View>
-                    </View>
-                    <View style={ styles.timeRowContainer}>
-                      <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
-                      <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_client ? 'professional': 'client'].name || 'No Name'}</Text>
-                    </View>
+                this.state.selectedDay.schedules.length>0 &&
+                <View style={ styles.navButtonWrapper }>
+                  <Text style={ [styles.textSectionTitle, styles.textBlue] }>Select Available Hour</Text>
+                </View>
+              }
+              {
+                this.state.selectedDay.schedules.map((session) => (
+                  <View style={ [styles.navButtonWrapper] } key={session._id}>
+                    <RadioButton
+                      label=""
+                      color="#19b8ff"
+                      style={{padding: 0, paddingHorizontal: 5}}
+                      iconStyle={ styles.iconButton }
+                      checked={ this.state.selectedTimes.includes(session) }
+                      onPress={ () => this.onSelectTime(session) }
+                    />
+                    <Text style={ styles.textSectionTitle }>{Moment(session.from).format('hh:mm A')} to {Moment(session.to).format('hh:mm A')}</Text>
                   </View>
                 ))
               }
@@ -143,7 +171,7 @@ export default class ContractSecondForm extends Component {
 
             </View>
             <View style={ styles.bottomButtonWrapper }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onContinue() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onNext() }>
                 <View style={ styles.saveButton }>
                   <Text style={ styles.whiteText }>NEXT</Text>
                 </View>
@@ -189,13 +217,17 @@ const customStyle = {
     color: '#8d99a6',
   },
   selectedDayCircle: {
-    flex:0.8,
     backgroundColor: '#45c7f1',
     borderWidth: 1,
     borderColor: '#34aadc',
   },
   selectedDayText: {
     color: '#fff',
+  },
+  textSectionTitle: {
+    fontFamily: 'Open Sans',
+    color: '#6b6b6b',
+    fontSize: 12,
   },
   weekendDayText: {
     color: '#8d99a6',
@@ -216,8 +248,17 @@ const styles = StyleSheet.create({
     width,
     height,
   },
+  flex08: {
+    flex:0.8,
+  },
   whiteText: {
     color: '#fff'
+  },
+  iconButton: {
+    padding: 0,
+    fontSize: 20,
+    marginRight: 5,
+    marginLeft: -5,
   },
   navBarContainer: {
     flexDirection: 'row',
@@ -228,8 +269,6 @@ const styles = StyleSheet.create({
   },
   sectionTitleContainer: {
     flexDirection: 'column',
-    // paddingHorizontal: 10,
-    // paddingVertical: 5,
     marginVertical: 5,
     marginRight: 10,
     alignItems: 'center',
@@ -241,9 +280,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   navButtonWrapper: {
-    flex: 1,
+    flexDirection: 'row',
     paddingVertical: 5,
     paddingHorizontal: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textCenter: {
     textAlign: 'center',
@@ -268,6 +309,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
+  },
+  columnContainer: {
+    // flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    // justifyContent: 'center',
+    paddingVertical: 5,
   },
   middleContainer: {
     flex: 1.5,
@@ -364,9 +412,8 @@ const styles = StyleSheet.create({
     color: '#4d4d4d',
     fontSize: 12,
   },
-  textBidValue: {
+  textBlue: {
     color: '#10c7f9',
-    fontSize: 32,
   },
   padding10: {
     paddingRight: 10,
