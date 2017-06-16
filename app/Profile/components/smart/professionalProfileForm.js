@@ -17,6 +17,7 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import R from 'ramda';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import ImageProgress from 'react-native-image-progress';
@@ -25,6 +26,8 @@ import Calendar from './calendar/Calendar';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 
 const { width, height } = Dimensions.get('window');
+
+import PopupDialog from 'react-native-popup-dialog';
 
 const background = require('../../../Assets/images/background.png');
 const schedule = require('../../../Assets/images/schedule.png');
@@ -38,6 +41,11 @@ const verified = require('../../../Assets/images/verified.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
 const goToClient = require('../../../Assets/images/go_to_client.png');
 const ownSpace = require('../../../Assets/images/own_space.png');
+
+const callCircle = require('../../../Assets/images/call-circle.png');
+const referToFriends = require('../../../Assets/images/refer-to-friends.png');
+const customOffer = require('../../../Assets/images/custom-offer.png');
+const availability = require('../../../Assets/images/avability.png');
 
 const strengthTraining = require('../../../Assets/images/strength_training.png');
 const pilates = require('../../../Assets/images/pilates.png');
@@ -125,6 +133,80 @@ class ProfessionalProfileForm extends Component {
 
   onBack() {
     Actions.pop();
+  }
+
+  openCommunicationPopup () {
+    this.popupDialogCommunication.openDialog ();
+  }
+
+  closeCommunicationPopup () {
+    this.popupDialogCommunication.closeDialog ();
+  }
+
+  get dialogCommunication () {
+    return (
+      <PopupDialog
+        ref={ (popupDialogCommunication) => { this.popupDialogCommunication = popupDialogCommunication; }}
+        width={ width * 0.7 }
+        dialogStyle={ styles.dialogContainer }
+      >
+        <View style={ styles.communicationDialogContainer }>
+          <View style={ styles.communicatioDialogTopContainer }>
+            <EvilIcons
+              style={ styles.communicationClose }
+              onPress={ () => this.closeCommunicationPopup() }
+              name="close"
+              size={ 30 }
+            />
+          </View>
+          <View  style={ styles.communicationBtnBlock }>
+            <TouchableOpacity onPress={() => this.closeCommunicationPopup()} >
+              <View style={ styles.communicationBtnContainer }>
+                <Image
+                  source={ callCircle }
+                  style={ styles.communicationBtnIcon }
+                />
+                <Text style={ styles.communicationBtnText }>Call</Text>
+              </View>
+
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.closeCommunicationPopup()} >
+              <View style={ styles.communicationBtnContainer }>
+                <Image
+                  source={ customOffer }
+                  style={ styles.communicationBtnIcon }
+                />
+                <Text style={ styles.communicationBtnText }>Custom Offer</Text>
+              </View>
+
+            </TouchableOpacity>
+          </View>
+          <View  style={ styles.communicationBtnBlock }>
+            <TouchableOpacity onPress={() => this.closeCommunicationPopup()} >
+              <View style={ styles.communicationBtnContainer }>
+                <Image
+                  source={ referToFriends }
+                  style={ styles.communicationBtnIcon }
+                />
+                <Text style={ styles.communicationBtnText }>Refer to friends</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.closeCommunicationPopup()} >
+              <View style={ styles.communicationBtnContainer }>
+                <Image
+                  source={ availability }
+                  style={ styles.communicationBtnIcon }
+                />
+                <Text style={ styles.communicationBtnText }>Availability</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View  style={ styles.communicationBtnBlock }>
+
+          </View>
+        </View>
+      </PopupDialog>
+    );
   }
 
   get showMoreOrLessButton() {
@@ -389,10 +471,12 @@ class ProfessionalProfileForm extends Component {
                     </View>
                     :
                     <View style={ styles.actionBtnContainer }>
-                      <View style={ styles.emptyGreenBtn }>
-                        <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
-                        <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
-                      </View>
+                      <TouchableOpacity onPress={() => this.openCommunicationPopup()} >
+                        <View style={ styles.emptyGreenBtn }>
+                          <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
+                          <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
+                        </View>
+                      </TouchableOpacity>
                       <View style={ styles.greenBtn }>
                         <TouchableOpacity
                           onPress={ () => this.onMakeAnOffer() }
@@ -480,6 +564,7 @@ class ProfessionalProfileForm extends Component {
               </View>
             </View>
           </Image>
+          { this.dialogCommunication }
         </View>
     );
   }
@@ -536,6 +621,48 @@ const customStyle = {
 }
 
 const styles = StyleSheet.create({
+  communicationBtnText: {
+    marginTop: 5,
+    fontSize: 11
+  },
+  communicationBtnIcon: {
+    width: 60,
+    height: 60,
+  },
+  communicationBtnContainer: {
+    width: width * 0.3,
+    alignItems: 'center',
+  },
+  communicationBtnBlock: {
+    flexDirection: 'row',
+    marginTop: 20
+  },
+  communicationClose: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    right: 7,
+    top: 7,
+    color: 'gray'
+  },
+  dialogContainer: {
+    backgroundColor: 'transparent',
+  },
+  communicationDialogContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    width: width * 0.7,
+    borderRadius: 20,
+  },
+  communicatioDialogTopContainer: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
+    alignSelf: 'stretch',
+  },
   actionIconImage:  {
     width: 40,
     height: 40
