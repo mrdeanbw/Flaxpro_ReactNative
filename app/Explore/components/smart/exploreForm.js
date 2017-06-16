@@ -36,6 +36,15 @@ import * as CommonConstant from '../../../Components/commonConstant';
 
 const background = require('../../../Assets/images/background.png');
 const arrow = require('../../../Assets/images/right_arrow.png');
+
+const locationGray = require('../../../Assets/images/location_gray.png');
+const locationMultiGray = require('../../../Assets/images/location_multi_gray.png');
+const locationNearbyGray = require('../../../Assets/images/location_nearby_gray.png');
+
+const locationWhite = require('../../../Assets/images/location_white.png');
+const locationMultiWhite = require('../../../Assets/images/location_multi_white.png');
+const locationNearbyWhite = require('../../../Assets/images/location_nearby_white.png');
+
 const otherLabel = {_id: 0, name: 'Other', color:'#000000',icon:'../Assets/images/sport.png'};
 const allLabel = {_id: -1, name: 'All', color:'#4dc7fd'};
 const defaultProfessions = [ 'Fitness Training', 'Physiotherapist', 'Yoga', 'Massage' ];
@@ -138,7 +147,11 @@ class ExploreForm extends Component {
   }
 
   get dialogSelectProfessionalClient () {
-
+    let { user } = this.props.auth;
+    let originalAddress = ''
+    if (user.location) {
+      originalAddress = user.location.originalAddress
+    }
     return (
       <PopupDialog
         ref={ (popupDialogLocation) => { this.popupDialogLocation = popupDialogLocation; }}
@@ -156,7 +169,7 @@ class ExploreForm extends Component {
                 name="chevron-small-up"
                 size={ 28 }
               />
-              <Text style={ styles.locationStreetText } >4567 West North avenue</Text>
+              <Text style={ styles.locationStreetText } >{ originalAddress }</Text>
           </View>
           <View style={ styles.locationMiddleContainer }>
             <Text style={ styles.locationBlueText }>Show Professionals</Text>
@@ -166,6 +179,10 @@ class ExploreForm extends Component {
               <View style={ styles.locationBtnContainer }>
                 <View
                   style={ [styles.locationBtn, this.state.activeLocation == "nearby"  && styles.activeLocation] }>
+                  <Image
+                    source={ this.state.activeLocation != "nearby" ? locationNearbyGray : locationNearbyWhite }
+                    style={ styles.locationNearbyIcon }
+                  />
                 </View>
                 <Text style={ styles.locationBtnText }>Nearby to me</Text>
               </View>
@@ -174,6 +191,9 @@ class ExploreForm extends Component {
               <View style={ styles.locationBtnContainer }>
                 <View
                   style={ [styles.locationBtn, this.state.activeLocation == "enter"  && styles.activeLocation] }>
+                  <Image
+                    source={ this.state.activeLocation != "enter" ? locationGray : locationWhite }
+                    style={ styles.locationGrayIcon }/>
                 </View>
                 <Text style={ styles.locationBtnText }>Enter an Address</Text>
               </View>
@@ -182,6 +202,10 @@ class ExploreForm extends Component {
               <View style={ styles.locationBtnContainer }>
                 <View
                   style={ [styles.locationBtn, this.state.activeLocation == "all"  && styles.activeLocation] }>
+                  <Image
+                    source={ this.state.activeLocation != "all" ? locationMultiGray : locationMultiWhite }
+                    style={ styles.locationMulti }
+                  />
                 </View>
                 <Text style={ styles.locationBtnText }>All locations</Text>
               </View>
@@ -701,6 +725,18 @@ class ExploreForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  locationMulti: {
+    width: 43,
+    height: 28,
+  },
+  locationNearbyIcon: {
+    width: 27,
+    height: 27,
+  },
+  locationGrayIcon: {
+    width: 20,
+    height: 27,
+  },
   arrowButton: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -755,6 +791,8 @@ const styles = StyleSheet.create({
     borderRadius: (width * 0.15)/2,
     borderWidth: 1,
     borderColor: '#f2f2f2',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   locationBtnText: {
     fontWeight: '500',
