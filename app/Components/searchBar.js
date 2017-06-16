@@ -43,8 +43,10 @@ export default class SearchBar extends React.Component {
     iconSearchName: PropTypes.string,
     iconBackName: PropTypes.string,
     placeholderColor: PropTypes.string,
+    value: PropTypes.string,
     iconColor: PropTypes.string,
-    textStyle: PropTypes.object
+    textStyle: PropTypes.object,
+    editable: PropTypes.bool
   }
 
   static defaultProps = {
@@ -64,7 +66,8 @@ export default class SearchBar extends React.Component {
     paddingBottom: 0,
     placeholderColor: "#bdbdbd",
     iconColor: "#737373",
-    textStyle: {}
+    textStyle: {},
+    editable: true
   }
 
   constructor(props) {
@@ -118,11 +121,13 @@ export default class SearchBar extends React.Component {
       iconSearchName,
       iconCloseName,
       placeholderColor,
+      value,
       textStyle,
       paddingLeft,
       paddingRight,
       paddingTop,
       paddingBottom,
+      editable,
     } = this.props;
 
     let { iconSize } = this.props
@@ -162,6 +167,7 @@ export default class SearchBar extends React.Component {
             {/*/>*/}
           {/*}*/}
           <TextInput
+            editable={ editable === true }
             autoCapitalize="none"
             autoCorrect={ autoCorrect === true }
             ref={ (c) => (this._textInput = c) }
@@ -173,6 +179,7 @@ export default class SearchBar extends React.Component {
             onSubmitEditing={ this.props.onSubmitEditing }
             placeholder={ placeholder }
             placeholderTextColor={ placeholderColor }
+            value={ value }
             underlineColorAndroid="transparent"
             style={
               [styles.searchBarInput,

@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import EntypoIcons from 'react-native-vector-icons/Entypo';
 
 import PopupDialog from 'react-native-popup-dialog';
 
@@ -34,6 +35,7 @@ const { width, height } = Dimensions.get('window');
 import * as CommonConstant from '../../../Components/commonConstant';
 
 const background = require('../../../Assets/images/background.png');
+const arrow = require('../../../Assets/images/right_arrow.png');
 const otherLabel = {_id: 0, name: 'Other', color:'#000000',icon:'../Assets/images/sport.png'};
 const allLabel = {_id: -1, name: 'All', color:'#4dc7fd'};
 const defaultProfessions = [ 'Fitness Training', 'Physiotherapist', 'Yoga', 'Massage' ];
@@ -51,7 +53,8 @@ class ExploreForm extends Component {
       gymLocations: GymLocations,
       filteredClients: [ ...ProfessionalsClients, ...this.props.explore.clients, ],
       filteredProfessionals: [ ...ProfessionalsClients, ...this.props.explore.professionals, ],
-      activeLocation: 'nearby',
+      activeLocation: 'enter',
+      locationFilter: '',
       professions: {
         selected: {},
         search:'',
@@ -118,12 +121,20 @@ class ExploreForm extends Component {
     this.popupDialogLocation.openDialog ();
   }
 
-  onLocation (value) {
-    this.setState({ activeLocation: value });
-  }
-
   closeLocationPopup () {
     this.popupDialogLocation.closeDialog ();
+  }
+
+  startFilterByLocation () {
+    this.closeLocationPopup()
+  }
+
+  onLocation (value) {
+    this.setState({ activeLocation: value });
+    if(value !== 'enter' ) {
+      this.setState({ locationFilter: value });
+      this.startFilterByLocation()
+    }
   }
 
   get dialogSelectProfessionalClient () {
@@ -139,32 +150,64 @@ class ExploreForm extends Component {
               <Text style={ styles.locationHeaderText }>
                 My location
               </Text>
-              <Text style={ styles.locationClose } onPress={ () => this.closeLocationPopup() }>V</Text>
+              <EntypoIcons
+                style={ styles.locationClose }
+                onPress={ () => this.closeLocationPopup() }
+                name="chevron-small-up"
+                size={ 28 }
+              />
               <Text style={ styles.locationStreetText } >4567 West North avenue</Text>
           </View>
           <View style={ styles.locationMiddleContainer }>
             <Text style={ styles.locationBlueText }>Show Professionals</Text>
           </View>
           <View  style={ styles.locationBtnBlock }>
-            <View style={ styles.locationBtnContainer } onPress={ () => this.onLocation( "nearby") }>
-              <View
-                style={ [styles.locationBtn, this.state.activeLocation == "nearby"  && styles.activeLocation] }>
+            <TouchableOpacity onPress={() => this.onLocation( "nearby")} >
+              <View style={ styles.locationBtnContainer }>
+                <View
+                  style={ [styles.locationBtn, this.state.activeLocation == "nearby"  && styles.activeLocation] }>
+                </View>
+                <Text style={ styles.locationBtnText }>Nearby to me</Text>
               </View>
-              <Text style={ styles.locationBtnText }>Nearby to me</Text>
-            </View>
-            <View style={ styles.locationBtnContainer } onClick={ () => this.onLocation( "enter") }>
-              <View
-                style={ [styles.locationBtn, this.state.activeLocation == "enter"  && styles.activeLocation] }>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.onLocation( "enter")} >
+              <View style={ styles.locationBtnContainer }>
+                <View
+                  style={ [styles.locationBtn, this.state.activeLocation == "enter"  && styles.activeLocation] }>
+                </View>
+                <Text style={ styles.locationBtnText }>Enter an Address</Text>
               </View>
-              <Text style={ styles.locationBtnText }>Enter an Address</Text>
-            </View>
-            <View style={ styles.locationBtnContainer }>
-              <View
-                style={ [styles.locationBtn, this.state.activeLocation == "all"  && styles.activeLocation] }>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.onLocation( "all")} >
+              <View style={ styles.locationBtnContainer }>
+                <View
+                  style={ [styles.locationBtn, this.state.activeLocation == "all"  && styles.activeLocation] }>
+                </View>
+                <Text style={ styles.locationBtnText }>All locations</Text>
               </View>
-              <Text style={ styles.locationBtnText }>All locations</Text>
-            </View>
+            </TouchableOpacity>
           </View>
+          {this.state.activeLocation == "enter" &&
+            <View style={styles.locationInputContainer}>
+              <Text style={ styles.locationBlueText }>Enter address</Text>
+              <View style={styles.addressInputContaitner}>
+                <TextInput
+                  editable={ true }
+                  autoCapitalize="none"
+                  autoCorrect={ false }
+                  color="#000"
+                  style={ styles.textInput }
+                  onChangeText={ (text) => this.setState({locationFilter: text}) }
+                />
+              </View>
+              <TouchableOpacity onPress={ () => this.startFilterByLocation() }>
+                <View style={ styles.arrowButton }>
+                  <Image source={ arrow } style={ styles.imageArrow }/>
+                </View>
+              </TouchableOpacity>
+            </View>
+          }
+
         </View>
       </PopupDialog>
     );
@@ -379,17 +422,22 @@ class ExploreForm extends Component {
     return (
       <View style={ styles.navContainer }>
         <View style={ styles.searchBarWrap }>
-          <SearchBar
-            onSearchChange={ () => this.openLocationPopup() }
-            height={ 20 }
-            autoCorrect={ false }
-            returnKeyType={ "search" }
-            iconSearchName={ "location" }
-            placeholder="Prefered Location"
-            iconColor={ "#fff" }
-            placeholderColor={ "#fff" }
-            paddingTop={ 20 }
-          />
+          <TouchableOpacity
+            onPress={ () => this.openLocationPopup() }
+          >
+            <SearchBar
+              height={ 20 }
+              value={ this.state.locationFilter }
+              autoCorrect={ false }
+              editable={ false }
+              returnKeyType={ "search" }
+              iconSearchName={ "location" }
+              placeholder="Prefered Location"
+              iconColor={ "#fff" }
+              placeholderColor={ "#fff" }
+              paddingTop={ 20 }
+            />
+          </TouchableOpacity>
         </View>
         <View style={ styles.calendarBarWrap } >
           <EvilIcons
@@ -653,6 +701,43 @@ class ExploreForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  arrowButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    marginHorizontal: 50,
+  },
+  imageArrow: {
+    width: 30,
+    height: 24,
+  },
+  inputWrap: {
+    flex: 1,
+    flexDirection: 'row',
+    flexDirection: 'row',
+    marginVertical: 10,
+    marginHorizontal: 50,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e3e3e3',
+  },
+  textInput: {
+    height: 30,
+    width: width * 0.8,
+    paddingHorizontal: 10,
+    borderRadius: 15
+  },
+  addressInputContaitner: {
+    width: width * 0.8,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#f2f2f2',
+    marginTop: 5,
+  },
+  locationInputContainer: {
+    flexDirection: 'column',
+    marginBottom: 20,
+  },
+
   activeLocation: {
     backgroundColor: '#48C7F2',
   },
@@ -683,8 +768,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     position: 'absolute',
-    right: 7,
-    top: 5,
+    right: 1,
+    top: 2,
     color: '#48c7f2'
   },
   locationDialogContentContainer: {
@@ -720,8 +805,8 @@ const styles = StyleSheet.create({
   },
   dialogContainer: {
     backgroundColor: 'transparent',
-    marginBottom: 100,
-    marginTop: -200,
+    position: 'relative',
+    top: -160
   },
   container: {
     // width,
