@@ -146,7 +146,7 @@ class ExploreForm extends Component {
     }
   }
 
-  get dialogSelectProfessionalClient () {
+  get dialogLocationClient () {
     let { user } = this.props.auth;
     let originalAddress = ''
     if (user.location) {
@@ -718,7 +718,7 @@ class ExploreForm extends Component {
               />
           }
         </Image>
-        { this.dialogSelectProfessionalClient }
+        { this.dialogLocationClient }
       </View>
     );
   }
