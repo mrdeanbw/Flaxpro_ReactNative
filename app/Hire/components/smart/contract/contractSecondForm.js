@@ -57,7 +57,7 @@ export default class ContractSecondForm extends Component {
       return Alert.alert('Please select more dates/times or change number of sessions')
     }
     const data = {
-      userTo: this.props.user._id,
+      userTo: this.props.user.user,
       rate: this.props.user.price,
       numberOfPeople: this.state.numberOfPeople,
       sessions: this.state.selectedTimes,
