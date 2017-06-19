@@ -16,7 +16,7 @@ function mainSuccess(data) {
 export const getExploreClient = () => async (dispatch, store) => {
   dispatch(mainRequest());
   const professionsUrl = '/profession';
-  const professionalsUrl = '/professional/q';
+  const professionalsUrl = '/professional/q?locationType=nearby';
   const { auth } = store();
   const options = {
     method: 'get',

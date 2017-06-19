@@ -18,19 +18,7 @@ class Explore extends Component {
     const { actions, auth, explore: {loading, error} } = this.props;
     return (
       <View >
-        {
-          !loading && !error &&
-          <ExploreForm { ...actions } auth={ auth }/>
-        }
-        {
-          loading &&
-          <View style={styles.background}>
-            <ActivityIndicator
-              color="#fff"
-              size="large"
-            />
-          </View>
-        }
+        <ExploreForm { ...actions } auth={ auth }/>
       </View>
     );
   }
