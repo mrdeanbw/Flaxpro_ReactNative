@@ -33,6 +33,7 @@ export default class Calendar extends Component {
     customStyle: PropTypes.object,
     dayHeadings: PropTypes.array,
     eventDates: PropTypes.array,
+    selectedDates: PropTypes.array,
     monthNames: PropTypes.array,
     nextButtonText: PropTypes.oneOfType([
       PropTypes.string,
@@ -64,6 +65,7 @@ export default class Calendar extends Component {
     width: DEVICE_WIDTH,
     dayHeadings: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
     eventDates: [],
+    selectedDates: [],
     monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     nextButtonText: 'Next',
@@ -191,8 +193,9 @@ export default class Calendar extends Component {
       startOfArgMonthMoment = argMoment.startOf('month');
 
     const
-      selectedMoment = this.state.selectedMoment.map(e => moment(e)),
+      selectedMoment = this.state.selectedMoment.map(e => moment(new  Date(e))),
       weekStart = this.props.weekStart,
+      selectedDates = this.props.selectedDates,
       todayMoment = moment(this.props.today),
       todayIndex = todayMoment.date() - 1,
       argMonthDaysCount = argMoment.daysInMonth(),

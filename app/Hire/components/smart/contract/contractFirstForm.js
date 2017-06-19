@@ -26,8 +26,6 @@ const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
 
-const duration = ['1 Months', '2 Months', '3 Months'];
-
 export default class ContractFirstForm extends Component {
   constructor(props) {
     super(props);
@@ -41,14 +39,13 @@ export default class ContractFirstForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({availableDates: newProps.hire.schedule})
-    if (newProps.status == 'ProposeTermsRequest') {
+    this.setState({
+      numberOfSessions: newProps.hire.numberOfSessions,
+      numberOfPeople: newProps.hire.numberOfPeople,
+      selectedDates: newProps.hire.selectedDates,
+      availableDates: newProps.hire.schedule
+    })
 
-    } else if (newProps.status == 'ProposeTermsSuccess') {
-
-    } else if (newProps.status == 'ProposeTermsError') {
-
-    }
   }
 
   onNext () {
@@ -192,6 +189,7 @@ export default class ContractFirstForm extends Component {
                 customStyle={ customStyle }
                 dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
                 eventDates={ R.pluck('date')(schedule) }
+                selectedDate={ this.state.selectedDates }
                 nextButtonText={ '>' }
                 prevButtonText={'<'}
                 showControls={ true }
