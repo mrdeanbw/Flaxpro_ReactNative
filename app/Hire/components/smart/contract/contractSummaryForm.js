@@ -26,7 +26,7 @@ const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
 
-export default class ContractFirstForm extends Component {
+export default class ContractSummaryForm extends Component {
   constructor(props) {
     super(props);
 
@@ -51,26 +51,24 @@ export default class ContractFirstForm extends Component {
   }
 
   onNext () {
-    const { changeContractForm } = this.props;
-    changeContractForm({...this.state, secondForm: true})
+    const { createContract } = this.props;
+
+    const data = {
+      userTo: this.props.user.user,
+      rate: this.props.user.price,
+      numberOfPeople: this.state.numberOfPeople,
+      sessions: this.state.selectedTimes,
+      paymentMethod: '',
+      location: '',
+      address: ''
+
+    };
+    createContract(data)
+    Actions.Payment();
   }
   onBack() {
-    Actions.pop();
-  }
-  onChangePeople(value) {
-    const numberOfPeople = this.state.numberOfPeople + value;
-    this.setState({numberOfPeople});
-  }
-  onSelectDate(date) {
-    const day = Moment(date).format('ddd, DD MMM YYYY');
-    if(!R.find(R.propEq('date', day))(this.state.availableDates)) return;
-    const selectedDates = [...this.state.selectedDates];
-    if(selectedDates.includes(day)){
-      selectedDates.splice(selectedDates.indexOf(day), 1)
-    } else {
-      selectedDates.push(day)
-    }
-    this.setState({ selectedDates });
+    const { changeContractForm } = this.props;
+    changeContractForm({...this.state, secondForm: true})
   }
 
   render() {
@@ -89,7 +87,7 @@ export default class ContractFirstForm extends Component {
                 color="#fff"
               />
             </TouchableOpacity>
-            <Text style={ styles.textTitle }>CONTRACT</Text>
+            <Text style={ styles.textTitle }>PAYMENT SUMMARY</Text>
             <View style={ styles.navButtonWrapper } />
 
           </View>

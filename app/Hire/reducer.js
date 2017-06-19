@@ -4,9 +4,12 @@ const initialState = {
   status: null,
   error: null,
   firstForm: true,
+  secondForm: false,
+  summaryForm: false,
   numberOfSessions: 1,
   numberOfPeople: 1,
   selectedDates: [],
+  selectedTimes: [],
   schedule: [],
 };
 
@@ -17,9 +20,12 @@ export default function hire(state = initialState, action = {}) {
         ...state,
         error: null,
         firstForm: action.firstForm,
+        secondForm: action.secondForm,
+        summaryForm: action.summaryForm,
         numberOfSessions: action.numberOfSessions,
         numberOfPeople: action.numberOfPeople,
         selectedDates: action.selectedDates,
+        selectedTimes: action.selectedTimes,
       };
     case types.HIRE_SUCCESS:
       return {

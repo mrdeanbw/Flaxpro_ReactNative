@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import ContractFirstForm from '../components/smart/contract/contractFirstForm';
 import ContractSecondForm from '../components/smart/contract/contractSecondForm';
+import ContractSummaryForm from '../components/smart/contract/contractSummaryForm';
 import * as contractActions from '../actions';
 import { connect } from 'react-redux';
 
@@ -16,12 +17,11 @@ class ProposeTerms extends Component {
   render() {
     const { actions, user, hire } = this.props;
 
-    return (
-      hire.firstForm ?
-        <ContractFirstForm { ...actions } user={ user } hire={ hire }/>
-        :
-        <ContractSecondForm { ...actions } user={ user } hire={ hire }/>
-    );
+    switch(true) {
+      case hire.firstForm: return <ContractFirstForm { ...actions } user={ user } hire={ hire }/>;
+      case hire.secondForm: return <ContractSecondForm { ...actions } user={ user } hire={ hire }/>;
+      case hire.summaryForm: return <ContractSummaryForm { ...actions } user={ user } hire={ hire }/>;
+    }
   }
 }
 
