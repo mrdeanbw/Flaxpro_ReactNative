@@ -1,5 +1,5 @@
 import {StyleSheet,Platform} from 'react-native';
-import {Constants} from "../../common"
+import * as Constants from "../../../Components/commonConstant"
 
 export default StyleSheet.create({
   container: {

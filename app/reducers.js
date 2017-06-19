@@ -3,8 +3,8 @@ import question from './Question/reducer';
 import explore from './Explore/reducer';
 import hire from './Hire/reducer';
 import account from './Account/reducer';
-import clients_professionals from './Clients_Professionals/reducer';
 import profile from './Profile/reducer';
+import schedule from './Schedule/reducer';
 
 export {
   auth,
@@ -12,6 +12,6 @@ export {
   explore,
   hire,
   account,
-  clients_professionals,
   profile,
+  schedule,
 };

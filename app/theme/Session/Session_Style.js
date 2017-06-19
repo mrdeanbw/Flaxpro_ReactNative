@@ -1,5 +1,5 @@
 import { StyleSheet} from 'react-native';
-import {Constants} from "../../Schedule/common"
+import * as Constants from "../../Components/commonConstant"
 export default StyleSheet.create({
   container: {
     width:100,

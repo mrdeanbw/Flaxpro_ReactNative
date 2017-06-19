@@ -21,7 +21,7 @@ import ViewProfile from './Profile/containers/viewProfile';
 import EditProfile from './Profile/containers/editProfile';
 import Sessions from './Profile/components/smart/sessions';
 import ChatForm from './Inbox/components/smart/chatForm';
-import UI_static from './Schedule/pages/Clients';
+import Schedule from './Schedule/containers/schedule';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
@@ -39,7 +39,7 @@ const scenes = Actions.create(
     <Scene key="FilterProfessionalForm" component={ FilterProfessionalForm } direction="vertical" />
     <Scene key="Contract" component={ Contract } />
     <Scene key="Payment" component={ Payment } />
-    <Scene key="Clients_Professionals" component={ UI_static } />
+    <Scene key="Schedule" component={ Schedule } />
     <Scene key="ScheduleForm" component={ ScheduleForm } />
     <Scene key="ViewProfile" component={ ViewProfile } />
     <Scene key="ChatForm" component={ ChatForm } />

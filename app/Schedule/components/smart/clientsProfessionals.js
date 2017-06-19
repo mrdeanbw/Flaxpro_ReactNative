@@ -8,10 +8,10 @@ import {
   ListView
 }from 'react-native'
 import {Button,ListItem} from "../../../theme"
-import styles from "./index_style"
-import {Constants} from "../../common"
+import styles from "./clientsProfessionals_style"
+import * as Constants from "../../../Components/commonConstant"
 
-class Login extends React.Component {
+class ClientsProfessionals extends React.Component {
   constructor(props) {
     super(props);
 
@@ -124,4 +124,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default ClientsProfessionals;
