@@ -44,11 +44,9 @@ export const createContract = (data) => async (dispatch, store) => {
     body: JSON.stringify(data),
   };
 
-  console.log('===========', options)
   try {
     const response = await request(url, options, auth);
-    // dispatch(updateHireSuccess({schedule: response}));
-    console.log('===========', response)
+    dispatch(updateHireSuccess({schedule: response}));
   } catch (error) {
     const error =
       `Profile Error: createContract()

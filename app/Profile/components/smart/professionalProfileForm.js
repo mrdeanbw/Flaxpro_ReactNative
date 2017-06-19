@@ -42,9 +42,9 @@ const avatarDefault = require('../../../Assets/images/avatar.png');
 const goToClient = require('../../../Assets/images/go_to_client.png');
 const ownSpace = require('../../../Assets/images/own_space.png');
 
-const callCircle = require('../../../Assets/images/call-circle.png');
-const referToFriends = require('../../../Assets/images/refer-to-friends.png');
-const customOffer = require('../../../Assets/images/custom-offer.png');
+const callCircle = require('../../../Assets/images/call_circle.png');
+const referToFriends = require('../../../Assets/images/refer_to_friends.png');
+const customOffer = require('../../../Assets/images/custom_offer.png');
 const availability = require('../../../Assets/images/avability.png');
 
 const strengthTraining = require('../../../Assets/images/strength_training.png');
