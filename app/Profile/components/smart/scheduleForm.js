@@ -343,6 +343,7 @@ class ScheduleForm extends Component {
                   </View>
                   {
                     day.sessions.map((session) => (
+                    user.role === CommonConstant.user_client ?
                       <View style={ styles.timeMainContainer } key={session._id}>
                         <View style={ styles.timeRowContainer}>
                           <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
@@ -353,6 +354,18 @@ class ScheduleForm extends Component {
                         <View style={ styles.timeRowContainer}>
                           <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
                           <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_client ? 'professional': 'client'].name || 'No Name'}</Text>
+                        </View>
+                      </View>
+                      :
+                      <View style={ styles.timeMainContainer } key={session._id}>
+                        <View style={ styles.timeRowContainer}>
+                          <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
+                          <View style={ styles.separator}>
+                            <View style={ styles.timeRowContainer}>
+                              <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
+                              <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_client ? 'professional': 'client'].name || 'No Name'}</Text>
+                            </View>
+                          </View>
                         </View>
                       </View>
                     ))
@@ -552,6 +565,7 @@ const styles = StyleSheet.create({
     width: 40,
     borderRadius: 20,
     marginVertical: 5,
+    marginHorizontal: 5,
   },
 });
 export default connect(state => ({

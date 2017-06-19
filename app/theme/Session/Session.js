@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 
 import styles from "./Session_Style.js"
-import {Constants} from "../../Schedule/common"
 
 class Session extends Component {
 

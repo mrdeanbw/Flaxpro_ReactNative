@@ -35,55 +35,38 @@ export default class ContractSecondForm extends Component {
       numberOfPeople: props.hire.numberOfPeople,
       selectedDates: props.hire.selectedDates,
       availableDates: props.hire.schedule,
-      selectedDay: { schedules: [] },
-      selectedTimes: [],
+      selectedDay: props.hire.selectedDates.length ? R.find(R.propEq('date', props.hire.selectedDates[0]))(props.hire.schedule) : { schedules: [] },
+      selectedTimes: props.hire.selectedTimes,
     };
   }
 
   componentWillReceiveProps(newProps) {
+    this.setState({
+      numberOfSessions: newProps.hire.numberOfSessions,
+      numberOfPeople: newProps.hire.numberOfPeople,
+      selectedDates: newProps.hire.selectedDates,
+      availableDates: newProps.hire.schedule,
+      selectedTimes: newProps.hire.selectedTimes,
+    })
 
-    if (newProps.status == 'ProposeTermsRequest') {
-
-    } else if (newProps.status == 'ProposeTermsSuccess') {
-
-    } else if (newProps.status == 'ProposeTermsError') {
-
-    }
   }
 
   onNext () {
-    const { createContract } = this.props;
     if (this.state.selectedTimes.length !== this.state.numberOfSessions) {
       return Alert.alert('Please select more dates/times or change number of sessions')
     }
-    const data = {
-      userTo: this.props.user._id,
-      rate: this.props.user.price,
-      numberOfPeople: this.state.numberOfPeople,
-      sessions: this.state.selectedTimes,
-      paymentMethod: '',
-      location: '',
-      address: ''
-
-    };
-    createContract(data)
-    Actions.Payment();
+    const { changeContractForm } = this.props;
+    changeContractForm({...this.state, summaryForm: true})
   }
   onBack() {
     const { changeContractForm } = this.props;
     changeContractForm({...this.state, firstForm: true})
   }
-  onChangePeople(value) {
-    const numberOfPeople = this.state.numberOfPeople + value;
-    this.setState({numberOfPeople});
-  }
+
   onSelectDay(date) {
     this.setState({ selectedDay: R.find(R.propEq('date', date))(this.state.availableDates) });
   }
 
-  onYearOfExperience (data) {
-
-  }
   onSelectTime(value) {
     const selectedTimes = this.state.selectedTimes;
 
@@ -304,7 +287,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rowContainer: {
-    flex: 1,
+    flex: 1.2,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

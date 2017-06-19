@@ -1,2 +1,0 @@
-export const SHOW_PROGRESS = "SHOW_PROGRESS"
-export const HIDE_PROGRESS = "HIDE_PROGRESS"

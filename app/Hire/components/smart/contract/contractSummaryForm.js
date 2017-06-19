@@ -5,7 +5,7 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
+  ScrollView,
   TextInput,
   TouchableOpacity,
   Slider,
@@ -26,7 +26,7 @@ const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
 
-export default class ContractFirstForm extends Component {
+export default class ContractSummaryForm extends Component {
   constructor(props) {
     super(props);
 
@@ -51,26 +51,24 @@ export default class ContractFirstForm extends Component {
   }
 
   onNext () {
-    const { changeContractForm } = this.props;
-    changeContractForm({...this.state, secondForm: true})
+    const { createContract } = this.props;
+
+    const data = {
+      userTo: this.props.user.user,
+      rate: this.props.user.price,
+      numberOfPeople: this.state.numberOfPeople,
+      sessions: this.state.selectedTimes,
+      paymentMethod: '',
+      location: '',
+      address: ''
+
+    };
+    createContract(data)
+    Actions.Payment();
   }
   onBack() {
-    Actions.pop();
-  }
-  onChangePeople(value) {
-    const numberOfPeople = this.state.numberOfPeople + value;
-    this.setState({numberOfPeople});
-  }
-  onSelectDate(date) {
-    const day = Moment(date).format('ddd, DD MMM YYYY');
-    if(!R.find(R.propEq('date', day))(this.state.availableDates)) return;
-    const selectedDates = [...this.state.selectedDates];
-    if(selectedDates.includes(day)){
-      selectedDates.splice(selectedDates.indexOf(day), 1)
-    } else {
-      selectedDates.push(day)
-    }
-    this.setState({ selectedDates });
+    const { changeContractForm } = this.props;
+    changeContractForm({...this.state, secondForm: true})
   }
 
   render() {
@@ -89,27 +87,14 @@ export default class ContractFirstForm extends Component {
                 color="#fff"
               />
             </TouchableOpacity>
-            <Text style={ styles.textTitle }>CONTRACT</Text>
+            <Text style={ styles.textTitle }>PAYMENT SUMMARY</Text>
             <View style={ styles.navButtonWrapper } />
 
           </View>
           <View style={ styles.mainContainer }>
-            <View style={ [styles.borderBottom, styles.topContainer] }>
-              <View style={ styles.rowContainer }>
-                <Text style={ [fontStyles, styles.textDescription] }>Total number of sessions</Text>
-                <Text style={ styles.textHours }>{ this.state.numberOfSessions } sessions</Text>
-              </View>
-              <View style={ styles.rowContainer }>
-                <Slider style={ styles.slider }
-                  minimumTrackTintColor={ '#10c7fa' }
-                  maximumTrackTintColor={ '#a1a1a1' }
-                  minimumValue={ 0 }
-                  maximumValue={ 30 }
-                  step={ 1 }
-                  value = { this.state.numberOfSessions }
-                  onValueChange={ (value) => this.setState({ numberOfSessions: value }) }
-                />
-              </View>
+            <View style={ [styles.borderBottom, styles.rowContainer, styles.topContainer] }>
+              <Text style={ [fontStyles, styles.textDescription] }>Total number of sessions</Text>
+              <Text style={ styles.textHours }>{ this.state.numberOfSessions } sessions</Text>
             </View>
 
             <View style={ styles.middleContainer }>
@@ -117,96 +102,54 @@ export default class ContractFirstForm extends Component {
               <View style={ [styles.borderBottom, styles.rowContainer] }>
                 <Text style={ [fontStyles, styles.textDescription] }>Hourly Rate</Text>
                 <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textValue }>$ { user.amount || user.price }</Text>
+                  <Text style={ styles.textBidDescription }>$ { user.amount || user.price }/Hr</Text>
+                </View>
+              </View>
+
+              <View style={ [styles.borderBottom, styles.rowContainer] }>
+                <Text style={ [fontStyles, styles.textDescription] }>Total Hourly Rate</Text>
+                <View style={ styles.valueWrapper }>
+                  <Text style={ styles.textBidDescription }>$ { this.state.numberOfSessions * this.state.numberOfPeople * (user.amount || user.price) }/Hr</Text>
+                </View>
+              </View>
+
+              <View style={ [styles.borderBottom, styles.rowContainer] }>
+                <Text style={ [fontStyles, styles.textDescription] }>Location</Text>
+                <View style={ [styles.valueWrapper, styles.width06] }>
+                  <Text style={ [styles.textBidDescription] }>{ user.location.originalAddress }</Text>
                 </View>
               </View>
 
               <View style={ [styles.borderBottom, styles.rowContainer] }>
                 <Text style={ [fontStyles, styles.textDescription] }>Number of People</Text>
-
-                <View style={ [styles.valueWrapper, styles.row] }>
-                  <TouchableOpacity
-                    onPress={ () => this.onChangePeople(-1) }
-                  >
-                    <EntypoIcons
-                      name="circle-with-minus"  size={ 25 }
-                      color={CommonConstant.APP_COLOR}
-                      on
-                    />
-                  </TouchableOpacity>
-                  <Text style={ [styles.textValue, styles.padding10] }>{ this.state.numberOfPeople }</Text>
-                  <TouchableOpacity
-                    onPress={ () => this.onChangePeople(1) }
-                  >
-                    <EntypoIcons
-                      name="circle-with-plus"  size={ 25 }
-                      color={CommonConstant.APP_COLOR}
-                    />
-                  </TouchableOpacity>
-                </View>
-
-              </View>
-
-              <View style={ [styles.borderBottom, styles.rowContainer] }>
-                <Text style={ [fontStyles, styles.textDescription] }>Total Payment</Text>
-                <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textValue }>$ { this.state.numberOfSessions * this.state.numberOfPeople * (user.amount || user.price) }</Text>
+                <View style={ [styles.valueWrapper] }>
+                  <Text style={ [styles.textBidDescription] }>{ this.state.numberOfPeople }</Text>
                 </View>
               </View>
 
-              {/*ToDo: Commented code will be use when will be created offer part*/}
-
-              {/*<View style={ styles.rowContainer }>*/}
-                {/*<Text style={ styles.textDescription }>Duration</Text>*/}
-                {/*<View style={ styles.valueWrapper }>*/}
-                  {/*<View style={ styles.dropdownWrapper }>*/}
-                    {/*<ModalDropdown*/}
-                      {/*options={ duration }*/}
-                      {/*defaultValue={ duration[2] }*/}
-                      {/*textStyle ={ styles.textValue }*/}
-                      {/*dropdownStyle={ styles.dropdownStyle }*/}
-                      {/*onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }*/}
-                    {/*/>*/}
-                    {/*<EntypoIcons*/}
-                      {/*name="chevron-thin-down"  size={ 20 }*/}
-                      {/*color="#4d4d4d"*/}
-                    {/*/>*/}
-                  {/*</View>*/}
-                {/*</View>*/}
-              {/*</View>*/}
-
-              {/*<View style={ styles.locationBorderContainer }>*/}
-                {/*<EvilIcons*/}
-                  {/*name="location"  size={ 30 }*/}
-                  {/*color="#4d4d4d"*/}
-                {/*/>*/}
-                {/*<Text style={ styles.textDescription }>4 york st, Toronto Ontario MSJ 4C2</Text>*/}
-              {/*</View>*/}
             </View>
             <View style={ styles.bottomContainer }>
-              <Calendar
-                customStyle={ customStyle }
-                dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-                eventDates={ R.pluck('date')(schedule) }
-                selectedDate={ this.state.selectedDates }
-                nextButtonText={ '>' }
-                prevButtonText={'<'}
-                showControls={ true }
-                onlyEvent={ true }
-                showEventIndicators={ true }
-                isSelectableDay={ true }
-                onDateSelect={ (date) => this.onSelectDate(date) }
-              />
-              <View style={ [ styles.rowContainer, customStyle.selectedDayCircle, styles.dropdownWrapper] }>
-                <Text style={ [fontStyles, styles.textDescription, styles.whiteText] }>
-                  {this.state.selectedDates.length} dates selected out of {this.state.numberOfSessions}
-                </Text>
+              <View style={ [styles.borderBottom,styles.rowContainer, styles.flex02] }>
+                <Text style={ [fontStyles, styles.textDescription] }>Date and Time</Text>
               </View>
+              <ScrollView>
+              {
+                this.state.selectedTimes.map((e) => (
+                  <View style={ [styles.borderBottom, styles.rowContainer, styles.whiteRow, styles.dropdownWrapper, styles.flexStart] } key={e._id}>
+                    <Text style={ [fontStyles, styles.textBidTitle] }>{ Moment(e.from).format('ddd, DD MMM YYYY')}</Text>
+                    <View style={ styles.separator}>
+                      <Text style={ [styles.textBidDescription, styles.padding10] }>{ Moment(e.from).format('hh:mm A')} To {Moment(e.to).format('hh:mm A')}</Text>
+                    </View>
+                  </View>
+                ))
+              }
+              </ScrollView>
+
             </View>
             <View style={ styles.bottomButtonWrapper }>
               <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onNext() }>
                 <View style={ styles.saveButton }>
-                  <Text style={ styles.whiteText }>NEXT</Text>
+                  <Text style={ styles.whiteText }>CONFIRM OFFER</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -279,6 +222,15 @@ const styles = StyleSheet.create({
   whiteText: {
     color: '#fff'
   },
+  whiteRow: {
+    backgroundColor: '#fff',
+  },
+  separator: {
+    marginVertical:2,
+    marginLeft:1,
+    borderColor: '#d9d9d9',
+    borderLeftWidth: 1,
+  },
   navBarContainer: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
@@ -307,7 +259,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
   },
   topContainer: {
-    flex: 1,
+    flex: 0.5,
+  },
+  flex02: {
+    flex: 0.2,
   },
   rowContainer: {
     flex: 1,
@@ -317,11 +272,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   middleContainer: {
-    flex: 1.5,
+    flex: 1.7,
     backgroundColor: '#fff',
   },
   bottomContainer: {
-    flex: 2.5,
+    flex: 2,
     justifyContent:'flex-start',
   },
   textDescription: {
@@ -346,9 +301,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#d7d7d7',
   },
   valueWrapper: {
-
-    width: width * 0.3,
     alignItems: 'flex-end',
+  },
+  width06: {
+    width: width * 0.6,
   },
   row: {
     flexDirection: 'row',
@@ -403,13 +359,13 @@ const styles = StyleSheet.create({
   textBidTitle: {
     color: '#6d6d6d',
     fontSize: 14,
-    fontWeight: 'bold',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingRight: 10,
   },
   textBidDescription: {
+    fontWeight: 'bold',
     color: '#4d4d4d',
-    fontSize: 12,
+    fontSize: 14,
   },
   textBidValue: {
     color: '#10c7f9',
@@ -418,6 +374,9 @@ const styles = StyleSheet.create({
   padding10: {
     paddingRight: 10,
     paddingLeft: 10,
-  }
+  },
+  flexStart: {
+    justifyContent: 'flex-start'
+  },
 
 });

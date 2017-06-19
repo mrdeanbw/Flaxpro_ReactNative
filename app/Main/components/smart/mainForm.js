@@ -12,7 +12,7 @@ import TabNavigator from 'react-native-tab-navigator';
 
 import Explore from '../../../Explore/containers/explore';
 import Account from '../../../Account/containers/account';
-import UI_static from '../../../Schedule/pages/Clients';
+import UI_static from '../../../Schedule/components/smart/clientsProfessionals';
 import ViewProfile from '../../../Profile/containers/viewProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 
@@ -65,7 +65,7 @@ class MainForm extends Component {
         onPress: () => this.setState({ selectedTab: 'explore' }),
         children: <Explore/>,
       },
-      /* Clients or Professional */
+      /* smart or Professional */
       {
         title: user_mode === CommonConstant.user_client ? "PROS" : "CLIENTS",
         selected: this.state.selectedTab === "clients_professionals",
