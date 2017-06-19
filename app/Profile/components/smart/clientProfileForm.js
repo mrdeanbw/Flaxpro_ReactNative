@@ -271,6 +271,15 @@ class ClientProfileForm extends Component {
             <View style={ [styles.contentMainContainer, { paddingBottom: 50 }] }>
               <ScrollView>
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
+                  {
+                    editable &&
+                    <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowSessions() } style={ [styles.absoluteRightTop] }>
+                      <View style={ [styles.infoRowRightContainer, styles.blueBorderBlock] }>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>Total Sessions </Text>
+                        <Text style={ [styles.textInfoTitle, styles.blueText] }>{user.totalSessions}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  }
                   <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
                   <View style={ [styles.spaceBetweenContainer] }>
                     <View style={ styles.columnContainer }>
@@ -287,15 +296,6 @@ class ClientProfileForm extends Component {
                         <Text style={ [styles.fontStyles, styles.textInfoValue, !editable && styles.borderStyle] }>{user.location.originalAddress || user.location.city}</Text>
                       </View>
                     </View>
-                    {
-                      editable &&
-                      <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onShowSessions() }>
-                        <View style={ [styles.infoRowRightContainer, styles.blueBorderBlock] }>
-                          <Text style={ [styles.fontStyles, styles.textInfoValue] }>Total Sessions </Text>
-                          <Text style={ [styles.textInfoTitle, styles.blueText] }>{user.totalSessions}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    }
                   </View>
                 </View>
 
@@ -428,6 +428,12 @@ const styles = StyleSheet.create({
     flex:1.5,
     alignItems: 'center',
     flexDirection: 'column'
+  },
+  absoluteRightTop: {
+    position: 'absolute',
+    zIndex:10,
+    top: 10,
+    right: 10
   },
   navBarContainer: {
     // flex: 1,
