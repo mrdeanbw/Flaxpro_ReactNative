@@ -112,14 +112,17 @@ class ProfessionalProfileForm extends Component {
   }
 
   onCall() {
-    alert( 'Tapped onCall!');
+    this.closeCommunicationPopup();
+    Alert.alert( 'Tapped onCall!');
   }
 
   onMessage() {
-    alert( 'Tapped onMessage!');
+    this.closeCommunicationPopup();
+    Actions.ChatForm({ userName: this.user.name });
   }
 
   onReferToFriend() {
+    this.closeCommunicationPopup();
     alert( 'Tapped onReferToFriend!');
   }
 
@@ -160,7 +163,7 @@ class ProfessionalProfileForm extends Component {
             />
           </View>
           <View  style={ styles.communicationBtnBlock }>
-            <TouchableOpacity onPress={() => this.closeCommunicationPopup()} >
+            <TouchableOpacity onPress={() => this.onCall()} >
               <View style={ styles.communicationBtnContainer }>
                 <Image
                   source={ callCircle }
@@ -170,7 +173,7 @@ class ProfessionalProfileForm extends Component {
               </View>
 
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.closeCommunicationPopup()} >
+            <TouchableOpacity onPress={() => this.onMakeAnOffer()} >
               <View style={ styles.communicationBtnContainer }>
                 <Image
                   source={ customOffer }
@@ -182,7 +185,7 @@ class ProfessionalProfileForm extends Component {
             </TouchableOpacity>
           </View>
           <View  style={ styles.communicationBtnBlock }>
-            <TouchableOpacity onPress={() => this.closeCommunicationPopup()} >
+            <TouchableOpacity onPress={() => this.onReferToFriend()} >
               <View style={ styles.communicationBtnContainer }>
                 <Image
                   source={ referToFriends }
@@ -240,27 +243,9 @@ class ProfessionalProfileForm extends Component {
     );
   }
 
-  get showCalendar() {
-    return (
-      this.state.showMoreOrLess ?
-        <Calendar
-          customStyle={ customStyle }
-          dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-          eventDates={ ['2017-03-15', '2017-03-25', '2017-03-08'] }
-          nextButtonText={ '>' }
-          prevButtonText={'<'}
-          showControls={ true }
-          showEventIndicators={ true }
-          isSelectableDay={ false }
-        />
-      :
-        null
-    );
-  }
-
   get showNavBar() {
     const { editable } = this.props;
-    const { showMoreOrLess, selectedOption } = this.state;
+    const { selectedOption } = this.state;
 
     return (
       editable ?
@@ -311,7 +296,7 @@ class ProfessionalProfileForm extends Component {
             <Text style={ styles.textSubTitle }>New good life, Fitness</Text>
           </View>
           <TouchableOpacity
-            onPress={ () => this.onBack() }
+            onPress={ () => this.openCommunicationPopup() }
             style={ styles.navButtonWrapper }
           >
             <EntypoIcons
@@ -320,59 +305,6 @@ class ProfessionalProfileForm extends Component {
             />
           </TouchableOpacity>
         </View>
-    );
-  }
-
-  get showActions() {
-    return (
-      <View style={ styles.actionContainer }>
-        <View style={ styles.actionCell }>
-          <TouchableOpacity
-            onPress={ () => this.onCall() }
-          >
-            <Image source={ call } style={ styles.imageButton } />
-          </TouchableOpacity>
-        </View>
-
-        <View style={ styles.actionCell }>
-          <TouchableOpacity
-            onPress={ () => this.onMessage() }
-          >
-            <Image source={ message } style={ styles.imageButton } />
-          </TouchableOpacity>
-        </View>
-
-        <View style={ styles.actionCell }>
-          <TouchableOpacity
-            onPress={ () => this.onReferToFriend() }
-          >
-            <Image source={ refer } style={ styles.imageButton }>
-              <Text style={ styles.textActionMiddle }>REFER TO FRIEND</Text>
-            </Image>
-          </TouchableOpacity>
-        </View>
-
-        <View style={ styles.actionCell }>
-          <TouchableOpacity
-            onPress={ () => this.onHire() }
-          >
-            <Image source={ hire } style={ styles.imageButton }>
-              <Text style={ styles.textActionSmall }>HIRE NOW</Text>
-              <Text style={ styles.textActionLarge }>${ this.user.amount }</Text>
-            </Image>
-          </TouchableOpacity>
-        </View>
-
-        <View style={ styles.actionCell }>
-          <TouchableOpacity
-            onPress={ () => this.onMakeAnOffer() }
-          >
-            <Image source={ offer } style={ styles.imageButton }>
-              <Text style={ styles.textActionMiddle }>MAKE AN OFFER</Text>
-            </Image>
-          </TouchableOpacity>
-        </View>
-      </View>
     );
   }
 
@@ -471,7 +403,7 @@ class ProfessionalProfileForm extends Component {
                     </View>
                     :
                     <View style={ styles.actionBtnContainer }>
-                      <TouchableOpacity onPress={() => this.openCommunicationPopup()} >
+                      <TouchableOpacity onPress={() => this.onMessage()} >
                         <View style={ styles.emptyGreenBtn }>
                           <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
                           <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
@@ -479,7 +411,7 @@ class ProfessionalProfileForm extends Component {
                       </TouchableOpacity>
                       <View style={ styles.greenBtn }>
                         <TouchableOpacity
-                          onPress={ () => this.onMakeAnOffer() }
+                          onPress={ () => this.onHire() }
                         >
                           <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
 
@@ -495,9 +427,6 @@ class ProfessionalProfileForm extends Component {
               </View>
 
               <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
-                {
-                  editable ? <View style={ styles.actionContainer }/> : this.showActions
-                }
                 <ScrollView>
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
                     <Text style={ styles.textInfoTitle }>BASIC INFO</Text>
@@ -901,7 +830,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   textProfessionalName: {
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: 'bold',
     paddingRight: 5,
   },
