@@ -13,6 +13,25 @@ function exploreSuccess(data) {
   return { type: types.EXPLORE_GET_SUCCESS, ...data };
 }
 
+export const getExploreClient = () => async (dispatch, store) => {
+  dispatch(exploreRequest());
+  const professionsUrl = '/profession';
+  const professionalsUrl = '/professional/q?locationType=nearby';
+  const { auth } = store();
+  const options = {
+    method: 'get',
+  };
+  try {
+    const [{ professions }, { professionals }] = await Promise.all([request(professionsUrl, options, auth), request(professionalsUrl, options, auth)]);
+    dispatch(exploreSuccess({professions, professionals}));
+  } catch (error) {
+    const error =
+      `Explore Error: getExploreClient 
+      Message: ${error.message}`;
+    dispatch(exploreError(error));
+  }
+};
+
 export const getProfessionals = (data) => async (dispatch, store) => {
   dispatch(exploreRequest());
   let url = '/professional/q';
