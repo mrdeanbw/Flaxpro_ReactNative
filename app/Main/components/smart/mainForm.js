@@ -12,7 +12,7 @@ import TabNavigator from 'react-native-tab-navigator';
 
 import Explore from '../../../Explore/containers/explore';
 import Account from '../../../Account/containers/account';
-import UI_static from '../../../Schedule/components/smart/clientsProfessionals';
+import Schedule from '../../../Schedule/components/smart/clientsProfessionals';
 import ViewProfile from '../../../Profile/containers/viewProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 
@@ -41,7 +41,7 @@ class MainForm extends Component {
 
     this.state = {
       selectedTab: 'explore',
-      badge: 0,
+      badge: '0',
     };
 
     if (Platform.OS === 'ios') {
@@ -78,7 +78,7 @@ class MainForm extends Component {
                  style={ user_mode === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
         ),
         onPress: () => this.setState({ selectedTab: 'clients_professionals' }),
-        children: <UI_static/>,
+        children: <Schedule/>,
       },
       /* Inbox */
       {
