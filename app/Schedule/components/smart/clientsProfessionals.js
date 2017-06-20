@@ -14,6 +14,8 @@ import * as Constants from "../../../Components/commonConstant"
 class ClientsProfessionals extends React.Component {
   constructor(props) {
     super(props);
+    if(props.auth.user.role === Constants.user_client) props.getMyProfessionals();
+    if(props.auth.user.role === Constants.user_professional) props.getMyClients();
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
