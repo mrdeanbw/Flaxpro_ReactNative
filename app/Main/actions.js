@@ -13,26 +13,7 @@ function mainSuccess(data) {
   return { type: exploreTypes.EXPLORE_GET_SUCCESS, ...data };
 }
 
-export const getExploreClient = () => async (dispatch, store) => {
-  dispatch(mainRequest());
-  const professionsUrl = '/profession';
-  const professionalsUrl = '/professional/q?locationType=nearby';
-  const { auth } = store();
-  const options = {
-    method: 'get',
-  };
 
-  try {
-    const [{ professions }, { professionals }] = await Promise.all([request(professionsUrl, options, auth), request(professionalsUrl, options, auth)]);
-    dispatch(mainSuccess({professions, professionals}));
-  } catch (error) {
-    const error =
-      `Explore Error: getExploreClient 
-      Message: ${error.message}`;
-    dispatch(mainError(error));
-  }
-
-};
 export const getExploreProfessional = () => async (dispatch, store) => {
   dispatch(mainRequest());
   const clientsUrl = '/client/q';

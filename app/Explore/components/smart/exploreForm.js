@@ -81,10 +81,13 @@ class ExploreForm extends Component {
   }
 
   componentWillMount(){
-    this.setDefaultData()
+    const { getExploreClient } = this.props;
+    getExploreClient()
+    this.setDefaultData(this.props)
   }
 
   componentWillReceiveProps(newProps) {
+    this.setDefaultData(newProps)
     const { explore: { error } } = newProps;
     if (error) {
       Alert.alert(error);
@@ -92,23 +95,17 @@ class ExploreForm extends Component {
     }
   }
 
-  setDefaultData () {
-    const { auth: { user } , explore } = this.props;
+  setDefaultData (prop) {
+    let workProp = prop ? prop : this.prop;
+    const { auth: { user } , explore } = workProp;
     if(explore && user) {
       if(user.role === CommonConstant.user_client) {
-        const listOriginal = (this.props.explore.professions || allProfessions).filter((e) => defaultProfessions.includes(e.name));
-        const listOther = (this.props.explore.professions || allProfessions).filter((e) => !e.original);
-        const listSelected = [...listOriginal, otherLabel];
-        const selected = allLabel;
-        const professions = {...this.state.professions, listOriginal, listOther, listSelected, selected};
-        const filteredProfessionals = this.filterProfessionalsList(listSelected);
-        this.setState({professions, filteredProfessionals})
+        this.filterProfList(prop)
       }
       if(user.role === CommonConstant.user_professional) {
-        this.filterClientsList();
+        this.filterClientsList(prop);
       }
     }
-
   }
   onList () {
     this.setState({ showContentMode: 1,  mapStandardMode: true });
@@ -269,6 +266,19 @@ class ExploreForm extends Component {
     );
   }
 
+
+  filterProfList(prop) {
+    let workProp = prop ? prop : this.prop;
+    const { explore } = workProp;
+    const listOriginal = (explore.professions || allProfessions).filter((e) => defaultProfessions.includes(e.name));
+    const listOther = (explore.professions || allProfessions).filter((e) => !e.original);
+    const listSelected = [...listOriginal, otherLabel];
+    const selected = allLabel;
+    const professions = {...this.state.professions, listOriginal, listOther, listSelected, selected};
+    const filteredProfessionals = this.filterProfessionalsList(listSelected);
+    this.setState({professions, filteredProfessionals})
+  };
+
   /**
    * For "Professional" role
    * Calls when user click on the one of the filters from topBar
@@ -277,8 +287,9 @@ class ExploreForm extends Component {
    * filtered clients list by the chosen filters:
    *
    */
-  filterClientsList() {
-    let filteredClients = [ ...ProfessionalsClients, ...this.props.explore.clients ];
+  filterClientsList(prop) {
+    let workProp = prop ? prop : this.prop;
+    let filteredClients = [ ...ProfessionalsClients, ...workProp.explore.clients ];
     let gymLocations = GymLocations;
     if(this.state.selectedLocationSegment){
       if (this.state.selectedLocationSegment !== 'ALL') {
@@ -700,7 +711,6 @@ class ExploreForm extends Component {
     const { user } = this.props.auth;
     const { listFiltered } = this.state.professions;
     const explore = this.props.explore;
-
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -731,7 +741,7 @@ class ExploreForm extends Component {
               :
               this.showCloseTopBar
           }
-          {            
+          {
             this.state.showContentMode == 0 ?
               <ExploreMapView
                 mapStandardMode={ this.state.mapStandardMode}

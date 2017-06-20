@@ -13,10 +13,7 @@ class Main extends Component {
   }
 
   componentWillMount(){
-    const { auth: { user }, getExploreClient, getExploreProfessional } = this.props;
-    if(user && user.role === CommonConstant.user_client){
-      getExploreClient();
-    }
+    const { auth: { user },  getExploreProfessional } = this.props;
     if(user && user.role === CommonConstant.user_professional){
       getExploreProfessional();
     }
