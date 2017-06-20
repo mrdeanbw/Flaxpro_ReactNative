@@ -26,17 +26,18 @@ class ClientsProfessionals extends React.Component {
   componentWillReceiveProps(newProps) {
     if(newProps.schedule.error || newProps.schedule.loading) return;
 
-    const {schedule: {sessions}} = newProps
+    const {schedule: {contracts}} = newProps
     const role = newProps.auth.user.role === Constants.user_professional ? Constants.user_client.toLowerCase() : Constants.user_professional.toLowerCase();
 
-    const data = sessions.map( e => ({
+    const data = contracts.map( e => ({
+      contractId: e._id,
       name: e[role].name,
       time: Moment(e.next.from).format('MMM DD hh:mm A'),
       progress: e.sessionsPast,
       total: e.sessionsTotal,
       text: !e[role].avatar ? e[role].name[0].toUpperCase() : '',
       backgroundColor: !e[role].avatar ? '#43c6f0' : '',
-      type: e[role].avatar ? 'image' : 'text',
+      type: e[role].avatar ? 'url' : 'text',
       image: e[role].avatar || ''
       })
     )
@@ -72,7 +73,7 @@ class ClientsProfessionals extends React.Component {
           style={styles.list}
           enableEmptySections={true}
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <ListItem data={rowData}/>}
+          renderRow={(rowData) => <ListItem data={rowData} cancelContract={this.props.cancelContract} role={this.props.auth.user.role}/>}
         />
 
         <View style={styles.bottomView}>
@@ -103,13 +104,13 @@ class ClientsProfessionals extends React.Component {
   }
 
   componentDidMount(){
-    const datas = this.createFakeData();
+    const data = this.createFakeData();
 
-    this.setState({dataSource:this.state.dataSource.cloneWithRows(datas)})
+    this.setState({dataSource:this.state.dataSource.cloneWithRows(data)})
   }
 
   createFakeData(){
-    const datas = []
+    const data = []
     let item = {
       fake:true,
       name:"Sara Clinton",
@@ -119,7 +120,7 @@ class ClientsProfessionals extends React.Component {
       type:"image",
       image:require("../../../Assets/images/icon/avatar1.png")
     }
-    datas.push(item)
+    data.push(item)
 
     item = {
       fake:true,
@@ -131,7 +132,7 @@ class ClientsProfessionals extends React.Component {
       text:"F",
       backgroundColor:"#43c6f0"
     }
-    datas.push(item)
+    data.push(item)
 
     item = {
       fake:true,
@@ -143,7 +144,7 @@ class ClientsProfessionals extends React.Component {
       text:"S",
       backgroundColor:"#ff1b66"
     }
-    datas.push(item)
+    data.push(item)
 
     item = {
       fake:true,
@@ -154,8 +155,8 @@ class ClientsProfessionals extends React.Component {
       type:"image",
       image:require("../../../Assets/images/icon/avatar2.png")
     }
-    datas.push(item)
-    return datas;
+    data.push(item)
+    return data;
   }
 }
 

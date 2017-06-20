@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text ,View, Image} from 'react-native';
+import { StyleSheet, Text ,View, Image, ActivityIndicator} from 'react-native';
+import ImageProgress from 'react-native-image-progress';
 
 const Avatar = (props) => {
     return (
       <View style={[styles.container,props.backgroundColor && {backgroundColor:props.backgroundColor}]}>
+        {props.type=="url" && <ImageProgress source={ {uri: props.source} } indicator={ActivityIndicator} style={ styles.image } resizeMode="cover"/>}
         {props.type=="image" && <Image source={props.source} style={styles.image}/>}
         {props.type=="text" && <Text style={styles.text}>{props.text}</Text>}
       </View>

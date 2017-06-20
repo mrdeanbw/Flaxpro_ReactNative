@@ -123,7 +123,7 @@ class ProfessionalProfileForm extends Component {
 
   onReferToFriend() {
     this.closeCommunicationPopup();
-    alert( 'Tapped onReferToFriend!');
+    Alert.alert( 'Tapped onReferToFriend!');
   }
 
   onHire() {

@@ -36,11 +36,30 @@ export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, st
   }
 
   try {
-    const sessions  = await request(url, options, auth);
-    dispatch(scheduleSuccess({sessions}));
+    const contracts  = await request(url, options, auth);
+    dispatch(scheduleSuccess({contracts}));
   } catch (error) {
     const error =
       `Schedule Error: getMyClientsProfessionals(${role})
+      Message: ${error.message}`;
+    dispatch(scheduleError(error));
+  }
+
+};
+
+export const cancelContract = (contractId) => async (dispatch, store) => {
+  const url = '/contract/cancel/'+contractId;
+  const { auth } = store();
+  const options = {
+    method: 'post',
+  };
+
+  try {
+    const contract  = await request(url, options, auth);
+    // dispatch(scheduleSuccess({contract}));
+  } catch (error) {
+    const error =
+      `Schedule Error: cancelContract()
       Message: ${error.message}`;
     dispatch(scheduleError(error));
   }

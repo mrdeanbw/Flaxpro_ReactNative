@@ -2,7 +2,7 @@ import * as types from './actionTypes';
 
 const initialState = {
   error: null,
-  sessions: [],
+  contracts: [],
   loading: false,
 };
 
@@ -25,7 +25,7 @@ export default function schedule(state = initialState, action = {}) {
         ...state,
         error: null,
         loading: false,
-        sessions: action.sessions || [...state.sessions],
+        contracts: action.contracts || [...state.contracts],
       };
     default:
       return state;
