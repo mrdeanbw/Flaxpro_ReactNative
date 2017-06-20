@@ -32,15 +32,15 @@ class ListItem extends Component {
               <Text style={styles.time}>{data.time}</Text>
             </View>
           </View>
-          <Session style={{marginLeft:5}} progress={data.progress}/>
+          <Session style={{marginLeft:5}} progress={data.progress} total={data.total}/>
         </TouchableOpacity>
-        {this.state.isShow && data.type=="image" && <View style={styles.hiddenContainer}>
+        {this.state.isShow && data.progress!==data.total && <View style={styles.hiddenContainer}>
             <Button type="image_text" source={require("../../Assets/images/icon/ic_message.png")} text="Message" onPress={()=>{}}/>
             <Button type="image_text" source={require("../../Assets/images/icon/ic_cancel.png")} text="Cancel" onPress={()=>{}}/>
             <Button type="image_text" source={require("../../Assets/images/icon/ic_reschedule.png")} text="Reschedule" onPress={()=>{}}/>
             <Button type="image_text" source={require("../../Assets/images/icon/ic_refund.png")} text="Refund" onPress={()=>{}}/>
           </View>}
-          {this.state.isShow && data.type=="text" && <View style={styles.hiddenContainer}>
+          {this.state.isShow && data.progress===data.total && <View style={styles.hiddenContainer}>
               <Button type="image_text" source={require("../../Assets/images/icon/ic_feedback@2x.png")} text="Send your Feedback" onPress={()=>{}}/>
             </View>}
           {this.state.isShow && <Image source={require("../../Assets/images/icon/ic_up_arrow@2x.png")} style={styles.icArrow}/>}

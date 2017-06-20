@@ -16,12 +16,12 @@ function scheduleSuccess(data) {
 export const getMyClients = (data) => async (dispatch, store) => {
   dispatch(mainRequest());
   const role = 'client';
-  await getMyClientsProfessionals({role, data})(dispatch, store)
+  await getMyClientsProfessionals({role, data})(dispatch, store);
 };
 export const getMyProfessionals = (data) => async (dispatch, store) => {
   dispatch(mainRequest());
   const role = 'professional';
-  await getMyClientsProfessionals({role, data})(dispatch, store)
+  await getMyClientsProfessionals({role, data})(dispatch, store);
 };
 
 export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, store) => {

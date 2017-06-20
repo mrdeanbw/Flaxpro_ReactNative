@@ -13,17 +13,18 @@ class Session extends Component {
   render(){
     return (
       <View style={[styles.container,this.props.style]}>
-        <Text style={styles.progressText}>{this.props.progress}/10</Text>
+        <Text style={styles.progressText}>{this.props.progress}/{this.props.total}</Text>
         <View style={styles.progressContainer}>
-          <View style={[styles.progress,{width:this.props.progress*10-2},this.props.progress==10 && {borderTopRightRadius:5,borderBottomRightRadius:5}]}></View>
+          <View style={[styles.progress,{width:this.props.progress/this.props.total*100},this.props.progress===this.props.total && {borderTopRightRadius:5,borderBottomRightRadius:5}]}></View>
         </View>
-        {this.props.progress==10&&<Text style={styles.sessionEnd}>Sessions ended</Text>}
+        {this.props.progress===this.props.total&&<Text style={styles.sessionEnd}>Sessions ended</Text>}
       </View>
     )
   }
 }
 
 Session.defaultProps = {
-  progress:4
+  progress:4,
+  total:10,
 }
 export default Session;

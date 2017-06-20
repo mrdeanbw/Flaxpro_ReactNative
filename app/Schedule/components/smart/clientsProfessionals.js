@@ -10,6 +10,7 @@ import {
 import {Button,ListItem} from "../../../theme"
 import styles from "./clientsProfessionals_style"
 import * as Constants from "../../../Components/commonConstant"
+import Moment from 'moment';
 
 class ClientsProfessionals extends React.Component {
   constructor(props) {
@@ -21,6 +22,25 @@ class ClientsProfessionals extends React.Component {
     this.state = {
       dataSource: ds.cloneWithRows([]),
     };
+  }
+  componentWillReceiveProps(newProps) {
+    if(newProps.schedule.error || newProps.schedule.loading) return;
+
+    const {schedule: {sessions}} = newProps
+    const role = newProps.auth.user.role === Constants.user_professional ? Constants.user_client.toLowerCase() : Constants.user_professional.toLowerCase();
+
+    const data = sessions.map( e => ({
+      name: e[role].name,
+      time: Moment(e.next.from).format('MMM DD hh:mm A'),
+      progress: e.sessionsPast,
+      total: e.sessionsTotal,
+      text: !e[role].avatar ? e[role].name[0].toUpperCase() : '',
+      backgroundColor: !e[role].avatar ? '#43c6f0' : '',
+      type: e[role].avatar ? 'image' : 'text',
+      image: e[role].avatar || ''
+      })
+    )
+    this.setState({dataSource:this.state.dataSource.cloneWithRows([...this.createFakeData(), ...data])})
   }
 
   render(){
@@ -83,20 +103,30 @@ class ClientsProfessionals extends React.Component {
   }
 
   componentDidMount(){
-    var datas = []
-    var item = {
+    const datas = this.createFakeData();
+
+    this.setState({dataSource:this.state.dataSource.cloneWithRows(datas)})
+  }
+
+  createFakeData(){
+    const datas = []
+    let item = {
+      fake:true,
       name:"Sara Clinton",
       time:"DEC 13  18:45PM",
-      progress:4,
+      progress:1,
+      total:5,
       type:"image",
       image:require("../../../Assets/images/icon/avatar1.png")
     }
     datas.push(item)
 
     item = {
+      fake:true,
       name:"Emily Carter",
       time:"DEC 12  18:45PM",
       progress:10,
+      total:10,
       type:"text",
       text:"F",
       backgroundColor:"#43c6f0"
@@ -104,9 +134,11 @@ class ClientsProfessionals extends React.Component {
     datas.push(item)
 
     item = {
+      fake:true,
       name:"Steven Besoz",
       time:"DEC 13  18:45PM",
       progress:7,
+      total:7,
       type:"text",
       text:"S",
       backgroundColor:"#ff1b66"
@@ -114,15 +146,16 @@ class ClientsProfessionals extends React.Component {
     datas.push(item)
 
     item = {
+      fake:true,
       name:"Jeff Nelson",
       time:"DEC 13  18:45PM",
+      total:10,
       progress:6,
       type:"image",
       image:require("../../../Assets/images/icon/avatar2.png")
     }
     datas.push(item)
-
-    this.setState({dataSource:this.state.dataSource.cloneWithRows(datas)})
+    return datas;
   }
 }
 
