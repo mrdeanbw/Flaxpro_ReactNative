@@ -467,13 +467,14 @@ class ExploreMapView extends Component {
       getMarkerState(panX, panY, scrollY, index)
     );
 
+    this.region = new MapView.AnimatedRegion({
+      latitude: user.coordinate.latitude,
+      longitude: user.coordinate.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
+    });
+
     if(professionalsClients.length){
-      this.region = new MapView.AnimatedRegion({
-        latitude: professionalsClients[0].coordinate.latitude,
-        longitude: professionalsClients[0].coordinate.longitude,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-      });
 
       panX.addListener(this.onPanXChange);
       panY.addListener(this.onPanYChange);
