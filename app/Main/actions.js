@@ -13,23 +13,3 @@ function mainSuccess(data) {
   return { type: exploreTypes.EXPLORE_GET_SUCCESS, ...data };
 }
 
-
-export const getExploreProfessional = () => async (dispatch, store) => {
-  dispatch(mainRequest());
-  const clientsUrl = '/client/q';
-  const { auth } = store();
-  const options = {
-    method: 'get',
-  };
-
-  try {
-    const clients  = await request(clientsUrl, options, auth);
-    dispatch(mainSuccess(clients));
-  } catch (error) {
-    const error =
-      `Explore Error: getExploreProfessional 
-      Message: ${error.message}`;
-    dispatch(mainError(error));
-  }
-
-};

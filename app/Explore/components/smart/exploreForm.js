@@ -51,7 +51,7 @@ const otherLabel = {_id: 0, name: 'Other', color:'#000000',icon:'../Assets/image
 const allLabel = {_id: -1, name: 'All', color:'#4dc7fd'};
 const defaultProfessions = [ 'Fitness Training', 'Physiotherapist', 'Yoga', 'Massage' ];
 
-class ExploreForm extends Component {
+export default class ExploreForm extends Component {
   constructor(props) {
     super(props);
 
@@ -81,29 +81,33 @@ class ExploreForm extends Component {
   }
 
   componentWillMount(){
-    const { getExploreClient } = this.props;
-    getExploreClient()
+    const { auth: { user }, getExploreProfessional, getExploreClient } = this.props;
+    if(user && user.role === CommonConstant.user_client){
+      getExploreClient();
+    }
+    if(user && user.role === CommonConstant.user_professional){
+      getExploreProfessional();
+    }
     this.setDefaultData(this.props)
   }
 
   componentWillReceiveProps(newProps) {
-    this.setDefaultData(newProps)
     const { explore: { error } } = newProps;
     if (error) {
       Alert.alert(error);
       return;
     }
+    this.setDefaultData(newProps)
   }
 
-  setDefaultData (prop) {
-    let workProp = prop ? prop : this.prop;
-    const { auth: { user } , explore } = workProp;
+  setDefaultData (props) {
+    const { auth: { user } , explore } = props;
     if(explore && user) {
       if(user.role === CommonConstant.user_client) {
-        this.filterProfList(prop)
+        this.filterProfList(props)
       }
       if(user.role === CommonConstant.user_professional) {
-        this.filterClientsList(prop);
+        this.filterClientsList(props);
       }
     }
   }
@@ -135,16 +139,18 @@ class ExploreForm extends Component {
     this.popupDialogLocation.closeDialog ();
   }
 
-  startFilterByLocation () {
-    let { getProfessionals } = this.props,
-        locationType = this.state.locationType,
-        filterObj = {};
+  onLocation (locationType, locationText) {
+    const { getProfessionals } = this.props;
+    const filterObj = {};
+
     this.closeLocationPopup();
+    this.setState({ locationType, locationText });
 
     switch(locationType) {
+
       case 'nearby':
-        filterObj.locationType = 'nearby'
-        break
+        getProfessionals({locationType});
+        return;
       case 'address':
         filterObj.locationType = 'address'
         this.setState({ locationText:  this.state.locationAddress });
@@ -158,25 +164,15 @@ class ExploreForm extends Component {
             ]
           );
         }
-        break
+        getProfessionals(filterObj);
+        return;
+      default: getProfessionals();
     }
-    getProfessionals(filterObj)
-  }
 
-  onLocation (value, text) {
-    let self = this
-    this.setState({ locationType: value });
-    this.setState({ locationText: text });
-
-    if(value !== 'address' ) {
-      setTimeout(function () {
-        self.startFilterByLocation()
-      }, 0)
-    }
   }
 
   get dialogLocationClient () {
-    let { user } = this.props.auth;
+    const { user } = this.props.auth;
     let originalAddress = ''
     if (user.location) {
       originalAddress = user.location.originalAddress
@@ -266,9 +262,15 @@ class ExploreForm extends Component {
     );
   }
 
-
+  /**
+   * For "Client" role
+   * Calls when user click on the one of the filters from topBar
+   *
+   * filtered professionals list by the chosen filters:
+   *
+   */
   filterProfList(prop) {
-    let workProp = prop ? prop : this.prop;
+    const workProp = prop ? prop : this.props;
     const { explore } = workProp;
     const listOriginal = (explore.professions || allProfessions).filter((e) => defaultProfessions.includes(e.name));
     const listOther = (explore.professions || allProfessions).filter((e) => !e.original);
@@ -288,7 +290,7 @@ class ExploreForm extends Component {
    *
    */
   filterClientsList(prop) {
-    let workProp = prop ? prop : this.prop;
+    const workProp = prop ? prop : this.props;
     let filteredClients = [ ...ProfessionalsClients, ...workProp.explore.clients ];
     let gymLocations = GymLocations;
     if(this.state.selectedLocationSegment){
@@ -489,22 +491,38 @@ class ExploreForm extends Component {
     return (
       <View style={ styles.navContainer }>
         <View style={ styles.searchBarWrap }>
-          <TouchableOpacity
-            onPress={ () => this.openLocationPopup() }
-          >
-            <SearchBar
-              height={ 20 }
-              value={ this.state.locationText }
-              autoCorrect={ false }
-              editable={ false }
-              returnKeyType={ "search" }
-              iconSearchName={ "location" }
-              placeholder="Prefered Location"
-              iconColor={ "#fff" }
-              placeholderColor={ "#fff" }
-              paddingTop={ 20 }
-            />
-          </TouchableOpacity>
+          {
+            user.role === CommonConstant.user_professional ?
+              <SearchBar
+                onSearchChange={ () => console.log('On Focus') }
+                height={ 20 }
+                autoCorrect={ false }
+                returnKeyType={ "search" }
+                iconSearchName={ "location" }
+                placeholder="Prefered Location"
+                iconColor={ "#fff" }
+                placeholderColor={ "#fff" }
+                paddingTop={ 20 }
+              />
+              :
+              <TouchableOpacity
+                onPress={ () => this.openLocationPopup() }
+              >
+                <SearchBar
+                  height={ 20 }
+                  value={ this.state.locationText }
+                  autoCorrect={ false }
+                  editable={ false }
+                  returnKeyType={ "search" }
+                  iconSearchName={ "location" }
+                  placeholder="Prefered Location"
+                  iconColor={ "#fff" }
+                  placeholderColor={ "#fff" }
+                  paddingTop={ 20 }
+                />
+              </TouchableOpacity>
+          }
+
         </View>
         <View style={ styles.calendarBarWrap } >
           <EvilIcons
@@ -794,7 +812,6 @@ const styles = StyleSheet.create({
   inputWrap: {
     flex: 1,
     flexDirection: 'row',
-    flexDirection: 'row',
     marginVertical: 10,
     marginHorizontal: 50,
     borderBottomWidth: 1,
@@ -1071,10 +1088,10 @@ const styles = StyleSheet.create({
     height: height-140}
 });
 
-const mapStateToProps = (state) => ({
-  explore: state.explore
-});
-
-export default connect(state =>
-  mapStateToProps
-)(ExploreForm);
+// const mapStateToProps = (state) => ({
+//   explore: state.explore
+// });
+//
+// export default connect(state =>
+//   mapStateToProps
+// )(ExploreForm);

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   StyleSheet,
   View,
@@ -16,7 +16,6 @@ import Schedule from '../../../Contracts/containers/contracts';
 import ViewProfile from '../../../Profile/containers/viewProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 
-import { connect } from 'react-redux';
 import * as CommonConstant from '../../../Components/commonConstant';
 
 const { width, height } = Dimensions.get('window');
@@ -49,12 +48,13 @@ class MainForm extends Component {
     }
   }
 
-  componentWillMount() {
+  static propTypes = {
+    auth: PropTypes.object.isRequired,
 
-  }
+  };
 
   render() {
-    const { user_mode } = this.props;
+    const { auth: {user} } = this.props;
     let tabNavigator = [
       /* Explore */
       {
@@ -67,15 +67,15 @@ class MainForm extends Component {
       },
       /* smart or Professional */
       {
-        title: user_mode === CommonConstant.user_client ? "PROS" : "CLIENTS",
+        title: user.role === CommonConstant.user_client ? "PROS" : "CLIENTS",
         selected: this.state.selectedTab === "clients_professionals",
         renderIcon: () => (
-          <Image source={ user_mode === CommonConstant.user_client ? professionalsIcon : clientsIcon }
-                 style={ user_mode === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
+          <Image source={ user.role === CommonConstant.user_client ? professionalsIcon : clientsIcon }
+                 style={ user.role === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
         ),
         renderSelectedIcon: () => (
-          <Image source={ user_mode === CommonConstant.user_client ? professionalsSelectedIcon : clientsSelectedIcon }
-                 style={ user_mode === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
+          <Image source={ user.role === CommonConstant.user_client ? professionalsSelectedIcon : clientsSelectedIcon }
+                 style={ user.role === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
         ),
         onPress: () => this.setState({ selectedTab: 'clients_professionals' }),
         children: <Schedule/>,
@@ -168,10 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-});
-
-export default connect(state =>
-  mapStateToProps
-)(MainForm);
+export default MainForm;
