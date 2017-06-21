@@ -89,10 +89,12 @@ class ProfessionalProfileForm extends Component {
   }
 
   onSchedule() {
+    this.onShowMoreLess(true);
     Actions.ScheduleForm({getMySessions: this.props.getMySessions});
   }
 
   onEdit() {
+    this.onShowMoreLess(true);
     Actions.EditProfile();
   }
 
@@ -118,6 +120,7 @@ class ProfessionalProfileForm extends Component {
 
   onMessage() {
     this.closeCommunicationPopup();
+    this.onShowMoreLess(true);
     Actions.ChatForm({ userName: this.user.name });
   }
 
@@ -127,14 +130,17 @@ class ProfessionalProfileForm extends Component {
   }
 
   onHire() {
+    this.onShowMoreLess(true);
     Actions.Payment();
   }
 
   onMakeAnOffer() {
+    this.onShowMoreLess(true);
     Actions.Contract({ user: this.user });
   }
 
   onBack() {
+    this.onShowMoreLess(true);
     Actions.pop();
   }
 

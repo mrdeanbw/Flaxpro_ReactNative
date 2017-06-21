@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import { connect } from 'react-redux';
 
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -28,7 +27,7 @@ import SearchBar from '../../../Components/searchBar';
 import ExploreMapView from './exploreMapView';
 import ExploreListView from './exploreListView';
 
-import { ProfessionalsClients, GymLocations } from '../../../Components/dummyEntries';
+import { GymLocations } from '../../../Components/dummyEntries';
 import { allProfessions } from '../../../Components/tempDataUsers';
 
 import FullScreenLoader from '../../../Components/fullScreenLoader';
@@ -50,8 +49,9 @@ const locationNearbyWhite = require('../../../Assets/images/location_nearby_whit
 const otherLabel = {_id: 0, name: 'Other', color:'#000000',icon:'../Assets/images/sport.png'};
 const allLabel = {_id: -1, name: 'All', color:'#4dc7fd'};
 const defaultProfessions = [ 'Fitness Training', 'Physiotherapist', 'Yoga', 'Massage' ];
+const ProfessionalsClients = [];
 
-export default class ExploreForm extends Component {
+class ExploreForm extends Component {
   constructor(props) {
     super(props);
 
@@ -1088,10 +1088,4 @@ const styles = StyleSheet.create({
     height: height-140}
 });
 
-// const mapStateToProps = (state) => ({
-//   explore: state.explore
-// });
-//
-// export default connect(state =>
-//   mapStateToProps
-// )(ExploreForm);
+export default ExploreForm;

@@ -74,10 +74,12 @@ class ClientProfileForm extends Component {
   }
 
   onSchedule() {
+    this.onShowMoreLess(true);
     Actions.ScheduleForm({getMySessions: this.props.getMySessions});
   }
 
   onEdit() {
+    this.onShowMoreLess(true);
     Actions.EditProfile();
   }
 
@@ -86,6 +88,7 @@ class ClientProfileForm extends Component {
   }
 
   onBack() {
+    this.onShowMoreLess(true);
     Actions.pop();
   }
 
@@ -220,10 +223,12 @@ class ClientProfileForm extends Component {
   }
 
   onCustomOffer() {
+    this.onShowMoreLess(true);
     Actions.Contract({ user: this.props.user });
   }
 
   onShowSessions() {
+    this.onShowMoreLess(true);
     const { getMySessions } = this.props;
     getMySessions({byField: 'profession'})
     Actions.Sessions();
