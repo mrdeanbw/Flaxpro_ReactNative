@@ -28,7 +28,6 @@ import ExploreMapView from './exploreMapView';
 import ExploreListView from './exploreListView';
 
 import { GymLocations } from '../../../Components/dummyEntries';
-import { allProfessions } from '../../../Components/tempDataUsers';
 
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 
@@ -49,7 +48,6 @@ const locationNearbyWhite = require('../../../Assets/images/location_nearby_whit
 const otherLabel = {_id: 0, name: 'Other', color:'#000000',icon:'../Assets/images/sport.png'};
 const allLabel = {_id: -1, name: 'All', color:'#4dc7fd'};
 const defaultProfessions = [ 'Fitness Training', 'Physiotherapist', 'Yoga', 'Massage' ];
-const ProfessionalsClients = [];
 
 class ExploreForm extends Component {
   constructor(props) {
@@ -60,10 +58,9 @@ class ExploreForm extends Component {
       selectedPriceSegment : '$50-$100',
       mapStandardMode: true,
       showContentMode: 0,
-      professionalsClients: ProfessionalsClients,
       gymLocations: GymLocations,
-      filteredClients: [ ...ProfessionalsClients, ...this.props.explore.clients, ],
-      filteredProfessionals: [ ...ProfessionalsClients, ...this.props.explore.professionals, ],
+      filteredClients: this.props.explore.clients,
+      filteredProfessionals: this.props.explore.professionals,
       locationType: 'nearby',
       locationText: 'Nearby to me',
       locationAddress: '',
@@ -272,10 +269,10 @@ class ExploreForm extends Component {
   filterProfList(prop) {
     const workProp = prop ? prop : this.props;
     const { explore } = workProp;
-    const listOriginal = (explore.professions || allProfessions).filter((e) => defaultProfessions.includes(e.name));
-    const listOther = (explore.professions || allProfessions).filter((e) => !e.original);
+    const listOriginal = (explore.professions).filter((e) => defaultProfessions.includes(e.name));
+    const listOther = (explore.professions).filter((e) => !e.original);
     const listSelected = [...listOriginal, otherLabel];
-    const selected = allLabel;
+    const selected = this.state.professions.selected || allLabel;
     const professions = {...this.state.professions, listOriginal, listOther, listSelected, selected};
     const filteredProfessionals = this.filterProfessionalsList(listSelected);
     this.setState({professions, filteredProfessionals})
@@ -291,7 +288,7 @@ class ExploreForm extends Component {
    */
   filterClientsList(prop) {
     const workProp = prop ? prop : this.props;
-    let filteredClients = [ ...ProfessionalsClients, ...workProp.explore.clients ];
+    let filteredClients = workProp.explore.clients;
     let gymLocations = GymLocations;
     if(this.state.selectedLocationSegment){
       if (this.state.selectedLocationSegment !== 'ALL') {
@@ -379,7 +376,7 @@ class ExploreForm extends Component {
    */
   onSelectProfession (value) {
     let listSelected = this.state.professions.listSelected;
-    const profession = R.find(R.propEq('_id', value._id))(this.props.explore.professions || allProfessions);
+    const profession = R.find(R.propEq('_id', value._id))(this.props.explore.professions);
     if(listSelected.includes(profession)){
       listSelected.splice(listSelected.indexOf(profession), 1);
     }
@@ -407,7 +404,7 @@ class ExploreForm extends Component {
    * @param selected{Object} - profession (also can be 'otherLabel' or 'allLabel')
    */
   onSelectInListProfession(selected) {
-    let filteredProfessionals = [ ...ProfessionalsClients, ...this.props.explore.professionals ].filter((e)=>(e.profession && e.profession._id===selected._id));
+    let filteredProfessionals = this.props.explore.professionals.filter((e)=>(e.profession && e.profession._id===selected._id));
     if(selected._id === this.state.professions.selected._id) {
       filteredProfessionals = [];
       selected = {};
@@ -417,7 +414,7 @@ class ExploreForm extends Component {
       selected = otherLabel;
     }
     if(selected._id === allLabel._id) {
-      filteredProfessionals = [ ...ProfessionalsClients, ...this.props.explore.professionals];
+      filteredProfessionals = this.props.explore.professionals;
       selected = allLabel;
     }
     const professions = {...this.state.professions, selected};
@@ -438,11 +435,11 @@ class ExploreForm extends Component {
         if(item._id === otherLabel._id){
           filteredList.push(...this.filterProfessionalsList(this.state.professions.listOther));
         }
-        filteredList.push(...([...ProfessionalsClients, ...this.props.explore.professionals]).filter((e) => (e.profession && e.profession._id === item._id)))
+        filteredList.push(...(this.props.explore.professionals).filter((e) => (e.profession && e.profession._id === item._id)))
       });
       return R.uniq(filteredList);
     } else {
-      return [ ...ProfessionalsClients, ...this.props.explore.professionals];
+      return this.props.explore.professionals;
     }
 
   }
@@ -457,7 +454,7 @@ class ExploreForm extends Component {
    * @param search{String} - text from the autocomplete input
    */
   onFilterAutocomplete(search) {
-    const listFiltered = search ? (this.props.explore.professions || allProfessions).filter((e)=>e.name.toLowerCase().includes(search)) : [];
+    const listFiltered = search ? (this.props.explore.professions).filter((e)=>e.name.toLowerCase().includes(search)) : [];
     const professions = {...this.state.professions, search, listFiltered};
 
     this.setState({ professions });
