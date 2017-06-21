@@ -2,15 +2,15 @@ import * as types from './actionTypes';
 import request, { toQueryString } from '../request';
 
 export function mainRequest() {
-  return { type: types.SCHEDULE_GET_REQUEST };
+  return { type: types.CONTRACTS_GET_REQUEST };
 }
 
-function scheduleError(error) {
-  return { type: types.SCHEDULE_GET_ERROR, error };
+function contractsError(error) {
+  return { type: types.CONTRACTS_GET_ERROR, error };
 }
 
-function scheduleSuccess(data) {
-  return { type: types.SCHEDULE_GET_SUCCESS, ...data };
+function contractsSuccess(data) {
+  return { type: types.CONTRACTS_GET_SUCCESS, ...data };
 }
 
 export const getMyClients = (data) => async (dispatch, store) => {
@@ -37,12 +37,12 @@ export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, st
 
   try {
     const contracts  = await request(url, options, auth);
-    dispatch(scheduleSuccess({contracts}));
+    dispatch(contractsSuccess({contracts}));
   } catch (error) {
     const error =
       `Schedule Error: getMyClientsProfessionals(${role})
       Message: ${error.message}`;
-    dispatch(scheduleError(error));
+    dispatch(contractsError(error));
   }
 
 };
@@ -56,12 +56,12 @@ export const cancelContract = (contractId) => async (dispatch, store) => {
 
   try {
     const contract  = await request(url, options, auth);
-    // dispatch(scheduleSuccess({contract}));
+    // dispatch(contractsSuccess({contract}));
   } catch (error) {
     const error =
       `Schedule Error: cancelContract()
       Message: ${error.message}`;
-    dispatch(scheduleError(error));
+    dispatch(contractsError(error));
   }
 
 };

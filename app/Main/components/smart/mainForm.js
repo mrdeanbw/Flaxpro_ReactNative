@@ -12,7 +12,7 @@ import TabNavigator from 'react-native-tab-navigator';
 
 import Explore from '../../../Explore/containers/explore';
 import Account from '../../../Account/containers/account';
-import Schedule from '../../../Schedule/containers/schedule';
+import Schedule from '../../../Contracts/containers/contracts';
 import ViewProfile from '../../../Profile/containers/viewProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 

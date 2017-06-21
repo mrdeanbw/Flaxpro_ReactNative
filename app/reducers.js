@@ -4,7 +4,7 @@ import explore from './Explore/reducer';
 import hire from './Hire/reducer';
 import account from './Account/reducer';
 import profile from './Profile/reducer';
-import schedule from './Schedule/reducer';
+import contracts from './Contracts/reducer';
 
 export {
   auth,
@@ -13,5 +13,5 @@ export {
   hire,
   account,
   profile,
-  schedule,
+  contracts,
 };

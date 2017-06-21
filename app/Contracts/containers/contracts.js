@@ -3,23 +3,23 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import ClientsProfessionals from '../components/smart/clientsProfessionals';
-import * as scheduleActions from '../actions';
+import ClientsProfessionals from '../components/smart/contractsList';
+import * as contractsActions from '../actions';
 
 const Schedule = (props) =>{
-  const { actions, auth, schedule } = props;
+  const { actions, auth, contracts } = props;
   return (
-    <ClientsProfessionals { ...actions } auth={ auth } schedule={ schedule }/>
+    <ClientsProfessionals { ...actions } auth={ auth } contracts={ contracts }/>
   );
 };
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  schedule: state.schedule,
+  contracts: state.contracts,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(scheduleActions, dispatch),
+  actions: bindActionCreators(contractsActions, dispatch),
 });
 
 export default connect(

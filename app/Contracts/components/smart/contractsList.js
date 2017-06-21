@@ -8,7 +8,7 @@ import {
   ListView
 }from 'react-native'
 import {Button,ListItem} from "../../../theme"
-import styles from "./clientsProfessionals_style"
+import styles from "./contractsList_style"
 import * as Constants from "../../../Components/commonConstant"
 import Moment from 'moment';
 
@@ -24,15 +24,16 @@ class ClientsProfessionals extends React.Component {
     };
   }
   componentWillReceiveProps(newProps) {
-    if(newProps.schedule.error || newProps.schedule.loading) return;
+    if(newProps.contracts.loading) return;
+    if(newProps.contracts.error) return Alert.alert(newProps.contracts.error);
 
-    const {schedule: {contracts}} = newProps
+    const {contracts: {contracts}} = newProps
     const role = newProps.auth.user.role === Constants.user_professional ? Constants.user_client.toLowerCase() : Constants.user_professional.toLowerCase();
 
     const data = contracts.map( e => ({
       contractId: e._id,
       name: e[role].name,
-      time: Moment(e.next.from).format('MMM DD hh:mm A'),
+      time: e.next ? Moment(e.next.from).format('MMM DD hh:mm A') : '',
       progress: e.sessionsPast,
       total: e.sessionsTotal,
       text: !e[role].avatar ? e[role].name[0].toUpperCase() : '',

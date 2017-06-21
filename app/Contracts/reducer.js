@@ -6,21 +6,21 @@ const initialState = {
   loading: false,
 };
 
-export default function schedule(state = initialState, action = {}) {
+export default function contracts(state = initialState, action = {}) {
   switch (action.type) {
-    case types.SCHEDULE_GET_REQUEST:
+    case types.CONTRACTS_GET_REQUEST:
       return {
         ...state,
         error: null,
         loading: true,
       };
-    case types.SCHEDULE_GET_ERROR:
+    case types.CONTRACTS_GET_ERROR:
       return {
         ...state,
         loading: false,
         error: action.error,
       };
-    case types.SCHEDULE_GET_SUCCESS:
+    case types.CONTRACTS_GET_SUCCESS:
       return {
         ...state,
         error: null,
