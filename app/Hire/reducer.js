@@ -11,6 +11,8 @@ const initialState = {
   selectedDates: [],
   selectedTimes: [],
   schedule: [],
+  addCardForm: false,
+  loading: false,
 };
 
 export default function hire(state = initialState, action = {}) {
@@ -37,6 +39,27 @@ export default function hire(state = initialState, action = {}) {
       return {
         ...state,
         error: action.error,
+      };
+    case types.PAYMENT_CHANGEFORM:
+      return {
+        ...state,
+        addCardForm: action.addCardForm,
+      };
+    case types.PAYMENT_LOADING:
+      return {
+        ...state,
+        loading: true,
+      };
+    case types.PAYMENT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      };
+    case types.PAYMENT_ERROR:
+      return {
+        ...state,
+        loading: false,
+        errMessage: action.errMessage,
       };
     default:
       return state;

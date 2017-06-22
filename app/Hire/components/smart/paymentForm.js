@@ -51,7 +51,8 @@ export default class Payment extends Component {
   }
 
   onAddPaymentMethod() {
-    Alert.alert('onAddPaymentMethod');
+    const { changePaymentForm } = this.props;
+    changePaymentForm({...this.state, addCardForm: true})
   }
 
   render() {
