@@ -5,12 +5,35 @@ import {
   Image,
   TextInput,
   Text,
-  ListView
+  ListView,
+  TouchableOpacity
 }from 'react-native'
 import {Button,ListItem} from "../../../theme"
 import styles from "./contractsList_style"
 import * as Constants from "../../../Components/commonConstant"
 import Moment from 'moment';
+
+const days = [
+  {active: true, name: 'All Days', value: ''},
+  {active: false, name: 'MON', value: 'MON'},
+  {active: false, name: 'TUE', value: 'TUE'},
+  {active: false, name: 'WED', value: 'WED'},
+  {active: false, name: 'THU', value: 'THU'},
+];
+const months = [
+  {active: true, name: 'All Months', value: ''},
+  {active: false, name: 'JAN', value: '0'},
+  {active: false, name: 'FEB', value: '1'},
+  {active: false, name: 'MAR', value: '2'},
+  {active: false, name: 'APR', value: '3'},
+];
+const years = [
+  {active: true, name: 'All Years', value: ''},
+  {active: false, name: '2017', value: '2017'},
+  {active: false, name: '2018', value: '2018'},
+  {active: false, name: '2019', value: '2019'},
+  {active: false, name: '2020', value: '2020'},
+];
 
 class ClientsProfessionals extends React.Component {
   constructor(props) {
@@ -20,6 +43,10 @@ class ClientsProfessionals extends React.Component {
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
+      days: days,
+      months: months,
+      years: years,
+      search: '',
       dataSource: ds.cloneWithRows([]),
     };
   }
@@ -44,6 +71,43 @@ class ClientsProfessionals extends React.Component {
     )
     this.setState({dataSource:this.state.dataSource.cloneWithRows([...this.createFakeData(), ...data])})
   }
+  onSelectDay(day) {
+    const days = this.state.days.map(e => {
+      if(e.active) e.active = false;
+      if(e === day) e.active = true;
+      return e;
+    });
+    this.setState({days}, ()=>this.startFilter())
+  }
+
+  onSelectMonths(month) {
+    const months = this.state.months.map(e => {
+      if(e.active) e.active = false;
+      if(e === month) e.active = true;
+      return e;
+    });
+    this.setState({months}, ()=>this.startFilter())
+  }
+
+  onSelectYears(year) {
+    const years = this.state.years.map(e => {
+      if(e.active) e.active = false;
+      if(e === year) e.active = true;
+      return e;
+    });
+    this.setState({years}, ()=>this.startFilter())
+  }
+
+  startFilter() {
+    let data = {
+      month: this.state.months.filter(e=>e.active)[0].value,
+      year:  this.state.years.filter(e=>e.active)[0].value,
+      day: this.state.days.filter(e=>e.active)[0].value,
+      name: this.state.search,
+    };
+    if(this.props.auth.user.role === Constants.user_client) this.props.getMyProfessionals(data);
+    if(this.props.auth.user.role === Constants.user_professional) this.props.getMyClients(data);
+  }
 
   render(){
     return (
@@ -58,6 +122,7 @@ class ClientsProfessionals extends React.Component {
               autoCorrect={false}
               underlineColorAndroid='transparent'
               autoCapitalize="none"
+              onChangeText={ (text) => this.setState({search: text}, ()=>this.startFilter()) }
               />
           </View>
         </View>
@@ -78,26 +143,48 @@ class ClientsProfessionals extends React.Component {
         />
 
         <View style={styles.bottomView}>
+
           <View style={styles.line}>
-            <View style={styles.all}><Text style={styles.allText}>All Days</Text></View>
-            <Text style={{color:Constants.APP_COLOR}}>MON</Text>
-            <Text style={{color:Constants.APP_COLOR}}>TUE</Text>
-            <Text style={{color:Constants.APP_COLOR}}>WED</Text>
-            <Text style={{color:Constants.APP_COLOR}}>THU</Text>
+            {
+              this.state.days.map((row, index) => (
+                <TouchableOpacity
+                  onPress={ () => this.onSelectDay(row) }
+                  key={index}
+                >
+                  <View style={[row.active && styles.all]}>
+                    <Text style={[row.active && styles.allText, !row.active && {color:Constants.APP_COLOR}]}>{row.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+            }
           </View>
           <View style={styles.line}>
-            <View style={styles.all}><Text style={styles.allText}>All Months</Text></View>
-            <Text style={{color:Constants.APP_COLOR}}>JAN</Text>
-            <Text style={{color:Constants.APP_COLOR}}>FEB</Text>
-            <Text style={{color:Constants.APP_COLOR}}>MAR</Text>
-            <Text style={{color:Constants.APP_COLOR}}>APR</Text>
+            {
+              this.state.months.map((row, index) => (
+                <TouchableOpacity
+                  onPress={ () => this.onSelectMonths(row) }
+                  key={index}
+                >
+                  <View style={[row.active && styles.all]}>
+                    <Text style={[row.active && styles.allText, !row.active && {color:Constants.APP_COLOR}]}>{row.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+            }
           </View>
           <View style={styles.line}>
-            <View style={styles.all}><Text style={styles.allText}>All Years</Text></View>
-            <Text style={{color:Constants.APP_COLOR}}>2017</Text>
-            <Text style={{color:Constants.APP_COLOR}}>2018</Text>
-            <Text style={{color:Constants.APP_COLOR}}>2019</Text>
-            <Text style={{color:Constants.APP_COLOR}}>2020</Text>
+            {
+              this.state.years.map((row, index) => (
+                <TouchableOpacity
+                  onPress={ () => this.onSelectYears(row) }
+                  key={index}
+                >
+                  <View style={[row.active && styles.all]}>
+                    <Text style={[row.active && styles.allText, !row.active && {color:Constants.APP_COLOR}]}>{row.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+            }
           </View>
         </View>
       </View>
