@@ -18,20 +18,23 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
+const CreditCard = require('../../../Assets/images/card.png');
 
 const duration = ['1 Months', '2 Months', '3 Months'];
 
 export default class Payment extends Component {
   constructor(props) {
     super(props);
-
+    props.getCards();
     this.state = {
       numberOfSessions: 3,
     };
   }
 
   componentWillReceiveProps(newProps) {
-
+    if(newProps.hire.error) {
+      Alert.alert(newProps.hire.error)
+    }
     if (newProps.status == 'PaymentRequest') {
 
     } else if (newProps.status == 'PaymentSuccess') {
@@ -52,7 +55,7 @@ export default class Payment extends Component {
 
   onAddPaymentMethod() {
     const { changePaymentForm } = this.props;
-    changePaymentForm({...this.state, addCardForm: true})
+    changePaymentForm({addCardForm: true})
   }
 
   render() {
@@ -79,16 +82,26 @@ export default class Payment extends Component {
               <View style={ styles.sectionContainer }>
                 <Text style={ styles.textSectionTitle }>Payment Methods</Text>
               </View>
-              <TouchableOpacity
-                onPress={ () => this.onSelectPaymentMethod(0) }
-                style={ styles.cellContainer }
-              >
-                <Text style={ styles.textCellTitle }>Payment Card</Text>
-                <EntypoIcons
-                  name="chevron-thin-right"  size={ 15 }
-                  color="#707070"
-                />
-              </TouchableOpacity>
+              {this.props.hire.creditCardsList.map( (creditCard, key) => {
+                return (
+                  <View key={key}>
+                    <TouchableOpacity
+                      onPress={ () => this.onSelectPaymentMethod(0) }
+                      style={ styles.cellContainer }
+                    >
+                      <View style={styles.creditCard}>
+                        <Image source={CreditCard} style={styles.creditCardImg} resizeMode="contain"/>
+                        <Text style={ styles.textCellTitle }>. . . {creditCard.last4}</Text>
+                      </View>
+                      <EntypoIcons
+                        name="chevron-thin-right"  size={ 15 }
+                        color="#707070"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )
+              })}
+
               <TouchableOpacity
                 onPress={ () => this.onAddPaymentMethod() }
                 style={ styles.cellContainer }
@@ -114,6 +127,14 @@ export default class Payment extends Component {
 }
 
 const styles = StyleSheet.create({
+  creditCard: {
+    flexDirection: 'row',
+  },
+  creditCardImg: {
+    height: 17,
+    width: 22,
+    marginHorizontal: 12
+  },
   container: {
     flex: 1,
   },

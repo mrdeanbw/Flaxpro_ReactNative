@@ -14,7 +14,7 @@ import VMasker from 'vanilla-masker'
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 
 const background = require('../../../Assets/images/background.png');
-const creditCads = require('../../../Assets/images/credit_cards_logo.png');
+const creditCards = require('../../../Assets/images/credit_cards_logo.png');
 import * as CommonConstant from '../../../Components/commonConstant';
 const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
@@ -34,16 +34,17 @@ export default class AddCardForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (!!newProps.hire.error) { alert(newProps.hire.error)}
-    if (this.props.hire.loading && !newProps.hire.loading){
+    if (!!newProps.hire.error) {
+      alert(newProps.hire.error)
+    } else if (this.props.hire.loading && !newProps.hire.loading) {
       const { changePaymentForm } = this.props;
-      changePaymentForm({...this.state, addCardForm: false})
+      changePaymentForm({addCardForm: false})
     }
   }
 
   onBack() {
     const { changePaymentForm } = this.props;
-    changePaymentForm({...this.state, addCardForm: false})
+    changePaymentForm({addCardForm: false})
   }
 
   onCardChange (value){
@@ -93,7 +94,7 @@ export default class AddCardForm extends Component {
             <ScrollView>
               <View style={ styles.acceptCardContainer }>
                 <Text style={ styles.acceptText }>We Accept</Text>
-                <Image source={creditCads} style={styles.creditCards} resizeMode="contain"/>
+                <Image source={creditCards} style={styles.creditCards} resizeMode="contain"/>
               </View>
               <View style={ styles.cellContainer }>
                 <View>
@@ -170,7 +171,7 @@ export default class AddCardForm extends Component {
 const styles = StyleSheet.create({
   creditCards: {
     height: 23,
-    width: 104
+    width: 104,
   },
   inputTextTitle : {
     color: '#19b8ff',

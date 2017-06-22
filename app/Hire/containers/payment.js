@@ -14,12 +14,11 @@ class Payment extends Component {
   }
 
   render() {
-    console.log('this.props', this.props);
     const { actions, status, user, hire } = this.props;
 
     switch(true) {
       case hire.addCardForm: return <AddCardForm { ...actions } user={ user } hire={ hire }/>;
-      default: return <PaymentForm { ...actions } status user={user}/>
+      default: return <PaymentForm { ...actions } status user={user} hire={ hire }/>
     }
   }
 }

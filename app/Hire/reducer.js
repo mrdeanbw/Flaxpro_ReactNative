@@ -13,6 +13,7 @@ const initialState = {
   schedule: [],
   addCardForm: false,
   loading: false,
+  creditCardsList: [],
 };
 
 export default function hire(state = initialState, action = {}) {
@@ -54,12 +55,24 @@ export default function hire(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
+        error: null,
       };
     case types.PAYMENT_ERROR:
       return {
         ...state,
         loading: false,
-        errMessage: action.errMessage,
+        error: action.error,
+      };
+    case types.GET_CARDS_SUCCESS:
+      return {
+        ...state,
+        creditCardsList: action.data,
+        error: null
+      };
+    case types.GET_CARDS_ERROR:
+      return {
+        ...state,
+        error: action.error,
       };
     default:
       return state;

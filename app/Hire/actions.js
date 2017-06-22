@@ -82,6 +82,20 @@ export const addCard = (data) => async (dispatch, store) => {
       Message: ${error.message}`;
     return dispatch({type: types.PAYMENT_ERROR, error});
   }
+};
 
+export const getCards = () => async (dispatch, store) => {
+  const { auth } = store();
+  const url = '/payment/cards';
+  const options = { method: 'get' };
 
+  try {
+    const response = await request(url, options, auth);
+    return dispatch({type: types.GET_CARDS_SUCCESS, data: response});
+  } catch (error) {
+    const error =
+      `Hire Error: getCards()
+      Message: ${error.message}`;
+    return dispatch({type: types.GET_CARDS_ERROR, error});
+  }
 };
