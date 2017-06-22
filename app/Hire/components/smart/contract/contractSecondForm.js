@@ -17,7 +17,7 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import R from 'ramda';
 import Moment from 'moment';
-import RadioButton from '../../../../Explore/components/smart/radioButton';
+import RadioButton from '../../../../Components/radioButton';
 
 const background = require('../../../../Assets/images/background.png');
 import * as CommonConstant from '../../../../Components/commonConstant';

@@ -32,7 +32,7 @@ import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 const background = require('../../../Assets/images/background.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
-import RadioButton from '../../../Explore/components/smart/radioButton';
+import RadioButton from '../../../Components/radioButton';
 
 class ProfessionalInfoForm extends Component {
   constructor(props) {

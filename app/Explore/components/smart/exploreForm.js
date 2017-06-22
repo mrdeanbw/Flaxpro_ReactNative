@@ -271,7 +271,7 @@ class ExploreForm extends Component {
     const { explore } = workProp;
     const listOriginal = (explore.professions).filter((e) => defaultProfessions.includes(e.name));
     const listOther = (explore.professions).filter((e) => !e.original);
-    const listSelected = [...listOriginal, otherLabel];
+    const listSelected = this.state.professions.listSelected || [...listOriginal, otherLabel];
     const selected = this.state.professions.selected || allLabel;
     const professions = {...this.state.professions, listOriginal, listOther, listSelected, selected};
     const filteredProfessionals = this.filterProfessionalsList(listSelected);

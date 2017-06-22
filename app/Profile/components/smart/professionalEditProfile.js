@@ -25,7 +25,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import RadioButton from '../../../Explore/components/smart/radioButton';
+import RadioButton from '../../../Components/radioButton';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import InputCenter from '../../../Components/inputCenter';
 import FullScreenLoader from '../../../Components/fullScreenLoader';

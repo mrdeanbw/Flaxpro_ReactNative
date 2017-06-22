@@ -36,7 +36,7 @@ import * as CommonConstant from '../../../Components/commonConstant';
 const background = require('../../../Assets/images/background.png');
 const avatar = require('../../../Assets/images/avatar.png');
 const edit_avatar = require('../../../Assets/images/edit_avatar.png');
-import RadioButton from '../../../Explore/components/smart/radioButton';
+import RadioButton from '../../../Components/radioButton';
 
 class ProfessionalInfoForm extends Component {
   constructor(props) {

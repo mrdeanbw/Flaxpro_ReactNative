@@ -24,7 +24,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import RadioButton from '../../../Explore/components/smart/radioButton';
+import RadioButton from '../../../Components/radioButton';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import * as profileActions  from '../../actions';

@@ -28,7 +28,7 @@ import ImageProgress from 'react-native-image-progress';
 import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
-import RadioButton from '../../../Explore/components/smart/radioButton';
+import RadioButton from '../../../Components/radioButton';
 
 const background = require('../../../Assets/images/background.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
