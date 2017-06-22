@@ -29,7 +29,7 @@ export const getScheduleById = (data) => async (dispatch, store) => {
     dispatch(updateHireSuccess({schedule: response}));
   } catch (error) {
     const error =
-      `Profile Error: getMySessions()
+      `Hire Error: getMySessions()
       Message: ${error.message}`;
     dispatch(updateHireError(error));
   }
@@ -49,7 +49,7 @@ export const createContract = (data) => async (dispatch, store) => {
     dispatch(updateHireSuccess({schedule: response}));
   } catch (error) {
     const error =
-      `Profile Error: createContract()
+      `Hire Error: createContract()
       Message: ${error.message}`;
     dispatch(updateHireError(error));
   }
@@ -78,7 +78,7 @@ export const addCard = (data) => async (dispatch, store) => {
     return dispatch({type: types.PAYMENT_SUCCESS, response});
   } catch (error) {
     const error =
-      `Profile Error: addCard()
+      `Hire Error: addCard()
       Message: ${error.message}`;
     return dispatch({type: types.PAYMENT_ERROR, error});
   }
