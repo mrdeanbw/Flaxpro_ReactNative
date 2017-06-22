@@ -18,13 +18,13 @@ import {
 import { Actions } from 'react-native-router-flux';
 import Slider from 'react-native-slider';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import RadioButton from '../../../Components/radioButton';
+import RadioButton from '../../../../Components/radioButton';
 import ModalDropdown from 'react-native-modal-dropdown';
 import StarRating from 'react-native-stars-rating';
 
 const { width, height } = Dimensions.get('window');
 
-const background = require('../../../Assets/images/background.png');
+const background = require('../../../../Assets/images/background.png');
 
 const labelSex = ['Male', 'Female'];
 const labelVerified = ['Yes', 'No'];
