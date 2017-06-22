@@ -59,3 +59,29 @@ export const createContract = (data) => async (dispatch, store) => {
 export function changeContractForm(data) {
   return { type: types.CONTRACT_CHANGEFORM, ...data };
 }
+
+export function changePaymentForm(data) {
+  return { type: types.PAYMENT_CHANGEFORM, ...data };
+}
+
+export const addCard = (data) => async (dispatch, store) => {
+  dispatch({type: types.PAYMENT_LOADING});
+  const { auth } = store();
+  const url = '/payment/setPaymentClient';
+  const options = {
+    method: 'post',
+    body: JSON.stringify(data),
+  };
+
+  try {
+    const response = await request(url, options, auth);
+    return dispatch({type: types.PAYMENT_SUCCESS, response});
+  } catch (error) {
+    const error =
+      `Profile Error: addCard()
+      Message: ${error.message}`;
+    return dispatch({type: types.PAYMENT_ERROR, error});
+  }
+
+
+};
