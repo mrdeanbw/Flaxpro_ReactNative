@@ -32,27 +32,6 @@ export const getExploreClient = () => async (dispatch, store) => {
   }
 };
 
-export const getExploreProfessional = () => async (dispatch, store) => {
-  dispatch(exploreRequest());
-  const clientsUrl = '/client/q';
-  const { auth } = store();
-  const options = {
-    method: 'get',
-  };
-
-  try {
-    const clients  = await request(clientsUrl, options, auth);
-    dispatch(exploreSuccess(clients));
-  } catch (error) {
-    const error =
-      `Explore Error: getExploreProfessional 
-      Message: ${error.message}`;
-    dispatch(exploreError(error));
-  }
-
-};
-
-
 export const getProfessionals = (data) => async (dispatch, store) => {
   dispatch(exploreRequest());
   let url = '/professional/q';
