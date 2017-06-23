@@ -6,9 +6,9 @@ export function updateHireSuccess(data) {
     type: types.HIRE_SUCCESS, ...data
   };
 }
-export function updateHireError() {
+export function updateHireError(error) {
   return {
-    type: types.HIRE_ERROR
+    type: types.HIRE_ERROR, error
   };
 }
 
@@ -80,7 +80,7 @@ export const addCard = (data) => async (dispatch, store) => {
     const error =
       `Hire Error: addCard()
       Message: ${error.message}`;
-    return dispatch({type: types.PAYMENT_ERROR, error});
+    dispatch(updateHireError(error));
   }
 };
 
@@ -96,6 +96,6 @@ export const getCards = () => async (dispatch, store) => {
     const error =
       `Hire Error: getCards()
       Message: ${error.message}`;
-    return dispatch({type: types.GET_CARDS_ERROR, error});
+    dispatch(updateHireError(error));
   }
 };

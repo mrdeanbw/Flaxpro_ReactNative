@@ -3,15 +3,16 @@ import {
   StyleSheet,
   Text,
   View,
+  Alert,
   Image,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  ActivityIndicator
+  ScrollView
 } from 'react-native';
 import VMasker from 'vanilla-masker'
 
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 
 const background = require('../../../Assets/images/background.png');
 const creditCards = require('../../../Assets/images/credit_cards_logo.png');
@@ -34,11 +35,9 @@ export default class AddCardForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (!!newProps.hire.error) {
-      alert(newProps.hire.error)
-    } else if (this.props.hire.loading && !newProps.hire.loading) {
-      const { changePaymentForm } = this.props;
-      changePaymentForm({addCardForm: false})
+    const { changePaymentForm } = this.props;
+    if (!newProps.hire.loading) {
+      !!newProps.hire.error ? Alert.alert(newProps.hire.error): changePaymentForm({addCardForm: false})
     }
   }
 
@@ -114,7 +113,7 @@ export default class AddCardForm extends Component {
                 <View>
                   <Text style={styles.inputTextTitle}>Expiration Date</Text>
                   <View style={{flex:1,flexDirection:"row"}}>
-                    <View  style={styles.inputHalfContainer}>
+                    <View  style={[styles.inputContainer, styles.halfFlex]}>
                       <TextInput
                         style={styles.inputText}
                         value={ this.state.cardMonth }
@@ -125,7 +124,7 @@ export default class AddCardForm extends Component {
                         keyboardType="numeric"
                       />
                     </View>
-                    <View  style={styles.inputHalfContainer}>
+                    <View  style={[styles.inputContainer, styles.halfFlex]}>
                       <TextInput
                         style={styles.inputText}
                         value={ this.state.cardYear }
@@ -156,12 +155,13 @@ export default class AddCardForm extends Component {
             </ScrollView>
             <TouchableOpacity disabled={!valid} activeOpacity={ .5 } onPress={ () => this.addCard() }>
               <View style={[styles.addBtn, !valid && styles.disabled]}>
-                {this.props.hire.loading ? <ActivityIndicator color="#fff"/> : <Text style={styles.addBtnText}>ADD CARD</Text>}
+                <Text style={styles.addBtnText}>ADD CARD</Text>
               </View>
             </TouchableOpacity>
 
           </View>
         </Image>
+        { this.props.hire.loading && <FullScreenLoader/>}
       </View>
     );
   }
@@ -198,11 +198,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e3e3e3',
     marginHorizontal: 20,
   },
-  inputHalfContainer: {
+  halfFlex: {
     flex: 0.5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e3e3e3',
-    marginHorizontal: 20,
   },
   acceptCardContainer: {
     flexDirection:"row",
