@@ -210,7 +210,7 @@ class ScheduleForm extends Component {
     }
   }
   onEdit() {
-    Actions.EditAvailability();
+    Actions.EditAvailability(...this.props);
   }
 
   get getShowNavBar() {

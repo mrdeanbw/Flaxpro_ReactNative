@@ -75,6 +75,7 @@ export default class EditAvailabilityForm extends Component {
 
   constructor(props) {
     super(props);
+    console.log('===========', props);
     this.state = {
       schedules: schedules,
       selectedDate: schedules[0].date,
@@ -270,22 +271,28 @@ export default class EditAvailabilityForm extends Component {
             </View>
 
             <View style={ styles.timeMainContainer }>
-              <ScrollView>
-                { this.showSchedule() }
+              {
+                this.state.schedules.length > 1 ?
+                  <ScrollView>
+                    { this.showSchedule() }
 
-                <View style={ styles.buttonWrapper }>
-                  <TouchableOpacity
-                    onPress={ () => this.onAddTime() }
-                  >
-                    <Ionicons
-                      name="ios-add-circle-outline"
-                      size={ 40 }
-                      color="#717171"
-                      style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </ScrollView>
+                    <View style={ styles.buttonWrapper }>
+                      <TouchableOpacity
+                        onPress={ () => this.onAddTime() }
+                      >
+                        <Ionicons
+                          name="ios-add-circle-outline"
+                          size={ 40 }
+                          color="#717171"
+                          style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </ScrollView>
+                  :
+                  <Text style={ styles.textSectionTitle }>Select a Date</Text>
+              }
+
             </View>
 
             <View style={ styles.buttonWrapper }>

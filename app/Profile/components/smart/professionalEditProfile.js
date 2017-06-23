@@ -150,19 +150,7 @@ class EditProfile extends Component {
             />
           </TouchableOpacity>
         </View>
-
-        <SegmentedControls
-          tint={ "#fff" }
-          selectedTint= { "#41c3fd" }
-          backTint= { "#41c3fd" }
-          options={ [constants.BASIC_INFO, constants.CALENDAR] }
-          onSelection={ (option) => this.onChangeOptions(option) }
-          selectedOption={ selectedOption }
-          allowFontScaling={ true }
-          optionStyle={styles.segmentedControlsOptions}
-          containerStyle= {styles.segmentedControlsContainer}
-        />
-        </View>);
+      </View>);
   }
   /**
    * Calls when user click on the add avatar button
@@ -576,7 +564,7 @@ const styles = StyleSheet.create({
     height,
   },
   navBarContainer: {
-    flex: 1,
+    flex: 0.5,
     backgroundColor: 'transparent',
     justifyContent: 'flex-end',
     paddingTop: 10,
