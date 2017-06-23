@@ -53,6 +53,10 @@ export default class Payment extends Component {
     Alert.alert('onSelectPaymentMethod');
   }
 
+  onAddCode() {
+    Alert.alert('Coming soon');
+  }
+
   onAddPaymentMethod() {
     const { changePaymentForm } = this.props;
     changePaymentForm({addCardForm: true})
@@ -113,7 +117,7 @@ export default class Payment extends Component {
                 <Text style={ styles.textSectionTitle }>Promotions</Text>
               </View>
               <TouchableOpacity
-                onPress={ () => this.onAddPaymentMethod() }
+                onPress={ () => this.onAddCode() }
                 style={ styles.cellContainer }
               >
                 <Text style={ styles.textCellAddValue }>Add Promo/Gift Code</Text>
