@@ -17,6 +17,7 @@ import FilterProfessionalForm from './Explore/components/smart/filterForms/profe
 import Contract from './Hire/containers/contract';
 import Payment from './Hire/containers/payment';
 import ScheduleForm from './Profile/components/smart/scheduleForm';
+import EditAvailability from './Profile/components/smart/editAvailabilityForm';
 import ViewProfile from './Profile/containers/viewProfile';
 import EditProfile from './Profile/containers/editProfile';
 import Sessions from './Profile/components/smart/sessions';
@@ -41,6 +42,7 @@ const scenes = Actions.create(
     <Scene key="Payment" component={ Payment } />
     <Scene key="Contracts" component={ Contracts } />
     <Scene key="ScheduleForm" component={ ScheduleForm } />
+    <Scene key="EditAvailability" component={ EditAvailability } />
     <Scene key="ViewProfile" component={ ViewProfile } />
     <Scene key="ChatForm" component={ ChatForm } />
     <Scene key="EditProfile" component={ EditProfile }/>
