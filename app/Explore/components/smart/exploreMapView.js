@@ -309,8 +309,7 @@ class ExploreMapView extends Component {
   }
 
   onMakeOfferProfessional ( ) {
-
-    Actions.Contract({ user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex] });
+    Actions.Contract({ user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex], editable: true });
   }
 
   onExpandProfessional ( key ) {

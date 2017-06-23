@@ -9,6 +9,7 @@ import {
   Switch,
   ScrollView,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -55,6 +56,10 @@ class AccountForm extends Component {
       })
   }
 
+  onPayment() {
+    Actions.Payment({editable:true});
+  }
+
   render() {
     const { auth: { user } } = this.props;
 
@@ -86,9 +91,12 @@ class AccountForm extends Component {
               <View style={ styles.cellContainer }>
                 <Text style={ styles.textCellTitle }>Password</Text>
               </View>
-              <View style={ styles.cellContainer }>
+              <TouchableOpacity
+                onPress={ () => this.onPayment() }
+                style={ styles.cellContainer }
+              >
                 <Text style={ styles.textCellTitle }>Payment</Text>
-              </View>
+              </TouchableOpacity>
               <View style={ styles.cellContainer }>
                 <Text style={ styles.textCellTitle }>Integrations</Text>
               </View>

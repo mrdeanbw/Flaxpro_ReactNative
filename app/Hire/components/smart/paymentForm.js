@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -15,6 +15,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
@@ -23,6 +24,14 @@ const CreditCard = require('../../../Assets/images/card.png');
 const duration = ['1 Months', '2 Months', '3 Months'];
 
 export default class Payment extends Component {
+  static propTypes = {
+    editable: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    editable: false,
+  };
+
   constructor(props) {
     super(props);
     props.getCards();
@@ -46,7 +55,10 @@ export default class Payment extends Component {
 
   onClose () {
     const { user } = this.props;
-    Actions.Main({ user_mode: user.role });
+    this.props.editable ?
+      Actions.pop()
+      :
+      Actions.Main({ user_mode: user.role });
   }
 
   onSelectPaymentMethod(key) {
@@ -63,7 +75,8 @@ export default class Payment extends Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { editable } = this.props;
+    console.log('this.props.hire.creditCardsList', this.props.hire.creditCardsList)
 
     return (
       <View style={ styles.container }>
@@ -73,10 +86,11 @@ export default class Payment extends Component {
               onPress={ () => this.onClose() }
               style={ styles.closeButtonWrapper }
             >
-              <EvilIcons
-                name="close"  size={ 35 }
-                color="#fff"
-              />
+              {editable ?
+                <EntypoIcons name="chevron-thin-left" size={ 35 } color="#fff" />
+                :
+                <EvilIcons name="close" size={ 35 } color="#fff" />
+              }
             </TouchableOpacity>
             <Text style={ styles.textTitle }>PAYMENT</Text>
             <View style={ styles.closeButtonWrapper } />
@@ -84,7 +98,7 @@ export default class Payment extends Component {
           <View style={ styles.mainContainer }>
             <ScrollView>
               <View style={ styles.sectionContainer }>
-                <Text style={ styles.textSectionTitle }>Payment Methods</Text>
+                <Text style={ styles.textSectionTitle }>{!editable&&"Select "}Payment Methods</Text>
               </View>
               {this.props.hire.creditCardsList.map( (creditCard, key) => {
                 return (
@@ -106,22 +120,38 @@ export default class Payment extends Component {
                 )
               })}
 
-              <TouchableOpacity
-                onPress={ () => this.onAddPaymentMethod() }
-                style={ styles.cellContainer }
-              >
-                <Text style={ styles.textCellAddValue }>Add Payment Method</Text>
-              </TouchableOpacity>
+              {(editable || !this.props.hire.creditCardsList.length) &&
+                <View>
+                  <TouchableOpacity
+                    onPress={ () => this.onAddPaymentMethod() }
+                    style={ styles.cellContainer }
+                  >
+                    <Text style={ styles.textCellAddValue }>Add Payment Method</Text>
+                  </TouchableOpacity>
 
-              <View style={ styles.sectionContainer }>
-                <Text style={ styles.textSectionTitle }>Promotions</Text>
-              </View>
-              <TouchableOpacity
-                onPress={ () => this.onAddCode() }
-                style={ styles.cellContainer }
-              >
-                <Text style={ styles.textCellAddValue }>Add Promo/Gift Code</Text>
-              </TouchableOpacity>
+                  <View style={ styles.sectionContainer }>
+                    <Text style={ styles.textSectionTitle }>Promotions</Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={ () => this.onAddCode() }
+                    style={ styles.cellContainer }
+                  >
+                    <Text style={ styles.textCellAddValue }>Add Promo/Gift Code</Text>
+                  </TouchableOpacity>
+                </View>
+              }
+              {!editable &&
+                <TouchableOpacity
+                  onPress={ () => this.onSelectPaymentMethod(0) }
+                  style={ styles.cellContainer }
+                >
+                  <View style={styles.creditCard}>
+                    <IonIcons name="ios-cash-outline" style={styles.cashIcon} color="#707070"/>
+                    <Text style={ styles.textCellTitle }>Cash</Text>
+                  </View>
+                  <EntypoIcons name="chevron-thin-right" size={ 15 } color="#707070" />
+                </TouchableOpacity>
+              }
             </ScrollView>
           </View>
         </Image>
@@ -131,6 +161,12 @@ export default class Payment extends Component {
 }
 
 const styles = StyleSheet.create({
+  cashIcon: {
+    height: 17,
+    width: 22,
+    fontSize: 21,
+    marginHorizontal: 12,
+  },
   creditCard: {
     flexDirection: 'row',
   },
