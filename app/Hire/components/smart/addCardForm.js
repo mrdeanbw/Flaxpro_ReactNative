@@ -31,6 +31,7 @@ export default class AddCardForm extends Component {
       cardYear  : '',
       cardCvc   : '',
       loading: false,
+      isAmericanExpress: false
     };
   }
 
@@ -47,7 +48,14 @@ export default class AddCardForm extends Component {
   }
 
   onCardChange (value){
-    let maskedValue = VMasker.toPattern(value, "9999 9999 9999 9999");
+    let mask = "9999 9999 9999 9999";
+    if (value.length >= 2 && (value.slice(0, 2) === '34' || value.slice(0, 2) === '37')) {
+      mask = "9999 999999 999999";
+      this.setState({isAmericanExpress: true})
+    } else {
+      this.setState({isAmericanExpress: false})
+    }
+    let maskedValue = VMasker.toPattern(value, mask);
     this.setState({cardNumber: maskedValue});
   }
   onCardYearChange (value){
@@ -71,7 +79,8 @@ export default class AddCardForm extends Component {
   }
 
   render() {
-    let valid = (this.state.cardNumber.length===19 && this.state.cardMonth.length===2 &&
+    let cardNumberLength = this.state.isAmericanExpress? 17: 19;
+    let valid = (this.state.cardNumber.length===cardNumberLength && this.state.cardMonth.length===2 &&
     this.state.cardYear.length===2 && this.state.cardCvc.length>2);
     return (
       <View style={ styles.container } pointerEvents={this.props.hire.loading ? "none" : "auto"}>
@@ -103,7 +112,7 @@ export default class AddCardForm extends Component {
                       style={styles.inputText}
                       value={ this.state.cardNumber }
                       onChangeText={this.onCardChange.bind(this)}
-                      maxLength={ 19 }
+                      maxLength={ cardNumberLength }
                       placeholder={'**** **** **** ****'}
                       placeholderTextColor={"#e3e3e3"}
                       keyboardType="numeric"

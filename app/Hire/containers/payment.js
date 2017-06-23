@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import PaymentForm from '../components/smart/paymentForm';
 import AddCardForm from '../components/smart/addCardForm';
@@ -9,16 +9,25 @@ import { connect } from 'react-redux';
 
 
 class Payment extends Component {
+  static propTypes = {
+    editable: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    editable: false,
+  };
+
   constructor(props) {
     super(props);
   }
 
   render() {
+    console.log('this.props', this.props)
     const { actions, status, user, hire } = this.props;
 
     switch(true) {
       case hire.addCardForm: return <AddCardForm { ...actions } user={ user } hire={ hire }/>;
-      default: return <PaymentForm { ...actions } status user={user} hire={ hire }/>
+      default: return <PaymentForm { ...actions } status user={user} hire={ hire } editable={this.props.editable}/>
     }
   }
 }

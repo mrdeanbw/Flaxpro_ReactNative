@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -27,6 +27,14 @@ const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
 
 export default class ContractFirstForm extends Component {
+  static propTypes = {
+    editable: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    editable: false,
+  };
+
   constructor(props) {
     super(props);
 
@@ -36,6 +44,7 @@ export default class ContractFirstForm extends Component {
       selectedDates: props.hire.selectedDates,
       availableDates: props.hire.schedule,
       selectedTimes: props.hire.selectedTimes,
+      offerPrice: (props.user.amount || props.user.price).toString()
     };
   }
 
@@ -73,8 +82,14 @@ export default class ContractFirstForm extends Component {
     this.setState({ selectedDates });
   }
 
+  onchangeOfferPrice(value) {
+      this.setState({offerPrice: value})
+  }
+
   render() {
-    const { user, hire: {schedule} } = this.props;
+    const { user, hire: {schedule}, editable } = this.props;
+    let hourlyRate = editable? this.state.offerPrice: (user.amount || user.price);
+    let totalPayment = this.state.numberOfSessions * this.state.numberOfPeople * hourlyRate;
 
     return (
       <View style={ styles.container }>
@@ -117,7 +132,19 @@ export default class ContractFirstForm extends Component {
               <View style={ [styles.borderBottom, styles.rowContainer] }>
                 <Text style={ [fontStyles, styles.textDescription] }>Hourly Rate</Text>
                 <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textValue }>$ { user.amount || user.price }</Text>
+                  {editable?
+                    <View style={ styles.offerPriceContainer }>
+                      <Text style={ styles.textValue }>$</Text>
+                      <TextInput
+                        style={styles.inputText}
+                        value={ this.state.offerPrice }
+                        onChangeText={this.onchangeOfferPrice.bind(this)}
+                        keyboardType="numeric"
+                      />
+                    </View>
+                    :
+                    <Text style={ styles.textValue }>$ { user.amount || user.price }</Text>
+                  }
                 </View>
               </View>
 
@@ -150,7 +177,7 @@ export default class ContractFirstForm extends Component {
               <View style={ [styles.borderBottom, styles.rowContainer] }>
                 <Text style={ [fontStyles, styles.textDescription] }>Total Payment</Text>
                 <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textValue }>$ { this.state.numberOfSessions * this.state.numberOfPeople * (user.amount || user.price) }</Text>
+                  <Text style={ styles.textValue }>$ { totalPayment }</Text>
                 </View>
               </View>
 
@@ -269,6 +296,22 @@ const customStyle = {
 }
 
 const styles = StyleSheet.create({
+  inputText : {
+    fontSize: 18,
+    color: '#4d4d4d',
+    textAlign: "right"
+  },
+  offerPriceContainer : {
+    width: width * .3,
+    height: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: "#19b8ff",
+    paddingBottom: 2,
+    marginTop: 2
+  },
   container: {
     flex: 1,
   },
