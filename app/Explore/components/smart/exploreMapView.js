@@ -482,12 +482,18 @@ class ExploreMapView extends Component {
       this.region.stopAnimation();
       this.region.timing({
         latitude: scrollX.interpolate({
-          inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
-          outputRange: professionalsClients.map(item => item.coordinate.latitude),
+          inputRange: professionalsClients.length > 1 ? professionalsClients.map( (item, index) => index * SNAP_WIDTH) : [0, 0,],
+          outputRange: professionalsClients.length > 1 ? professionalsClients.map(item => item.coordinate.latitude) : [
+            professionalsClients[0].coordinate.latitude,
+            professionalsClients[0].coordinate.latitude - (LATITUDE_DELTA * 0.5 * 0.375),
+          ],
         }),
         longitude: scrollX.interpolate({
-          inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
-          outputRange: professionalsClients.map( item => item.coordinate.longitude),
+          inputRange: professionalsClients.length > 1 ? professionalsClients.map( (item, index) => index * SNAP_WIDTH) : [0, 0,],
+          outputRange: professionalsClients.length > 1 ? professionalsClients.map( item => item.coordinate.longitude) : [
+            professionalsClients[0].coordinate.longitude,
+            professionalsClients[0].coordinate.longitude - (LONGITUDE_DELTA * 0.5 * 0.375),
+          ],
         }),
         duration: 0,
       }).start();
