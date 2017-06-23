@@ -75,7 +75,6 @@ export default class EditAvailabilityForm extends Component {
 
   constructor(props) {
     super(props);
-    console.log('===========', props);
     this.state = {
       schedules: schedules,
       selectedDate: schedules[0].date,

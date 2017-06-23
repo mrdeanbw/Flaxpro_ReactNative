@@ -67,6 +67,9 @@ class ClientExploreForm extends Component {
         listFiltered: [],
         listOriginal: [],
         listOther: [],
+      },
+      filter: {
+        date: this.today(),
       }
     };
     this.onFilterAutocomplete = this.onFilterAutocomplete.bind(this)
@@ -446,6 +449,12 @@ class ClientExploreForm extends Component {
   today() {
     return (new Date()).toDateString();
   }
+  onFilterByDate(date) {
+    const { getProfessionals } = this.props;
+    const { filter } = this.state;
+    this.setState({filter: {...filter, date}});
+    getProfessionals({date: new Date(date)});
+  }
 
   get showFullTopBar () {
     const { professions } = this.state,
@@ -478,7 +487,7 @@ class ClientExploreForm extends Component {
             color="#fff"
           />
           <DatePicker
-            date={ this.state.birthday }
+            date={ this.state.filter.date }
             mode="date"
             placeholder={this.today()}
             format="dddd, MMM DD, YYYY"
@@ -505,7 +514,7 @@ class ClientExploreForm extends Component {
                 fontSize: 12,
               },
             }}
-            onDateChange={ (date) => { this.setState({ birthday: date }) } }
+            onDateChange={ (date) => { this.onFilterByDate(date) } }
           />
         </View>
         <View style={ styles.filterRowContainer }>
