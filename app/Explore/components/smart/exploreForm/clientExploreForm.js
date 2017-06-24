@@ -459,11 +459,7 @@ class ClientExploreForm extends Component {
     const { getProfessionals } = this.props;
     const { filter } = this.state;
     this.setState({filter: {...filter, date}});
-    getProfessionals({date: new Date(date)});
-  }
-  onCleanDate() {
-    const { filter } = this.state;
-    this.setState({filter: {...filter, date: ''}});
+    getProfessionals({...filter, date});
   }
 
   get showFullTopBar () {
@@ -524,12 +520,11 @@ class ClientExploreForm extends Component {
                 fontSize: 12,
               },
             }}
-            onDateChange={ (date) => { this.onFilterByDate(date) } }
+            onDateChange={ (date) => this.onFilterByDate(date) }
           />
           {this.state.filter.date ?
-            <TouchableOpacity onPress={ () => this.onCleanDate() }>
+            <TouchableOpacity onPress={ () => this.onFilterByDate('') }>
               <Icon
-                style={{ paddingRight: 10 }}
                 name="md-close-circle"
                 size={ 16 }
                 color={ "#fff" }
@@ -871,7 +866,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   datePickerWithCleanBtn: {
-    width : width - 78
+    width : width - 68
   },
   segmentedControlsWrap: {
     marginHorizontal: 10,

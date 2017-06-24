@@ -3,24 +3,15 @@ import {
   StyleSheet,
   Alert,
   Text,
-  TextInput,
   View,
   Image,
-  Dimensions,
   TouchableOpacity,
-  ScrollView
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import EntypoIcons from 'react-native-vector-icons/Entypo';
-
-import PopupDialog from 'react-native-popup-dialog';
-
-import R from 'ramda';
 
 import { SegmentedControls } from 'react-native-radio-buttons';
 import SearchBar from '../../../../Components/searchBar';
@@ -31,22 +22,13 @@ import { GymLocations } from '../../../../Components/dummyEntries';
 
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
-const { width, height } = Dimensions.get('window');
 import * as CommonConstant from '../../../../Components/commonConstant';
+const width = CommonConstant.WIDTH_SCREEN;
+const height = CommonConstant.HEIHT_SCREEN;
+const appColor = CommonConstant.APP_COLOR;
 
 const background = require('../../../../Assets/images/background.png');
-const arrow = require('../../../../Assets/images/right_arrow.png');
 
-const locationGray = require('../../../../Assets/images/location_gray.png');
-const locationMultiGray = require('../../../../Assets/images/location_multi_gray.png');
-const locationNearbyGray = require('../../../../Assets/images/location_nearby_gray.png');
-
-const locationWhite = require('../../../../Assets/images/location_white.png');
-const locationMultiWhite = require('../../../../Assets/images/location_multi_white.png');
-const locationNearbyWhite = require('../../../../Assets/images/location_nearby_white.png');
-
-const otherLabel = {_id: 0, name: 'Other', color:'#000000',icon:'../Assets/images/sport.png'};
-const allLabel = {_id: -1, name: 'All', color:'#4dc7fd'};
 const prices = [
   {item: '$', price: '$50-$100', level: '1'},
   {item: '$$', price: '$100-$300', level: '2'},
@@ -58,24 +40,15 @@ class ExploreForm extends Component {
     super(props);
 
     this.state = {
-      selectedLocationSegment : 'ALL',
       selectedPriceSegment : '$50-$100',
       mapStandardMode: true,
       showContentMode: 0,
       gymLocations: GymLocations,
       filteredClients: this.props.explore.clients,
-      filteredProfessionals: this.props.explore.professionals,
-      locationType: 'nearby',
-      locationText: 'Nearby to me',
-      locationAddress: '',
-      professions: {
-        selected: {},
-        search:'',
-        searchMode: false,
-        listSelected: [],
-        listFiltered: [],
-        listOriginal: [],
-        listOther: [],
+      filter: {
+        date: '',
+        locationType: 'ALL',
+        address: '',
       }
     };
   }
@@ -137,11 +110,12 @@ class ExploreForm extends Component {
 
   onSelectLocationFilterMode(option) {
     const { getClients } = this.props;
-    this.setState({ selectedLocationSegment: option });
+    const { filter } = this.state;
+    this.setState({ filter: {...filter, locationType: option, address: ''} });
     if(option === 'ALL'){
-      getClients();
+      getClients({...filter, locationType: '', address: ''});
     } else {
-      getClients({locationType: option.toLowerCase()})
+      getClients({...filter, locationType: option.toLowerCase(), address: ''})
     }
   }
 
@@ -171,13 +145,37 @@ class ExploreForm extends Component {
   today() {
     return (new Date()).toDateString();
   }
+  onFilterByDate(date) {
+    const { getClients } = this.props;
+    const { filter } = this.state;
+    this.setState({filter: {...filter, date}});
+    getClients({...filter, date, locationType: filter.locationType.toLowerCase()});
+  }
+  filterByAddress(){
+    const { filter } = this.state;
+    const { getClients } = this.props;
+    if(!filter.address) {
+      this.setState({filter: {...filter, locationType: 'ALL', address:''}});
+      getClients({...filter, locationType: 'ALL', address:''});
+      return;
+    }
+
+    const filterObj = {
+      locationType: 'address',
+      address: filter.address,
+      date: filter.date,
+    };
+    getClients(filterObj);
+  }
 
   get showFullTopBar () {
+    const { filter } = this.state;
     return (
       <View style={ styles.navContainer }>
         <View style={ styles.searchBarWrap }>
           <SearchBar
-                onSearchChange={ () => console.log('On Focus') }
+                onSearchChange={ (text) => this.setState({filter: {...filter, address: text, locationType: 'address'} }) }
+                value={ filter.address }
                 height={ 20 }
                 autoCorrect={ false }
                 returnKeyType={ "search" }
@@ -186,6 +184,7 @@ class ExploreForm extends Component {
                 iconColor={ "#fff" }
                 placeholderColor={ "#fff" }
                 paddingTop={ 20 }
+                onBlur={ () => this.filterByAddress() }
               />
         </View>
         <View style={ styles.calendarBarWrap } >
@@ -195,16 +194,16 @@ class ExploreForm extends Component {
             color="#fff"
           />
           <DatePicker
-            date={ this.state.birthday }
+            date={ filter.date }
             mode="date"
-            placeholder={this.today()}
+            placeholder="Current Date"
             format="dddd, MMM DD, YYYY"
             minDate="01/01/1900"
             maxDate="12/31/2100"
             confirmBtnText="Done"
             cancelBtnText="Cancel"
             showIcon={ false }
-            style = { styles.calendar }
+            style = { [styles.calendar,filter.date && styles.datePickerWithCleanBtn] }
             customStyles={{
               dateInput: {
                 borderColor: "transparent",
@@ -222,8 +221,18 @@ class ExploreForm extends Component {
                 fontSize: 12,
               },
             }}
-            onDateChange={ (date) => { this.setState({ birthday: date }) } }
+            onDateChange={ (date) => this.onFilterByDate(date) }
           />
+          {filter.date ?
+            <TouchableOpacity onPress={ () => this.onFilterByDate('') } >
+              <Icon
+                name="md-close-circle"
+                size={ 16 }
+                color={ "#fff" }
+              />
+            </TouchableOpacity>
+            : null
+          }
         </View>
         <View style={ styles.segmentsBlock }>
             <SegmentedControls
@@ -232,7 +241,7 @@ class ExploreForm extends Component {
               backTint= { "#fff" }
               options={ ["ALL", "NEARBY"] }
               onSelection={ (option) => this.onSelectLocationFilterMode(option) }
-              selectedOption={ this.state.selectedLocationSegment }
+              selectedOption={ filter.locationType }
               allowFontScaling={ true }
               optionStyle={{
                 fontSize: 10,
@@ -284,7 +293,7 @@ class ExploreForm extends Component {
               this.showCloseTopBar
           }
           {
-            this.state.showContentMode == 0 ?
+            this.state.showContentMode === 0 ?
               <ExploreMapView
                 mapStandardMode={ this.state.mapStandardMode}
                 onTapMap={ () => this.setState({ mapStandardMode:false }) }
@@ -461,6 +470,9 @@ const styles = StyleSheet.create({
     height: 30,
     alignItems: "center",
     justifyContent: "center",
+  },
+  datePickerWithCleanBtn: {
+    width : width - 68
   },
   segmentedControlsWrap: {
     marginHorizontal: 10,
