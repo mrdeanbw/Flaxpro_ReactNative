@@ -17,7 +17,7 @@ import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import PopupDialog from 'react-native-popup-dialog';
 
 import R from 'ramda';
@@ -461,6 +461,10 @@ class ClientExploreForm extends Component {
     this.setState({filter: {...filter, date}});
     getProfessionals({date: new Date(date)});
   }
+  onCleanDate() {
+    const { filter } = this.state;
+    this.setState({filter: {...filter, date: ''}});
+  }
 
   get showFullTopBar () {
     const { professions } = this.state,
@@ -502,7 +506,7 @@ class ClientExploreForm extends Component {
             confirmBtnText="Done"
             cancelBtnText="Cancel"
             showIcon={ false }
-            style = { styles.calendar }
+            style = { [styles.calendar, this.state.filter.date && styles.datePickerWithCleanBtn] }
             customStyles={{
               dateInput: {
                 borderColor: "transparent",
@@ -522,6 +526,17 @@ class ClientExploreForm extends Component {
             }}
             onDateChange={ (date) => { this.onFilterByDate(date) } }
           />
+          {this.state.filter.date ?
+            <TouchableOpacity onPress={ () => this.onCleanDate() }>
+              <Icon
+                style={{ paddingRight: 10 }}
+                name="md-close-circle"
+                size={ 16 }
+                color={ "#fff" }
+              />
+            </TouchableOpacity>
+            : null
+          }
         </View>
         <View style={ styles.filterRowContainer }>
           <View style={ styles.professionSearchContainer }>
@@ -854,6 +869,9 @@ const styles = StyleSheet.create({
     height: 30,
     alignItems: "center",
     justifyContent: "center",
+  },
+  datePickerWithCleanBtn: {
+    width : width - 78
   },
   segmentedControlsWrap: {
     marginHorizontal: 10,
