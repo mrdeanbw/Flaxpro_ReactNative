@@ -90,7 +90,7 @@ class ProfessionalProfileForm extends Component {
 
   onSchedule() {
     this.onShowMoreLess(true);
-    Actions.ScheduleForm({getMySessions: this.props.getMySessions});
+    Actions.ScheduleForm();
   }
 
   onEdit() {

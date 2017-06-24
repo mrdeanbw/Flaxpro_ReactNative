@@ -7,7 +7,6 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
   TouchableOpacity,
   TextInput,
   Switch
@@ -16,7 +15,6 @@ import {
 import ImageProgress from 'react-native-image-progress';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { SegmentedControls } from 'react-native-radio-buttons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Slider from 'react-native-slider';
@@ -29,7 +27,11 @@ import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import * as profileActions  from '../../actions';
 
-const { width, height } = Dimensions.get('window');
+import * as CommonConstant from '../../../Components/commonConstant';
+const width = CommonConstant.WIDTH_SCREEN;
+const height = CommonConstant.HEIHT_SCREEN;
+const appColor = CommonConstant.APP_COLOR;
+
 const background = require('../../../Assets/images/background.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
 const labelSex = ['Male', 'Female'];

@@ -6,7 +6,6 @@ import {
   TextInput,
   View,
   Image,
-  Dimensions,
   TouchableOpacity,
   ScrollView
 } from 'react-native';
@@ -30,7 +29,10 @@ import { GymLocations } from '../../../../Components/dummyEntries';
 
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
-const { width, height } = Dimensions.get('window');
+import * as CommonConstant from '../../../../Components/commonConstant';
+const width = CommonConstant.WIDTH_SCREEN;
+const height = CommonConstant.HEIHT_SCREEN;
+const appColor = CommonConstant.APP_COLOR;
 
 const background = require('../../../../Assets/images/background.png');
 const arrow = require('../../../../Assets/images/right_arrow.png');

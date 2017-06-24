@@ -5,7 +5,6 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
@@ -21,7 +20,10 @@ import R from 'ramda';
 import Calendar from './calendar/Calendar';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 
-const { width, height } = Dimensions.get('window');
+import * as CommonConstant from '../../../Components/commonConstant';
+const width = CommonConstant.WIDTH_SCREEN;
+const height = CommonConstant.HEIHT_SCREEN;
+const appColor = CommonConstant.APP_COLOR;
 
 const background = require('../../../Assets/images/background.png');
 const schedule = require('../../../Assets/images/schedule.png');
@@ -75,7 +77,7 @@ class ClientProfileForm extends Component {
 
   onSchedule() {
     this.onShowMoreLess(true);
-    Actions.ScheduleForm({getMySessions: this.props.getMySessions});
+    Actions.ScheduleForm();
   }
 
   onEdit() {
