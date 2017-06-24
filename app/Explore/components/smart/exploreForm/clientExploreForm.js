@@ -56,9 +56,7 @@ class ClientExploreForm extends Component {
       showContentMode: 0,
       gymLocations: GymLocations,
       filteredProfessionals: this.props.explore.professionals,
-      locationType: 'nearby',
       locationText: 'Nearby to me',
-      locationAddress: '',
       professions: {
         selected: {},
         search:'',
@@ -69,7 +67,9 @@ class ClientExploreForm extends Component {
         listOther: [],
       },
       filter: {
-        date: this.today(),
+        date: '',
+        locationType: 'nearby',
+        address: '',
       }
     };
     this.onFilterAutocomplete = this.onFilterAutocomplete.bind(this)
@@ -116,7 +116,8 @@ class ClientExploreForm extends Component {
   }
 
   openLocationPopup () {
-    this.setState({ locationAddress: '' });
+    const { filter } = this.state;
+    this.setState({ filter: { ...filter, address: ''} });
     this.popupDialogLocation.openDialog ();
   }
 
@@ -126,8 +127,9 @@ class ClientExploreForm extends Component {
 
   onLocation (locationType, locationText) {
     const { getProfessionals } = this.props;
+    const { filter } = this.state;
 
-    this.setState({ locationType, locationText }, () => {
+    this.setState({ filter: {...filter, locationType }, locationText }, () => {
       if(locationType === 'address') this.addressInput.focus();
     });
 
@@ -135,19 +137,20 @@ class ClientExploreForm extends Component {
 
       case 'nearby':
         this.closeLocationPopup();
-        getProfessionals({locationType});
+        getProfessionals({...filter, locationType });
         return;
       case 'address':
         return;
       default:
         this.closeLocationPopup();
-        getProfessionals();
+        getProfessionals({...filter, locationType });
     }
   }
 
   filterByAddress(){
-    if(!this.state.locationAddress) {
-      this.closeLocationPopup()
+    const { filter } = this.state;
+    if(!filter.address) {
+      this.closeLocationPopup();
       return Alert.alert('Alert',
         'Please enter address',
         [
@@ -159,7 +162,8 @@ class ClientExploreForm extends Component {
     const { getProfessionals } = this.props;
     const filterObj = {
       locationType: 'address',
-      address: this.state.locationAddress,
+      address: filter.address,
+      date: filter.date,
     };
     this.closeLocationPopup();
     getProfessionals(filterObj);
@@ -167,7 +171,8 @@ class ClientExploreForm extends Component {
 
   get dialogLocationClient () {
     const { user } = this.props.auth;
-    let originalAddress = ''
+    const { filter } = this.state;
+    let originalAddress = '';
     if (user.location) {
       originalAddress = user.location.originalAddress
     }
@@ -197,9 +202,9 @@ class ClientExploreForm extends Component {
             <TouchableOpacity onPress={() => this.onLocation( "nearby", "Nearby to me" )} >
               <View style={ styles.locationBtnContainer }>
                 <View
-                  style={ [styles.locationBtn, this.state.locationType == "nearby"  && styles.activeLocation] }>
+                  style={ [styles.locationBtn, filter.locationType === "nearby"  && styles.activeLocation] }>
                   <Image
-                    source={ this.state.locationType != "nearby" ? locationNearbyGray : locationNearbyWhite }
+                    source={ filter.locationType !== "nearby" ? locationNearbyGray : locationNearbyWhite }
                     style={ styles.locationNearbyIcon }
                   />
                 </View>
@@ -209,9 +214,9 @@ class ClientExploreForm extends Component {
             <TouchableOpacity onPress={() => this.onLocation( "address")} >
               <View style={ styles.locationBtnContainer }>
                 <View
-                  style={ [styles.locationBtn, this.state.locationType == "address"  && styles.activeLocation] }>
+                  style={ [styles.locationBtn, filter.locationType === "address"  && styles.activeLocation] }>
                   <Image
-                    source={ this.state.locationType != "address" ? locationGray : locationWhite }
+                    source={ filter.locationType !== "address" ? locationGray : locationWhite }
                     style={ styles.locationGrayIcon }/>
                 </View>
                 <Text style={ styles.locationBtnText }>Enter an Address</Text>
@@ -220,9 +225,9 @@ class ClientExploreForm extends Component {
             <TouchableOpacity onPress={() => this.onLocation( "all", "All locations")} >
               <View style={ styles.locationBtnContainer }>
                 <View
-                  style={ [styles.locationBtn, this.state.locationType == "all"  && styles.activeLocation] }>
+                  style={ [styles.locationBtn, filter.locationType === "all"  && styles.activeLocation] }>
                   <Image
-                    source={ this.state.locationType != "all" ? locationMultiGray : locationMultiWhite }
+                    source={ filter.locationType !== "all" ? locationMultiGray : locationMultiWhite }
                     style={ styles.locationMulti }
                   />
                 </View>
@@ -230,10 +235,11 @@ class ClientExploreForm extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          {this.state.locationType == "address" &&
+          {
+            filter.locationType === "address" &&
             <View style={styles.locationInputContainer}>
               <Text style={ styles.locationBlueText }>Enter address</Text>
-              <View style={styles.addressInputContaitner}>
+              <View style={styles.addressInputContainer}>
                 <TextInput
                   ref={(ref) => {this.addressInput = ref}}
                   editable={ true }
@@ -241,7 +247,7 @@ class ClientExploreForm extends Component {
                   autoCorrect={ false }
                   color="#000"
                   style={ styles.textInput }
-                  onChangeText={ (text) => this.setState({locationAddress: text}) }
+                  onChangeText={ (text) => this.setState({filter: {...filter, address: text} }) }
                 />
               </View>
               <TouchableOpacity onPress={ () => this.filterByAddress() }>
@@ -468,7 +474,7 @@ class ClientExploreForm extends Component {
               >
                 <SearchBar
                   height={ 20 }
-                  value={ this.state.locationAddress || this.state.locationText }
+                  value={ this.state.filter.address || this.state.locationText }
                   autoCorrect={ false }
                   editable={ false }
                   returnKeyType={ "search" }
@@ -489,7 +495,7 @@ class ClientExploreForm extends Component {
           <DatePicker
             date={ this.state.filter.date }
             mode="date"
-            placeholder={this.today()}
+            placeholder="Current Date"
             format="dddd, MMM DD, YYYY"
             minDate="01/01/1900"
             maxDate="12/31/2100"
@@ -733,7 +739,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 15
   },
-  addressInputContaitner: {
+  addressInputContainer: {
     width: width * 0.8,
     borderRadius: 15,
     borderWidth: 1,
