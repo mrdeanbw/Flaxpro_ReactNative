@@ -9,7 +9,12 @@ function profileError(error) {
   return { type: types.PROFILE_ERROR, error };
 }
 
+export function profileRequest() {
+  return { type: types.PROFILE_GET_REQUEST };
+}
+
 export const updateProfile = (userData) => async (dispatch, store) => {
+  profileRequest();
   const url = userData.professional ? '/professional/'+userData._id : '/client/'+userData._id;
   const { auth } = store();
   const options = {
@@ -78,6 +83,7 @@ export const getSessionsById = (data) => async (dispatch, store) => {
 };
 
 export const getFullProfile = (user) => async (dispatch, store) => {
+  profileRequest();
   const { auth } = store();
   const role = (user || auth.user).role.toLowerCase();
   const url = `/${role}/${user ? user._id : auth.user._id}`;
@@ -91,6 +97,26 @@ export const getFullProfile = (user) => async (dispatch, store) => {
   } catch (error) {
     const error =
       `Profile Error: getFullProfile()
+      Message: ${error.message}`;
+    dispatch(profileError(error));
+  }
+
+};
+
+export const getSchedule = () => async (dispatch, store) => {
+  profileRequest();
+  const { auth } = store();
+  const url = `/schedule/${auth.user.role.toLowerCase()}/${auth.user._id}`;
+  const options = {
+    method: 'get',
+  };
+
+  try {
+    const response = await request(url, options, auth);
+    dispatch(updateProfileSuccess({schedule: response}));
+  } catch (error) {
+    const error =
+      `Profile Error: getSchedule()
       Message: ${error.message}`;
     dispatch(profileError(error));
   }
