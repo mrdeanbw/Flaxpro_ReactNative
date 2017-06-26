@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 import request, { toQueryString } from '../request';
 
-export function mainRequest() {
+export function contractsRequest() {
   return { type: types.CONTRACTS_GET_REQUEST };
 }
 
@@ -14,12 +14,12 @@ function contractsSuccess(data) {
 }
 
 export const getMyClients = (data) => async (dispatch, store) => {
-  dispatch(mainRequest());
+  dispatch(contractsRequest());
   const role = 'client';
   await getMyClientsProfessionals({role, data})(dispatch, store);
 };
 export const getMyProfessionals = (data) => async (dispatch, store) => {
-  dispatch(mainRequest());
+  dispatch(contractsRequest());
   const role = 'professional';
   await getMyClientsProfessionals({role, data})(dispatch, store);
 };
@@ -48,6 +48,7 @@ export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, st
 };
 
 export const cancelContract = (contractId) => async (dispatch, store) => {
+  dispatch(contractsRequest());
   const url = '/contract/cancel/'+contractId;
   const { auth } = store();
   const options = {
@@ -56,7 +57,7 @@ export const cancelContract = (contractId) => async (dispatch, store) => {
 
   try {
     const contract  = await request(url, options, auth);
-    // dispatch(contractsSuccess({contract}));
+    dispatch(contractsSuccess({contract}));
   } catch (error) {
     const error =
       `Schedule Error: cancelContract()

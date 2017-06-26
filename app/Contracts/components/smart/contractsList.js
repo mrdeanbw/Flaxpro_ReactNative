@@ -8,10 +8,12 @@ import {
   ListView,
   TouchableOpacity
 }from 'react-native'
+import Moment from 'moment';
+
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 import {Button,ListItem} from "../../../theme"
 import styles from "./contractsList_style"
 import * as Constants from "../../../Components/commonConstant"
-import Moment from 'moment';
 
 const days = [
   {active: true, name: 'All Days', value: ''},
@@ -54,7 +56,7 @@ class ClientsProfessionals extends React.Component {
     if(newProps.contracts.loading) return;
     if(newProps.contracts.error) return Alert.alert(newProps.contracts.error);
 
-    const {contracts: {contracts}} = newProps
+    const {contracts: {contracts}} = newProps;
     const role = newProps.auth.user.role === Constants.user_professional ? Constants.user_client.toLowerCase() : Constants.user_professional.toLowerCase();
 
     const data = contracts.map( e => ({
@@ -187,6 +189,7 @@ class ClientsProfessionals extends React.Component {
             }
           </View>
         </View>
+        { this.props.contracts.loading ? <FullScreenLoader/> : null }
       </View>
     )
   }
