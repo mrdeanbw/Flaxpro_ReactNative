@@ -31,7 +31,7 @@ export default function auth(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
-        error: 'Неверный логин или пароль',
+        error: action.error,
       };
 
     case types.CREATE_USER_SUCCESS:
