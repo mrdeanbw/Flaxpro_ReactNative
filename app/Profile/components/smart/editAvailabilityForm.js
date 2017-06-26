@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
-  Dimensions,
-  TextInput,
   ScrollView,
   TouchableOpacity,
   Alert,
@@ -17,18 +14,23 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-datepicker';
+import { connect } from 'react-redux';
 
 import Calendar from './calendar/Calendar';
+import * as profileActions from '../../actions';
 
 import Ramda from 'ramda';
 import Moment from 'moment';
 
-const { width, height } = Dimensions.get('window');
+import * as CommonConstant from '../../../Components/commonConstant';
+const width = CommonConstant.WIDTH_SCREEN;
+const height = CommonConstant.HEIHT_SCREEN;
+const appColor = CommonConstant.APP_COLOR;
 
 const background = require('../../../Assets/images/background.png');
 const downArrow = require('../../../Assets/images/down_arrow.png');
 
-const schedules = [
+const schedule = [
   {
     date: '2017-06-10',
     times: [
@@ -71,31 +73,39 @@ const schedules = [
 
 ];
 
-export default class EditAvailabilityForm extends Component {
+class EditAvailabilityForm extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      schedules: schedules,
-      selectedDate: schedules[0].date,
+      schedule: props.profile.schedule,
+      selectedDate: [],
     };
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillMount(){
+    this.props.getSchedule();
+  }
 
-    if (newProps.status == 'ClientScheduleRequest') {
+  componentWillReceiveProps(nextProps) {
+    const { profile } = nextProps;
 
-    } else if (newProps.status == 'ClientScheduleSuccess') {
-
-    } else if (newProps.status == 'ClientScheduleError') {
-
+    if (profile.error) {
+      Alert.alert(profile.error);
     }
+    if (!profile.loading){
+      this.setState({
+        schedule: profile.schedule,
+        selectedDate: profile.schedule.length ?  [profile.schedule[0].date] : []
+      })
+    }
+
   }
 
   onAddTime() {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
+    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedule);
 
-    const { schedules } = this.state;
+    const { schedule } = this.state;
 
     if (index == -1 ) {
       const data = {
@@ -107,33 +117,39 @@ export default class EditAvailabilityForm extends Component {
           }
         ]
       };
-      schedules.push( data );
+      schedule.push( data );
     } else {
-      schedules[index].times.push({ start: '08:00 AM', end: '09:00 AM' });
+      schedule[index].times.push({ start: '08:00 AM', end: '09:00 AM' });
     }
 
-    this.setState({ schdules: schedules });
+    this.setState({ schedule });
   }
 
   onSelectDate(date) {
-    let day = Moment(date).format('YYYY-MM-DD');
-    this.setState({ selectedDate: day });
+    let day = Moment(date).format('ddd, DD MMM YYYY');
+    const selectedDate = [...this.state.selectedDate];
+    if(selectedDate.includes(day)){
+      selectedDate.splice(selectedDate.indexOf(day), 1)
+    } else {
+      selectedDate.push(day)
+    }
+    this.setState({ selectedDate });
   }
 
   onChangeStartTime(time, entryIndex) {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
+    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedule);
 
-    const { schedules } = this.state;
-    schedules[index].times[entryIndex].start = time;
-    this.setState({ schdules: schedules });
+    const { schedule } = this.state;
+    schedule[index].schedules[entryIndex].start = time;
+    this.setState({ schedule });
   }
 
   onChangeEndTime(time, entryIndex) {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
+    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedule);
 
-    const { schedules } = this.state;
-    schedules[index].times[entryIndex].end = time;
-    this.setState({ schdules: schedules });
+    const { schedule } = this.state;
+    schedule[index].schedules[entryIndex].end = time;
+    this.setState({ schedule });
   }
 
   onSetSchedule() {
@@ -165,70 +181,70 @@ export default class EditAvailabilityForm extends Component {
   }
 
   showSchedule() {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules)
 
-    if (index == -1)
-      return null;
-
-    return this.state.schedules[index].times.map((entry, index) => {
-      return (
-        <View key={ index } style={ styles.timeRowContainer }>
-          <DatePicker
-            date={ entry.start }
-            mode="time"
-            format="hh:mm A"
-            confirmBtnText="Done"
-            cancelBtnText="Cancel"
-            is24Hour={ false }
-            iconSource={ downArrow }
-            style = { styles.calendarTime }
-            customStyles={{
-              dateInput: {
-                borderColor: "transparent",
-                alignItems: "center",
-                height: 25,
-              },
-              dateText: {
-                color: "#4d4d4d",
-                fontSize: 20,
-              },
-              dateIcon: {
-                width: 18,
-                height: 10,
-              },
-            }}
-            onDateChange={ (time) => this.onChangeStartTime(time, index) }
-          />
-          <Text style={ styles.textTimeTo }>To</Text>
-          <DatePicker
-            date={ entry.end }
-            mode="time"
-            format="hh:mm A"
-            confirmBtnText="Done"
-            cancelBtnText="Cancel"
-            is24Hour={ false }
-            iconSource={ downArrow }
-            style = { styles.calendarTime }
-            customStyles={{
-              dateInput: {
-                borderColor: "transparent",
-                alignItems: "center",
-                height: 25,
-              },
-              dateText: {
-                color: "#4d4d4d",
-                fontSize: 20,
-              },
-              dateIcon: {
-                width: 18,
-                height: 10,
-              },
-            }}
-            onDateChange={ (time) => this.onChangeEndTime(time, index) }
-          />
-        </View>
-      );
-    });
+    return this.state.schedule.filter((e)=>this.state.selectedDate.includes(e.date)).map((day, indexDays) => (
+      <View key={indexDays}>
+        {
+          day.schedules.map((entry, index) => (
+              <View key={ index } style={ styles.timeRowContainer }>
+                <DatePicker
+                  date={ entry.from }
+                  mode="time"
+                  format="hh:mm A"
+                  confirmBtnText="Done"
+                  cancelBtnText="Cancel"
+                  is24Hour={ false }
+                  iconSource={ downArrow }
+                  style = { styles.calendarTime }
+                  customStyles={{
+                    dateInput: {
+                      borderColor: "transparent",
+                      alignItems: "center",
+                      height: 25,
+                    },
+                    dateText: {
+                      color: "#4d4d4d",
+                      fontSize: 20,
+                    },
+                    dateIcon: {
+                      width: 18,
+                      height: 10,
+                    },
+                  }}
+                  onDateChange={ (time) => this.onChangeStartTime(time, index) }
+                />
+                <Text style={ styles.textTimeTo }>To</Text>
+                <DatePicker
+                  date={ entry.to }
+                  mode="time"
+                  format="hh:mm A"
+                  confirmBtnText="Done"
+                  cancelBtnText="Cancel"
+                  is24Hour={ false }
+                  iconSource={ downArrow }
+                  style = { styles.calendarTime }
+                  customStyles={{
+                    dateInput: {
+                      borderColor: "transparent",
+                      alignItems: "center",
+                      height: 25,
+                    },
+                    dateText: {
+                      color: "#4d4d4d",
+                      fontSize: 20,
+                    },
+                    dateIcon: {
+                      width: 18,
+                      height: 10,
+                    },
+                  }}
+                  onDateChange={ (time) => this.onChangeEndTime(time, index) }
+                />
+              </View>
+            ))
+        }
+      </View>
+    ))
   }
 
   render() {
@@ -251,7 +267,7 @@ export default class EditAvailabilityForm extends Component {
             <Calendar
               customStyle={ customStyle }
               dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-              eventDates={ Ramda.pluck('date')(this.state.schedules) }
+              eventDates={ Ramda.pluck('date')(this.state.schedule) }
               nextButtonText={ '>' }
               prevButtonText={'<'}
               showControls={ true }
@@ -271,7 +287,7 @@ export default class EditAvailabilityForm extends Component {
 
             <View style={ styles.timeMainContainer }>
               {
-                this.state.schedules.length > 1 ?
+                this.state.schedule.length > 0 ?
                   <ScrollView>
                     { this.showSchedule() }
 
@@ -323,10 +339,10 @@ const customStyle = {
     color: '#8e9296',
   },
   currentDayCircle: {
-    backgroundColor: '#fff',
+    backgroundColor: '#efefef',
   },
   currentDayText: {
-    color: '#8d99a6',
+    color: '#000',
   },
   day: {
     color: '#8d99a6',
@@ -335,12 +351,12 @@ const customStyle = {
     color: '#2e343b',
   },
   hasEventCircle: {
-    backgroundColor: '#45c7f1',
+    backgroundColor: '#efefef',
     borderWidth: 1,
-    borderColor: '#34aadc',
+    borderColor: '#efefef',
   },
   hasEventText: {
-    color: '#fff',
+    color: '#8d99a6',
   },
   selectedDayCircle: {
     backgroundColor: '#45c7f1',
@@ -460,3 +476,12 @@ const styles = StyleSheet.create({
   },
 
 });
+
+export default connect(state => ({
+    profile: state.profile,
+    user: state.auth.user,
+  }),
+  (dispatch) => ({
+    getSchedule: () => dispatch(profileActions.getSchedule()),
+  })
+)(EditAvailabilityForm);
