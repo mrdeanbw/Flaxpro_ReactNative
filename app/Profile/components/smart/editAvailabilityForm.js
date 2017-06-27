@@ -110,15 +110,16 @@ class EditAvailabilityForm extends Component {
 
     selectedDates.forEach( selected => {
       const day = new Date(selected.date);
+
       const setNewTime = ( offset = 0 ) => {
-        if (selected.schedules.length > 12) return;
+        if (offset > 12) return;
         const defaultTime = {
           from: new Date(day.setHours(timeStart + offset)),
           to: new Date(day.setHours(timeEnd + offset)),
         };
 
         if (selected.schedules.length) {
-          const el = selected.schedules.filter(schedule => new Date(schedule.from) === defaultTime.from);
+          const el = selected.schedules.filter(schedule => Moment(schedule.from).format() === Moment(defaultTime.from).format());
           if (el.length) {
             setNewTime(++offset)
           } else {
