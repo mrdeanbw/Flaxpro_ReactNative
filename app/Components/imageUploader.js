@@ -125,7 +125,7 @@ export default class UploadFromCameraRoll extends React.Component {
         'Accept': 'application/json',
         'Authorization': this.state.token
       },
-      url: this.state.apiUrl+'/profile/avatar-upload',
+      url: this.state.apiUrl+'/users/avatar',
       files: files,
       params: {name: 'test-app'}
     };

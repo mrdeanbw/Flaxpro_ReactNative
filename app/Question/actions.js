@@ -11,7 +11,7 @@ function questionError(error) {
 }
 
 export const createRole = (userData) => async (dispatch, store) => {
-  const url = userData.professional ? '/professional/new' : '/client/new';
+  const url = userData.professional ? '/professionals' : '/clients';
   const { auth } = store();
   const options = {
     method: 'post',

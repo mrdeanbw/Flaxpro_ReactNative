@@ -15,7 +15,7 @@ export function updateHireError(error) {
 export const getScheduleById = (data) => async (dispatch, store) => {
   if (!data.user) return;
   const { auth } = store();
-  let url = `/schedule/${data.user.role.toLowerCase()}/${data.user._id}`;
+  let url = `/schedules/${data.user.role.toLowerCase()}/${data.user._id}`;
   const options = {
     method: 'get',
   };
@@ -38,7 +38,7 @@ export const getScheduleById = (data) => async (dispatch, store) => {
 
 export const createContract = (data) => async (dispatch, store) => {
   const { auth } = store();
-  const url = '/contract/new';
+  const url = '/contracts';
   const options = {
     method: 'post',
     body: JSON.stringify(data),
@@ -67,7 +67,7 @@ export function changePaymentForm(data) {
 export const addCard = (data) => async (dispatch, store) => {
   dispatch({type: types.PAYMENT_LOADING});
   const { auth } = store();
-  const url = '/payment/setPaymentClient';
+  const url = `/payments/${auth.user.role}`;
   const options = {
     method: 'post',
     body: JSON.stringify(data),
@@ -86,7 +86,7 @@ export const addCard = (data) => async (dispatch, store) => {
 
 export const getCards = () => async (dispatch, store) => {
   const { auth } = store();
-  const url = '/payment/cards';
+  const url = '/payments/cards';
   const options = { method: 'get' };
 
   try {

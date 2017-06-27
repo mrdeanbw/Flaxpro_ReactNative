@@ -25,7 +25,7 @@ export const getMyProfessionals = (data) => async (dispatch, store) => {
 };
 
 export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, store) => {
-  let url = `/${role}/my`;
+  let url = `/${role}s/my`;
   const { auth } = store();
   const options = {
     method: 'get',
@@ -49,7 +49,7 @@ export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, st
 
 export const cancelContract = (contractId) => async (dispatch, store) => {
   dispatch(contractsRequest());
-  const url = '/contract/cancel/'+contractId;
+  const url = `/contracts/${contractId}/cancel`;
   const { auth } = store();
   const options = {
     method: 'post',

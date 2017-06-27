@@ -15,8 +15,8 @@ function exploreSuccess(data) {
 
 export const getExploreClient = () => async (dispatch, store) => {
   dispatch(exploreRequest());
-  const professionsUrl = '/profession';
-  const professionalsUrl = '/professional/q?locationType=nearby';
+  const professionsUrl = '/professions';
+  const professionalsUrl = '/professionals?locationType=nearby';
   const { auth } = store();
   const options = {
     method: 'get',
@@ -34,7 +34,7 @@ export const getExploreClient = () => async (dispatch, store) => {
 
 export const getProfessionals = (data) => async (dispatch, store) => {
   dispatch(exploreRequest());
-  let url = '/professional/q';
+  let url = '/professionals';
   const { auth } = store();
   const options = {
     method: 'get',
@@ -58,7 +58,7 @@ export const getProfessionals = (data) => async (dispatch, store) => {
 
 export const getClients = (data) => async (dispatch, store) => {
   dispatch(exploreRequest());
-  let url = '/client/q';
+  let url = '/clients';
   const { auth } = store();
   const options = {
     method: 'get',
@@ -82,7 +82,7 @@ export const getClients = (data) => async (dispatch, store) => {
 
 export const getProfessions = (data) => async (dispatch, store) => {
   dispatch(exploreRequest());
-  let url = '/profession';
+  let url = '/professions';
   const { auth } = store();
   const options = {
     method: 'get',

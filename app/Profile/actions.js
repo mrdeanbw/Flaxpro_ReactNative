@@ -15,7 +15,7 @@ export function profileRequest() {
 
 export const updateProfile = (userData) => async (dispatch, store) => {
   profileRequest();
-  const url = userData.professional ? '/professional/'+userData._id : '/client/'+userData._id;
+  const url = `/${userData.role.toLowerCase()}s/'${userData._id}`;
   const { auth } = store();
   const options = {
     method: 'put',
@@ -36,7 +36,7 @@ export const updateProfile = (userData) => async (dispatch, store) => {
 };
 
 export const getMySessions = (data) => async (dispatch, store) => {
-  let url = '/session/getMy';
+  let url = '/sessions';
   const { auth } = store();
   const options = {
     method: 'get',
@@ -61,7 +61,7 @@ export const getMySessions = (data) => async (dispatch, store) => {
 export const getSessionsById = (data) => async (dispatch, store) => {
   if (!data.user) return;
   const { auth } = store();
-  let url = `/session/${data.user.role.toLowerCase()}/${data.user._id}`;
+  let url = `/sessions/${data.user.role.toLowerCase()}/${data.user._id}`;
   const options = {
     method: 'get',
   };
@@ -86,7 +86,7 @@ export const getFullProfile = (user) => async (dispatch, store) => {
   profileRequest();
   const { auth } = store();
   const role = (user || auth.user).role.toLowerCase();
-  const url = `/${role}/${user ? user._id : auth.user._id}`;
+  const url = `/${role}s/${user ? user._id : auth.user._id}`;
   const options = {
     method: 'get',
   };
@@ -106,7 +106,7 @@ export const getFullProfile = (user) => async (dispatch, store) => {
 export const getSchedule = () => async (dispatch, store) => {
   profileRequest();
   const { auth } = store();
-  const url = `/schedule/${auth.user.role.toLowerCase()}/${auth.user._id}`;
+  const url = `/schedules${auth.user.role.toLowerCase()}/${auth.user._id}`;
   const options = {
     method: 'get',
   };
