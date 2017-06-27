@@ -40,7 +40,7 @@ export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, st
     dispatch(contractsSuccess({contracts}));
   } catch (error) {
     const error =
-      `Schedule Error: getMyClientsProfessionals(${role})
+      `Schedule Error: getMyClientsProfessionals(get ${role}s)
       Message: ${error.message}`;
     dispatch(contractsError(error));
   }
