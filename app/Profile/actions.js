@@ -106,7 +106,7 @@ export const getFullProfile = (user) => async (dispatch, store) => {
 export const getSchedule = () => async (dispatch, store) => {
   profileRequest();
   const { auth } = store();
-  const url = `/schedules${auth.user.role.toLowerCase()}/${auth.user._id}`;
+  const url = `/schedules/${auth.user.role.toLowerCase()}/${auth.user._id}`;
   const options = {
     method: 'get',
   };
