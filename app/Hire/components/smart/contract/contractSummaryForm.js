@@ -36,43 +36,55 @@ export default class ContractSummaryForm extends Component {
       selectedDates: props.hire.selectedDates,
       availableDates: props.hire.schedule,
       selectedTimes: props.hire.selectedTimes,
+      payment: props.hire.payment,
     };
   }
 
   componentWillReceiveProps(newProps) {
+    const { resetProps } = this.props;
     this.setState({
       numberOfSessions: newProps.hire.numberOfSessions,
       numberOfPeople: newProps.hire.numberOfPeople,
       selectedDates: newProps.hire.selectedDates,
       availableDates: newProps.hire.schedule,
       selectedTimes: newProps.hire.selectedTimes,
-    })
+      payment: newProps.hire.payment,
+    });
+    if (!newProps.hire.loading) {
+      if (!!newProps.hire.error) {
+        Alert.alert(newProps.hire.error)
+      } else {
+        Actions.Main();
+        Alert.alert("Successful", null,[{text: 'Ok', onPress: () => resetProps()}])
+      }
+    }
 
   }
 
-  onNext () {
+  onNext (paymentMethod, price, userLocation) {
     const { createContract } = this.props;
-
     const data = {
       userTo: this.props.user.user,
-      rate: this.props.user.price,
+      rate: price,
       numberOfPeople: this.state.numberOfPeople,
       sessions: this.state.selectedTimes,
-      paymentMethod: '',
-      location: '',
-      address: ''
-
+      paymentMethod: paymentMethod.slice(0, 4),
+      location:  'professional',
     };
-    createContract(data)
-    Actions.Payment();
+    createContract(data);
   }
   onBack() {
     const { changeContractForm } = this.props;
-    changeContractForm({...this.state, secondForm: true})
+    changeContractForm({ ...this.props.hire, ...{summaryForm: false, paymentForm: true} });
   }
 
   render() {
-    const { user, hire: {schedule} } = this.props;
+    const { user, profile, hire: {offerPrice} } = this.props;
+    const { payment } = this.state;
+    const userLocation = profile.user.location;
+    const price = offerPrice || user.amount || user.price
+
+    let paymentMethod = typeof(payment) === 'string'? payment: 'Card  ...'+ payment.last4;
 
     return (
       <View style={ styles.container }>
@@ -102,21 +114,21 @@ export default class ContractSummaryForm extends Component {
               <View style={ [styles.borderBottom, styles.rowContainer] }>
                 <Text style={ [fontStyles, styles.textDescription] }>Hourly Rate</Text>
                 <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textBidDescription }>$ { user.amount || user.price }/Hr</Text>
+                  <Text style={ styles.textBidDescription }>$ {price}/Hr</Text>
                 </View>
               </View>
 
               <View style={ [styles.borderBottom, styles.rowContainer] }>
                 <Text style={ [fontStyles, styles.textDescription] }>Total Hourly Rate</Text>
                 <View style={ styles.valueWrapper }>
-                  <Text style={ styles.textBidDescription }>$ { this.state.numberOfSessions * this.state.numberOfPeople * (user.amount || user.price) }/Hr</Text>
+                  <Text style={ styles.textBidDescription }>$ { this.state.numberOfSessions * this.state.numberOfPeople * (price) }/Hr</Text>
                 </View>
               </View>
 
               <View style={ [styles.borderBottom, styles.rowContainer] }>
                 <Text style={ [fontStyles, styles.textDescription] }>Location</Text>
                 <View style={ [styles.valueWrapper, styles.width06] }>
-                  <Text style={ [styles.textBidDescription] }>{ user.location.originalAddress }</Text>
+                  <Text style={ [styles.textBidDescription] }>{ userLocation.originalAddress }</Text>
                 </View>
               </View>
 
@@ -124,6 +136,13 @@ export default class ContractSummaryForm extends Component {
                 <Text style={ [fontStyles, styles.textDescription] }>Number of People</Text>
                 <View style={ [styles.valueWrapper] }>
                   <Text style={ [styles.textBidDescription] }>{ this.state.numberOfPeople }</Text>
+                </View>
+              </View>
+
+              <View style={ [styles.borderBottom, styles.rowContainer] }>
+                <Text style={ [fontStyles, styles.textDescription] }>Payment Method</Text>
+                <View style={ [styles.valueWrapper] }>
+                  <Text style={ [styles.textBidDescription] }>{ paymentMethod }</Text>
                 </View>
               </View>
 
@@ -147,7 +166,7 @@ export default class ContractSummaryForm extends Component {
 
             </View>
             <View style={ styles.bottomButtonWrapper }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onNext() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onNext(paymentMethod, price, userLocation) }>
                 <View style={ styles.saveButton }>
                   <Text style={ styles.whiteText }>CONFIRM OFFER</Text>
                 </View>

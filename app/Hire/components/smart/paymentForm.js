@@ -16,6 +16,7 @@ import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 
 const { width, height } = Dimensions.get('window');
 const background = require('../../../Assets/images/background.png');
@@ -34,35 +35,37 @@ export default class Payment extends Component {
 
   constructor(props) {
     super(props);
-    props.getCards();
     this.state = {
       numberOfSessions: 3,
     };
   }
+  componentWillMount() {
+    const {getCards} = this.props;
+    getCards();
+  }
+
 
   componentWillReceiveProps(newProps) {
     if(newProps.hire.error) {
       Alert.alert(newProps.hire.error)
     }
-    if (newProps.status == 'PaymentRequest') {
-
-    } else if (newProps.status == 'PaymentSuccess') {
-
-    } else if (newProps.status == 'PaymentError') {
-
-    }
   }
 
-  onClose () {
-    const { user } = this.props;
+  onBack () {
+    const { changeContractForm } = this.props;
     this.props.editable ?
       Actions.pop()
       :
-      Actions.Main({ user_mode: user.role });
+      changeContractForm({ ...this.props.hire, ...{secondForm: true, paymentForm: false} });
   }
 
-  onSelectPaymentMethod(key) {
-    Alert.alert('onSelectPaymentMethod');
+  onSelectPaymentMethod(payment) {
+    if (!this.props.editable) {
+      const { changeContractForm } = this.props;
+      changeContractForm({ ...this.props.hire, ...{summaryForm: true, paymentForm: false, payment} });
+    } else {
+      Alert.alert('onSelectPaymentMethod');
+    }
   }
 
   onAddCode() {
@@ -76,21 +79,15 @@ export default class Payment extends Component {
 
   render() {
     const { editable } = this.props;
-    console.log('this.props.hire.creditCardsList', this.props.hire.creditCardsList)
-
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
           <View style={ styles.navBarContainer }>
             <TouchableOpacity
-              onPress={ () => this.onClose() }
+              onPress={ () => this.onBack() }
               style={ styles.closeButtonWrapper }
             >
-              {editable ?
-                <EntypoIcons name="chevron-thin-left" size={ 35 } color="#fff" />
-                :
-                <EvilIcons name="close" size={ 35 } color="#fff" />
-              }
+              <EntypoIcons name="chevron-thin-left" size={ 35 } color="#fff" />
             </TouchableOpacity>
             <Text style={ styles.textTitle }>PAYMENT</Text>
             <View style={ styles.closeButtonWrapper } />
@@ -104,7 +101,7 @@ export default class Payment extends Component {
                 return (
                   <View key={key}>
                     <TouchableOpacity
-                      onPress={ () => this.onSelectPaymentMethod(0) }
+                      onPress={ () => this.onSelectPaymentMethod(creditCard) }
                       style={ styles.cellContainer }
                     >
                       <View style={styles.creditCard}>
@@ -142,7 +139,7 @@ export default class Payment extends Component {
               }
               {!editable &&
                 <TouchableOpacity
-                  onPress={ () => this.onSelectPaymentMethod(0) }
+                  onPress={ () => this.onSelectPaymentMethod('Cash') }
                   style={ styles.cellContainer }
                 >
                   <View style={styles.creditCard}>
@@ -154,6 +151,7 @@ export default class Payment extends Component {
               }
             </ScrollView>
           </View>
+          { this.props.hire.loading && <FullScreenLoader/>}
         </Image>
       </View>
     );

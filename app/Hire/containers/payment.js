@@ -22,7 +22,6 @@ class Payment extends Component {
   }
 
   render() {
-    console.log('this.props', this.props)
     const { actions, status, user, hire } = this.props;
 
     switch(true) {

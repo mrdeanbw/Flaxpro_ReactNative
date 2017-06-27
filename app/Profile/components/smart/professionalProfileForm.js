@@ -131,12 +131,12 @@ class ProfessionalProfileForm extends Component {
 
   onHire() {
     this.onShowMoreLess(true);
-    Actions.Payment();
+    Actions.Contract({ user: this.user, editable: false });
   }
 
   onMakeAnOffer() {
     this.onShowMoreLess(true);
-    Actions.Contract({ user: this.user });
+    Actions.Contract({ user: this.user, editable: true });
   }
 
   onBack() {
