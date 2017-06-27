@@ -30,48 +30,6 @@ const appColor = CommonConstant.APP_COLOR;
 const background = require('../../../Assets/images/background.png');
 const downArrow = require('../../../Assets/images/down_arrow.png');
 
-const schedule = [
-  {
-    date: '2017-06-10',
-    times: [
-      {
-        start: '08:00 AM',
-        end: '10:00 AM',
-      },
-      {
-        start: '08:10 AM',
-        end: '10:10 AM',
-      },
-    ],
-  },
-  {
-    date: '2017-06-15',
-    times: [
-      {
-        start: '08:30 AM',
-        end: '10:30 AM',
-      },
-      {
-        start: '08:40 AM',
-        end: '10:40 AM',
-      },
-    ],
-  },
-  {
-    date: '2017-06-20',
-    times: [
-      {
-        start: '08:20 AM',
-        end: '10:20 AM',
-      },
-      {
-        start: '08:30 AM',
-        end: '10:30 AM',
-      },
-    ],
-  },
-
-];
 
 class EditAvailabilityForm extends Component {
 
@@ -105,8 +63,15 @@ class EditAvailabilityForm extends Component {
     if (!this.state.selectedDates.length) return;
 
     const selectedDates = [...this.state.selectedDates];
+    const schedule = [...this.state.schedule];
     const timeStart = 8;
     const timeEnd = 9;
+
+    const updateSchedule = (date, time) => {
+      const existDate = Ramda.find(Ramda.propEq('date', date))(schedule);
+      existDate ? existDate.schedules.push(time) : schedule.push({date, schedules: [time]})
+      this.setState({schedule})
+    };
 
     selectedDates.forEach( selected => {
       const day = new Date(selected.date);
@@ -124,9 +89,11 @@ class EditAvailabilityForm extends Component {
             setNewTime(++offset)
           } else {
             selected.schedules.push(defaultTime);
+            updateSchedule(selected.date, defaultTime);
           }
         } else {
           selected.schedules.push(defaultTime);
+          updateSchedule(selected.date, defaultTime);
         }
       };
       setNewTime();
