@@ -35,9 +35,6 @@ export default class Payment extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      numberOfSessions: 3,
-    };
   }
   componentWillMount() {
     const {getCards} = this.props;

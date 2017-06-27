@@ -37,7 +37,7 @@ export const getScheduleById = (data) => async (dispatch, store) => {
 };
 
 export const createContract = (data) => async (dispatch, store) => {
->  dispatch({type: types.PAYMENT_LOADING});
+  dispatch({type: types.PAYMENT_LOADING});
   const { auth } = store();
   const url = '/contracts';
   const options = {
