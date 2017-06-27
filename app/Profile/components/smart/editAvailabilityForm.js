@@ -137,7 +137,7 @@ class EditAvailabilityForm extends Component {
   }
 
   onSelectDate(date) {
-    let day = Moment(date).format('ddd, DD MMM YYYY');
+    const day = Moment(date).format('ddd, DD MMM YYYY');
     const selectedDates = [...this.state.selectedDates];
     const existDate = Ramda.find(Ramda.propEq('date', day))(this.state.schedule);
 
@@ -194,8 +194,6 @@ class EditAvailabilityForm extends Component {
   }
 
   get showSchedule() {
-
-    console.log('==============',this.state.selectedDates)
     return this.state.selectedDates.map((day, indexDays) => (
       <View key={indexDays}>
         {
