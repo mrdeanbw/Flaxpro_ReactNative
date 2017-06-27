@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
   ScrollView,
-  TextInput,
   TouchableOpacity,
-  Slider,
   Alert,
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import R from 'ramda';
 import Moment from 'moment';
 import RadioButton from '../../../../Components/radioButton';
@@ -37,6 +33,7 @@ export default class ContractSecondForm extends Component {
       availableDates: props.hire.schedule,
       selectedDay: props.hire.selectedDates.length ? R.find(R.propEq('date', props.hire.selectedDates[0]))(props.hire.schedule) : { schedules: [] },
       selectedTimes: props.hire.selectedTimes,
+      offerPrice: props.hire.offerPrice,
     };
   }
 
@@ -47,8 +44,13 @@ export default class ContractSecondForm extends Component {
       selectedDates: newProps.hire.selectedDates,
       availableDates: newProps.hire.schedule,
       selectedTimes: newProps.hire.selectedTimes,
+      offerPrice: newProps.hire.offerPrice,
     })
+  }
 
+  componentDidMount() {
+    const {getFullProfile} = this.props;
+    getFullProfile(this.props.user);
   }
 
   onNext () {
@@ -56,8 +58,9 @@ export default class ContractSecondForm extends Component {
       return Alert.alert('Please select more dates/times or change number of sessions')
     }
     const { changeContractForm } = this.props;
-    changeContractForm({...this.state, summaryForm: true})
-  }
+    changeContractForm({...this.state, paymentForm: true});
+  };
+
   onBack() {
     const { changeContractForm } = this.props;
     changeContractForm({...this.state, firstForm: true})
@@ -68,7 +71,7 @@ export default class ContractSecondForm extends Component {
   }
 
   onSelectTime(value) {
-    const selectedTimes = this.state.selectedTimes;
+    const selectedTimes = [...this.state.selectedTimes];
 
     if(selectedTimes.includes(value)){
       selectedTimes.splice(selectedTimes.indexOf(value), 1)
@@ -221,7 +224,7 @@ const customStyle = {
   weekRow: {
     backgroundColor: '#fff',
   },
-}
+};
 
 const styles = StyleSheet.create({
   container: {

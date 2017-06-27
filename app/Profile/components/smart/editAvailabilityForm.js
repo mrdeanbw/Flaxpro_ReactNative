@@ -194,8 +194,6 @@ class EditAvailabilityForm extends Component {
   }
 
   get showSchedule() {
-
-    console.log('==============',this.state.selectedDates)
     return this.state.selectedDates.map((day, indexDays) => (
       <View key={indexDays}>
         {

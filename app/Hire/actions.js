@@ -37,6 +37,7 @@ export const getScheduleById = (data) => async (dispatch, store) => {
 };
 
 export const createContract = (data) => async (dispatch, store) => {
+>  dispatch({type: types.PAYMENT_LOADING});
   const { auth } = store();
   const url = '/contracts';
   const options = {
@@ -85,6 +86,7 @@ export const addCard = (data) => async (dispatch, store) => {
 };
 
 export const getCards = () => async (dispatch, store) => {
+  dispatch({type: types.PAYMENT_LOADING});
   const { auth } = store();
   const url = '/payments/cards';
   const options = { method: 'get' };
@@ -98,4 +100,7 @@ export const getCards = () => async (dispatch, store) => {
       Message: ${error.message}`;
     dispatch(updateHireError(error));
   }
+};
+export const resetProps = () => async (dispatch, store) => {
+  dispatch({type: types.HIRE_RESET});
 };

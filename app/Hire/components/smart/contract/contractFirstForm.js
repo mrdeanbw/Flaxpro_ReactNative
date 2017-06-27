@@ -1,15 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
-  Dimensions,
   TextInput,
   TouchableOpacity,
   Slider,
   Alert,
+  ScrollView
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -83,7 +82,7 @@ export default class ContractFirstForm extends Component {
   }
 
   onchangeOfferPrice(value) {
-      this.setState({offerPrice: value})
+    this.setState({offerPrice: value})
   }
 
   render() {
@@ -108,7 +107,7 @@ export default class ContractFirstForm extends Component {
             <View style={ styles.navButtonWrapper } />
 
           </View>
-          <View style={ styles.mainContainer }>
+          <ScrollView style={ styles.mainContainer }>
             <View style={ [styles.borderBottom, styles.topContainer] }>
               <View style={ styles.rowContainer }>
                 <Text style={ [fontStyles, styles.textDescription] }>Total number of sessions</Text>
@@ -237,7 +236,7 @@ export default class ContractFirstForm extends Component {
                 </View>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         </Image>
       </View>
     );
@@ -297,6 +296,7 @@ const customStyle = {
 
 const styles = StyleSheet.create({
   inputText : {
+    flex: 1,
     fontSize: 18,
     color: '#4d4d4d',
     textAlign: "right"
@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
+    height: 52
   },
   middleContainer: {
     flex: 1.5,

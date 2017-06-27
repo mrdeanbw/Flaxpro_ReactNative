@@ -276,7 +276,7 @@ class ExploreMapView extends Component {
         }).start();
       }
     }
-  }
+  };
 
   onRegionChange(/* region */) {
     // this.state.region.setValue(region);
@@ -305,7 +305,7 @@ class ExploreMapView extends Component {
   onHireProfessional ( key ) {
 
     this.popupDialogProfessional.closeDialog ();
-    Actions.Payment();
+    Actions.Contract({ user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex], editable: false });
   }
 
   onMakeOfferProfessional ( ) {
