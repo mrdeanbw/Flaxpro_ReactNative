@@ -83,7 +83,7 @@ export default class ContractSummaryForm extends Component {
     const { user, profile, hire: {offerPrice} } = this.props;
     const { payment } = this.state;
     const userLocation = profile.user.location;
-    const price = offerPrice || user.amount || user.price;
+    const price = offerPrice || user.price;
 
     const isProf = this.props.auth.user.role === professionalConst;
     const paymentMethod = !isProf? (typeof(payment) === 'string'? payment: 'Card  ...'+ payment.last4) : null;

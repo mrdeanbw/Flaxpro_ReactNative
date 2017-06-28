@@ -45,7 +45,7 @@ export default class ContractFirstForm extends Component {
       selectedDates: props.hire.selectedDates,
       availableDates: props.hire.schedule,
       selectedTimes: props.hire.selectedTimes,
-      offerPrice: (isProf? authUser.price: (props.user.amount || props.user.price)).toString(),
+      offerPrice: (isProf? authUser.price: props.user.price).toString(),
     };
   }
 
@@ -90,7 +90,7 @@ export default class ContractFirstForm extends Component {
   render() {
     const {auth, user, hire: {schedule}, editable } = this.props;
     const isProf = auth.user.role === professionalConst;
-    const price = (isProf? auth.user.price: (user.amount || user.price)).toString();
+    const price = (isProf? auth.user.price: user.price).toString();
 
     let hourlyRate = editable? this.state.offerPrice: price;
     let totalPayment = this.state.numberOfSessions * this.state.numberOfPeople * hourlyRate;
