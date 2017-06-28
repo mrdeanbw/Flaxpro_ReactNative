@@ -302,14 +302,14 @@ class ExploreMapView extends Component {
     this.popupDialogProfessional.openDialog ();
   }
 
-  onHireProfessional ( key ) {
+  onHireProfessional ( price ) {
 
     this.popupDialogProfessional.closeDialog ();
-    Actions.Contract({ user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex], editable: false });
+    Actions.Contract({ user: {...this.props.professionalsClients[this.state.selectedProfessionalClientIndex], price}, editable: false });
   }
 
-  onMakeOfferProfessional ( ) {
-    Actions.Contract({ user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex], editable: true });
+  onMakeOfferProfessional ( price ) {
+    Actions.Contract({ user: {...this.props.professionalsClients[this.state.selectedProfessionalClientIndex], price}, editable: true });
   }
 
   onExpandProfessional ( key ) {
@@ -380,7 +380,10 @@ class ExploreMapView extends Component {
 
   get dialogSelectProfessionalClient () {
 
-    const professionalsClients = this.props.professionalsClients || []
+    const professionalsClients = this.props.professionalsClients || [];
+    const professionalClient =  professionalsClients[this.state.selectedProfessionalClientIndex] || {};
+    const professionalClientPrice = professionalClient.amount || professionalClient.price;
+    const price = this.props.user.role === "Professional" ? this.props.user.price: professionalClientPrice;
 
     return (
       <PopupDialog
@@ -388,24 +391,24 @@ class ExploreMapView extends Component {
         width={ width * 0.8 }
         dialogStyle={ styles.dialogContainer }
       >
-        {professionalsClients[this.state.selectedProfessionalClientIndex] &&
+        {professionalClient &&
         <View style={ styles.professionalDialogContentContainer }>
           <View style={ styles.professionalDialogTopContainer }>
 
-            <Image source={ professionalsClients[this.state.selectedProfessionalClientIndex].avatar }
+            <Image source={ professionalClient.avatar }
                    style={ styles.avatar }/>
             <View style={ styles.professionalTopSubContainer }>
               <View style={ styles.professionalNameRatingContainer }>
-                <Text style={ styles.textName }>{ professionalsClients[this.state.selectedProfessionalClientIndex].name }</Text>
+                <Text style={ styles.textName }>{ professionalClient.name }</Text>
                 <Stars
                   isActive={ false }
                   rateMax={ 5 }
                   isHalfStarEnabled={ true }
-                  rate={ professionalsClients[this.state.selectedProfessionalClientIndex].rating }
+                  rate={ professionalClient.rating }
                   size={ 20 }
                 />
               </View>
-              <Text style={ styles.dialogText2 }>{ professionalsClients[this.state.selectedProfessionalClientIndex].description }</Text>
+              <Text style={ styles.dialogText2 }>{ professionalClient.description }</Text>
             </View>
           </View>
           <View style = { styles.professionalMiddleContainer }>
@@ -414,20 +417,20 @@ class ExploreMapView extends Component {
                 name="calendar"  size={ 30 }
                 color="#41c3fd"
               />
-              <Text style={ styles.textDate }>{ professionalsClients[this.state.selectedProfessionalClientIndex].date }</Text>
+              <Text style={ styles.textDate }>{ professionalClient.date }</Text>
             </View>
-            <Text>{ professionalsClients[this.state.selectedProfessionalClientIndex].duration }</Text>
+            <Text>{ professionalClient.duration }</Text>
           </View>
           <View style={ styles.dialogBottomContainer }>
             <View style={ styles.leftButtonContainer }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onHireProfessional() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onHireProfessional(price) }>
                 <View style={ styles.buttonWrapper }>
-                  <Text style={ styles.professionalButton }>HIRE ${ professionalsClients[this.state.selectedProfessionalClientIndex].amount || professionalsClients[this.state.selectedProfessionalClientIndex].price }/HR</Text>
+                  <Text style={ styles.professionalButton }>HIRE ${ price }/HR</Text>
                 </View>
               </TouchableOpacity>
             </View>
             <View style={ styles.rightButtonContainer }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onMakeOfferProfessional() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onMakeOfferProfessional(price) }>
                 <View style={ styles.buttonWrapper }>
                   <Text style={ styles.professionalButton }>MAKE AN OFFER</Text>
                 </View>
