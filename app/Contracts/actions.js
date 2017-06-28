@@ -49,7 +49,7 @@ export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, st
 
 export const cancelContract = (contractId) => async (dispatch, store) => {
   dispatch(contractsRequest());
-  const url = `/contracts/${contractId}/cancel`;
+  const url = `/contracts/${contractId}/status`;
   const { auth } = store();
   const options = {
     method: 'post',
