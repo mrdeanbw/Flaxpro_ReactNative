@@ -24,6 +24,7 @@ import * as CommonConstant from '../../../../Components/commonConstant';
 const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
+const professionalConst = CommonConstant.user_professional;
 
 export default class ContractFirstForm extends Component {
   static propTypes = {
@@ -37,7 +38,7 @@ export default class ContractFirstForm extends Component {
   constructor(props) {
     super(props);
     const authUser = props.auth.user;
-    const isProf = authUser.role === "Professional";
+    const isProf = authUser.role === professionalConst;
     this.state = {
       numberOfSessions: props.hire.numberOfSessions,
       numberOfPeople: props.hire.numberOfPeople,
@@ -88,7 +89,7 @@ export default class ContractFirstForm extends Component {
 
   render() {
     const {auth, user, hire: {schedule}, editable } = this.props;
-    const isProf = auth.user.role === "Professional";
+    const isProf = auth.user.role === professionalConst;
     const price = (isProf? auth.user.price: (user.amount || user.price)).toString();
 
     let hourlyRate = editable? this.state.offerPrice: price;
