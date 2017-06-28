@@ -1,4 +1,5 @@
 import { StyleSheet} from 'react-native';
+import * as Constants from "../../Components/commonConstant"
 export default StyleSheet.create({
   container: {
     borderBottomWidth:1,
@@ -32,5 +33,10 @@ export default StyleSheet.create({
     bottom:42,
     left:18,
     resizeMode:"contain"
+  },
+  iconShowMoreLess: {
+    position: 'absolute',
+    marginLeft: 0.5* Constants.WIDTH_SCREEN -10,
+    bottom: 0,
   }
 });

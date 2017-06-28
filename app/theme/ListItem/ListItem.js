@@ -10,6 +10,7 @@ import {Avatar,Session,Button} from "../index"
 import styles from "./ListItem_Style.js"
 import { Actions } from 'react-native-router-flux';
 import * as Constants from "../../Components/commonConstant"
+import FontIcons from 'react-native-vector-icons/FontAwesome';
 
 class ListItem extends Component {
 
@@ -48,6 +49,17 @@ class ListItem extends Component {
     if(this.props.role === Constants.user_client) return Alert.alert('You aren\'t pros');
     this.props.cancelContract(this.props.data.contractId);
   }
+  get showMoreOrLessButton() {
+    return (
+      <View style={styles.iconShowMoreLess}>
+        <FontIcons
+          name={ this.state.isShow ? "angle-double-up"  : "angle-double-down" }
+          size={ 15 }
+          color="#7e7e7e"
+        />
+      </View>
+    );
+  }
 
   render(){
     const {data} = this.props;
@@ -64,8 +76,11 @@ class ListItem extends Component {
             </View>
           </View>
           <Session style={{marginLeft:5}} progress={data.progress} total={data.total}/>
+          { this.showMoreOrLessButton }
         </TouchableOpacity>
-        {this.state.isShow && data.progress!==data.total && <View style={styles.hiddenContainer}>
+        {
+          this.state.isShow && data.progress!==data.total &&
+          <View style={styles.hiddenContainer}>
             <Button type="image_text" source={require("../../Assets/images/icon/ic_message.png")} text="Message" onPress={()=>{this.onMessage()}}/>
             <Button type="image_text" source={require("../../Assets/images/icon/ic_cancel.png")} text="Cancel" onPress={()=>{this.onCancel()}}/>
             <Button type="image_text" source={require("../../Assets/images/icon/ic_reschedule.png")} text="Reschedule" onPress={()=>{this.onReschedule()}}/>

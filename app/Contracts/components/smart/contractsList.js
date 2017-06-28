@@ -70,8 +70,8 @@ class ClientsProfessionals extends React.Component {
       type: e[role].avatar ? 'url' : 'text',
       image: e[role].avatar || ''
       })
-    )
-    this.setState({dataSource:this.state.dataSource.cloneWithRows([...this.createFakeData(), ...data])})
+    );
+    this.setState({dataSource:this.state.dataSource.cloneWithRows(data)})
   }
   onSelectDay(day) {
     const days = this.state.days.map(e => {
