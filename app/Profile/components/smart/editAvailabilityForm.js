@@ -102,55 +102,18 @@ class EditAvailabilityForm extends Component {
         }
       };
       setNewTime();
-
+      this.setState({ selectedDates });
     });
 
-    this.setState({ selectedDates });
   }
 
   onAddTime() {
     if (!this.state.selectedDates.length) return;
 
-    // const selectedDates = [...this.state.selectedDates];
-    // const schedule = [...this.state.schedule];
     const timeStart = 8;
     const timeEnd = 9;
 
     this.setTime({start: timeStart, end: timeEnd})
-    // const updateSchedule = (date, time) => {
-    //   const existDate = Ramda.find(Ramda.propEq('date', date))(schedule);
-    //   existDate ? existDate.schedules.push(time) : schedule.push({date, schedules: [time]})
-    //   this.setState({schedule})
-    // };
-    //
-    // selectedDates.forEach( selected => {
-    //   const day = new Date(selected.date);
-    //
-    //   const setNewTime = ( offset = 0 ) => {
-    //     if (offset > 12) return;
-    //     const defaultTime = {
-    //       from: new Date(day.setHours(timeStart + offset)),
-    //       to: new Date(day.setHours(timeEnd + offset)),
-    //     };
-    //
-    //     if (selected.schedules.length) {
-    //       const el = selected.schedules.filter(schedule => Moment(schedule.from).format() === Moment(defaultTime.from).format());
-    //       if (el.length) {
-    //         setNewTime(++offset)
-    //       } else {
-    //         selected.schedules.push(defaultTime);
-    //         updateSchedule(selected.date, defaultTime);
-    //       }
-    //     } else {
-    //       selected.schedules.push(defaultTime);
-    //       updateSchedule(selected.date, defaultTime);
-    //     }
-    //   };
-    //   setNewTime();
-    //
-    // });
-    //
-    // this.setState({ selectedDates });
   }
 
   onSelectDate(date) {
@@ -177,7 +140,10 @@ class EditAvailabilityForm extends Component {
   }
 
   onSetSchedule() {
-    Actions.pop();
+    const data = [];
+    this.state.schedule.forEach(e => data.push(...e.schedules))
+    console.log('==========]', data);
+    this.props.createSchedule(data);
   }
 
   onBack() {
@@ -506,5 +472,6 @@ export default connect(state => ({
   }),
   (dispatch) => ({
     getSchedule: () => dispatch(profileActions.getSchedule()),
+    createSchedule: (data) => dispatch(profileActions.createSchedule(data)),
   })
 )(EditAvailabilityForm);

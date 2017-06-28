@@ -122,3 +122,25 @@ export const getSchedule = () => async (dispatch, store) => {
   }
 
 };
+
+export const createSchedule = (data) => async (dispatch, store) => {
+  profileRequest();
+  const { auth } = store();
+  const url = '/schedules';
+  const options = {
+    method: 'put',
+    body: JSON.stringify({schedules: data}),
+  };
+
+  try {
+    const response = await request(url, options, auth);
+    console.log('===========response', response);
+    getSchedule()(dispatch, store);
+  } catch (error) {
+    const error =
+      `Profile Error: createSchedule()
+      Message: ${error.message}`;
+    dispatch(profileError(error));
+  }
+
+};
