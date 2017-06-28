@@ -22,29 +22,7 @@ function createUserError(error) {
   return { type: types.CREATE_USER_ERROR, error };
 }
 
-/**
- * request to server
- */
 export const createUserServer = (email, password, token=null) => async (dispatch, store) => {
-  /**
-   * fake data: 'professions', 'professionalsClients'
-   */
-  let user = null,
-    professions = [];
-
-  let professionalsClients = null;
-
-  for (let i = 0; i < tempProfileData.length; i++) {
-    const profileData = tempProfileData[i];
-    if (email == profileData.email && (!token || token == profileData.token)) {
-      if (!profileData.professional) {
-        professions = allProfessions;
-      }
-      professionalsClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
-      user = profileData;
-      break;
-    }
-  }
 
   const url = '/auth/register';
   const options = {
@@ -54,7 +32,7 @@ export const createUserServer = (email, password, token=null) => async (dispatch
 
   try {
     const response = await request(url, options);
-    dispatch(createUserSuccess({...response, professions, professionalsClients}))
+    dispatch(createUserSuccess({...response}))
   } catch (error) {
     const error =
       `Auth Error: createUserServer 
@@ -64,32 +42,7 @@ export const createUserServer = (email, password, token=null) => async (dispatch
 
 };
 
-
 export const login = (email, password, token = null) => async (dispatch, store) => {
-  /**
-   * fake data: 'professions', 'professionalsClients'
-   */
-  let user = null,
-    professions = [];
-
-  let professionalsClients = null;
-
-  for (let i = 0; i < tempProfileData.length; i++) {
-    const profileData = tempProfileData[i];
-    if (email == profileData.email && (!token || token == profileData.token)) {
-      if (!profileData.professional) {
-        professions = allProfessions;
-      }
-      professionalsClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
-      user = profileData;
-      break;
-    }
-  }
-
-
-  /**
-   * request to server
-   */
   const url = '/auth/login';
   const options = {
     method: 'post',
@@ -98,8 +51,27 @@ export const login = (email, password, token = null) => async (dispatch, store) 
 
   try {
     const response = await request(url, options);
-    dispatch(loginSuccess({...response, professions, professionalsClients}))
+    dispatch(loginSuccess({...response}))
   } catch (error) {
+    dispatch(loginError(error))
+  }
+
+};
+
+export const refreshToken = () => async (dispatch, store) => {
+  const { auth } = store();
+  const url = '/auth/refresh/' + auth.refreshToken;
+  const options = {
+    method: 'get',
+  };
+
+  try {
+    const response = await request(url, options, auth);
+    dispatch(loginSuccess({...response}))
+  } catch (error) {
+    const error =
+      `Auth Error: refreshToken 
+      Message: ${error.message}`;
     dispatch(loginError(error))
   }
 

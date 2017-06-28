@@ -1,7 +1,10 @@
 import 'whatwg-fetch';
 import { Actions } from 'react-native-router-flux';
 import { AsyncStorage } from 'react-native';
+import * as authActions from './Auth/actions';
+import { store } from './app';
 
+let urlsForRefresh = [];
 /**
  * Parses the JSON returned by a network request
  *
@@ -23,10 +26,13 @@ function parseJSON(response) {
 function checkStatus(response) {
   console.log('checkStatus', response);
   if (response.status >= 200 && response.status < 300) {
+    urlsForRefresh = [];
     return response;
   }
   if (response.status === 401) {
-    return Actions.Auth();
+    store.dispatch(authActions.refreshToken());
+    Actions.Auth();
+    return {};
   }
 
   const error = new Error({message:response._bodyText});
@@ -40,6 +46,7 @@ function checkStatus(response) {
       error.message = response._bodyText;
     }
   }
+  urlsForRefresh = [];
   throw error;
 }
 
@@ -52,9 +59,10 @@ function checkStatus(response) {
  * @return {object}           The response data
  */
 export default function request(url, options, authState) {
-  // const apiUrl = 'http://192.168.88.56:3000/api';
+  // const apiUrl = 'http://192.168.1.42:3000/api';
   const apiUrl = 'http://localhost:3000/api';
   AsyncStorage.setItem('apiUrl', apiUrl);
+  urlsForRefresh.push({url, options});
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
