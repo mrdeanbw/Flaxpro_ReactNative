@@ -25,12 +25,12 @@ class ProposeTerms extends Component {
   }
 
   render() {
-    const { actions, user, hire, profile,  editable } = this.props;
+    const { auth, actions, user, hire, profile,  editable } = this.props;
     switch(true) {
-      case hire.firstForm: return <ContractFirstForm { ...actions } user={ user } hire={ hire } editable={ editable }/>;
-      case hire.secondForm: return <ContractSecondForm { ...actions } user={ user } hire={ hire }/>;
+      case hire.firstForm: return <ContractFirstForm { ...actions } user={ user } hire={ hire } auth={auth} editable={ editable }/>;
+      case hire.secondForm: return <ContractSecondForm { ...actions } user={ user } hire={ hire } auth={auth}/>;
       case hire.paymentForm: return <PaymentForm { ...actions } user={user} hire={ hire } editable={false}/>;
-      case hire.summaryForm: return <ContractSummaryForm { ...actions } user={ user }  profile={ profile } hire={ hire }/>;
+      case hire.summaryForm: return <ContractSummaryForm { ...actions } user={ user }  profile={ profile } hire={ hire } auth={auth}/>;
     }
   }
 }

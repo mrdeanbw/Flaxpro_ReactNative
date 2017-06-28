@@ -58,7 +58,8 @@ export default class ContractSecondForm extends Component {
       return Alert.alert('Please select more dates/times or change number of sessions')
     }
     const { changeContractForm } = this.props;
-    changeContractForm({...this.state, paymentForm: true});
+    const nextForm = this.props.auth.user.role === "Professional"? 'summaryForm' : 'paymentForm';
+    changeContractForm({...this.state, [nextForm]: true});
   };
 
   onBack() {
