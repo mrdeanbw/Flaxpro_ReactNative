@@ -36,14 +36,15 @@ export default class ContractFirstForm extends Component {
 
   constructor(props) {
     super(props);
-
+    const authUser = props.auth.user;
+    const isProf = authUser.role === "Professional";
     this.state = {
       numberOfSessions: props.hire.numberOfSessions,
       numberOfPeople: props.hire.numberOfPeople,
       selectedDates: props.hire.selectedDates,
       availableDates: props.hire.schedule,
       selectedTimes: props.hire.selectedTimes,
-      offerPrice: (props.user.amount || props.user.price).toString()
+      offerPrice: (isProf? authUser.price: (props.user.amount || props.user.price)).toString(),
     };
   }
 
@@ -86,8 +87,11 @@ export default class ContractFirstForm extends Component {
   }
 
   render() {
-    const { user, hire: {schedule}, editable } = this.props;
-    let hourlyRate = editable? this.state.offerPrice: (user.amount || user.price);
+    const {auth, user, hire: {schedule}, editable } = this.props;
+    const isProf = auth.user.role === "Professional";
+    const price = (isProf? auth.user.price: (user.amount || user.price)).toString();
+
+    let hourlyRate = editable? this.state.offerPrice: price;
     let totalPayment = this.state.numberOfSessions * this.state.numberOfPeople * hourlyRate;
 
     return (
@@ -142,7 +146,7 @@ export default class ContractFirstForm extends Component {
                       />
                     </View>
                     :
-                    <Text style={ styles.textValue }>$ { user.amount || user.price }</Text>
+                    <Text style={ styles.textValue }>$ { hourlyRate }</Text>
                   }
                 </View>
               </View>
@@ -292,7 +296,7 @@ const customStyle = {
   weekRow: {
     backgroundColor: '#fff',
   },
-}
+};
 
 const styles = StyleSheet.create({
   inputText : {

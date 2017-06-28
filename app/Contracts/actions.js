@@ -25,7 +25,7 @@ export const getMyProfessionals = (data) => async (dispatch, store) => {
 };
 
 export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, store) => {
-  let url = `/users/${role}s?group=true`;
+  let url = `/users/${role}s`;
   const { auth } = store();
   const options = {
     method: 'get',

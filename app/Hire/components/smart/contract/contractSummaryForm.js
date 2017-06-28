@@ -68,7 +68,7 @@ export default class ContractSummaryForm extends Component {
       rate: price,
       numberOfPeople: this.state.numberOfPeople,
       sessions: this.state.selectedTimes,
-      paymentMethod: paymentMethod.slice(0, 4),
+      paymentMethod: paymentMethod && paymentMethod.slice(0, 4),
       location:  'professional',
     };
     createContract(data);
@@ -82,9 +82,10 @@ export default class ContractSummaryForm extends Component {
     const { user, profile, hire: {offerPrice} } = this.props;
     const { payment } = this.state;
     const userLocation = profile.user.location;
-    const price = offerPrice || user.amount || user.price
+    const price = offerPrice || user.amount || user.price;
 
-    let paymentMethod = typeof(payment) === 'string'? payment: 'Card  ...'+ payment.last4;
+    const isProf = this.props.auth.user.role === "Professional";
+    const paymentMethod = !isProf? (typeof(payment) === 'string'? payment: 'Card  ...'+ payment.last4) : null;
 
     return (
       <View style={ styles.container }>
@@ -139,12 +140,14 @@ export default class ContractSummaryForm extends Component {
                 </View>
               </View>
 
-              <View style={ [styles.borderBottom, styles.rowContainer] }>
-                <Text style={ [fontStyles, styles.textDescription] }>Payment Method</Text>
-                <View style={ [styles.valueWrapper] }>
-                  <Text style={ [styles.textBidDescription] }>{ paymentMethod }</Text>
+              {!isProf &&
+                <View style={ [styles.borderBottom, styles.rowContainer] }>
+                  <Text style={ [fontStyles, styles.textDescription] }>Payment Method</Text>
+                  <View style={ [styles.valueWrapper] }>
+                    <Text style={ [styles.textBidDescription] }>{ paymentMethod }</Text>
+                  </View>
                 </View>
-              </View>
+              }
 
             </View>
             <View style={ styles.bottomContainer }>
