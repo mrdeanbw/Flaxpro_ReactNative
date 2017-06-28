@@ -382,7 +382,7 @@ class ExploreMapView extends Component {
 
     const professionalsClients = this.props.professionalsClients || [];
     const professionalClient =  professionalsClients[this.state.selectedProfessionalClientIndex] || {};
-    const professionalClientPrice = professionalClient.amount || professionalClient.price;
+    const professionalClientPrice = professionalClient.price;
     const price = this.props.user.role === "Professional" ? this.props.user.price: professionalClientPrice;
 
     return (
@@ -559,7 +559,7 @@ class ExploreMapView extends Component {
                           { scale: markerScale },
                         ],
                       }}
-                      amount={ marker.amount || marker.price }
+                      amount={ marker.price }
                       personName={ marker.name }
                       rating={ marker.rating }
                       profession={ marker.profession }
@@ -610,7 +610,7 @@ class ExploreMapView extends Component {
                         rating={ marker.rating }
                         name={ marker.name }
                         description={ marker.description }
-                        amount={ marker.amount || marker.price }
+                        amount={ marker.price }
                         user={ user }
                         profession={ marker.profession }
                         onPress={ () => this.onClickAnimatedViewCell(index) }

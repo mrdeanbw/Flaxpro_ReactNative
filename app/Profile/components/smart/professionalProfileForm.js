@@ -422,7 +422,7 @@ class ProfessionalProfileForm extends Component {
                           <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] } >HIRE NOW</Text>
 
                           <Text style={ [styles.greenBtnText, styles.btnText, styles.textWhite] } >
-                            <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>${this.user.price || this.user.amount} </Text>
+                            <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textWhite] }>${this.user.price} </Text>
                             / PER SESSION
                           </Text>
                         </TouchableOpacity>
