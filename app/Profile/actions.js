@@ -133,8 +133,7 @@ export const createSchedule = (data) => async (dispatch, store) => {
   };
 
   try {
-    const response = await request(url, options, auth);
-    console.log('===========response', response);
+    await request(url, options, auth);
     getSchedule()(dispatch, store);
   } catch (error) {
     const error =
