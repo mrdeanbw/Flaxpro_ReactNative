@@ -66,13 +66,13 @@ class EditAvailabilityForm extends Component {
     const updateSchedule = (date, time) => {
       const existDate = Ramda.find(Ramda.propEq('date', date))(schedule);
       switch (true) {
-        case !!(start && end) :
+        case Number.isInteger(start) && Number.isInteger(end) :
           existDate ? existDate.schedules.push(time) : schedule.push({date, schedules: [time]});
           break;
-        case !!start :
+        case Number.isInteger(start) :
           existDate.schedules[index].from = time.from;
           break;
-        case !!end :
+        case Number.isInteger(end) :
           existDate.schedules[index].to = time.to;
           break;
       }
@@ -85,19 +85,24 @@ class EditAvailabilityForm extends Component {
       const setNewTime = ( offset = 0 ) => {
         if (offset > 12) return;
         const defaultTime = {
-          from: new Date(day.setHours(start + offset)),
-          to: new Date(day.setHours(end + offset)),
+          from: Number.isInteger(start) ? new Date(day.setHours(start + offset)) : new Date(),
+          to: Number.isInteger(end) ? new Date(day.setHours(end + offset)) : new Date(),
         };
 
-        if (start && selected.schedules.length) {
+        if (Number.isInteger(start) && selected.schedules.length) {
           const el = selected.schedules.filter(schedule => Moment(schedule.from).format() === Moment(defaultTime.from).format());
           if (el.length) {
             setNewTime(++offset)
           } else {
+            if (Number.isInteger(start) && Number.isInteger(end)) {
+              selected.schedules.push(defaultTime);
+            }
             updateSchedule(selected.date, defaultTime);
           }
         } else {
-          selected.schedules.push(defaultTime);
+          if (Number.isInteger(start) && Number.isInteger(end)) {
+            selected.schedules.push(defaultTime);
+          }
           updateSchedule(selected.date, defaultTime);
         }
       };
@@ -117,14 +122,14 @@ class EditAvailabilityForm extends Component {
   }
 
   onSelectDate(date) {
-    const day = Moment(date).format('ddd, DD MMM YYYY');
+    const day = Moment(date).format('ddd, D MMM YYYY');
     const selectedDates = [...this.state.selectedDates];
     const existDate = Ramda.find(Ramda.propEq('date', day))(this.state.schedule);
 
     if (selectedDates.length && Ramda.find(Ramda.propEq('date', day))(selectedDates)){
       selectedDates.splice(Ramda.findIndex(Ramda.propEq('date', day))(selectedDates), 1)
     } else {
-      selectedDates.push(existDate ? {...existDate} : {date:day, schedules:[]})
+      selectedDates.push(existDate ? {date:day, schedules:[...existDate.schedules]} : {date:day, schedules:[]})
     }
     this.setState({ selectedDates });
   }
@@ -142,7 +147,6 @@ class EditAvailabilityForm extends Component {
   onSetSchedule() {
     const data = [];
     this.state.schedule.forEach(e => data.push(...e.schedules))
-    console.log('==========]', data);
     this.props.createSchedule(data);
   }
 
