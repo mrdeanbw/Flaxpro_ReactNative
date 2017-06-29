@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import {
   Animated,
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
   Dimensions,
-  TextInput,
-  Button,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Alert,
   ScrollView
 } from 'react-native';
 
@@ -45,19 +41,13 @@ export default class FilterForm extends Component {
       selectedAge: 28,
       priceLevel : prices[0].level,
       selectedClientType: labelClientType[0],
-      selectedReview: 2
+      selectedReview: 2,
+      gender: false,
+      age: false,
+      offer: false,
+      reviews: false,
+      clientType: false,
     };
-  }
-
-  componentWillReceiveProps(newProps) {
-
-    if (newProps.status == 'explore_request') {
-
-    } else if (newProps.status == 'explore_success') {
-
-    } else if (newProps.status == 'explore_error') {
-
-    }
   }
 
   onClose() {
@@ -65,6 +55,14 @@ export default class FilterForm extends Component {
   }
 
   onDone () {
+    let data = {};
+    if (this.state.gender) data.gender = this.state.selectedSex;
+    if (this.state.age) data.age = this.state.selectedAge;
+    if (this.state.offer) data.priceLevel = this.state.priceLevel;
+    if (this.state.clientType) data.clientType = this.state.selectedClientType;
+    if (this.state.reviews) data.rating = this.state.selectedReview;
+    const { getClients } = this.props;
+    getClients(data);
     Actions.pop();
   }
 
@@ -86,12 +84,28 @@ export default class FilterForm extends Component {
 
 
   onLocation(value) {
-    this.setState({ selectedLocation: value });
+    this.setState({ selectedClientType: value });
   }
 
 
   onCheckPrice(value) {
     this.setState({ priceLevel: value });
+  }
+
+  onGender() {
+    this.setState({ gender: !this.state.gender });
+  }
+  onAge() {
+    this.setState({ age: !this.state.age });
+  }
+  onOffer() {
+    this.setState({ offer: !this.state.offer });
+  }
+  onReviews() {
+    this.setState({ reviews: !this.state.reviews });
+  }
+  onClientType() {
+    this.setState({ clientType: !this.state.clientType });
   }
 
   renderOption(option, selected, onSelect, index){
@@ -140,16 +154,23 @@ export default class FilterForm extends Component {
           <ScrollView>
             <View style={ styles.mainContainer }>
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Sex</Text>
+                <RadioButton
+                  style={ styles.leftCheckbox }
+                  key={ "gender" }
+                  label={ "Sex" }
+                  checked={ this.state.gender }
+                  onPress={ () => this.onGender() }
+                  size={18}
+                />
                 <View style={ styles.cellValueContainer }>
                   {
                     labelSex.map(value => {
                       return (
                         <RadioButton
-                          style={ styles.paddingTwo }
+                          style={ styles.checkbox }
                           key={ value }
                           label={ value }
-                          checked={ this.state.selectedSex == value }
+                          checked={ this.state.selectedSex === value }
                           onPress={ () => this.onSex(value) }
                           size={23}
                         />
@@ -159,7 +180,14 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Age</Text>
+                <RadioButton
+                  style={ styles.leftCheckbox }
+                  key={ "Age" }
+                  label={ "Age" }
+                  checked={ this.state.age }
+                  onPress={ () => this.onAge() }
+                  size={18}
+                />
                 <View style={ styles.viewSlider }>
                   <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selectedAge -15) * scale}] }>
                     <Animated.View style={ styles.bubble }>
@@ -183,7 +211,14 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Offer</Text>
+                <RadioButton
+                  style={ styles.leftCheckbox }
+                  key={ "Offer" }
+                  label={ "Offer" }
+                  checked={ this.state.offer }
+                  onPress={ () => this.onOffer() }
+                  size={18}
+                />
                 <View style={ styles.touchBlock }>
                   {
                     prices.map((item, index) =>(
@@ -200,7 +235,14 @@ export default class FilterForm extends Component {
               </View>
               <View style={ styles.cellContainer }>
                 <View style={ styles.starContainer }>
-                  <Text style={ [styles.textCellTitle, styles.labelLine ]}>Reviews</Text>
+                  <RadioButton
+                    style={ styles.leftCheckbox }
+                    key={ "Reviews" }
+                    label={ "Reviews" }
+                    checked={ this.state.reviews }
+                    onPress={ () => this.onReviews() }
+                    size={18}
+                  />
                   <StarRating
                     color='#fff'
                     isActive={ true }
@@ -214,7 +256,14 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Client Type</Text>
+                <RadioButton
+                  style={ styles.leftCheckbox }
+                  key={ "ClientType" }
+                  label={ "Client Type" }
+                  checked={ this.state.clientType }
+                  onPress={ () => this.onClientType() }
+                  size={18}
+                />
                 <View style={ [styles.touchBlock] }>
                   {
                     labelClientType.map((item, index) =>(
@@ -236,10 +285,22 @@ export default class FilterForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  checkbox: {
+    marginRight: -8,
+    marginLeft: 30,
+    paddingVertical: 0,
+  },
+  leftCheckbox: {
+    paddingVertical: 0,
+    marginLeft: 1,
+  },
 
   starContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+
   },
   cellContainerBlock: {
     flex: 0,
@@ -251,8 +312,8 @@ const styles = StyleSheet.create({
   },
   touchBlock: {
     flexDirection: 'row',
-    marginLeft: -15,
-    marginTop: 10
+    flex: 1,
+    justifyContent: 'flex-end'
   },
   viewTwoText: {
     flexDirection: 'column',
@@ -339,16 +400,15 @@ const styles = StyleSheet.create({
     marginTop: -0.5,
   },
   slider: {
-    marginRight: 15,
     height: 20,
-    marginBottom: -10,
+    marginLeft: 20
   },
 
   viewSlider:{
     flex: 1,
     flexDirection: 'column',
-    marginLeft: width/20,
-    marginBottom:20
+    marginBottom: 10,
+    justifyContent: 'flex-end'
   },
 
   container: {
@@ -366,7 +426,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'transparent',
     alignItems: 'center',
-    paddingTop:40,
+    paddingTop: 20,
+    paddingHorizontal: 15,
   },
   closeButtonWrapper: {
     flex: 0,
@@ -379,18 +440,20 @@ const styles = StyleSheet.create({
     fontSize: 22
   },
   mainContainer: {
-    flex: 0,
+    flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    paddingHorizontal: 20,
   },
   cellContainer: {
+    width,
     flexDirection: 'row',
     alignItems: 'center',
     flex:0,
     justifyContent: 'space-between',
-    marginVertical: 7,
+    paddingVertical: 7,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
 
   },
   cellValueContainer: {
