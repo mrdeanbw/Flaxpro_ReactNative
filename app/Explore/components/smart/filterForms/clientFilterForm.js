@@ -174,7 +174,7 @@ export default class FilterForm extends Component {
                     labelSex.map(value => {
                       return (
                         <RadioButton
-                          style={ styles.paddingTwo }
+                          style={ styles.checkbox }
                           key={ value }
                           label={ value }
                           checked={ this.state.selectedSex == value }
@@ -216,7 +216,7 @@ export default class FilterForm extends Component {
                   {
                     prices.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
-                        <View style={ [styles.viewTwoText, item.level === this.state.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
+                        <View style={ [styles.viewTwoText, styles.marginLeft_15, item.level === this.state.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
                           <Text style={ [styles.textCellTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
                           <Text style={ [styles.textSubTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
                         </View>
@@ -234,10 +234,10 @@ export default class FilterForm extends Component {
                     labelVerified.map(value => {
                       return (
                         <RadioButton
-                          style={ styles.paddingTwo }
+                          style={ styles.checkbox }
                           key={ value }
                           label={ value }
-                          checked={ this.state.selectedVerified == value }
+                          checked={ this.state.selectedVerified === value }
                           onPress={ () => this.onVerified(value) }
                           size={23}
                         />
@@ -272,7 +272,7 @@ export default class FilterForm extends Component {
                   {
                     labelLocation.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
-                        <View style={ [styles.viewTwoTextPadding, item === this.state.selectedLocation ? styles.priceButtonChecked : styles.priceButton] }>
+                        <View style={ [styles.viewTwoTextPadding, styles.marginLeft_15, item === this.state.selectedLocation ? styles.priceButtonChecked : styles.priceButton] }>
                           <Text style={ [styles.textSubTitle, item === this.state.selectedLocation ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
                         </View>
                       </TouchableOpacity>
@@ -288,10 +288,10 @@ export default class FilterForm extends Component {
                       return (
                         <RadioButton
                           size={23}
-                          style={ styles.paddingTwo }
+                          style={ styles.checkbox }
                           key={ value }
                           label={ value }
-                          checked={ this.state.selectedInsured == value }
+                          checked={ this.state.selectedInsured === value }
                           onPress={ () => this.onInsured(value) }
                         />
                       );
@@ -300,27 +300,25 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
-                <View style={ styles.starContainer }>
-                  <Text style={ [styles.textCellTitle, styles.labelLine ]}>Reviews</Text>
-                  <StarRating
-                    color='#fff'
-                    isActive={ true }
-                    rateMax={ 5 }
-                    isHalfStarEnabled={ false }
-                    onStarPress={ (rating) => this.onRating(rating) }
-                    rate={ this.state.selectedReview }
-                    size={ 30 }
-                    rating={this.state.selectedReview}
-                  />
-                </View>
+                <Text style={ [styles.textCellTitle, styles.labelLine ]}>Reviews</Text>
+                <StarRating
+                  color='#fff'
+                  isActive={ true }
+                  rateMax={ 5 }
+                  isHalfStarEnabled={ false }
+                  onStarPress={ (rating) => this.onRating(rating) }
+                  rate={ this.state.selectedReview }
+                  size={ 30 }
+                  rating={this.state.selectedReview}
+                />
               </View>
               <View style={ styles.cellContainerBlock }>
                 <Text style={ styles.textCellTitle }>Profession</Text>
-                <View style={ styles.touchBlock }>
+                <View style={ [styles.touchBlock, {marginTop: 10}] }>
                   {
                     labelProfession.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onProfession(item) }>
-                        <View style={ [styles.viewTwoTextPadding, item === this.state.selectedProfession ? styles.priceButtonChecked : styles.priceButton] }>
+                        <View style={ [styles.viewTwoTextPadding, styles.marginRight_15, item === this.state.selectedProfession ? styles.priceButtonChecked : styles.priceButton] }>
                           <Text style={ [styles.textSubTitle, item === this.state.selectedProfession ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
                         </View>
                       </TouchableOpacity>
@@ -362,29 +360,38 @@ export default class FilterForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  checkbox: {
+    marginRight: -8,
+    marginLeft: 30,
+    paddingVertical: 0,
+  },
+  leftCheckbox: {
+    paddingVertical: 0,
+    marginLeft: 1,
+  },
   iconDropDown: {
     position: 'absolute',
     right: 0,
     top: -3,
   },
   addButton: {
-    marginLeft: 10,
-  },
-  starContainer: {
-    flexDirection: 'row',
+    marginRight: 10,
   },
   cellContainerBlock: {
     flex: 0,
-    marginVertical: 7,
+    paddingVertical: 7,
     flexDirection: 'column',
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'flex-start',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
   touchBlock: {
     flexDirection: 'row',
-    marginLeft: -15,
-    marginTop: 10
+    flex: 1,
+    justifyContent: 'flex-end'
   },
   viewTwoText: {
     flexDirection: 'column',
@@ -392,18 +399,22 @@ const styles = StyleSheet.create({
   viewTwoTextPadding: {
     paddingVertical: 6
   },
+  marginLeft_15: {
+    marginLeft: 15,
+  },
+  marginRight_15: {
+    marginRight: 15,
+  },
   priceButtonChecked: {
     alignItems: 'center',
     borderRadius: 30,
     width: 76,
-    marginLeft: 15,
     backgroundColor: '#fff',
   },
   priceButton: {
     alignItems: 'center',
     borderRadius: 30,
     width: 76,
-    marginLeft: 15,
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: '#fff',
@@ -471,16 +482,15 @@ const styles = StyleSheet.create({
     marginTop: -0.5,
   },
   slider: {
-    marginRight: 15,
     height: 20,
-    marginBottom: -10,
+    marginLeft: 20
   },
 
   viewSlider:{
     flex: 1,
     flexDirection: 'column',
-    marginLeft: width/20,
-    marginBottom:20
+    marginBottom: 10,
+    justifyContent: 'flex-end'
   },
 
   container: {
@@ -498,7 +508,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'transparent',
     alignItems: 'center',
-    paddingTop:40,
+    paddingTop: 20,
+    paddingHorizontal: 15,
   },
   closeButtonWrapper: {
     flex: 0,
@@ -511,18 +522,20 @@ const styles = StyleSheet.create({
     fontSize: 22
   },
   mainContainer: {
-    flex: 0,
+    flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    paddingHorizontal: 20,
   },
   cellContainer: {
+    width,
     flexDirection: 'row',
     alignItems: 'center',
     flex:0,
     justifyContent: 'space-between',
-    marginVertical: 7,
+    paddingVertical: 7,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
 
   },
   cellValueContainer: {
@@ -567,7 +580,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   dropdownWrapper: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     height: 30,
     borderWidth: 1,
     borderColor: '#fff',
