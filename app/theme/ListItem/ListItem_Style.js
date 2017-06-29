@@ -38,5 +38,9 @@ export default StyleSheet.create({
     position: 'absolute',
     marginLeft: 0.5* Constants.WIDTH_SCREEN -10,
     bottom: 0,
-  }
+  },
+  borderRow:{
+    borderBottomWidth:1,
+    borderColor:"#d7d7d7",
+  },
 });

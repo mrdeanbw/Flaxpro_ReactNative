@@ -30,6 +30,7 @@ export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, st
   const options = {
     method: 'get',
   };
+  data ? data.group=true : data = {group: true};
   if(data){
     const queryString = toQueryString(data);
     url += '?' + queryString;
