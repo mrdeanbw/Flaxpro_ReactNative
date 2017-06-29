@@ -24,15 +24,24 @@ function parseJSON(response) {
  * @return {object|undefined} Returns either the response, or throws an error
  */
 function checkStatus(response) {
-  console.log('checkStatus', response);
+  console.log('checkStatus', response, urlsForRefresh);
   if (response.status >= 200 && response.status < 300) {
-    urlsForRefresh = [];
+    urlsForRefresh.shift();
     return response;
   }
   if (response.status === 401) {
-    store.dispatch(authActions.refreshToken());
-    Actions.Auth();
-    return {};
+    if (urlsForRefresh.length){
+      store.dispatch(authActions.refreshToken())
+        .then(() => {
+          const { auth } = store.getState();
+          // urlsForRefresh.forEach( e => request(e.url, e.options, auth));
+          urlsForRefresh = [];
+          // return {};
+        });
+    } else {
+      Actions.Auth();
+      return {};
+    }
   }
 
   const error = new Error({message:response._bodyText});
@@ -46,7 +55,7 @@ function checkStatus(response) {
       error.message = response._bodyText;
     }
   }
-  urlsForRefresh = [];
+  urlsForRefresh.shift();
   throw error;
 }
 
@@ -62,7 +71,7 @@ export default function request(url, options, authState) {
   // const apiUrl = 'http://192.168.1.42:3000/api';
   const apiUrl = 'http://localhost:3000/api';
   AsyncStorage.setItem('apiUrl', apiUrl);
-  urlsForRefresh.push({url, options});
+  urlsForRefresh.unshift({url, options});
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
