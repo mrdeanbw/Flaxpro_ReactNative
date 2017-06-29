@@ -144,9 +144,29 @@ class EditAvailabilityForm extends Component {
     this.setTime({end: endTime, index: entryIndex});
   }
 
+  onRemoveTime(entryIndex) {
+    const selectedDates = [...this.state.selectedDates];
+    const schedule = [...this.state.schedule];
+
+    if (selectedDates.length !== 1) return;
+    selectedDates.forEach( selected => {
+      const existDate = Ramda.find(Ramda.propEq('date', selected.date))(schedule);
+      selected.schedules.splice(entryIndex, 1);
+      existDate.schedules.splice(entryIndex, 1);
+    });
+    this.setState({ selectedDates, schedule });
+
+  }
+
+  checkSchedule() {
+    const el = this.state.schedule.filter( e => e.schedules.filter( s => (s.from >= s.to)).length);
+    return el.length;
+  }
+
   onSetSchedule() {
     const data = [];
-    this.state.schedule.forEach(e => data.push(...e.schedules))
+    if (this.checkSchedule()) return Alert.alert(`Selected time "from" should be less than time "to". Please check your schedule`);
+    this.state.schedule.forEach(e => data.push(...e.schedules));
     this.props.createSchedule(data);
   }
 
@@ -179,7 +199,8 @@ class EditAvailabilityForm extends Component {
       <View key={indexDays}>
         {
           day.schedules.map((entry, index) => (
-              <View key={ index } style={ styles.timeRowContainer }>
+              <View key={ index } style={ [styles.timeRowContainer, styles.timeBlock] }>
+
                 <DatePicker
                   date={ new Date(entry.from) }
                   mode="time"
@@ -208,7 +229,7 @@ class EditAvailabilityForm extends Component {
                 />
                 <Text style={ styles.textTimeTo }>To</Text>
                 <DatePicker
-                  date={ entry.to }
+                  date={ new Date(entry.to) }
                   mode="time"
                   format="hh:mm A"
                   confirmBtnText="Done"
@@ -233,6 +254,16 @@ class EditAvailabilityForm extends Component {
                   }}
                   onDateChange={ (time) => this.onChangeEndTime(time, index) }
                 />
+                <TouchableOpacity
+                  onPress={ () => this.onRemoveTime(index) }
+                >
+                  <EntypoIcons
+                    name="circle-with-cross"
+                    size={ 15 }
+                    color="#8d99a6"
+                    style={{alignSelf: 'flex-start', marginTop: -13, marginRight:-5}}
+                  />
+                </TouchableOpacity>
               </View>
             ))
         }
@@ -467,7 +498,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#565656',
   },
-
+  timeBlock: {
+    paddingTop: 20,
+    // paddingLeft: 15,
+    paddingRight: 10,
+  },
 });
 
 export default connect(state => ({
