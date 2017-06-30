@@ -83,7 +83,6 @@ export default class FilterForm extends Component {
         } else { data[stateName] = stateField }
       }
     });
-    console.log("DATA", data)
     return data;
   }
 
