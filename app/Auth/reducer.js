@@ -6,11 +6,18 @@ const initialState = {
   token: '',
   user: {},
   professions: [],
-  professionalsClients: []
+  professionalsClients: [],
+  currentAddress: '',
 };
 
 export default function auth(state = initialState, action = {}) {
   switch (action.type) {
+    case types.GET_ADDRESS_SUCCESS:
+      return {
+        ...state,
+        error: null,
+        currentAddress: action.address,
+      };
     case types.UPDATE_USER:
       return {
         ...state,

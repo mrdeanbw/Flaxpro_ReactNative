@@ -12,6 +12,10 @@ function loginSuccess(data) {
   return { type: types.AUTH_SUCCESS, ...data };
 }
 
+function getAddressSuccess(data) {
+  return { type: types.GET_ADDRESS_SUCCESS, ...data };
+}
+
 function createUserSuccess(data) {
   return {
     type: types.CREATE_USER_SUCCESS, ...data
@@ -22,7 +26,7 @@ function createUserError(error) {
   return { type: types.CREATE_USER_ERROR, error };
 }
 
-export const createUserServer = (email, password, token=null) => async (dispatch, store) => {
+export const createUser = (email, password, token=null) => async (dispatch, store) => {
 
   const url = '/auth/register';
   const options = {
@@ -35,7 +39,7 @@ export const createUserServer = (email, password, token=null) => async (dispatch
     dispatch(createUserSuccess({...response}))
   } catch (error) {
     const error =
-      `Auth Error: createUserServer 
+      `Auth Error: createUser 
       Message: ${error.message}`;
     dispatch(createUserError(error))
   }
@@ -75,6 +79,27 @@ export const refreshToken = () => async (dispatch, store) => {
     dispatch(loginError(error))
   }
 
+};
+
+export const getCurrentAddress = (location) => async (dispatch, store) => {
+  const { auth } = store();
+  let url = '/users/location';
+  const options = {
+    method: 'get',
+  };
+  if(location){
+    const queryString = toQueryString(location);
+    url += '?' + queryString;
+  }
+  try {
+    const response = await request(url, options, auth);
+    dispatch(getAddressSuccess({...response}))
+  } catch (error) {
+    const error =
+      `Auth Error: getCurrentAddress() 
+      Message: ${error.message}`;
+    dispatch(loginError(error))
+  }
 };
 
 export const logout = () => async (dispatch, store) => {

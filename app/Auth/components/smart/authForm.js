@@ -42,7 +42,8 @@ class AuthForm extends Component {
       selectedButton: 2,
       loginRequest: false,
       registerRequest: false,
-      loginForm: false
+      location: {},
+      loginForm: false,
     };
   }
 
@@ -58,15 +59,26 @@ class AuthForm extends Component {
         Actions.Main({ user_mode: user.role })
     }
     if (user && this.state.registerRequest) {
+      this.props.getCurrentAddress(this.state.location);
       Actions.WhoAreYou();
     }
     this.setState({ loginRequest: false, registerRequest: false });
   }
 
+  componentDidMount(){
+    navigator.geolocation.getCurrentPosition((position) => {
+      const location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      this.setState({ location })
+    });
+  }
+
   onShowLogIn() {
     this.setState({
       selectedButton: 2,
-      email : 'client@mail.com',
+      email : 'pro@mail.com',
       password : 'password',
       confirmPassword : 'password',
       loginRequest: false,
@@ -109,7 +121,7 @@ class AuthForm extends Component {
 
   onSignUp() {
     const { email, password, confirmPassword } = this.state;
-    const { createUser, createUserServer } = this.props;
+    const { createUser } = this.props;
 
     if (email == '') {
       Alert.alert('Please enter email address.');
@@ -136,8 +148,7 @@ class AuthForm extends Component {
       this.setState({ password: '', confirmPassword: '' });
       return;
     }
-    this.setState({ registerRequest: true }, ()=>createUserServer(email, password));
-
+    this.setState({ registerRequest: true }, ()=> createUser(email, password));
   }
 
   onForgotPassword() {
