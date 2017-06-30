@@ -69,6 +69,7 @@ export default class ContractFirstForm extends Component {
   }
   onChangePeople(value) {
     const numberOfPeople = this.state.numberOfPeople + value;
+    if (numberOfPeople < 1) return;
     this.setState({numberOfPeople});
   }
   onSelectDate(date) {
@@ -185,34 +186,6 @@ export default class ContractFirstForm extends Component {
                 </View>
               </View>
 
-              {/*ToDo: Commented code will be use when will be created offer part*/}
-
-              {/*<View style={ styles.rowContainer }>*/}
-                {/*<Text style={ styles.textDescription }>Duration</Text>*/}
-                {/*<View style={ styles.valueWrapper }>*/}
-                  {/*<View style={ styles.dropdownWrapper }>*/}
-                    {/*<ModalDropdown*/}
-                      {/*options={ duration }*/}
-                      {/*defaultValue={ duration[2] }*/}
-                      {/*textStyle ={ styles.textValue }*/}
-                      {/*dropdownStyle={ styles.dropdownStyle }*/}
-                      {/*onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }*/}
-                    {/*/>*/}
-                    {/*<EntypoIcons*/}
-                      {/*name="chevron-thin-down"  size={ 20 }*/}
-                      {/*color="#4d4d4d"*/}
-                    {/*/>*/}
-                  {/*</View>*/}
-                {/*</View>*/}
-              {/*</View>*/}
-
-              {/*<View style={ styles.locationBorderContainer }>*/}
-                {/*<EvilIcons*/}
-                  {/*name="location"  size={ 30 }*/}
-                  {/*color="#4d4d4d"*/}
-                {/*/>*/}
-                {/*<Text style={ styles.textDescription }>4 york st, Toronto Ontario MSJ 4C2</Text>*/}
-              {/*</View>*/}
             </View>
             <View style={ styles.bottomContainer }>
               <Calendar
