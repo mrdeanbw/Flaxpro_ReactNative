@@ -47,6 +47,17 @@ export default class FilterForm extends Component {
     super(props);
 
     this.state = {
+      filterSex : false,
+      filterAge : false,
+      filterPrice : false,
+      filterVerified : false,
+      filterYearofExperience : false,
+      filterLocation : false,
+      filterInsured : false,
+      filterReviews : false,
+      filterProfession : false,
+      filterCertification : false,
+
       selectedSex: labelSex[0],
       selectedAge: 28,
       selectedVerified: labelVerified[0],
@@ -60,35 +71,26 @@ export default class FilterForm extends Component {
     };
   }
 
-  componentWillReceiveProps(newProps) {
-
-    if (newProps.status == 'explore_request') {
-
-    } else if (newProps.status == 'explore_success') {
-
-    } else if (newProps.status == 'explore_error') {
-
-    }
-  }
-
   onClose() {
     Actions.pop();
   }
   prepareData(){
-    const data = {
-      gender: this.state.selectedSex,
-      age: this.state.selectedAge,
-      priceLevel: this.state.priceLevel,
-      insured: this.state.selectedInsured === 'Yes',
-      // profession: [this.state.selectedProfession],
-      certification: this.state.selectedCertification,
-      experience: +this.state.selectedYearOfExperience,
-      rating: this.state.selectedReview,
-      availability: {
-        toClient: this.state.selectedLocation === 'Meet at Home',
-        ownSpace: this.state.selectedLocation === 'One place'
+    let data = {};
+    if (this.state.filterSex) { data.gender = this.state.selectedSex }
+    if (this.state.filterAge) { data.age = this.state.selectedAge }
+    if (this.state.filterPrice) { data.priceLevel = this.state.priceLevel }
+    if (this.state.filterVerified) { data.verified = this.state.selectedVerified }
+    if (this.state.filterYearofExperience) { data.experience = this.state.selectedYearOfExperience }
+    if (this.state.filterInsured) { data.insured = this.state.selectedInsured }
+    if (this.state.filterReviews) { data.rating = this.state.selectedReview }
+    if (this.state.filterProfession) { data.profession = this.state.selectedProfession }
+    if (this.state.filterCertification) { data.certification = this.state.selectedCertification }
+    if (this.state.filterLocation) { data.availability =
+      {
+        toClient : this.state.selectedLocation === 'Meet at Home',
+        ownSpace : this.state.selectedLocation === 'One place'
       }
-    };
+    }
     return data;
   }
 
@@ -139,6 +141,19 @@ export default class FilterForm extends Component {
   render() {
     const { status } = this.props;
     let scale = (width) / 104 ;
+    let filterCheckbox = (title)=> {
+      let state = 'filter'+title.replace(/\s/g, '');
+      return (
+        <RadioButton
+          style={ styles.leftCheckbox }
+          key={ title.replace(/\s/g, '_') }
+          label={ title }
+          checked={ this.state[state] }
+          onPress={ () => this.setState({[state]: !this.state[state]}) }
+          size={18}
+        />
+      )
+    };
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -168,7 +183,7 @@ export default class FilterForm extends Component {
           <ScrollView>
             <View style={ styles.mainContainer }>
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Sex</Text>
+                {filterCheckbox('Sex')}
                 <View style={ styles.cellValueContainer }>
                   {
                     labelSex.map(value => {
@@ -177,7 +192,7 @@ export default class FilterForm extends Component {
                           style={ styles.checkbox }
                           key={ value }
                           label={ value }
-                          checked={ this.state.selectedSex == value }
+                          checked={ this.state.selectedSex === value }
                           onPress={ () => this.onSex(value) }
                           size={23}
                         />
@@ -187,6 +202,7 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
+                { filterCheckbox('Age') }
                 <Text style={ styles.textCellTitle }>Age</Text>
                 <View style={ styles.viewSlider }>
                   <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selectedAge -15) * scale}] }>
@@ -211,7 +227,7 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Price</Text>
+                { filterCheckbox('Price') }
                 <View style={ styles.touchBlock }>
                   {
                     prices.map((item, index) =>(
@@ -228,7 +244,7 @@ export default class FilterForm extends Component {
               </View>
 
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Verified</Text>
+                { filterCheckbox('Verified') }
                 <View style={ styles.cellValueContainer }>
                   {
                     labelVerified.map(value => {
@@ -248,7 +264,7 @@ export default class FilterForm extends Component {
               </View>
 
               <View style={ styles.cellContainerBlock }>
-                <Text style={styles.textCellTitle}>Year of Experience</Text>
+                { filterCheckbox('Year of Experience') }
                 <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
                     options={ labelYearOfExprience }
@@ -267,7 +283,7 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Location</Text>
+                { filterCheckbox('Location') }
                 <View style={ [styles.touchBlock] }>
                   {
                     labelLocation.map((item, index) =>(
@@ -281,7 +297,7 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine ]}>Insured</Text>
+                { filterCheckbox('Insured') }
                 <View style={ styles.cellValueContainer }>
                   {
                     labelInsured.map(value => {
@@ -300,7 +316,7 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine ]}>Reviews</Text>
+                { filterCheckbox('Reviews') }
                 <StarRating
                   color='#fff'
                   isActive={ true }
@@ -313,7 +329,7 @@ export default class FilterForm extends Component {
                 />
               </View>
               <View style={ styles.cellContainerBlock }>
-                <Text style={ styles.textCellTitle }>Profession</Text>
+                { filterCheckbox('Profession') }
                 <View style={ [styles.touchBlock, {marginTop: 10}] }>
                   {
                     labelProfession.map((item, index) =>(
@@ -333,8 +349,7 @@ export default class FilterForm extends Component {
                 </View>
               </View>
               <View style={ styles.cellContainerBlock }>
-                <Text style={ styles.textCellTitle }>Certification</Text>
-
+                { filterCheckbox('Certification') }
                 <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
                     options={ labelCertification }
