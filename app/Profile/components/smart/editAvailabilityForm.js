@@ -161,7 +161,6 @@ class EditAvailabilityForm extends Component {
 
   checkSchedule() {
     const el = this.state.schedule.filter( e => e.schedules.filter( s => (s.from >= s.to)).length);
-    console.log('=============', el);
     return el.length;
   }
 
