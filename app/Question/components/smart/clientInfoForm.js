@@ -49,7 +49,7 @@ class ClientInfoForm extends Component {
       visibility : false,
       gender : labelSex[0],
       age : 28,
-      address: '4 York st, Toronto',
+      address: props.auth.currentAddress.formattedAddress || '4 York st, Toronto',
       profession : props.explore && props.explore.professions && props.explore.professions[0] || {},
       priceLevel : prices[0].level,
       signUpRequest: false
@@ -57,7 +57,7 @@ class ClientInfoForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { auth: { user }, question: { error } } = nextProps;
+    const { auth: { user, currentAddress }, question: { error } } = nextProps;
 
     if (error) {
       Alert.alert(error);
@@ -66,6 +66,9 @@ class ClientInfoForm extends Component {
     }
     if (user && this.state.signUpRequest) {
       Actions.Main({ user_mode: CommonConstant.user_client });
+    }
+    if (currentAddress && currentAddress.formattedAddress) {
+      this.setState({ address: currentAddress.formattedAddress });
     }
     this.setState({ signUpRequest: false });
   }
