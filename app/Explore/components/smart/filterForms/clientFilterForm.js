@@ -141,6 +141,7 @@ export default class FilterForm extends Component {
         checked={ this.state[name] }
         onPress={ () => this.setState({[name]: !this.state[name]}) }
         size={18}
+        labelStyle = {{paddingLeft: 10}}
       />
     )
   }
