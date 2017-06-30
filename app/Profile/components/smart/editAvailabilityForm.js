@@ -16,11 +16,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-datepicker';
 import { connect } from 'react-redux';
 
-import Calendar from './calendar/Calendar';
-import * as profileActions from '../../actions';
-
 import Ramda from 'ramda';
 import Moment from 'moment';
+
+import Calendar from './calendar/Calendar';
+import * as profileActions from '../../actions';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 
 import * as CommonConstant from '../../../Components/commonConstant';
 const width = CommonConstant.WIDTH_SCREEN;
@@ -160,6 +161,7 @@ class EditAvailabilityForm extends Component {
 
   checkSchedule() {
     const el = this.state.schedule.filter( e => e.schedules.filter( s => (s.from >= s.to)).length);
+    console.log('=============', el);
     return el.length;
   }
 
@@ -272,7 +274,7 @@ class EditAvailabilityForm extends Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { profile: { loading } } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -343,6 +345,9 @@ class EditAvailabilityForm extends Component {
             </View>
 
           </View>
+          {
+            loading && <FullScreenLoader/>
+          }
         </Image>
       </View>
     );

@@ -14,7 +14,7 @@ export function profileRequest() {
 }
 
 export const updateProfile = (userData) => async (dispatch, store) => {
-  profileRequest();
+  dispatch(profileRequest());
   const url = `/${userData.role.toLowerCase()}s/'${userData._id}`;
   const { auth } = store();
   const options = {
@@ -83,7 +83,7 @@ export const getSessionsById = (data) => async (dispatch, store) => {
 };
 
 export const getFullProfile = (user) => async (dispatch, store) => {
-  profileRequest();
+  dispatch(profileRequest());
   const { auth } = store();
   const role = (user || auth.user).role.toLowerCase();
   const url = `/${role}s/${user ? user._id : auth.user._id}`;
@@ -104,7 +104,7 @@ export const getFullProfile = (user) => async (dispatch, store) => {
 };
 
 export const getSchedule = () => async (dispatch, store) => {
-  profileRequest();
+  dispatch(profileRequest());
   const { auth } = store();
   const url = `/schedules/${auth.user.role.toLowerCase()}/${auth.user._id}`;
   const options = {
@@ -124,7 +124,7 @@ export const getSchedule = () => async (dispatch, store) => {
 };
 
 export const createSchedule = (data) => async (dispatch, store) => {
-  profileRequest();
+  dispatch(profileRequest());
   const { auth } = store();
   const url = '/schedules';
   const options = {
