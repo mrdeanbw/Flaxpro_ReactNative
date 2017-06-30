@@ -179,7 +179,7 @@ export default class FilterForm extends Component {
           </View>
           <ScrollView>
             <View style={ styles.mainContainer }>
-              <View style={ styles.cellContainer }>
+              <View style={[ styles.cellContainer,  !this.state.filter_gender && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Sex', stateName: 'gender'})}
                 <View style={ styles.cellValueContainer }>
                   {
@@ -198,7 +198,7 @@ export default class FilterForm extends Component {
                   }
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
+              <View style={[ styles.cellContainer,  !this.state.filter_age && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Age', stateName: 'age'})}
                 <View style={ styles.viewSlider }>
                   <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selected_age -15) * scale}] }>
@@ -222,7 +222,7 @@ export default class FilterForm extends Component {
                   />
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
+              <View style={[ styles.cellContainer,  !this.state.filter_priceLevel && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Price', stateName: 'priceLevel'})}
                 <View style={ styles.touchBlock }>
                   {
@@ -239,7 +239,7 @@ export default class FilterForm extends Component {
                 </View>
               </View>
 
-              <View style={ styles.cellContainer }>
+              <View style={[ styles.cellContainer,  !this.state.filter_verified && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Verified', stateName: 'verified'})}
                 <View style={ styles.cellValueContainer }>
                   {
@@ -259,7 +259,7 @@ export default class FilterForm extends Component {
                 </View>
               </View>
 
-              <View style={ styles.cellContainerBlock }>
+              <View style={[ styles.cellContainerBlock,  !this.state.filter_experience && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Year of Experience', stateName: 'experience'})}
                 <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
@@ -278,8 +278,7 @@ export default class FilterForm extends Component {
                   </ModalDropdown>
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
-                { filterCheckbox('Location') }
+              <View style={[ styles.cellContainer,  !this.state.filter_availability && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Location', stateName: 'availability'})}
                 <View style={ [styles.touchBlock] }>
                   {
@@ -293,7 +292,7 @@ export default class FilterForm extends Component {
                   }
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
+              <View style={[ styles.cellContainer,  !this.state.filter_insured && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Insured', stateName: 'insured'})}
                 <View style={ styles.cellValueContainer }>
                   {
@@ -312,7 +311,7 @@ export default class FilterForm extends Component {
                   }
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
+              <View style={[ styles.cellContainer,  !this.state.filter_rating && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Reviews', stateName: 'rating'})}
                 <StarRating
                   color='#fff'
@@ -325,7 +324,7 @@ export default class FilterForm extends Component {
                   rating={this.state.selected_rating}
                 />
               </View>
-              <View style={ styles.cellContainerBlock }>
+              <View style={[ styles.cellContainerBlock,  !this.state.filter_profession && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Profession', stateName: 'profession'})}
                 <View style={ [styles.touchBlock, {marginTop: 10}] }>
                   {
@@ -345,7 +344,7 @@ export default class FilterForm extends Component {
                   />
                 </View>
               </View>
-              <View style={ styles.cellContainerBlock }>
+              <View style={[ styles.cellContainerBlock,  !this.state.filter_certification && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Certification', stateName: 'certification'})}
                 <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
@@ -372,6 +371,9 @@ export default class FilterForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  deactivatedContainer: {
+    opacity: .5,
+  },
   checkbox: {
     marginRight: -8,
     marginLeft: 30,
@@ -522,6 +524,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 20,
     paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
   closeButtonWrapper: {
     flex: 0,
