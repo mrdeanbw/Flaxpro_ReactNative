@@ -4,8 +4,8 @@ import request, { toQueryString } from '../request';
 import { tempProfileData, allProfessions } from '../Components/tempDataUsers';
 
 
-function loginError(input = null) {
-  return { type: types.AUTH_ERROR, input };
+function loginError(data) {
+  return { type: types.AUTH_ERROR, ...data };
 }
 
 function loginSuccess(data) {
@@ -57,7 +57,7 @@ export const login = (email, password, token = null) => async (dispatch, store) 
     const response = await request(url, options);
     dispatch(loginSuccess({...response}))
   } catch (error) {
-    dispatch(loginError(error))
+    dispatch(loginError({error: error.message}))
   }
 
 };
