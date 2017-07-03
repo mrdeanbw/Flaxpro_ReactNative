@@ -15,7 +15,7 @@ export function profileRequest() {
 
 export const updateProfile = (userData) => async (dispatch, store) => {
   dispatch(profileRequest());
-  const url = `/${userData.role.toLowerCase()}s/'${userData._id}`;
+  const url = `/${userData.role.toLowerCase()}s/${userData._id}`;
   const { auth } = store();
   const options = {
     method: 'put',
