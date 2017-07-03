@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import {
   Animated,
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
   Dimensions,
-  TextInput,
-  Button,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Alert,
   ScrollView
 } from 'react-native';
 
@@ -25,9 +21,12 @@ const { width, height } = Dimensions.get('window');
 
 const background = require('../../../../Assets/images/background.png');
 
-const labelSex = ['Male', 'Female'];
-const labelClientType = ['New', 'Regular'];
+const label_gender = ['Male', 'Female'];
+const label_clientType = ['New', 'Regular'];
+const label_age = [28]
+const label_rating = [2]
 
+const stateNames = ['gender', 'age', 'priceLevel', 'rating', 'clientType'];
 
 const prices = [
   {item: '$', price: '$50-100', level: 1},
@@ -39,24 +38,20 @@ export default class FilterForm extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {};
 
-    this.state = {
-      selectedSex: labelSex[0],
-      selectedAge: 28,
-      priceLevel : prices[0].level,
-      selectedClientType: labelClientType[0],
-      selectedReview: 2
-    };
+    stateNames.map(stateName => {
+      this.state['filter_'  + stateName] = true;
+      this.state['selected_'+ stateName] = this.getDefaultState(stateName);
+    });
   }
 
-  componentWillReceiveProps(newProps) {
-
-    if (newProps.status == 'explore_request') {
-
-    } else if (newProps.status == 'explore_success') {
-
-    } else if (newProps.status == 'explore_error') {
-
+  getDefaultState(stateName) {
+    switch (stateName){
+      case 'priceLevel':
+        return prices[0].level;
+      default:
+        return eval('label_' + stateName)[0];
     }
   }
 
@@ -65,11 +60,19 @@ export default class FilterForm extends Component {
   }
 
   onDone () {
+    let data = {};
+    stateNames.map(stateName => {
+      if (this.state['filter_' + stateName]) {
+        data[stateName] = this.state['selected_' + stateName];
+      }
+    })
+    const { getClients } = this.props;
+    getClients(data);
     Actions.pop();
   }
 
   onSex(value) {
-    this.setState({ selectedSex: value });
+    this.setState({ selected_gender: value });
   }
 
   onVerified(value) {
@@ -84,14 +87,32 @@ export default class FilterForm extends Component {
     this.setState({ selectedAffiliation: value });
   }
 
-
   onLocation(value) {
-    this.setState({ selectedLocation: value });
+    this.setState({ selected_clientType: value });
   }
 
-
   onCheckPrice(value) {
-    this.setState({ priceLevel: value });
+    this.setState({ selected_priceLevel: value });
+  }
+
+  onRating(value) {
+    this.setState({ selected_rating: value });
+  }
+
+  generateFilterCheckbox (options) {
+    const {title, stateName} = options;
+    let name = 'filter_' + stateName;
+    return (
+      <RadioButton
+        style={ styles.leftCheckbox }
+        key={ name }
+        label={ title }
+        checked={ this.state[name] }
+        onPress={ () => this.setState({[name]: !this.state[name]}) }
+        size={18}
+        labelStyle = {{paddingLeft: 10}}
+      />
+    )
   }
 
   renderOption(option, selected, onSelect, index){
@@ -139,17 +160,17 @@ export default class FilterForm extends Component {
           </View>
           <ScrollView>
             <View style={ styles.mainContainer }>
-              <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Sex</Text>
+              <View style={[ styles.cellContainer,  !this.state.filter_gender && styles.deactivatedContainer]}>
+                {this.generateFilterCheckbox({title: 'Sex', stateName: 'gender'})}
                 <View style={ styles.cellValueContainer }>
                   {
-                    labelSex.map(value => {
+                    label_gender.map(value => {
                       return (
                         <RadioButton
-                          style={ styles.paddingTwo }
+                          style={ styles.checkbox }
                           key={ value }
                           label={ value }
-                          checked={ this.state.selectedSex == value }
+                          checked={ this.state.selected_gender === value }
                           onPress={ () => this.onSex(value) }
                           size={23}
                         />
@@ -158,12 +179,12 @@ export default class FilterForm extends Component {
                   }
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ styles.textCellTitle }>Age</Text>
+              <View style={[ styles.cellContainer,  !this.state.filter_age && styles.deactivatedContainer]}>
+                {this.generateFilterCheckbox({title: 'Age', stateName: 'age'})}
                 <View style={ styles.viewSlider }>
-                  <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selectedAge -15) * scale}] }>
+                  <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selected_age -15) * scale}] }>
                     <Animated.View style={ styles.bubble }>
-                      <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonTextChecked] }>{ this.state.selectedAge }</Animated.Text>
+                      <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonTextChecked] }>{ this.state.selected_age }</Animated.Text>
                     </Animated.View>
                     <Animated.View style={ styles.arrowBorder } />
                     <Animated.View style={ styles.arrow } />
@@ -177,20 +198,20 @@ export default class FilterForm extends Component {
                           minimumValue={ 15 }
                           maximumValue={ 85 }
                           step={ 1 }
-                          value = { this.state.selectedAge }
-                          onValueChange={ (value) => this.setState({ selectedAge: value }) }
+                          value = { this.state.selected_age }
+                          onValueChange={ (value) => this.setState({ selected_age: value }) }
                   />
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Offer</Text>
+              <View style={[ styles.cellContainer,  !this.state.filter_priceLevel && styles.deactivatedContainer]}>
+                {this.generateFilterCheckbox({title: 'Offer', stateName: 'priceLevel'})}
                 <View style={ styles.touchBlock }>
                   {
                     prices.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
-                        <View style={ [styles.viewTwoText, item.level === this.state.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
-                          <Text style={ [styles.textCellTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
-                          <Text style={ [styles.textSubTitle, item.level === this.state.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
+                        <View style={ [styles.viewTwoText, item.level === this.state.selected_priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
+                          <Text style={ [styles.textCellTitle, item.level === this.state.selected_priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
+                          <Text style={ [styles.textSubTitle, item.level === this.state.selected_priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
                         </View>
                       </TouchableOpacity>
                     ))
@@ -198,29 +219,29 @@ export default class FilterForm extends Component {
 
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
+              <View style={[ styles.cellContainer,  !this.state.filter_rating && styles.deactivatedContainer]}>
                 <View style={ styles.starContainer }>
-                  <Text style={ [styles.textCellTitle, styles.labelLine ]}>Reviews</Text>
+                  {this.generateFilterCheckbox({title: 'Reviews', stateName: 'rating'})}
                   <StarRating
                     color='#fff'
                     isActive={ true }
                     rateMax={ 5 }
                     isHalfStarEnabled={ false }
-                    onStarPress={ (rating) => console.log(rating) }
-                    rate={ 5 }
+                    onStarPress={ (rating) => this.onRating(rating) }
+                    rate={ this.state.selected_rating }
                     size={ 30 }
-                    rating={this.state.selectedReview}
+                    rating={this.state.selected_rating}
                   />
                 </View>
               </View>
-              <View style={ styles.cellContainer }>
-                <Text style={ [styles.textCellTitle, styles.labelLine] }>Client Type</Text>
+              <View style={[ styles.cellContainer,  !this.state.filter_clientType && styles.deactivatedContainer]}>
+                {this.generateFilterCheckbox({title: 'Client Type', stateName: 'clientType'})}
                 <View style={ [styles.touchBlock] }>
                   {
-                    labelClientType.map((item, index) =>(
+                    label_clientType.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
-                        <View style={ [styles.viewTwoTextPadding, item === this.state.selectedClientType ? styles.priceButtonChecked : styles.priceButton] }>
-                          <Text style={ [styles.textSubTitle, item === this.state.selectedClientType ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
+                        <View style={ [styles.viewTwoTextPadding, item === this.state.selected_clientType ? styles.priceButtonChecked : styles.priceButton] }>
+                          <Text style={ [styles.textSubTitle, item === this.state.selected_clientType ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
                         </View>
                       </TouchableOpacity>
                     ))
@@ -236,10 +257,25 @@ export default class FilterForm extends Component {
 }
 
 const styles = StyleSheet.create({
+  deactivatedContainer: {
+    opacity: .5,
+  },
+  checkbox: {
+    marginRight: -8,
+    marginLeft: 30,
+    paddingVertical: 0,
+  },
+  leftCheckbox: {
+    paddingVertical: 0,
+    marginLeft: 1,
+  },
 
   starContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+
   },
   cellContainerBlock: {
     flex: 0,
@@ -251,8 +287,8 @@ const styles = StyleSheet.create({
   },
   touchBlock: {
     flexDirection: 'row',
-    marginLeft: -15,
-    marginTop: 10
+    flex: 1,
+    justifyContent: 'flex-end'
   },
   viewTwoText: {
     flexDirection: 'column',
@@ -339,16 +375,15 @@ const styles = StyleSheet.create({
     marginTop: -0.5,
   },
   slider: {
-    marginRight: 15,
     height: 20,
-    marginBottom: -10,
+    marginLeft: 20
   },
 
   viewSlider:{
     flex: 1,
     flexDirection: 'column',
-    marginLeft: width/20,
-    marginBottom:20
+    marginBottom: 10,
+    justifyContent: 'flex-end'
   },
 
   container: {
@@ -366,7 +401,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'transparent',
     alignItems: 'center',
-    paddingTop:40,
+    paddingTop: 20,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
   closeButtonWrapper: {
     flex: 0,
@@ -379,18 +417,20 @@ const styles = StyleSheet.create({
     fontSize: 22
   },
   mainContainer: {
-    flex: 0,
+    flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    paddingHorizontal: 20,
   },
   cellContainer: {
+    width,
     flexDirection: 'row',
     alignItems: 'center',
     flex:0,
     justifyContent: 'space-between',
-    marginVertical: 7,
+    paddingVertical: 7,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
 
   },
   cellValueContainer: {
