@@ -23,8 +23,8 @@ const background = require('../../../../Assets/images/background.png');
 
 const label_gender = ['Male', 'Female'];
 const label_clientType = ['New', 'Regular'];
-const label_age = [28]
-const label_rating = [2]
+const label_age = [28];
+const label_rating = [2];
 
 const stateNames = ['gender', 'age', 'priceLevel', 'rating', 'clientType'];
 

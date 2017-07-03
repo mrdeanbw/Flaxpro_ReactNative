@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
 import {
   Animated,
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
-  Dimensions,
-  TextInput,
-  Button,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Alert,
   ScrollView
 } from 'react-native';
 
@@ -22,18 +16,14 @@ import RadioButton from '../../../../Components/radioButton';
 import ModalDropdown from 'react-native-modal-dropdown';
 import StarRating from 'react-native-stars-rating';
 
-const { width, height } = Dimensions.get('window');
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  client_filter_labels as labels
+} from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
 
-const label_gender = ['Male', 'Female'];
-const label_verified = ['Yes', 'No'];
-const label_insured = ['Yes', 'No'];
-const label_affiliation = ['Gym', 'Independent', 'All'];
-const label_experience = ['2004', '2005', '2006'];
-const label_certification = ['Certified Personal Professional1', 'Certified Personal Professional2', 'Certified Personal Professional3'];
-const label_availability = ['Meet at Home', 'One place'];
-const label_profession = ['Pilates', 'Yoga trainers', 'Massage'];
 const stateNames = ['gender', 'age', 'priceLevel', 'verified', 'experience', 'insured', 'rating', 'certification', 'profession', 'availability'];
 
 const prices = [
@@ -63,7 +53,7 @@ export default class FilterForm extends Component {
       case 'priceLevel':
         return prices[0].level;
       default:
-        return eval('label_' + stateName)[0];
+        return labels[stateName][0];
     }
   }
 
@@ -76,10 +66,8 @@ export default class FilterForm extends Component {
       const stateField = this.state['selected_' + stateName];
       if (this.state['filter_' + stateName]) {
         if (stateName === 'availability') {
-          data[stateName] = {
-            toClient : stateField === 'Meet at Home',
-            ownSpace : stateField === 'One place'
-          }
+          if(stateField === 'Meet at Home') data.toClient = true;
+          if(stateField === 'One place') data.ownSpace = true;
         } else { data[stateName] = stateField }
       }
     });
@@ -89,6 +77,7 @@ export default class FilterForm extends Component {
   onDone () {
     const { getProfessionals } = this.props;
     const data = this.prepareData();
+    console.log('===========data', data);
     getProfessionals(data);
     Actions.pop();
   }
@@ -184,7 +173,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Sex', stateName: 'gender'})}
                 <View style={ styles.cellValueContainer }>
                   {
-                    label_gender.map(value => {
+                    labels.gender.map(value => {
                       return (
                         <RadioButton
                           style={ styles.checkbox }
@@ -244,7 +233,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Verified', stateName: 'verified'})}
                 <View style={ styles.cellValueContainer }>
                   {
-                    label_verified.map(value => {
+                    labels.verified.map(value => {
                       return (
                         <RadioButton
                           style={ styles.checkbox }
@@ -264,7 +253,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Year of Experience', stateName: 'experience'})}
                 <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
-                    options={ label_experience }
+                    options={ labels.experience }
                     defaultValue={ this.state.selectedYourOfExperience }
                     dropdownStyle={ [styles.dropdownStyle] }
                     onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }
@@ -283,7 +272,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Location', stateName: 'availability'})}
                 <View style={ [styles.touchBlock] }>
                   {
-                    label_availability.map((item, index) =>(
+                    labels.availability.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
                         <View style={ [styles.viewTwoTextPadding, styles.marginLeft_15, item === this.state.selected_availability ? styles.priceButtonChecked : styles.priceButton] }>
                           <Text style={ [styles.textSubTitle, item === this.state.selected_availability ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
@@ -297,7 +286,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Insured', stateName: 'insured'})}
                 <View style={ styles.cellValueContainer }>
                   {
-                    label_insured.map(value => {
+                    labels.insured.map(value => {
                       return (
                         <RadioButton
                           size={23}
@@ -329,7 +318,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Profession', stateName: 'profession'})}
                 <View style={ [styles.touchBlock, {marginTop: 10}] }>
                   {
-                    label_profession.map((item, index) =>(
+                    labels.profession.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onProfession(item) }>
                         <View style={ [styles.viewTwoTextPadding, styles.marginRight_15, item === this.state.selected_profession ? styles.priceButtonChecked : styles.priceButton] }>
                           <Text style={ [styles.textSubTitle, item === this.state.selected_profession ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
@@ -349,7 +338,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Certification', stateName: 'certification'})}
                 <View style={ [styles.dropdownWrapper] }>
                   <ModalDropdown
-                    options={ label_certification }
+                    options={ labels.certification }
                     dropdownStyle={ [styles.dropdownStyle] }
                     onSelect={ (rowId, rowData) => this.onCertification(rowData) }
                   >
