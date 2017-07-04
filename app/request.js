@@ -4,7 +4,7 @@ import { AsyncStorage } from 'react-native';
 import * as authActions from './Auth/actions';
 import { store } from './app';
 
-let urlsForRefresh = [];
+const urlsForRefresh = [];
 /**
  * Parses the JSON returned by a network request
  *
@@ -17,34 +17,13 @@ function parseJSON(response) {
 }
 
 /**
- * Checks if a network request came back fine, and throws an error if not
+ * Create error from server response
  *
- * @param  {object} response   A response from a network request
+ * @param  {object} response A response from a network request
  *
- * @return {object|undefined} Returns either the response, or throws an error
  */
-function checkStatus(response) {
-  console.log('checkStatus', response, urlsForRefresh);
-  if (response.status >= 200 && response.status < 300) {
-    urlsForRefresh.shift();
-    return response;
-  }
-  if (response.status === 401) {
-    if (urlsForRefresh.length){
-      store.dispatch(authActions.refreshToken())
-        .then(() => {
-          const { auth } = store.getState();
-          // urlsForRefresh.forEach( e => request(e.url, e.options, auth));
-          urlsForRefresh = [];
-          // return {};
-        });
-    } else {
-      Actions.Auth();
-      return {};
-    }
-  }
-
-  const error = new Error({message:response._bodyText});
+function createError(response) {
+  const error = new Error({message: response._bodyText});
   error.response = response;
   error.message = `Status: ${response.status}`;
   if(response._bodyText && typeof response._bodyText === 'string') {
@@ -57,6 +36,56 @@ function checkStatus(response) {
   }
   urlsForRefresh.shift();
   throw error;
+}
+
+/**
+ * Refresh token and repeat last request
+ * If no last request or no token redirect to login
+ *
+ * @param  {object} response A response from a network request
+ *
+ * @return {function} Returns function which throws an error(if no token before ao after refresh) or repeat last request
+ *
+ */
+function refreshToken(response) {
+  if (store.getState().auth.token){
+    return store.dispatch(authActions.refreshToken())
+      .then(() => {
+        const { auth } = store.getState();
+        if(!auth.token){
+          Actions.Auth();
+          createError(response);
+        } else {
+          Promise.all(urlsForRefresh.forEach(e => request(e.url, e.options, auth)))
+        }
+      })
+  } else {
+    Actions.Auth();
+    createError(response);
+  }
+
+}
+
+/**
+ * Checks if a network request came back fine, and throws an error if not
+ *
+ * @param  {object} response   A response from a network request
+ *
+ * @return {object|undefined} Returns either the response, or throws an error
+ */
+function checkStatus(response) {
+  console.log('checkStatus', response);
+  switch (true) {
+    case (response.status >= 200 && response.status < 300) :
+      urlsForRefresh.shift();
+      return response;
+    case (response.status === 401) :
+      return refreshToken(response);
+      break;
+    default:
+      createError(response);
+  };
+
 }
 
 /**
