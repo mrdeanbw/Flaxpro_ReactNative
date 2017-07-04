@@ -15,6 +15,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import R from 'ramda';
 
 //const variable
 const { width, height } = Dimensions.get('window');
@@ -55,10 +56,10 @@ class AuthForm extends Component {
       return;
     }
     token && AsyncStorage.setItem('token', token);
-    if (user && this.state.loginRequest) {
+    if (!R.isEmpty(user) && this.state.loginRequest) {
         Actions.Main({ user_mode: user.role })
     }
-    if (user && this.state.registerRequest) {
+    if (!R.isEmpty(user) && this.state.registerRequest) {
       this.props.getCurrentAddress(this.state.location);
       Actions.WhoAreYou();
     }

@@ -74,8 +74,9 @@ class ExploreForm extends Component {
   }
 
   onFilter () {
-    const { getClients, explore: { clients } } = this.props;
-    Actions.FilterProfessionalForm({ getClients, clients });
+    const { getProfessionals, explore: { professions } } = this.props;
+
+    Actions.FilterProfessionalForm({ getProfessionals, professions });
   }
 
   onMap () {
