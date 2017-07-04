@@ -173,22 +173,41 @@ class ExploreMapView extends Component {
       translateY,
       selectedGymIndex: 0,
       selectedProfessionalClientIndex: 0,
+      region: new MapView.AnimatedRegion({
+        latitude: props.user.coordinate.latitude,
+        longitude: props.user.coordinate.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      })
     };
-
-    // this.region = new MapView.AnimatedRegion({
-    //   latitude: LATITUDE,
-    //   longitude: LONGITUDE,
-    //   latitudeDelta: LATITUDE_DELTA,
-    //   longitudeDelta: LONGITUDE_DELTA,
-    // });
-
     this.onTapMap = this.onTapMap.bind(this);
     this.onList = this.onList.bind(this);
     this.onFilter = this.onFilter.bind(this);
+    this.onRegionChange = this.onRegionChange.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
      // this.setState({ selectedProfessionalClientIndex: 0 }); //TODO: commented
+  }
+
+  componentDidMount() {
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      };
+      this.onRegionChange(region);
+    });
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  onRegionChange(region) {
+    this.state.region.setValue(region);
   }
 
   onStartShouldSetPanResponder = (e) => {
@@ -202,7 +221,7 @@ class ExploreMapView extends Component {
     const topOfTap = height - pageY;
 
     return topOfTap < topOfMainWindow;
-  }
+  };
 
   onMoveShouldSetPanResponder = (e) => {
 
@@ -212,7 +231,7 @@ class ExploreMapView extends Component {
     const topOfTap = height - pageY;
 
     return topOfTap < topOfMainWindow;
-  }
+  };
 
   onPanXChange = ({ value }) => {
 
@@ -221,7 +240,7 @@ class ExploreMapView extends Component {
     if (index !== newIndex) {
       this.setState({ index: newIndex });
     }
-  }
+  };
 
   onPanYChange = ({ value }) => {
 
@@ -239,8 +258,8 @@ class ExploreMapView extends Component {
       this.setState({ canMoveHorizontal: shouldBeMovable });
       if (!shouldBeMovable) {
         const { coordinate } = professionalsClients[index];
-        this.region.stopAnimation();
-        this.region.timing({
+        this.state.region.stopAnimation();
+        this.state.region.timing({
           latitude: scrollY.interpolate({
             inputRange: [0, BREAKPOINT1],
             outputRange: [
@@ -262,8 +281,8 @@ class ExploreMapView extends Component {
           duration: 0,
         }).start();
       } else {
-        this.region.stopAnimation();
-        this.region.timing({
+        this.state.region.stopAnimation();
+        this.state.region.timing({
           latitude: scrollX.interpolate({
             inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
             outputRange: professionalsClients.map(item => item.coordinate.latitude),
@@ -277,10 +296,6 @@ class ExploreMapView extends Component {
       }
     }
   };
-
-  onRegionChange(/* region */) {
-    // this.state.region.setValue(region);
-  }
 
   onPressPin ( index ) {
 
@@ -469,20 +484,13 @@ class ExploreMapView extends Component {
       getMarkerState(panX, panY, scrollY, index)
     );
 
-    this.region = new MapView.AnimatedRegion({
-      latitude: user.coordinate.latitude,
-      longitude: user.coordinate.longitude,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
-    });
-
     if(professionalsClients.length){
 
       panX.addListener(this.onPanXChange);
       panY.addListener(this.onPanYChange);
 
-      this.region.stopAnimation();
-      this.region.timing({
+      this.state.region.stopAnimation();
+      this.state.region.timing({
         latitude: scrollX.interpolate({
           inputRange: professionalsClients.length > 1 ? professionalsClients.map( (item, index) => index * SNAP_WIDTH) : [0, 0,],
           outputRange: professionalsClients.length > 1 ? professionalsClients.map(item => item.coordinate.latitude) : [
@@ -519,7 +527,7 @@ class ExploreMapView extends Component {
           <MapView.Animated
             provider={ this.props.provider }
             style={ styles.map }
-            region={ this.region }
+            region={ this.state.region }
             onRegionChange={ this.onRegionChange }
             onLongPress={ () => this.onTapMap() }
           >
@@ -636,6 +644,9 @@ ExploreMapView.propTypes = {
   onTapMap: PropTypes.func,
   onFilter: PropTypes.func,
   onList: PropTypes.func,
+  user: PropTypes.shape({
+    coordinate: PropTypes.object.isRequired
+  }),
 };
 
 ExploreMapView.defaultProps = {
