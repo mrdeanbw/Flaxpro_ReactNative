@@ -21,9 +21,16 @@ import PopupDialog from 'react-native-popup-dialog';
 import Stars from 'react-native-stars-rating';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import supercluster from 'supercluster';
+
 import BottomBar from './bottomBar';
 
-const { width, height } = Dimensions.get('window');
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+} from '../../../Components/commonConstant';
+
 const pin_gym = require('../../../Assets/images/gym.png');
 const avatar = require('../../../Assets/images/avatar1.png');
 
@@ -184,6 +191,15 @@ class ExploreMapView extends Component {
     this.onList = this.onList.bind(this);
     this.onFilter = this.onFilter.bind(this);
     this.onRegionChange = this.onRegionChange.bind(this);
+    this.createCluster = this.createCluster.bind(this);
+    this.getMarkers = this.getMarkers.bind(this);
+    this.getZoomLevel = this.getZoomLevel.bind(this);
+
+    const cluster = this.createCluster(this.props.screenProps);
+    const markers = this.getMarkers(cluster, this.state.region);
+
+    this.state['cluster'] = cluster;
+    this.state['markers'] = markers;
   }
 
   componentWillReceiveProps(newProps) {
@@ -204,6 +220,48 @@ class ExploreMapView extends Component {
 
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  createCluster(props) {
+    const cluster = supercluster({
+      radius: 75,
+      maxZoom: 16,
+    });
+
+    const { geoData } = props;
+
+    const places = geoData .map( geo => {
+      return {
+        "type": "Feature",
+        "geometry": {"type": "Point", "coordinates": [geo.lng, geo.lat]},
+      };
+    });
+
+    try {
+      cluster.load(places);
+      return cluster;
+    }
+    catch(e) {
+      console.debug('failed to create cluster', e);
+    }
+  }
+
+  getMarkers(cluster, region) {
+    const padding = 0;
+    return cluster.getClusters([
+      region.longitude - (region.longitudeDelta * (0.5 + padding)),
+      region.latitude - (region.latitudeDelta * (0.5 + padding)),
+      region.longitude + (region.longitudeDelta * (0.5 + padding)),
+      region.latitude + (region.latitudeDelta * (0.5 + padding)),
+    ], this.getZoomLevel());
+  }
+
+  getZoomLevel(region = this.state.region) {
+    // http://stackoverflow.com/a/6055653
+    const angle = region.longitudeDelta;
+
+    // 0.95 for finetuning zoomlevel grouping
+    return Math.round(Math.log(360 / angle) / Math.LN2);
   }
 
   onRegionChange(region) {
