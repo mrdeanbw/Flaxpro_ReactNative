@@ -4,7 +4,7 @@ import { AsyncStorage } from 'react-native';
 import * as authActions from './Auth/actions';
 import { store } from './app';
 
-const urlsForRefresh = [];
+const urlsForRepeat = [];
 /**
  * Parses the JSON returned by a network request
  *
@@ -34,7 +34,7 @@ function createError(response) {
       error.message = response._bodyText;
     }
   }
-  urlsForRefresh.shift();
+  urlsForRepeat.shift();
   throw error;
 }
 
@@ -47,23 +47,22 @@ function createError(response) {
  * @return {function} Returns function which throws an error(if no token before ao after refresh) or repeat last request
  *
  */
-function refreshToken(response) {
-  if (store.getState().auth.token){
-    return store.dispatch(authActions.refreshToken())
-      .then(() => {
-        const { auth } = store.getState();
-        if(!auth.token){
-          Actions.Auth();
-          createError(response);
-        } else {
-          Promise.all(urlsForRefresh.forEach(e => request(e.url, e.options, auth)))
-        }
-      })
-  } else {
+function refreshToken() {
+  return store.dispatch(authActions.refreshToken())
+}
+
+function repeatRequests(response) {
+  const _auth = JSON.parse(response._bodyText);
+
+  if(!_auth.token){
     Actions.Auth();
     createError(response);
+  } else {
+    return Promise.all(urlsForRepeat.map(e => request(e.url, e.options, _auth)))
+      .then( (err, res) => {
+        store.dispatch(authActions.loginSuccess({ ...parseJSON(response) }))
+    });
   }
-
 }
 
 /**
@@ -77,11 +76,15 @@ function checkStatus(response) {
   console.log('checkStatus', response);
   switch (true) {
     case (response.status >= 200 && response.status < 300) :
-      urlsForRefresh.shift();
-      return response;
+      if(urlsForRepeat[0].url.includes('refresh')) {
+        urlsForRepeat.shift();
+        return repeatRequests(response);
+      } else {
+        urlsForRepeat.shift();
+        return response;
+      }
     case (response.status === 401) :
       return refreshToken(response);
-      break;
     default:
       createError(response);
   };
@@ -100,7 +103,7 @@ export default function request(url, options, authState) {
   // const apiUrl = 'http://192.168.1.42:3000/api';
   const apiUrl = 'http://localhost:3000/api';
   AsyncStorage.setItem('apiUrl', apiUrl);
-  urlsForRefresh.unshift({url, options});
+  urlsForRepeat.unshift({url, options});
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
