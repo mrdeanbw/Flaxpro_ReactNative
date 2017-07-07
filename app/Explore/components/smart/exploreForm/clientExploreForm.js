@@ -18,7 +18,7 @@ import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PopupDialog from 'react-native-popup-dialog';
-
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import R from 'ramda';
 
 import SearchBar from '../../../../Components/searchBar';
@@ -29,10 +29,12 @@ import { GymLocations } from '../../../../Components/dummyEntries';
 
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
-import * as CommonConstant from '../../../../Components/commonConstant';
-const width = CommonConstant.WIDTH_SCREEN;
-const height = CommonConstant.HEIHT_SCREEN;
-const appColor = CommonConstant.APP_COLOR;
+import {
+  GOOGLE_API_KEY as googleKey,
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor
+} from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
 const arrow = require('../../../../Assets/images/right_arrow.png');
@@ -81,6 +83,20 @@ class ClientExploreForm extends Component {
     const { getExploreClient } = this.props;
     getExploreClient();
   }
+
+  componentDidMount() {
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+      };
+    });
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
 
   componentWillReceiveProps(newProps) {
     const { explore: { error } } = newProps;
@@ -132,7 +148,7 @@ class ClientExploreForm extends Component {
     const { filter } = this.state;
 
     this.setState({ filter: {...filter, locationType }, locationText }, () => {
-      if(locationType === 'address') this.addressInput.focus();
+      // if(locationType === 'address') this.addressInput.focus();
     });
 
     switch(locationType) {
@@ -171,6 +187,55 @@ class ClientExploreForm extends Component {
     getProfessionals(filterObj);
   }
 
+  get googleAutocomplete () {
+    return (
+      <GooglePlacesAutocomplete
+        placeholder='Search'
+        minLength={2}
+        autoFocus={false}
+        returnKeyType={'search'}
+        listViewDisplayed='auto'
+        fetchDetails={true}
+        onPress={(data, details = null) => {
+          console.log(data);
+          console.log(details);
+        }}
+        query={{
+          key: googleKey,
+        }}
+        styles={{
+          container:{
+            flexDirection: 'column',
+            flex:1,
+          },
+          description: {
+            fontWeight: 'bold',
+          },
+          predefinedPlacesDescription: {
+            color: '#1faadb',
+          },
+          textInputContainer: {
+            backgroundColor: 'rgba(0,0,0,0)',
+            borderTopWidth: 0,
+            borderBottomWidth:0
+          },
+          textInput: {
+            marginLeft: 0,
+            marginRight: 0,
+            height: 38,
+            color: '#5d5d5d',
+            fontSize: 16
+          },
+        }}
+
+        currentLocation={false}
+        currentLocationLabel="Current location"
+        nearbyPlacesAPI='GoogleReverseGeocoding'
+        debounce={200}
+      />
+    )
+  }
+  
   get dialogLocationClient () {
     const { user } = this.props.auth;
     const { filter } = this.state;
@@ -185,6 +250,7 @@ class ClientExploreForm extends Component {
         dialogStyle={ styles.dialogContainer }
       >
         <View style={ styles.locationDialogContentContainer }>
+
           <View style={ styles.locationDialogTopContainer }>
               <Text style={ styles.locationHeaderText }>
                 My location
@@ -257,6 +323,8 @@ class ClientExploreForm extends Component {
                   <Image source={ arrow } style={ styles.imageArrow }/>
                 </View>
               </TouchableOpacity>
+              { this.googleAutocomplete }
+
             </View>
           }
 
