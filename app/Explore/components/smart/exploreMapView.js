@@ -22,8 +22,10 @@ import Stars from 'react-native-stars-rating';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import supercluster from 'supercluster';
+import R from 'ramda';
 
 import BottomBar from './bottomBar';
+import MapClusterMarker from './mapClusterMarker';
 
 import {
   WIDTH_SCREEN as width,
@@ -195,15 +197,21 @@ class ExploreMapView extends Component {
     this.getMarkers = this.getMarkers.bind(this);
     this.getZoomLevel = this.getZoomLevel.bind(this);
 
-    const cluster = this.createCluster(this.props.screenProps);
+    const cluster = this.createCluster(props.professionalsClients);
     const markers = this.getMarkers(cluster, this.state.region);
 
     this.state['cluster'] = cluster;
     this.state['markers'] = markers;
   }
 
-  componentWillReceiveProps(newProps) {
-     // this.setState({ selectedProfessionalClientIndex: 0 }); //TODO: commented
+  componentWillReceiveProps(nextProps) {
+    const cluster = this.createCluster(nextProps.professionalsClients);
+    const markers = this.getMarkers(cluster, this.state.region);
+
+    this.setState({
+      cluster: cluster,
+      markers: markers
+    });
   }
 
   componentDidMount() {
@@ -222,18 +230,17 @@ class ExploreMapView extends Component {
     navigator.geolocation.clearWatch(this.watchID);
   }
 
-  createCluster(props) {
+  createCluster(geoData) {
     const cluster = supercluster({
       radius: 75,
       maxZoom: 16,
     });
 
-    const { geoData } = props;
-
-    const places = geoData .map( geo => {
+    const places = geoData.map( geo => {
       return {
         "type": "Feature",
-        "geometry": {"type": "Point", "coordinates": [geo.lng, geo.lat]},
+        "geometry": {"type": "Point", "coordinates": [geo.coordinate.longitude, geo.coordinate.latitude]},
+        "data": geo
       };
     });
 
@@ -248,24 +255,32 @@ class ExploreMapView extends Component {
 
   getMarkers(cluster, region) {
     const padding = 0;
+    const regionValue = region.__getValue();
     return cluster.getClusters([
-      region.longitude - (region.longitudeDelta * (0.5 + padding)),
-      region.latitude - (region.latitudeDelta * (0.5 + padding)),
-      region.longitude + (region.longitudeDelta * (0.5 + padding)),
-      region.latitude + (region.latitudeDelta * (0.5 + padding)),
-    ], this.getZoomLevel());
+      regionValue.longitude - (regionValue.longitudeDelta * (0.5 + padding)),
+      regionValue.latitude - (regionValue.latitudeDelta * (0.5 + padding)),
+      regionValue.longitude + (regionValue.longitudeDelta * (0.5 + padding)),
+      regionValue.latitude + (regionValue.latitudeDelta * (0.5 + padding)),
+    ], this.getZoomLevel(region));
   }
 
   getZoomLevel(region = this.state.region) {
-    // http://stackoverflow.com/a/6055653
-    const angle = region.longitudeDelta;
-
-    // 0.95 for finetuning zoomlevel grouping
+    const angle = region.__getValue().longitudeDelta;
     return Math.round(Math.log(360 / angle) / Math.LN2);
   }
 
   onRegionChange(region) {
     this.state.region.setValue(region);
+    if (this._regionChangeTimer !== null) {
+      clearTimeout(this._regionChangeTimer);
+    }
+    this._regionChangeTimer = setTimeout(() => {
+      this.setState({
+        region: this.state.region,
+        markers: this.getMarkers(this.state.cluster, this.state.region)
+      });
+      this._regionChangeTimer = null;
+    }, 150);
   }
 
   onStartShouldSetPanResponder = (e) => {
@@ -352,6 +367,9 @@ class ExploreMapView extends Component {
           duration: 0,
         }).start();
       }
+      this.setState({
+        markers: this.getMarkers(this.state.cluster, this.state.region)
+      });
     }
   };
 
@@ -567,8 +585,6 @@ class ExploreMapView extends Component {
       }).start();
     }
 
-
-
     return (
       <View style={ styles.container }>
         <PanController
@@ -590,6 +606,53 @@ class ExploreMapView extends Component {
             onLongPress={ () => this.onTapMap() }
           >
             {
+              this.state.markers.map( (marker, i) => {
+                let selected,
+                  markerOpacity,
+                  markerScale,
+                  index;
+
+                if(!marker.properties) {
+                  index = R.findIndex(R.propEq('_id', marker.data._id))(professionalsClients);
+                  selected = animations[index].selected;
+                  markerOpacity = animations[index].markerOpacity;
+                  markerScale = animations[index].markerScale;
+                };
+
+                return (
+                  <MapView.Marker
+                    key={i}
+                    coordinate={{
+                      latitude: marker.geometry.coordinates[1],
+                      longitude: marker.geometry.coordinates[0],
+                    }}
+                    onPress={ () => !marker.properties && this.onPressProfessionalClient(index) }
+                  >
+                    {
+                      marker.properties ?
+                        <MapClusterMarker {...marker} />
+                        :
+                        <AnimatedProfessionalMarker
+                          style={{
+                            opacity: markerOpacity,
+                            transform: [
+                              {scale: markerScale},
+                            ],
+                          }}
+                          amount={ marker.data.price }
+                          personName={ marker.data.name }
+                          rating={ marker.data.rating }
+                          profession={ marker.data.profession }
+                          selected={ selected }
+                          index={ index }
+                          user={ user }
+                        />
+                    }
+                  </MapView.Marker>
+                );
+              })
+            }
+            {
               gymLocations && gymLocations.map( (marker, index) => (
                 <MapView.Marker
                   image={ pin_gym }
@@ -603,40 +666,6 @@ class ExploreMapView extends Component {
               ))
             }
 
-            {professionalsClients.length >0 &&
-              professionalsClients.map( (marker, index) => {
-
-                const {
-                  selected,
-                  markerOpacity,
-                  markerScale,
-                } = animations[index];
-
-                return (
-                  <MapView.Marker
-                    key={ index }
-                    coordinate={ marker.coordinate }
-                    onPress={ () => this.onPressProfessionalClient(index) }
-                  >
-                    <AnimatedProfessionalMarker
-                      style={{
-                        opacity: markerOpacity,
-                        transform: [
-                          { scale: markerScale },
-                        ],
-                      }}
-                      amount={ marker.price }
-                      personName={ marker.name }
-                      rating={ marker.rating }
-                      profession={ marker.profession }
-                      selected={ selected }
-                      index={index}
-                      user={ user }
-                    />
-                  </MapView.Marker>
-                );
-              })
-            }
           </MapView.Animated>
 
           <View style={ [styles.mainContentContainer] }>
