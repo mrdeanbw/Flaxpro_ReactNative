@@ -34,6 +34,7 @@
     "react-native-router-flux": "3.37.0",
     "react-native-slider": "^0.9.1",
     "react-native-stars-rating": "^0.1.5",
+    "react-native-svg": "4.5.0",
     "react-native-swipe-list-view": "^0.4.0",
     "react-native-tab-navigator": "^0.3.3",
     "react-native-uploader": "0.0.10",
