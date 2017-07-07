@@ -165,22 +165,14 @@ class ClientExploreForm extends Component {
     }
   }
 
-  filterByAddress(){
+  filterByAddress(data){
     const { filter } = this.state;
-    if(!filter.address) {
-      this.closeLocationPopup();
-      return Alert.alert('Alert',
-        'Please enter address',
-        [
-          {text: 'OK', onPress: () =>  this.openLocationPopup()}
-        ]
-      );
-    }
+    this.setState({filter: {...filter, address: data.description, locationType: 'address'} })
 
     const { getProfessionals } = this.props;
     const filterObj = {
       locationType: 'address',
-      address: filter.address,
+      address: data.description,
       date: filter.date,
     };
     this.closeLocationPopup();
@@ -196,10 +188,7 @@ class ClientExploreForm extends Component {
         returnKeyType={'search'}
         listViewDisplayed='auto'
         fetchDetails={true}
-        onPress={(data, details = null) => {
-          console.log(data);
-          console.log(details);
-        }}
+        onPress={ (data) => this.filterByAddress(data) }
         query={{
           key: googleKey,
         }}
@@ -207,6 +196,7 @@ class ClientExploreForm extends Component {
           container:{
             flexDirection: 'column',
             flex:1,
+            width: width * 0.8,
           },
           description: {
             fontWeight: 'bold',
@@ -217,14 +207,18 @@ class ClientExploreForm extends Component {
           textInputContainer: {
             backgroundColor: 'rgba(0,0,0,0)',
             borderTopWidth: 0,
-            borderBottomWidth:0
+            borderBottomWidth: 0.5,
+            borderColor: '#5d5d5d',
           },
           textInput: {
             marginLeft: 0,
             marginRight: 0,
-            height: 38,
+            height: 43,
             color: '#5d5d5d',
-            fontSize: 16
+            fontSize: 16,
+            marginTop: 0,
+            marginBottom: 0,
+
           },
         }}
 
@@ -249,7 +243,7 @@ class ClientExploreForm extends Component {
         width={ width * 0.95 }
         dialogStyle={ styles.dialogContainer }
       >
-        <View style={ styles.locationDialogContentContainer }>
+        <View style={ [styles.locationDialogContentContainer, filter.locationType === "address" && {height: height * 0.75}] }>
 
           <View style={ styles.locationDialogTopContainer }>
               <Text style={ styles.locationHeaderText }>
@@ -307,24 +301,7 @@ class ClientExploreForm extends Component {
             filter.locationType === "address" &&
             <View style={styles.locationInputContainer}>
               <Text style={ styles.locationBlueText }>Enter address</Text>
-              <View style={styles.addressInputContainer}>
-                <TextInput
-                  ref={(ref) => {this.addressInput = ref}}
-                  editable={ true }
-                  autoCapitalize="none"
-                  autoCorrect={ false }
-                  color="#000"
-                  style={ styles.textInput }
-                  onChangeText={ (text) => this.setState({filter: {...filter, address: text} }) }
-                />
-              </View>
-              <TouchableOpacity onPress={ () => this.filterByAddress() }>
-                <View style={ styles.arrowButton }>
-                  <Image source={ arrow } style={ styles.imageArrow }/>
-                </View>
-              </TouchableOpacity>
               { this.googleAutocomplete }
-
             </View>
           }
 
@@ -819,16 +796,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 15
   },
-  addressInputContainer: {
-    width: width * 0.8,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#f2f2f2',
-    marginTop: 5,
-  },
   locationInputContainer: {
     flexDirection: 'column',
     marginBottom: 20,
+    height:height* 0.42,
   },
 
   activeLocation: {
