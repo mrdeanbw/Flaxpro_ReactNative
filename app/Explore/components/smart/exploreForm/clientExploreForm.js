@@ -18,7 +18,7 @@ import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PopupDialog from 'react-native-popup-dialog';
-
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import R from 'ramda';
 
 import SearchBar from '../../../../Components/searchBar';
@@ -29,10 +29,12 @@ import { GymLocations } from '../../../../Components/dummyEntries';
 
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
-import * as CommonConstant from '../../../../Components/commonConstant';
-const width = CommonConstant.WIDTH_SCREEN;
-const height = CommonConstant.HEIHT_SCREEN;
-const appColor = CommonConstant.APP_COLOR;
+import {
+  GOOGLE_API_KEY as googleKey,
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor
+} from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
 const arrow = require('../../../../Assets/images/right_arrow.png');
@@ -81,6 +83,20 @@ class ClientExploreForm extends Component {
     const { getExploreClient } = this.props;
     getExploreClient();
   }
+
+  componentDidMount() {
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+      };
+    });
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
 
   componentWillReceiveProps(newProps) {
     const { explore: { error } } = newProps;
@@ -132,7 +148,7 @@ class ClientExploreForm extends Component {
     const { filter } = this.state;
 
     this.setState({ filter: {...filter, locationType }, locationText }, () => {
-      if(locationType === 'address') this.addressInput.focus();
+      // if(locationType === 'address') this.addressInput.focus();
     });
 
     switch(locationType) {
@@ -149,28 +165,71 @@ class ClientExploreForm extends Component {
     }
   }
 
-  filterByAddress(){
+  filterByAddress(data){
     const { filter } = this.state;
-    if(!filter.address) {
-      this.closeLocationPopup();
-      return Alert.alert('Alert',
-        'Please enter address',
-        [
-          {text: 'OK', onPress: () =>  this.openLocationPopup()}
-        ]
-      );
-    }
+    this.setState({filter: {...filter, address: data.description, locationType: 'address'} })
 
     const { getProfessionals } = this.props;
     const filterObj = {
       locationType: 'address',
-      address: filter.address,
+      address: data.description,
       date: filter.date,
     };
     this.closeLocationPopup();
     getProfessionals(filterObj);
   }
 
+  get googleAutocomplete () {
+    return (
+      <GooglePlacesAutocomplete
+        placeholder='Search'
+        minLength={2}
+        autoFocus={false}
+        returnKeyType={'search'}
+        listViewDisplayed='auto'
+        fetchDetails={true}
+        onPress={ (data) => this.filterByAddress(data) }
+        query={{
+          key: googleKey,
+        }}
+        styles={{
+          container:{
+            flexDirection: 'column',
+            flex:1,
+            width: width * 0.8,
+          },
+          description: {
+            fontWeight: 'bold',
+          },
+          predefinedPlacesDescription: {
+            color: '#1faadb',
+          },
+          textInputContainer: {
+            backgroundColor: 'rgba(0,0,0,0)',
+            borderTopWidth: 0,
+            borderBottomWidth: 0.5,
+            borderColor: '#5d5d5d',
+          },
+          textInput: {
+            marginLeft: 0,
+            marginRight: 0,
+            height: 43,
+            color: '#5d5d5d',
+            fontSize: 16,
+            marginTop: 0,
+            marginBottom: 0,
+
+          },
+        }}
+
+        currentLocation={false}
+        currentLocationLabel="Current location"
+        nearbyPlacesAPI='GoogleReverseGeocoding'
+        debounce={200}
+      />
+    )
+  }
+  
   get dialogLocationClient () {
     const { user } = this.props.auth;
     const { filter } = this.state;
@@ -184,7 +243,8 @@ class ClientExploreForm extends Component {
         width={ width * 0.95 }
         dialogStyle={ styles.dialogContainer }
       >
-        <View style={ styles.locationDialogContentContainer }>
+        <View style={ [styles.locationDialogContentContainer, filter.locationType === "address" && {height: height * 0.75}] }>
+
           <View style={ styles.locationDialogTopContainer }>
               <Text style={ styles.locationHeaderText }>
                 My location
@@ -241,22 +301,7 @@ class ClientExploreForm extends Component {
             filter.locationType === "address" &&
             <View style={styles.locationInputContainer}>
               <Text style={ styles.locationBlueText }>Enter address</Text>
-              <View style={styles.addressInputContainer}>
-                <TextInput
-                  ref={(ref) => {this.addressInput = ref}}
-                  editable={ true }
-                  autoCapitalize="none"
-                  autoCorrect={ false }
-                  color="#000"
-                  style={ styles.textInput }
-                  onChangeText={ (text) => this.setState({filter: {...filter, address: text} }) }
-                />
-              </View>
-              <TouchableOpacity onPress={ () => this.filterByAddress() }>
-                <View style={ styles.arrowButton }>
-                  <Image source={ arrow } style={ styles.imageArrow }/>
-                </View>
-              </TouchableOpacity>
+              { this.googleAutocomplete }
             </View>
           }
 
@@ -751,16 +796,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 15
   },
-  addressInputContainer: {
-    width: width * 0.8,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#f2f2f2',
-    marginTop: 5,
-  },
   locationInputContainer: {
     flexDirection: 'column',
     marginBottom: 20,
+    height:height* 0.42,
   },
 
   activeLocation: {

@@ -23,10 +23,11 @@ import Calendar from './calendar/Calendar';
 import * as profileActions from '../../actions';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 
-import * as CommonConstant from '../../../Components/commonConstant';
-const width = CommonConstant.WIDTH_SCREEN;
-const height = CommonConstant.HEIHT_SCREEN;
-const appColor = CommonConstant.APP_COLOR;
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+} from '../../../Components/commonConstant';
 
 const background = require('../../../Assets/images/background.png');
 const downArrow = require('../../../Assets/images/down_arrow.png');
@@ -145,15 +146,14 @@ class EditAvailabilityForm extends Component {
     this.setTime({end: endTime, index: entryIndex});
   }
 
-  onRemoveTime(entryIndex) {
+  onRemoveTime(entry) {
     const selectedDates = [...this.state.selectedDates];
     const schedule = [...this.state.schedule];
 
-    if (selectedDates.length !== 1) return;
     selectedDates.forEach( selected => {
       const existDate = Ramda.find(Ramda.propEq('date', selected.date))(schedule);
-      selected.schedules.splice(entryIndex, 1);
-      existDate.schedules.splice(entryIndex, 1);
+      selected.schedules = selected.schedules.filter(e => Moment(e.from).format("hh:mm A") !== Moment(entry.from).format("hh:mm A"));
+      existDate.schedules = existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") !== Moment(entry.from).format("hh:mm A"));
     });
     this.setState({ selectedDates, schedule });
 
@@ -256,13 +256,13 @@ class EditAvailabilityForm extends Component {
                   onDateChange={ (time) => this.onChangeEndTime(time, index) }
                 />
                 <TouchableOpacity
-                  onPress={ () => this.onRemoveTime(index) }
+                  onPress={ () => this.onRemoveTime(entry) }
                 >
                   <EntypoIcons
                     name="circle-with-cross"
                     size={ 15 }
                     color="#8d99a6"
-                    style={{alignSelf: 'flex-start', marginTop: -13, marginRight:-5}}
+                    style={{position: 'relative', bottom: 10, left: 5}}
                   />
                 </TouchableOpacity>
               </View>
@@ -504,8 +504,8 @@ const styles = StyleSheet.create({
   },
   timeBlock: {
     paddingTop: 20,
-    // paddingLeft: 15,
-    paddingRight: 10,
+    paddingLeft: 5,
+    paddingRight: 15,
   },
 });
 

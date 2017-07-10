@@ -22,6 +22,7 @@
     "react-native-datepicker": "^1.4.4",
     "react-native-drawer": "^2.3.0",
     "react-native-gifted-chat": "^0.1.3",
+    "react-native-google-places-autocomplete": "^1.2.12",
     "react-native-image-picker": "^0.26.3",
     "react-native-image-progress": "^0.6.0",
     "react-native-keyboard-aware-scroll-view": "^0.2.7",
@@ -33,6 +34,7 @@
     "react-native-router-flux": "3.37.0",
     "react-native-slider": "^0.9.1",
     "react-native-stars-rating": "^0.1.5",
+    "react-native-svg": "4.5.0",
     "react-native-swipe-list-view": "^0.4.0",
     "react-native-tab-navigator": "^0.3.3",
     "react-native-uploader": "0.0.10",
@@ -41,6 +43,7 @@
     "redux": "3.5.2",
     "redux-actions": "0.11.0",
     "redux-thunk": "2.1.0",
+    "supercluster": "^2.3.0",
     "vanilla-masker": "^1.2.0"
   },
   "devDependencies": {
