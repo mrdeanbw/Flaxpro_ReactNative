@@ -5,12 +5,16 @@ import socket from '../sockets';
 import { tempProfileData, allProfessions } from '../Components/tempDataUsers';
 
 
-function loginError(input = null) {
-  return { type: types.AUTH_ERROR, input };
+function loginError(data) {
+  return { type: types.AUTH_ERROR, ...data };
 }
 
 function loginSuccess(data) {
   return { type: types.AUTH_SUCCESS, ...data };
+}
+
+function getAddressSuccess(data) {
+  return { type: types.GET_ADDRESS_SUCCESS, ...data };
 }
 
 function createUserSuccess(data) {
@@ -23,29 +27,7 @@ function createUserError(error) {
   return { type: types.CREATE_USER_ERROR, error };
 }
 
-/**
- * request to server
- */
-export const createUserServer = (email, password, token=null) => async (dispatch, store) => {
-  /**
-   * fake data: 'professions', 'professionalsClients'
-   */
-  let user = null,
-    professions = [];
-
-  let professionalsClients = null;
-
-  for (let i = 0; i < tempProfileData.length; i++) {
-    const profileData = tempProfileData[i];
-    if (email == profileData.email && (!token || token == profileData.token)) {
-      if (!profileData.professional) {
-        professions = allProfessions;
-      }
-      professionalsClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
-      user = profileData;
-      break;
-    }
-  }
+export const createUser = (email, password, token=null) => async (dispatch, store) => {
 
   const url = '/auth/register';
   const options = {
@@ -55,42 +37,17 @@ export const createUserServer = (email, password, token=null) => async (dispatch
 
   try {
     const response = await request(url, options);
-    dispatch(createUserSuccess({...response, professions, professionalsClients}))
+    dispatch(createUserSuccess({...response}))
   } catch (error) {
     const error =
-      `Auth Error: createUserServer 
+      `Auth Error: createUser 
       Message: ${error.message}`;
     dispatch(createUserError(error))
   }
 
 };
 
-
 export const login = (email, password, token = null) => async (dispatch, store) => {
-  /**
-   * fake data: 'professions', 'professionalsClients'
-   */
-  let user = null,
-    professions = [];
-
-  let professionalsClients = null;
-
-  for (let i = 0; i < tempProfileData.length; i++) {
-    const profileData = tempProfileData[i];
-    if (email == profileData.email && (!token || token == profileData.token)) {
-      if (!profileData.professional) {
-        professions = allProfessions;
-      }
-      professionalsClients = generateUsers(getRandomInt(10, 40), !profileData.professional)
-      user = profileData;
-      break;
-    }
-  }
-
-
-  /**
-   * request to server
-   */
   const url = '/auth/login';
   const options = {
     method: 'post',
@@ -99,12 +56,52 @@ export const login = (email, password, token = null) => async (dispatch, store) 
 
   try {
     const response = await request(url, options);
-    dispatch(loginSuccess({...response, professions, professionalsClients}));
+    dispatch(loginSuccess({...response}))
     socket.init();
   } catch (error) {
+    dispatch(loginError({error: error.message}))
+  }
+
+};
+
+export const refreshToken = () => async (dispatch, store) => {
+  const { auth } = store();
+  const url = '/auth/refresh/' + auth.refreshToken;
+  const options = {
+    method: 'get',
+  };
+
+  try {
+    const response = await request(url, options, auth);
+    dispatch(loginSuccess({...response}))
+  } catch (error) {
+    const error =
+      `Auth Error: refreshToken 
+      Message: ${error.message}`;
     dispatch(loginError(error))
   }
 
+};
+
+export const getCurrentAddress = (location) => async (dispatch, store) => {
+  const { auth } = store();
+  let url = '/users/location';
+  const options = {
+    method: 'get',
+  };
+  if(location){
+    const queryString = toQueryString(location);
+    url += '?' + queryString;
+  }
+  try {
+    const response = await request(url, options, auth);
+    dispatch(getAddressSuccess({...response}))
+  } catch (error) {
+    const error =
+      `Auth Error: getCurrentAddress() 
+      Message: ${error.message}`;
+    dispatch(loginError(error))
+  }
 };
 
 export const logout = () => async (dispatch, store) => {

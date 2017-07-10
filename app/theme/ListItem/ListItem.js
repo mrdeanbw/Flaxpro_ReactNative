@@ -15,7 +15,7 @@ import FontIcons from 'react-native-vector-icons/FontAwesome';
 class ListItem extends Component {
 
   constructor(props){
-    super(props)
+    super(props);
     this.state = {
       isShow:false,
     }
@@ -64,7 +64,7 @@ class ListItem extends Component {
   render(){
     const {data} = this.props;
     return (
-      <View style={styles.container}>
+      <View style={[styles.list, styles.borderRow]}>
         <TouchableOpacity style={styles.content} onPress={()=>this.setState({isShow:!this.state.isShow})}>
           <View style={{flexDirection:"row",flex:1,alignItems:"center"}}>
             <View style={{flexDirection:"row",alignItems:"center",flex:0.5}}>

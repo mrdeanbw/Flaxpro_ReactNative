@@ -62,7 +62,7 @@ export default StyleSheet.create({
     flex:1
   },
   bottomView:{
-    marginTop:10,
+    // marginTop:10,
     borderTopWidth:1,
     borderBottomWidth:1,
     borderColor:"#d7d7d7",
@@ -83,6 +83,7 @@ export default StyleSheet.create({
     backgroundColor:Constants.APP_COLOR,
     justifyContent:"center"
   },
+
   allText:{
     textAlign:"center",
     color:"white"

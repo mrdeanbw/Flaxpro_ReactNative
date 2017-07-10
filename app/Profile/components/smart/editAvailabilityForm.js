@@ -16,16 +16,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-datepicker';
 import { connect } from 'react-redux';
 
-import Calendar from './calendar/Calendar';
-import * as profileActions from '../../actions';
-
 import Ramda from 'ramda';
 import Moment from 'moment';
 
-import * as CommonConstant from '../../../Components/commonConstant';
-const width = CommonConstant.WIDTH_SCREEN;
-const height = CommonConstant.HEIHT_SCREEN;
-const appColor = CommonConstant.APP_COLOR;
+import Calendar from './calendar/Calendar';
+import * as profileActions from '../../actions';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
+
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+} from '../../../Components/commonConstant';
 
 const background = require('../../../Assets/images/background.png');
 const downArrow = require('../../../Assets/images/down_arrow.png');
@@ -36,7 +38,7 @@ class EditAvailabilityForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      schedule: props.profile.schedule,
+      schedule: [...props.profile.schedule],
       selectedDates: [],
     };
   }
@@ -53,23 +55,29 @@ class EditAvailabilityForm extends Component {
     }
     if (!profile.loading){
       this.setState({
-        schedule: profile.schedule,
+        schedule: [...profile.schedule],
       })
     }
 
   }
 
-  onAddTime() {
-    if (!this.state.selectedDates.length) return;
-
+  setTime({start, end, index}) {
     const selectedDates = [...this.state.selectedDates];
     const schedule = [...this.state.schedule];
-    const timeStart = 8;
-    const timeEnd = 9;
 
     const updateSchedule = (date, time) => {
       const existDate = Ramda.find(Ramda.propEq('date', date))(schedule);
-      existDate ? existDate.schedules.push(time) : schedule.push({date, schedules: [time]})
+      switch (true) {
+        case Number.isInteger(start) && Number.isInteger(end) :
+          existDate ? existDate.schedules.push(time) : schedule.push({date, schedules: [time]});
+          break;
+        case Number.isInteger(start) :
+          existDate.schedules[index].from = time.from;
+          break;
+        case Number.isInteger(end) :
+          existDate.schedules[index].to = time.to;
+          break;
+      }
       this.setState({schedule})
     };
 
@@ -79,61 +87,88 @@ class EditAvailabilityForm extends Component {
       const setNewTime = ( offset = 0 ) => {
         if (offset > 12) return;
         const defaultTime = {
-          from: new Date(day.setHours(timeStart + offset)),
-          to: new Date(day.setHours(timeEnd + offset)),
+          from: Number.isInteger(start) ? new Date(day.setHours(start + offset)) : new Date(),
+          to: Number.isInteger(end) ? new Date(day.setHours(end + offset)) : new Date(),
         };
 
-        if (selected.schedules.length) {
+        if (Number.isInteger(start) && selected.schedules.length) {
           const el = selected.schedules.filter(schedule => Moment(schedule.from).format() === Moment(defaultTime.from).format());
           if (el.length) {
             setNewTime(++offset)
           } else {
-            selected.schedules.push(defaultTime);
+            if (Number.isInteger(start) && Number.isInteger(end)) {
+              selected.schedules.push(defaultTime);
+            }
             updateSchedule(selected.date, defaultTime);
           }
         } else {
-          selected.schedules.push(defaultTime);
+          if (Number.isInteger(start) && Number.isInteger(end)) {
+            selected.schedules.push(defaultTime);
+          }
           updateSchedule(selected.date, defaultTime);
         }
       };
       setNewTime();
-
+      this.setState({ selectedDates });
     });
 
-    this.setState({ selectedDates });
+  }
+
+  onAddTime() {
+    if (!this.state.selectedDates.length) return;
+
+    const timeStart = 8;
+    const timeEnd = 9;
+
+    this.setTime({start: timeStart, end: timeEnd})
   }
 
   onSelectDate(date) {
-    const day = Moment(date).format('ddd, DD MMM YYYY');
+    const day = Moment(date).format('ddd, D MMM YYYY');
     const selectedDates = [...this.state.selectedDates];
     const existDate = Ramda.find(Ramda.propEq('date', day))(this.state.schedule);
 
     if (selectedDates.length && Ramda.find(Ramda.propEq('date', day))(selectedDates)){
       selectedDates.splice(Ramda.findIndex(Ramda.propEq('date', day))(selectedDates), 1)
     } else {
-      selectedDates.push(existDate || {date:day, schedules:[]})
+      selectedDates.push(existDate ? {date:day, schedules:[...existDate.schedules]} : {date:day, schedules:[]})
     }
     this.setState({ selectedDates });
   }
 
   onChangeStartTime(time, entryIndex) {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDates))(this.state.schedule);
-
-    const { schedule } = this.state;
-    schedule[index].schedules[entryIndex].start = time;
-    this.setState({ schedule });
+    const startTime = +Moment(time, "hh:mm A").get('hour');
+    this.setTime({start: startTime, index: entryIndex})
   }
 
   onChangeEndTime(time, entryIndex) {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDates))(this.state.schedule);
+    const endTime = +Moment(time, "hh:mm A").get('hour');
+    this.setTime({end: endTime, index: entryIndex});
+  }
 
-    const { schedule } = this.state;
-    schedule[index].schedules[entryIndex].end = time;
-    this.setState({ schedule });
+  onRemoveTime(entry) {
+    const selectedDates = [...this.state.selectedDates];
+    const schedule = [...this.state.schedule];
+
+    selectedDates.forEach( selected => {
+      const existDate = Ramda.find(Ramda.propEq('date', selected.date))(schedule);
+      selected.schedules = selected.schedules.filter(e => Moment(e.from).format("hh:mm A") !== Moment(entry.from).format("hh:mm A"));
+      existDate.schedules = existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") !== Moment(entry.from).format("hh:mm A"));
+    });
+    this.setState({ selectedDates, schedule });
+
+  }
+
+  checkSchedule() {
+    const el = this.state.schedule.filter( e => e.schedules.filter( s => (s.from >= s.to)).length);
+    return el.length;
   }
 
   onSetSchedule() {
-    Actions.pop();
+    const data = [];
+    if (this.checkSchedule()) return Alert.alert(`Selected time "from" should be less than time "to". Please check your schedule`);
+    this.state.schedule.forEach(e => data.push(...e.schedules));
+    this.props.createSchedule(data);
   }
 
   onBack() {
@@ -165,7 +200,8 @@ class EditAvailabilityForm extends Component {
       <View key={indexDays}>
         {
           day.schedules.map((entry, index) => (
-              <View key={ index } style={ styles.timeRowContainer }>
+              <View key={ index } style={ [styles.timeRowContainer, styles.timeBlock] }>
+
                 <DatePicker
                   date={ new Date(entry.from) }
                   mode="time"
@@ -194,7 +230,7 @@ class EditAvailabilityForm extends Component {
                 />
                 <Text style={ styles.textTimeTo }>To</Text>
                 <DatePicker
-                  date={ entry.to }
+                  date={ new Date(entry.to) }
                   mode="time"
                   format="hh:mm A"
                   confirmBtnText="Done"
@@ -219,6 +255,16 @@ class EditAvailabilityForm extends Component {
                   }}
                   onDateChange={ (time) => this.onChangeEndTime(time, index) }
                 />
+                <TouchableOpacity
+                  onPress={ () => this.onRemoveTime(entry) }
+                >
+                  <EntypoIcons
+                    name="circle-with-cross"
+                    size={ 15 }
+                    color="#8d99a6"
+                    style={{position: 'relative', bottom: 10, left: 5}}
+                  />
+                </TouchableOpacity>
               </View>
             ))
         }
@@ -227,7 +273,7 @@ class EditAvailabilityForm extends Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { profile: { loading } } = this.props;
 
     return (
       <View style={ styles.container }>
@@ -298,6 +344,9 @@ class EditAvailabilityForm extends Component {
             </View>
 
           </View>
+          {
+            loading && <FullScreenLoader/>
+          }
         </Image>
       </View>
     );
@@ -453,7 +502,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#565656',
   },
-
+  timeBlock: {
+    paddingTop: 20,
+    paddingLeft: 5,
+    paddingRight: 15,
+  },
 });
 
 export default connect(state => ({
@@ -462,5 +515,6 @@ export default connect(state => ({
   }),
   (dispatch) => ({
     getSchedule: () => dispatch(profileActions.getSchedule()),
+    createSchedule: (data) => dispatch(profileActions.createSchedule(data)),
   })
 )(EditAvailabilityForm);

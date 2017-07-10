@@ -49,7 +49,7 @@ class ClientInfoForm extends Component {
       visibility : false,
       gender : labelSex[0],
       age : 28,
-      address: '4 York st, Toronto',
+      address: props.auth.currentAddress.formattedAddress || '4 York st, Toronto',
       profession : props.explore && props.explore.professions && props.explore.professions[0] || {},
       priceLevel : prices[0].level,
       signUpRequest: false
@@ -57,7 +57,7 @@ class ClientInfoForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { auth: { user }, question: { error } } = nextProps;
+    const { auth: { user, currentAddress }, question: { error } } = nextProps;
 
     if (error) {
       Alert.alert(error);
@@ -66,6 +66,9 @@ class ClientInfoForm extends Component {
     }
     if (user && this.state.signUpRequest) {
       Actions.Main({ user_mode: CommonConstant.user_client });
+    }
+    if (currentAddress && currentAddress.formattedAddress) {
+      this.setState({ address: currentAddress.formattedAddress });
     }
     this.setState({ signUpRequest: false });
   }
@@ -458,34 +461,34 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     position: 'relative',
-    height: 200,
+    height: 160,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarTopBackground: {
     width: width,
-    height: 100,
+    height: 80,
     backgroundColor: 'transparent',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
   avatarBottomBackground: {
     width: width,
-    height: 100,
+    height: 80,
     backgroundColor: '#fff',
   },
   imageAvatar: {
-    height: 160,
-    width: 160,
-    borderRadius: 80,
+    height: 120,
+    width: 120,
+    borderRadius: 60,
   },
   avatarWrapper: {
     backgroundColor: '#fff',
     position: 'absolute',
-    left: width / 2 - 82,
-    height: 164,
-    width: 164,
-    borderRadius: 82,
+    left: width / 2 - 62,
+    height: 124,
+    width: 124,
+    borderRadius: 62,
     top: 23,
     justifyContent: 'center',
     alignItems: 'center',

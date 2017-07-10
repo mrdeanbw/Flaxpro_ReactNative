@@ -14,8 +14,8 @@ export function profileRequest() {
 }
 
 export const updateProfile = (userData) => async (dispatch, store) => {
-  profileRequest();
-  const url = `/${userData.role.toLowerCase()}s/'${userData._id}`;
+  dispatch(profileRequest());
+  const url = `/${userData.role.toLowerCase()}s/${userData._id}`;
   const { auth } = store();
   const options = {
     method: 'put',
@@ -83,7 +83,7 @@ export const getSessionsById = (data) => async (dispatch, store) => {
 };
 
 export const getFullProfile = (user) => async (dispatch, store) => {
-  profileRequest();
+  dispatch(profileRequest());
   const { auth } = store();
   const role = (user || auth.user).role.toLowerCase();
   const url = `/${role}s/${user ? user._id : auth.user._id}`;
@@ -104,7 +104,7 @@ export const getFullProfile = (user) => async (dispatch, store) => {
 };
 
 export const getSchedule = () => async (dispatch, store) => {
-  profileRequest();
+  dispatch(profileRequest());
   const { auth } = store();
   const url = `/schedules/${auth.user.role.toLowerCase()}/${auth.user._id}`;
   const options = {
@@ -117,6 +117,27 @@ export const getSchedule = () => async (dispatch, store) => {
   } catch (error) {
     const error =
       `Profile Error: getSchedule()
+      Message: ${error.message}`;
+    dispatch(profileError(error));
+  }
+
+};
+
+export const createSchedule = (data) => async (dispatch, store) => {
+  dispatch(profileRequest());
+  const { auth } = store();
+  const url = '/schedules';
+  const options = {
+    method: 'put',
+    body: JSON.stringify({schedules: data}),
+  };
+
+  try {
+    await request(url, options, auth);
+    getSchedule()(dispatch, store);
+  } catch (error) {
+    const error =
+      `Profile Error: createSchedule()
       Message: ${error.message}`;
     dispatch(profileError(error));
   }

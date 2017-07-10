@@ -25,6 +25,7 @@ import * as CommonConstant from '../../../../Components/commonConstant';
 const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
+const professionalConst = CommonConstant.user_professional;
 
 export default class ContractSummaryForm extends Component {
   constructor(props) {
@@ -68,7 +69,7 @@ export default class ContractSummaryForm extends Component {
       rate: price,
       numberOfPeople: this.state.numberOfPeople,
       sessions: this.state.selectedTimes,
-      paymentMethod: paymentMethod.slice(0, 4),
+      paymentMethod: paymentMethod && paymentMethod.slice(0, 4),
       location:  'professional',
     };
     createContract(data);
@@ -82,9 +83,10 @@ export default class ContractSummaryForm extends Component {
     const { user, profile, hire: {offerPrice} } = this.props;
     const { payment } = this.state;
     const userLocation = profile.user.location;
-    const price = offerPrice || user.amount || user.price
+    const price = offerPrice || user.price;
 
-    let paymentMethod = typeof(payment) === 'string'? payment: 'Card  ...'+ payment.last4;
+    const isProf = this.props.auth.user.role === professionalConst;
+    const paymentMethod = !isProf? (typeof(payment) === 'string'? payment: 'Card  ...'+ payment.last4) : null;
 
     return (
       <View style={ styles.container }>
@@ -139,12 +141,14 @@ export default class ContractSummaryForm extends Component {
                 </View>
               </View>
 
-              <View style={ [styles.borderBottom, styles.rowContainer] }>
-                <Text style={ [fontStyles, styles.textDescription] }>Payment Method</Text>
-                <View style={ [styles.valueWrapper] }>
-                  <Text style={ [styles.textBidDescription] }>{ paymentMethod }</Text>
+              {!isProf &&
+                <View style={ [styles.borderBottom, styles.rowContainer] }>
+                  <Text style={ [fontStyles, styles.textDescription] }>Payment Method</Text>
+                  <View style={ [styles.valueWrapper] }>
+                    <Text style={ [styles.textBidDescription] }>{ paymentMethod }</Text>
+                  </View>
                 </View>
-              </View>
+              }
 
             </View>
             <View style={ styles.bottomContainer }>
@@ -177,57 +181,6 @@ export default class ContractSummaryForm extends Component {
       </View>
     );
   }
-}
-const customStyle = {
-  title: {
-    color: '#2e343b',
-  },
-  calendarContainer: {
-    backgroundColor: '#fff',
-  },
-  calendarControls: {
-    backgroundColor: '#f3f3f3',
-  },
-  controlButtonText: {
-    color: '#8e9296',
-  },
-  currentDayCircle: {
-    backgroundColor: '#efefef',
-  },
-  currentDayText: {
-    color: '#000',
-  },
-  day: {
-    color: '#8d99a6',
-  },
-  dayHeading: {
-    color: '#2e343b',
-  },
-  hasEventCircle: {
-    backgroundColor: '#efefef',
-    borderWidth: 1,
-    borderColor: '#efefef',
-  },
-  hasEventText: {
-    color: '#8d99a6',
-  },
-  selectedDayCircle: {
-    backgroundColor: '#45c7f1',
-    borderWidth: 1,
-    borderColor: '#34aadc',
-  },
-  selectedDayText: {
-    color: '#fff',
-  },
-  weekendDayText: {
-    color: '#8d99a6',
-  },
-  weekendHeading: {
-    color: '#2e343b',
-  },
-  weekRow: {
-    backgroundColor: '#fff',
-  },
 }
 
 const styles = StyleSheet.create({

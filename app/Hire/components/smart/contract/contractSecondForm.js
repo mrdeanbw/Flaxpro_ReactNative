@@ -20,6 +20,7 @@ import * as CommonConstant from '../../../../Components/commonConstant';
 const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
+const professionalConst = CommonConstant.user_professional;
 
 
 export default class ContractSecondForm extends Component {
@@ -58,7 +59,8 @@ export default class ContractSecondForm extends Component {
       return Alert.alert('Please select more dates/times or change number of sessions')
     }
     const { changeContractForm } = this.props;
-    changeContractForm({...this.state, paymentForm: true});
+    const nextForm = this.props.auth.user.role === professionalConst? 'summaryForm' : 'paymentForm';
+    changeContractForm({...this.state, [nextForm]: true});
   };
 
   onBack() {
@@ -82,8 +84,6 @@ export default class ContractSecondForm extends Component {
   }
   
   render() {
-    const { user, hire: {schedule} } = this.props;
-
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">

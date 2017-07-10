@@ -15,6 +15,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import R from 'ramda';
 
 //const variable
 const { width, height } = Dimensions.get('window');
@@ -36,13 +37,14 @@ class AuthForm extends Component {
     super(props);
 
     this.state = {
-      email : 'client@mail.com', //TODO: for testing
-      password : 'password', //TODO: for testing
-      confirmPassword: 'password',
+      email : '',
+      password : '',
+      confirmPassword: '',
       selectedButton: 2,
       loginRequest: false,
       registerRequest: false,
-      loginForm: false
+      location: {},
+      loginForm: false,
     };
   }
 
@@ -54,21 +56,32 @@ class AuthForm extends Component {
       return;
     }
     token && AsyncStorage.setItem('token', token);
-    if (user && this.state.loginRequest) {
+    if (!R.isEmpty(user) && this.state.loginRequest) {
         Actions.Main({ user_mode: user.role })
     }
-    if (user && this.state.registerRequest) {
+    if (!R.isEmpty(user) && this.state.registerRequest) {
+      this.props.getCurrentAddress(this.state.location);
       Actions.WhoAreYou();
     }
     this.setState({ loginRequest: false, registerRequest: false });
   }
 
+  componentDidMount(){
+    navigator.geolocation.getCurrentPosition((position) => {
+      const location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      this.setState({ location })
+    });
+  }
+
   onShowLogIn() {
     this.setState({
       selectedButton: 2,
-      email : 'client@mail.com',
-      password : 'password',
-      confirmPassword : 'password',
+      email : '',
+      password : '',
+      confirmPassword : '',
       loginRequest: false,
       registerRequest: false
     });
@@ -77,9 +90,9 @@ class AuthForm extends Component {
   onShowSignUp() {
     this.setState({
       selectedButton: 1,
-      email : 'client@mail.com',
-      password : 'password',
-      confirmPassword : 'password',
+      email : '',
+      password : '',
+      confirmPassword : '',
       loginRequest: false,
       registerRequest: false
     });
@@ -109,7 +122,7 @@ class AuthForm extends Component {
 
   onSignUp() {
     const { email, password, confirmPassword } = this.state;
-    const { createUser, createUserServer } = this.props;
+    const { createUser } = this.props;
 
     if (email == '') {
       Alert.alert('Please enter email address.');
@@ -136,8 +149,7 @@ class AuthForm extends Component {
       this.setState({ password: '', confirmPassword: '' });
       return;
     }
-    this.setState({ registerRequest: true }, ()=>createUserServer(email, password));
-
+    this.setState({ registerRequest: true }, ()=> createUser(email, password));
   }
 
   onForgotPassword() {

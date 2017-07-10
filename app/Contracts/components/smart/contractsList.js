@@ -5,13 +5,13 @@ import {
   Image,
   TextInput,
   Text,
-  ListView,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView,
 }from 'react-native'
 import Moment from 'moment';
 
 import FullScreenLoader from '../../../Components/fullScreenLoader';
-import {Button,ListItem} from "../../../theme"
+import { ListProfession } from "../../../theme"
 import styles from "./contractsList_style"
 import * as Constants from "../../../Components/commonConstant"
 
@@ -40,17 +40,17 @@ const years = [
 class ClientsProfessionals extends React.Component {
   constructor(props) {
     super(props);
-    if(props.auth.user.role === Constants.user_client) props.getMyProfessionals();
-    if(props.auth.user.role === Constants.user_professional) props.getMyClients();
-
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       days: days,
       months: months,
       years: years,
       search: '',
-      dataSource: ds.cloneWithRows([]),
+      contracts: [],
     };
+  }
+  componentWillMount(){
+    if(this.props.auth.user.role === Constants.user_client) this.props.getMyProfessionals();
+    if(this.props.auth.user.role === Constants.user_professional) this.props.getMyClients();
   }
   componentWillReceiveProps(newProps) {
     if(newProps.contracts.loading) return;
@@ -59,19 +59,26 @@ class ClientsProfessionals extends React.Component {
     const {contracts: {contracts}} = newProps;
     const role = newProps.auth.user.role === Constants.user_professional ? Constants.user_client.toLowerCase() : Constants.user_professional.toLowerCase();
 
-    const data = contracts.map( e => ({
-      contractId: e._id,
-      name: e[role].name,
-      time: e.next ? Moment(e.next.from).format('MMM DD hh:mm A') : '',
-      progress: e.sessionsPast,
-      total: e.sessionsTotal,
-      text: !e[role].avatar ? e[role].name[0].toUpperCase() : '',
-      backgroundColor: !e[role].avatar ? '#43c6f0' : '',
-      type: e[role].avatar ? 'url' : 'text',
-      image: e[role].avatar || ''
+    const data = contracts.map( e => (
+      {
+        profession: e.profession.name,
+        professionColor: e.profession.color,
+        contracts: e.contracts.map(c => (
+          {
+            contractId: c._id,
+            name: c[role].name,
+            time: c.next ? Moment(c.next.from).format('MMM DD hh:mm A') : '',
+            progress: c.sessionsPast,
+            total: c.sessionsTotal,
+            text: !c[role].avatar ? c[role].name[0].toUpperCase() : '',
+            backgroundColor: !c[role].avatar ? '#43c6f0' : '',
+            type: c[role].avatar ? 'url' : 'text',
+            image: c[role].avatar || ''
+          })
+        )
       })
     );
-    this.setState({dataSource:this.state.dataSource.cloneWithRows(data)})
+    this.setState({contracts:data})
   }
   onSelectDay(day) {
     const days = this.state.days.map(e => {
@@ -128,24 +135,25 @@ class ClientsProfessionals extends React.Component {
               />
           </View>
         </View>
+
         <View style={styles.tabContainer}>
-            <View style={{flex:1,flexDirection:"row"}}>
-              <View style={{flex:0.5}}><Text style={styles.titleSection}>Name</Text></View>
-              <View style={{marginLeft:5,flex:0.5}}><Text style={styles.titleSection}>Next Appointment</Text></View>
-            </View>
-            <View style={{width:110}}>
-              <Text style={styles.titleSection}>Sessions</Text>
-            </View>
+          <View style={{flex:1,flexDirection:"row"}}>
+            <View style={{flex:0.5}}><Text style={styles.titleSection}>Name</Text></View>
+            <View style={{marginLeft:5,flex:0.5}}><Text style={styles.titleSection}>Next Appointment</Text></View>
+          </View>
+          <View style={{width:110}}>
+            <Text style={styles.titleSection}>Sessions</Text>
+          </View>
         </View>
-        <ListView
-          style={styles.list}
-          enableEmptySections={true}
-          dataSource={this.state.dataSource}
-          renderRow={(rowData) => <ListItem data={rowData} cancelContract={this.props.cancelContract} role={this.props.auth.user.role}/>}
-        />
+        <ScrollView>
+        {
+          this.state.contracts.map( (data, index) => (
+            <ListProfession key={index} data={data} cancelContract={this.props.cancelContract} role={this.props.auth.user.role}/>
+          ))
+        }
+        </ScrollView>
 
         <View style={styles.bottomView}>
-
           <View style={styles.line}>
             {
               this.state.days.map((row, index) => (
@@ -192,62 +200,6 @@ class ClientsProfessionals extends React.Component {
         { this.props.contracts.loading ? <FullScreenLoader/> : null }
       </View>
     )
-  }
-
-  componentDidMount(){
-    const data = this.createFakeData();
-
-    this.setState({dataSource:this.state.dataSource.cloneWithRows(data)})
-  }
-
-  createFakeData(){
-    const data = []
-    let item = {
-      fake:true,
-      name:"Sara Clinton",
-      time:"DEC 13  18:45PM",
-      progress:1,
-      total:5,
-      type:"image",
-      image:require("../../../Assets/images/icon/avatar1.png")
-    }
-    data.push(item)
-
-    item = {
-      fake:true,
-      name:"Emily Carter",
-      time:"DEC 12  18:45PM",
-      progress:10,
-      total:10,
-      type:"text",
-      text:"F",
-      backgroundColor:"#43c6f0"
-    }
-    data.push(item)
-
-    item = {
-      fake:true,
-      name:"Steven Besoz",
-      time:"DEC 13  18:45PM",
-      progress:7,
-      total:7,
-      type:"text",
-      text:"S",
-      backgroundColor:"#ff1b66"
-    }
-    data.push(item)
-
-    item = {
-      fake:true,
-      name:"Jeff Nelson",
-      time:"DEC 13  18:45PM",
-      total:10,
-      progress:6,
-      type:"image",
-      image:require("../../../Assets/images/icon/avatar2.png")
-    }
-    data.push(item)
-    return data;
   }
 }
 

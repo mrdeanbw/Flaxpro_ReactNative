@@ -25,11 +25,12 @@ export const getMyProfessionals = (data) => async (dispatch, store) => {
 };
 
 export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, store) => {
-  let url = `/${role}s/my`;
+  let url = `/users/${role}s`;
   const { auth } = store();
   const options = {
     method: 'get',
   };
+  data ? data.group=true : data = {group: true};
   if(data){
     const queryString = toQueryString(data);
     url += '?' + queryString;
@@ -49,7 +50,7 @@ export const getMyClientsProfessionals = ({ role, data }) => async (dispatch, st
 
 export const cancelContract = (contractId) => async (dispatch, store) => {
   dispatch(contractsRequest());
-  const url = `/contracts/${contractId}/cancel`;
+  const url = `/contracts/${contractId}/status`;
   const { auth } = store();
   const options = {
     method: 'post',

@@ -162,15 +162,7 @@ class ClientProfileForm extends Component {
       editable ?
         <View style={ styles.navigateButtons }>
           <View style={ styles.navBarContainer }>
-            <TouchableOpacity
-              onPress={ () => this.onBack() }
-              style={ styles.navButtonWrapper }
-            >
-              <EntypoIcons
-                name="chevron-thin-left"  size={ 25 }
-                color="#fff"
-              />
-            </TouchableOpacity>
+            <View style={ styles.navButtonWrapper }/>
 
             <Text style={ [styles.fontStyles, styles.textTitle] }> PROFILE </Text>
 

@@ -6,11 +6,18 @@ const initialState = {
   token: '',
   user: {},
   professions: [],
-  professionalsClients: []
+  professionalsClients: [],
+  currentAddress: '',
 };
 
 export default function auth(state = initialState, action = {}) {
   switch (action.type) {
+    case types.GET_ADDRESS_SUCCESS:
+      return {
+        ...state,
+        error: null,
+        currentAddress: action.address,
+      };
     case types.UPDATE_USER:
       return {
         ...state,
@@ -24,8 +31,7 @@ export default function auth(state = initialState, action = {}) {
         loading: false,
         user: action.user,
         token: action.token,
-        professions: action.professions,
-        professionalsClients: action.professionalsClients,
+        refreshToken: action.refreshToken,
       };
     case types.AUTH_ERROR:
       return {
@@ -41,8 +47,7 @@ export default function auth(state = initialState, action = {}) {
         error: null,
         user: action.user,
         token: action.token,
-        professions: action.professions,
-        professionalsClients: action.professionalsClients,
+        refreshToken: action.refreshToken,
       };
     case types.CREATE_USER_ERROR:
       return {

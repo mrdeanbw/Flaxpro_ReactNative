@@ -26,7 +26,7 @@ import Contracts from './Contracts/containers/contracts';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
-const store = createStoreWithMiddleware(reducer);
+export const store = createStoreWithMiddleware(reducer);
 
 const scenes = Actions.create(
   <Scene key="root">

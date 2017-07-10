@@ -24,6 +24,7 @@ import * as CommonConstant from '../../../../Components/commonConstant';
 const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const fontStyles = CommonConstant.FONT_STYLES;
+const professionalConst = CommonConstant.user_professional;
 
 export default class ContractFirstForm extends Component {
   static propTypes = {
@@ -36,14 +37,15 @@ export default class ContractFirstForm extends Component {
 
   constructor(props) {
     super(props);
-
+    const authUser = props.auth.user;
+    const isProf = authUser.role === professionalConst;
     this.state = {
       numberOfSessions: props.hire.numberOfSessions,
       numberOfPeople: props.hire.numberOfPeople,
       selectedDates: props.hire.selectedDates,
       availableDates: props.hire.schedule,
       selectedTimes: props.hire.selectedTimes,
-      offerPrice: (props.user.amount || props.user.price).toString()
+      offerPrice: (isProf? authUser.price: props.user.price).toString(),
     };
   }
 
@@ -67,6 +69,7 @@ export default class ContractFirstForm extends Component {
   }
   onChangePeople(value) {
     const numberOfPeople = this.state.numberOfPeople + value;
+    if (numberOfPeople < 1) return;
     this.setState({numberOfPeople});
   }
   onSelectDate(date) {
@@ -86,8 +89,11 @@ export default class ContractFirstForm extends Component {
   }
 
   render() {
-    const { user, hire: {schedule}, editable } = this.props;
-    let hourlyRate = editable? this.state.offerPrice: (user.amount || user.price);
+    const {auth, user, hire: {schedule}, editable } = this.props;
+    const isProf = auth.user.role === professionalConst;
+    const price = (isProf? auth.user.price: user.price).toString();
+
+    let hourlyRate = editable? this.state.offerPrice: price;
     let totalPayment = this.state.numberOfSessions * this.state.numberOfPeople * hourlyRate;
 
     return (
@@ -142,7 +148,7 @@ export default class ContractFirstForm extends Component {
                       />
                     </View>
                     :
-                    <Text style={ styles.textValue }>$ { user.amount || user.price }</Text>
+                    <Text style={ styles.textValue }>$ { hourlyRate }</Text>
                   }
                 </View>
               </View>
@@ -180,34 +186,6 @@ export default class ContractFirstForm extends Component {
                 </View>
               </View>
 
-              {/*ToDo: Commented code will be use when will be created offer part*/}
-
-              {/*<View style={ styles.rowContainer }>*/}
-                {/*<Text style={ styles.textDescription }>Duration</Text>*/}
-                {/*<View style={ styles.valueWrapper }>*/}
-                  {/*<View style={ styles.dropdownWrapper }>*/}
-                    {/*<ModalDropdown*/}
-                      {/*options={ duration }*/}
-                      {/*defaultValue={ duration[2] }*/}
-                      {/*textStyle ={ styles.textValue }*/}
-                      {/*dropdownStyle={ styles.dropdownStyle }*/}
-                      {/*onSelect={ (rowId, rowData) => this.onYearOfExperience(rowData) }*/}
-                    {/*/>*/}
-                    {/*<EntypoIcons*/}
-                      {/*name="chevron-thin-down"  size={ 20 }*/}
-                      {/*color="#4d4d4d"*/}
-                    {/*/>*/}
-                  {/*</View>*/}
-                {/*</View>*/}
-              {/*</View>*/}
-
-              {/*<View style={ styles.locationBorderContainer }>*/}
-                {/*<EvilIcons*/}
-                  {/*name="location"  size={ 30 }*/}
-                  {/*color="#4d4d4d"*/}
-                {/*/>*/}
-                {/*<Text style={ styles.textDescription }>4 york st, Toronto Ontario MSJ 4C2</Text>*/}
-              {/*</View>*/}
             </View>
             <View style={ styles.bottomContainer }>
               <Calendar
@@ -292,7 +270,7 @@ const customStyle = {
   weekRow: {
     backgroundColor: '#fff',
   },
-}
+};
 
 const styles = StyleSheet.create({
   inputText : {

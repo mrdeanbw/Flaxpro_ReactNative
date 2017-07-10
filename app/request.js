@@ -1,7 +1,10 @@
 import 'whatwg-fetch';
 import { Actions } from 'react-native-router-flux';
 import { AsyncStorage } from 'react-native';
+import * as authActions from './Auth/actions';
+import { store } from './app';
 
+let urlsForRefresh = [];
 /**
  * Parses the JSON returned by a network request
  *
@@ -21,12 +24,24 @@ function parseJSON(response) {
  * @return {object|undefined} Returns either the response, or throws an error
  */
 function checkStatus(response) {
-  console.log('checkStatus', response);
+  console.log('checkStatus', response, urlsForRefresh);
   if (response.status >= 200 && response.status < 300) {
+    urlsForRefresh.shift();
     return response;
   }
   if (response.status === 401) {
-    return Actions.Auth();
+    if (urlsForRefresh.length){
+      store.dispatch(authActions.refreshToken())
+        .then(() => {
+          const { auth } = store.getState();
+          // urlsForRefresh.forEach( e => request(e.url, e.options, auth));
+          urlsForRefresh = [];
+          // return {};
+        });
+    } else {
+      Actions.Auth();
+      return {};
+    }
   }
 
   const error = new Error({message:response._bodyText});
@@ -40,6 +55,7 @@ function checkStatus(response) {
       error.message = response._bodyText;
     }
   }
+  urlsForRefresh.shift();
   throw error;
 }
 
@@ -52,9 +68,11 @@ function checkStatus(response) {
  * @return {object}           The response data
  */
 export default function request(url, options, authState) {
-  // const apiUrl = 'http://192.168.88.226:3000/api';
-  const apiUrl = 'http://localhost:3000/api';
+  // const apiUrl = 'http://13.59.22.166:3000/api';  // Dunice developing
+  // const apiUrl = 'http://localhost:3000/api';     // Local testing/developing
+  const apiUrl = 'http://13.59.22.166:3000/api';  // AWS common server
   AsyncStorage.setItem('apiUrl', apiUrl);
+  urlsForRefresh.unshift({url, options});
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',

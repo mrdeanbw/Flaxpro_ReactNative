@@ -21,9 +21,18 @@ import PopupDialog from 'react-native-popup-dialog';
 import Stars from 'react-native-stars-rating';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import BottomBar from './bottomBar';
+import supercluster from 'supercluster';
+import R from 'ramda';
 
-const { width, height } = Dimensions.get('window');
+import BottomBar from './bottomBar';
+import MapClusterMarker from './mapClusterMarker';
+
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+} from '../../../Components/commonConstant';
+
 const pin_gym = require('../../../Assets/images/gym.png');
 const avatar = require('../../../Assets/images/avatar1.png');
 
@@ -173,22 +182,105 @@ class ExploreMapView extends Component {
       translateY,
       selectedGymIndex: 0,
       selectedProfessionalClientIndex: 0,
+      region: new MapView.AnimatedRegion({
+        latitude: props.user.coordinate.latitude,
+        longitude: props.user.coordinate.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      })
     };
-
-    // this.region = new MapView.AnimatedRegion({
-    //   latitude: LATITUDE,
-    //   longitude: LONGITUDE,
-    //   latitudeDelta: LATITUDE_DELTA,
-    //   longitudeDelta: LONGITUDE_DELTA,
-    // });
-
     this.onTapMap = this.onTapMap.bind(this);
     this.onList = this.onList.bind(this);
     this.onFilter = this.onFilter.bind(this);
+    this.onRegionChange = this.onRegionChange.bind(this);
+    this.createCluster = this.createCluster.bind(this);
+    this.getMarkers = this.getMarkers.bind(this);
+    this.getZoomLevel = this.getZoomLevel.bind(this);
+
+    const cluster = this.createCluster(props.professionalsClients);
+    const markers = this.getMarkers(cluster, this.state.region);
+
+    this.state['cluster'] = cluster;
+    this.state['markers'] = markers;
   }
 
-  componentWillReceiveProps(newProps) {
-     // this.setState({ selectedProfessionalClientIndex: 0 }); //TODO: commented
+  componentWillReceiveProps(nextProps) {
+    const cluster = this.createCluster(nextProps.professionalsClients);
+    const markers = this.getMarkers(cluster, this.state.region);
+
+    this.setState({
+      cluster: cluster,
+      markers: markers
+    });
+  }
+
+  componentDidMount() {
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      };
+      this.onRegionChange(region);
+    });
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  createCluster(geoData) {
+    const cluster = supercluster({
+      radius: 75,
+      maxZoom: 16,
+    });
+
+    const places = geoData.map( geo => {
+      return {
+        "type": "Feature",
+        "geometry": {"type": "Point", "coordinates": [geo.coordinate.longitude, geo.coordinate.latitude]},
+        "data": geo
+      };
+    });
+
+    try {
+      cluster.load(places);
+      return cluster;
+    }
+    catch(e) {
+      console.debug('failed to create cluster', e);
+    }
+  }
+
+  getMarkers(cluster, region) {
+    const padding = 0;
+    const regionValue = region.__getValue();
+    return cluster.getClusters([
+      regionValue.longitude - (regionValue.longitudeDelta * (0.5 + padding)),
+      regionValue.latitude - (regionValue.latitudeDelta * (0.5 + padding)),
+      regionValue.longitude + (regionValue.longitudeDelta * (0.5 + padding)),
+      regionValue.latitude + (regionValue.latitudeDelta * (0.5 + padding)),
+    ], this.getZoomLevel(region));
+  }
+
+  getZoomLevel(region = this.state.region) {
+    const angle = region.__getValue().longitudeDelta;
+    return Math.round(Math.log(360 / angle) / Math.LN2);
+  }
+
+  onRegionChange(region) {
+    this.state.region.setValue(region);
+    if (this._regionChangeTimer !== null) {
+      clearTimeout(this._regionChangeTimer);
+    }
+    this._regionChangeTimer = setTimeout(() => {
+      this.setState({
+        region: this.state.region,
+        markers: this.getMarkers(this.state.cluster, this.state.region)
+      });
+      this._regionChangeTimer = null;
+    }, 150);
   }
 
   onStartShouldSetPanResponder = (e) => {
@@ -202,7 +294,7 @@ class ExploreMapView extends Component {
     const topOfTap = height - pageY;
 
     return topOfTap < topOfMainWindow;
-  }
+  };
 
   onMoveShouldSetPanResponder = (e) => {
 
@@ -212,7 +304,7 @@ class ExploreMapView extends Component {
     const topOfTap = height - pageY;
 
     return topOfTap < topOfMainWindow;
-  }
+  };
 
   onPanXChange = ({ value }) => {
 
@@ -221,7 +313,7 @@ class ExploreMapView extends Component {
     if (index !== newIndex) {
       this.setState({ index: newIndex });
     }
-  }
+  };
 
   onPanYChange = ({ value }) => {
 
@@ -239,8 +331,8 @@ class ExploreMapView extends Component {
       this.setState({ canMoveHorizontal: shouldBeMovable });
       if (!shouldBeMovable) {
         const { coordinate } = professionalsClients[index];
-        this.region.stopAnimation();
-        this.region.timing({
+        this.state.region.stopAnimation();
+        this.state.region.timing({
           latitude: scrollY.interpolate({
             inputRange: [0, BREAKPOINT1],
             outputRange: [
@@ -262,8 +354,8 @@ class ExploreMapView extends Component {
           duration: 0,
         }).start();
       } else {
-        this.region.stopAnimation();
-        this.region.timing({
+        this.state.region.stopAnimation();
+        this.state.region.timing({
           latitude: scrollX.interpolate({
             inputRange: professionalsClients.map( (item, index) => index * SNAP_WIDTH),
             outputRange: professionalsClients.map(item => item.coordinate.latitude),
@@ -275,12 +367,11 @@ class ExploreMapView extends Component {
           duration: 0,
         }).start();
       }
+      this.setState({
+        markers: this.getMarkers(this.state.cluster, this.state.region)
+      });
     }
   };
-
-  onRegionChange(/* region */) {
-    // this.state.region.setValue(region);
-  }
 
   onPressPin ( index ) {
 
@@ -302,14 +393,14 @@ class ExploreMapView extends Component {
     this.popupDialogProfessional.openDialog ();
   }
 
-  onHireProfessional ( key ) {
+  onHireProfessional ( price ) {
 
     this.popupDialogProfessional.closeDialog ();
-    Actions.Contract({ user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex], editable: false });
+    Actions.Contract({ user: {...this.props.professionalsClients[this.state.selectedProfessionalClientIndex], price}, editable: false });
   }
 
-  onMakeOfferProfessional ( ) {
-    Actions.Contract({ user: this.props.professionalsClients[this.state.selectedProfessionalClientIndex], editable: true });
+  onMakeOfferProfessional ( price ) {
+    Actions.Contract({ user: {...this.props.professionalsClients[this.state.selectedProfessionalClientIndex], price}, editable: true });
   }
 
   onExpandProfessional ( key ) {
@@ -380,7 +471,10 @@ class ExploreMapView extends Component {
 
   get dialogSelectProfessionalClient () {
 
-    const professionalsClients = this.props.professionalsClients || []
+    const professionalsClients = this.props.professionalsClients || [];
+    const professionalClient =  professionalsClients[this.state.selectedProfessionalClientIndex] || {};
+    const professionalClientPrice = professionalClient.price;
+    const price = this.props.user.role === "Professional" ? this.props.user.price: professionalClientPrice;
 
     return (
       <PopupDialog
@@ -388,24 +482,24 @@ class ExploreMapView extends Component {
         width={ width * 0.8 }
         dialogStyle={ styles.dialogContainer }
       >
-        {professionalsClients[this.state.selectedProfessionalClientIndex] &&
+        {professionalClient &&
         <View style={ styles.professionalDialogContentContainer }>
           <View style={ styles.professionalDialogTopContainer }>
 
-            <Image source={ professionalsClients[this.state.selectedProfessionalClientIndex].avatar }
+            <Image source={ professionalClient.avatar }
                    style={ styles.avatar }/>
             <View style={ styles.professionalTopSubContainer }>
               <View style={ styles.professionalNameRatingContainer }>
-                <Text style={ styles.textName }>{ professionalsClients[this.state.selectedProfessionalClientIndex].name }</Text>
+                <Text style={ styles.textName }>{ professionalClient.name }</Text>
                 <Stars
                   isActive={ false }
                   rateMax={ 5 }
                   isHalfStarEnabled={ true }
-                  rate={ professionalsClients[this.state.selectedProfessionalClientIndex].rating }
+                  rate={ professionalClient.rating }
                   size={ 20 }
                 />
               </View>
-              <Text style={ styles.dialogText2 }>{ professionalsClients[this.state.selectedProfessionalClientIndex].description }</Text>
+              <Text style={ styles.dialogText2 }>{ professionalClient.description }</Text>
             </View>
           </View>
           <View style = { styles.professionalMiddleContainer }>
@@ -414,20 +508,20 @@ class ExploreMapView extends Component {
                 name="calendar"  size={ 30 }
                 color="#41c3fd"
               />
-              <Text style={ styles.textDate }>{ professionalsClients[this.state.selectedProfessionalClientIndex].date }</Text>
+              <Text style={ styles.textDate }>{ professionalClient.date }</Text>
             </View>
-            <Text>{ professionalsClients[this.state.selectedProfessionalClientIndex].duration }</Text>
+            <Text>{ professionalClient.duration }</Text>
           </View>
           <View style={ styles.dialogBottomContainer }>
             <View style={ styles.leftButtonContainer }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onHireProfessional() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onHireProfessional(price) }>
                 <View style={ styles.buttonWrapper }>
-                  <Text style={ styles.professionalButton }>HIRE ${ professionalsClients[this.state.selectedProfessionalClientIndex].amount || professionalsClients[this.state.selectedProfessionalClientIndex].price }/HR</Text>
+                  <Text style={ styles.professionalButton }>HIRE ${ price }/HR</Text>
                 </View>
               </TouchableOpacity>
             </View>
             <View style={ styles.rightButtonContainer }>
-              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onMakeOfferProfessional() }>
+              <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onMakeOfferProfessional(price) }>
                 <View style={ styles.buttonWrapper }>
                   <Text style={ styles.professionalButton }>MAKE AN OFFER</Text>
                 </View>
@@ -466,20 +560,13 @@ class ExploreMapView extends Component {
       getMarkerState(panX, panY, scrollY, index)
     );
 
-    this.region = new MapView.AnimatedRegion({
-      latitude: user.coordinate.latitude,
-      longitude: user.coordinate.longitude,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
-    });
-
     if(professionalsClients.length){
 
       panX.addListener(this.onPanXChange);
       panY.addListener(this.onPanYChange);
 
-      this.region.stopAnimation();
-      this.region.timing({
+      this.state.region.stopAnimation();
+      this.state.region.timing({
         latitude: scrollX.interpolate({
           inputRange: professionalsClients.length > 1 ? professionalsClients.map( (item, index) => index * SNAP_WIDTH) : [0, 0,],
           outputRange: professionalsClients.length > 1 ? professionalsClients.map(item => item.coordinate.latitude) : [
@@ -498,8 +585,6 @@ class ExploreMapView extends Component {
       }).start();
     }
 
-
-
     return (
       <View style={ styles.container }>
         <PanController
@@ -516,10 +601,57 @@ class ExploreMapView extends Component {
           <MapView.Animated
             provider={ this.props.provider }
             style={ styles.map }
-            region={ this.region }
+            region={ this.state.region }
             onRegionChange={ this.onRegionChange }
             onLongPress={ () => this.onTapMap() }
           >
+            {
+              this.state.markers.map( (marker, i) => {
+                let selected,
+                  markerOpacity,
+                  markerScale,
+                  index;
+
+                if(!marker.properties) {
+                  index = R.findIndex(R.propEq('_id', marker.data._id))(professionalsClients);
+                  selected = animations[index].selected;
+                  markerOpacity = animations[index].markerOpacity;
+                  markerScale = animations[index].markerScale;
+                };
+
+                return (
+                  <MapView.Marker
+                    key={i}
+                    coordinate={{
+                      latitude: marker.geometry.coordinates[1],
+                      longitude: marker.geometry.coordinates[0],
+                    }}
+                    onPress={ () => !marker.properties && this.onPressProfessionalClient(index) }
+                  >
+                    {
+                      marker.properties ?
+                        <MapClusterMarker {...marker} />
+                        :
+                        <AnimatedProfessionalMarker
+                          style={{
+                            opacity: markerOpacity,
+                            transform: [
+                              {scale: markerScale},
+                            ],
+                          }}
+                          amount={ marker.data.price }
+                          personName={ marker.data.name }
+                          rating={ marker.data.rating }
+                          profession={ marker.data.profession }
+                          selected={ selected }
+                          index={ index }
+                          user={ user }
+                        />
+                    }
+                  </MapView.Marker>
+                );
+              })
+            }
             {
               gymLocations && gymLocations.map( (marker, index) => (
                 <MapView.Marker
@@ -534,40 +666,6 @@ class ExploreMapView extends Component {
               ))
             }
 
-            {professionalsClients.length >0 &&
-              professionalsClients.map( (marker, index) => {
-
-                const {
-                  selected,
-                  markerOpacity,
-                  markerScale,
-                } = animations[index];
-
-                return (
-                  <MapView.Marker
-                    key={ index }
-                    coordinate={ marker.coordinate }
-                    onPress={ () => this.onPressProfessionalClient(index) }
-                  >
-                    <AnimatedProfessionalMarker
-                      style={{
-                        opacity: markerOpacity,
-                        transform: [
-                          { scale: markerScale },
-                        ],
-                      }}
-                      amount={ marker.amount || marker.price }
-                      personName={ marker.name }
-                      rating={ marker.rating }
-                      profession={ marker.profession }
-                      selected={ selected }
-                      index={index}
-                      user={ user }
-                    />
-                  </MapView.Marker>
-                );
-              })
-            }
           </MapView.Animated>
 
           <View style={ [styles.mainContentContainer] }>
@@ -607,7 +705,7 @@ class ExploreMapView extends Component {
                         rating={ marker.rating }
                         name={ marker.name }
                         description={ marker.description }
-                        amount={ marker.amount || marker.price }
+                        amount={ marker.price }
                         user={ user }
                         profession={ marker.profession }
                         onPress={ () => this.onClickAnimatedViewCell(index) }
@@ -633,6 +731,9 @@ ExploreMapView.propTypes = {
   onTapMap: PropTypes.func,
   onFilter: PropTypes.func,
   onList: PropTypes.func,
+  user: PropTypes.shape({
+    coordinate: PropTypes.object.isRequired
+  }),
 };
 
 ExploreMapView.defaultProps = {

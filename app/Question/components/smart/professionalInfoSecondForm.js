@@ -51,7 +51,7 @@ class ProfessionalInfoForm extends Component {
             props.explore.professions &&
             props.explore.professions[0].certification &&
             props.explore.professions[0].certification[0] || certificationsDefault[0],
-      address: '4 York st, Toronto',
+      address: props.auth.currentAddress.formattedAddress || '4 York st, Toronto',
       own: 'Both',
       experience: 5
     };
@@ -73,7 +73,7 @@ class ProfessionalInfoForm extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { auth: { user }, question: { error } } = nextProps;
+    const { auth: { user, currentAddress }, question: { error } } = nextProps;
 
     if (error) {
       Alert.alert(error);
@@ -82,6 +82,9 @@ class ProfessionalInfoForm extends Component {
     }
     if (user && this.state.signUpRequest) {
       Actions.Main({ user_mode: CommonConstant.user_trainer });
+    }
+    if (currentAddress && currentAddress.formattedAddress) {
+      this.setState({ address: currentAddress.formattedAddress });
     }
     this.setState({ signUpRequest: false, price: this.priceToFloat(200)});
   }
