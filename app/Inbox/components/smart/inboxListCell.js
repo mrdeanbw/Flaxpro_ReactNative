@@ -21,7 +21,7 @@ export default class InboxListCell extends Component {
     name: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     time: PropTypes.string.isRequired,
-    avatar: PropTypes.number.isRequired,
+    avatar: PropTypes.object.isRequired,
     read: PropTypes.bool,    
     group: PropTypes.array,
     onClick: PropTypes.func,
@@ -37,6 +37,7 @@ export default class InboxListCell extends Component {
 
     super(props);
     this.onClick = this.onClick.bind(this);
+
   }
 
   onClick() {
@@ -51,7 +52,11 @@ export default class InboxListCell extends Component {
     if (group.length == 0) {
       return (
         <View style={ styles.avatarContainer }>
-          <Image style={ styles.imageAvatar } source={ avatar }/>
+          <Image 
+            style={ styles.imageAvatar } 
+            source={ avatar }
+            defaultSource={ require('../../../Assets/images/avatar.png') }
+          />
           {
             read == false ? <Image style={ styles.imageReadMark } source={ readMark }/> : null
           }
@@ -66,9 +71,19 @@ export default class InboxListCell extends Component {
             return (
               (index == 0) 
               ?
-                <Image key={ index } style={ styles.imageAvatar } source={ item.avatar }/>
+                <Image 
+                  key={ index } 
+                  style={ styles.imageAvatar }
+                  source={ item.avatar }
+                  defaultSource={ require('../../../Assets/images/avatar.png') }
+                />
               :
-                <Image key={ index } style={ [styles.imageGroupAvatar, { right : 30 * index }] } source={ item.avatar }/>
+                <Image 
+                  key={ index } 
+                  style={ [styles.imageGroupAvatar, { right : 30 * index }] } 
+                  source={ item.avatar }
+                  defaultSource={ require('../../../Assets/images/avatar.png') }
+                />
             );
           })
         }

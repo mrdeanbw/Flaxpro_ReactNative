@@ -15,6 +15,9 @@ import {
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { GiftedChat } from 'react-native-gifted-chat';
+import OfferMessage from './offerMessage';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,46 +27,22 @@ const background = require('../../../Assets/images/background.png');
 export default class ChatForm extends Component {
   constructor(props) {
     super(props);
-     
-    this.state = {
-      messages: [],
-    };
   }
 
   componentWillReceiveProps(newProps) {
-
-    if (newProps.status == 'ChatRequest') {
-
-    } else if (newProps.status == 'ChatSuccess') {
-
-    } else if (newProps.status == 'ChatError') {
-
-    }
   }
 
   componentWillMount() {
-    this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: 'This is the greatest fitness app on earth and your avatar looks amazing',
-          createdAt: new Date(Date.UTC(2017, 2, 14, 17, 20, 0)),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
-          },
-        },
-      ],
-    });
+    this.props.actions.getMessages(this.props.id);
+  }
+
+  componentWillUnmount() {
+    this.props.actions.getChats();
+    this.props.actions.deactivateChat();
   }
 
   onSend(messages = []) {
-    this.setState( (previousState) => {
-      return {
-        messages: GiftedChat.append(previousState.messages, messages),
-      };
-    });
+    this.props.actions.sendMessage(this.props.id, messages[0].text);
   }
 
   onBack() {
@@ -92,27 +71,38 @@ export default class ChatForm extends Component {
     );
   }
 
-  render() {
-    const { status } = this.props;
-
+  renderCustomView(props) {
     return (
-      <View style={ styles.container }>
-        <Image source={ background } style={ styles.background } resizeMode="cover">
-          { this.getShowNavBar }
-          <View style={ styles.contentContainer }>
-            
-            <GiftedChat
-              messages={ this.state.messages }
-              onSend={ (messages = []) => this.onSend(messages) }
-              user={{
-                _id: 1,
-              }}
-            />
-
-          </View>
-        </Image>
-      </View>
+      <OfferMessage
+        {...props}
+      /> 
     );
+  }
+
+  render() {
+    const { user } = this.props.auth.user;
+    return this.props.loading ?
+      (
+        <FullScreenLoader />
+      )
+      :
+      ( 
+        <View style={ styles.container }>
+          <Image source={ background } style={ styles.background } resizeMode="cover">
+            { this.getShowNavBar }
+            <View style={ styles.contentContainer }>
+              <GiftedChat
+                messages={ this.props.messages }
+                onSend={ (messages = []) => this.onSend(messages) }
+                user={{
+                  _id: user,
+                }}
+                renderCustomView={this.renderCustomView}
+              />
+            </View>
+          </Image>
+        </View>
+      )
   }
 }
 

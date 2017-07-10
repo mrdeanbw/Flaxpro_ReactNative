@@ -1,3 +1,11 @@
 export const INBOX_REQUEST = 'INBOX_REQUEST';
 export const INBOX_SUCCESS = 'INBOX_SUCCESS';
 export const INBOX_ERROR = 'INBOX_ERROR';
+
+export const CHAT_REQUEST = 'CHAT_REQUEST';
+export const CHAT_SUCCESS = 'CHAT_SUCCESS';
+export const CHAT_ERROR = 'CHAT_ERROR';
+export const CHAT_REMOVE = 'CHAT_REMOVE';
+export const CHAT_CONCAT = 'CHAT_CONCAT';
+export const CHAT_UNREAD_CHAT = 'CHAT_UNREAD_CHAT';
+export const CHAT_POST_REQUEST = 'CHAT_POST_REQUEST';

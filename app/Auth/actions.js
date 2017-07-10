@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import request, { toQueryString } from '../request';
 
+import socket from '../sockets';
 import { tempProfileData, allProfessions } from '../Components/tempDataUsers';
 
 
@@ -98,7 +99,8 @@ export const login = (email, password, token = null) => async (dispatch, store) 
 
   try {
     const response = await request(url, options);
-    dispatch(loginSuccess({...response, professions, professionalsClients}))
+    dispatch(loginSuccess({...response, professions, professionalsClients}));
+    socket.init();
   } catch (error) {
     dispatch(loginError(error))
   }
