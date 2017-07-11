@@ -137,6 +137,13 @@ class ClientExploreForm extends Component {
   openLocationPopup () {
     const { filter } = this.state;
     this.setState({ filter: { ...filter, address: '', searchDetails: ''} });
+    navigator.geolocation.getCurrentPosition((position) => {
+      const location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      this.props.getCurrentAddress(location);
+    });
     this.popupDialogLocation.openDialog ();
   }
 
@@ -224,7 +231,7 @@ class ClientExploreForm extends Component {
           },
         }}
 
-        currentLocation={false}
+        currentLocation={true}
         currentLocationLabel="Current location"
         nearbyPlacesAPI='GoogleReverseGeocoding'
         debounce={200}
@@ -233,12 +240,13 @@ class ClientExploreForm extends Component {
   }
   
   get dialogLocationClient () {
-    const { user } = this.props.auth;
+    const { user, currentAddress } = this.props.auth;
     const { filter } = this.state;
-    let originalAddress = '';
-    if (user.location) {
-      originalAddress = user.location.originalAddress
-    }
+    const originalAddress = currentAddress.formattedAddress;
+    // if (user.location) {
+    //   originalAddress = user.location.originalAddress
+    // }
+
     return (
       <PopupDialog
         ref={ (popupDialogLocation) => { this.popupDialogLocation = popupDialogLocation; }}
