@@ -13,9 +13,9 @@ const Explore = (props) => {
   const { actions, auth, explore, getCurrentAddress } = props;
   return (
     auth.user.role === CommonConstant.user_client ?
-      <ClientExploreForm { ...actions } auth={ auth } explore={ explore } getCurrentAddress={ getCurrentAddress }/>
+      <ClientExploreForm { ...actions } auth={ auth } explore={ explore } getCurrentAddress={ getCurrentAddress } />
       :
-      <ProfessionalExploreForm { ...actions } auth={ auth } explore={ explore }/>
+      <ProfessionalExploreForm { ...actions } auth={ auth } explore={ explore } getCurrentAddress={ getCurrentAddress } />
   );
 };
 

@@ -18,7 +18,6 @@ import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PopupDialog from 'react-native-popup-dialog';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import R from 'ramda';
 
 import SearchBar from '../../../../Components/searchBar';
@@ -28,9 +27,9 @@ import ExploreListView from '../exploreListView';
 import { GymLocations } from '../../../../Components/dummyEntries';
 
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
+import GoogleAutocomplete from '../../../../Components/googleAutocomplete';
 
 import {
-  GOOGLE_API_KEY as googleKey,
   WIDTH_SCREEN as width,
   HEIHT_SCREEN as height,
   APP_COLOR as appColor
@@ -176,7 +175,7 @@ class ClientExploreForm extends Component {
   filterByAddress(data, details){
     const { filter } = this.state;
     const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
-    this.setState({filter: {...filter, address: data.description, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } })
+    this.setState({filter: {...filter, address: data.description, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } });
 
     const { getProfessionals } = this.props;
     const filterObj = {
@@ -188,64 +187,10 @@ class ClientExploreForm extends Component {
     getProfessionals(filterObj);
   }
 
-  get googleAutocomplete () {
-    return (
-      <GooglePlacesAutocomplete
-        placeholder='Search'
-        minLength={2}
-        autoFocus={false}
-        returnKeyType={'search'}
-        listViewDisplayed='auto'
-        fetchDetails={true}
-        onPress={ (data, details) => this.filterByAddress(data, details) }
-        query={{
-          key: googleKey,
-        }}
-        styles={{
-          container:{
-            flexDirection: 'column',
-            flex:1,
-            width: width * 0.8,
-          },
-          description: {
-            fontWeight: 'bold',
-          },
-          predefinedPlacesDescription: {
-            color: '#1faadb',
-          },
-          textInputContainer: {
-            backgroundColor: 'rgba(0,0,0,0)',
-            borderTopWidth: 0,
-            borderBottomWidth: 0.5,
-            borderColor: '#5d5d5d',
-          },
-          textInput: {
-            marginLeft: 0,
-            marginRight: 0,
-            height: 43,
-            color: '#5d5d5d',
-            fontSize: 16,
-            marginTop: 0,
-            marginBottom: 0,
-
-          },
-        }}
-
-        currentLocation={true}
-        currentLocationLabel="Current location"
-        nearbyPlacesAPI='GoogleReverseGeocoding'
-        debounce={200}
-      />
-    )
-  }
-  
   get dialogLocationClient () {
-    const { user, currentAddress } = this.props.auth;
+    const { currentAddress } = this.props.auth;
     const { filter } = this.state;
     const originalAddress = currentAddress.formattedAddress;
-    // if (user.location) {
-    //   originalAddress = user.location.originalAddress
-    // }
 
     return (
       <PopupDialog
@@ -253,7 +198,7 @@ class ClientExploreForm extends Component {
         width={ width * 0.95 }
         dialogStyle={ styles.dialogContainer }
       >
-        <View style={ [styles.locationDialogContentContainer, filter.locationType === "address" && {height: height * 0.75}] }>
+        <View style={ [styles.locationDialogContentContainer, filter.locationType === "address" && {height: height * 0.76}] }>
 
           <View style={ styles.locationDialogTopContainer }>
               <Text style={ styles.locationHeaderText }>
@@ -310,8 +255,10 @@ class ClientExploreForm extends Component {
           {
             filter.locationType === "address" &&
             <View style={styles.locationInputContainer}>
+              <View style={ styles.locationMiddleContainer }>
               <Text style={ styles.locationBlueText }>Enter address</Text>
-              { this.googleAutocomplete }
+              </View>
+              <GoogleAutocomplete onPress={ (data, details) => this.filterByAddress(data, details) } />
             </View>
           }
 
@@ -810,7 +757,7 @@ const styles = StyleSheet.create({
   locationInputContainer: {
     flexDirection: 'column',
     marginBottom: 20,
-    height:height* 0.42,
+    height: height* 0.44,
   },
 
   activeLocation: {
@@ -854,8 +801,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
     width: width * 0.95,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   locationDialogTopContainer: {
     paddingHorizontal: 10,
