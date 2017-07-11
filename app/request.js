@@ -111,9 +111,9 @@ function checkSuccessStatus(response) {
  * @return {object}           The response data
  */
 export default function request(url, options, authState) {
-  const apiUrl = 'http://192.168.88.226:3000/api';  // Dunice developing
+  // const apiUrl = 'http://192.168.88.226:3000/api';  // Dunice developing
   // const apiUrl = 'http://localhost:3000/api';     // Local testing/developing
-  // const apiUrl = 'http://13.59.22.166:3000/api';  // AWS common server
+  const apiUrl = 'http://13.59.22.166:3000/api';  // AWS common server
   AsyncStorage.setItem('apiUrl', apiUrl);
   const headers = {
     Accept: 'application/json',
