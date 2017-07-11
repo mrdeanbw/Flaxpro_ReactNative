@@ -74,6 +74,7 @@ class ClientExploreForm extends Component {
         date: '',
         locationType: 'nearby',
         address: '',
+        searchDetails: '',
       }
     };
     this.onFilterAutocomplete = this.onFilterAutocomplete.bind(this)
@@ -135,7 +136,7 @@ class ClientExploreForm extends Component {
 
   openLocationPopup () {
     const { filter } = this.state;
-    this.setState({ filter: { ...filter, address: ''} });
+    this.setState({ filter: { ...filter, address: '', searchDetails: ''} });
     this.popupDialogLocation.openDialog ();
   }
 
@@ -165,9 +166,10 @@ class ClientExploreForm extends Component {
     }
   }
 
-  filterByAddress(data){
+  filterByAddress(data, details){
     const { filter } = this.state;
-    this.setState({filter: {...filter, address: data.description, locationType: 'address'} })
+    const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
+    this.setState({filter: {...filter, address: data.description, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } })
 
     const { getProfessionals } = this.props;
     const filterObj = {
@@ -188,7 +190,7 @@ class ClientExploreForm extends Component {
         returnKeyType={'search'}
         listViewDisplayed='auto'
         fetchDetails={true}
-        onPress={ (data) => this.filterByAddress(data) }
+        onPress={ (data, details) => this.filterByAddress(data, details) }
         query={{
           key: googleKey,
         }}
@@ -742,6 +744,7 @@ class ClientExploreForm extends Component {
                 professionalsClients={ this.state.filteredProfessionals }
                 gymLocations={ this.state.gymLocations }
                 user={ user }
+                searchAddress={ this.state.filter.searchDetails }
               />
               :
               <ExploreListView
