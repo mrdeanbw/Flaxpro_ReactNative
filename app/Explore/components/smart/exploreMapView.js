@@ -282,16 +282,10 @@ class ExploreMapView extends Component {
 
   onRegionChange(region) {
     this.state.region.setValue(region);
-    if (this._regionChangeTimer !== null) {
-      clearTimeout(this._regionChangeTimer);
-    }
-    this._regionChangeTimer = setTimeout(() => {
-      this.setState({
-        region: this.state.region,
-        markers: this.getMarkers(this.state.cluster, this.state.region)
-      });
-      this._regionChangeTimer = null;
-    }, 150);
+    this.setState({
+      region: this.state.region,
+      markers: this.getMarkers(this.state.cluster, this.state.region)
+    });
   }
 
   onStartShouldSetPanResponder = (e) => {
