@@ -13,6 +13,10 @@ function exploreSuccess(data) {
   return { type: types.EXPLORE_GET_SUCCESS, ...data };
 }
 
+function setFilters(data) {
+  return { type: types.EXPLORE_SET_FILTERS, ...data };
+}
+
 export const getExploreClient = () => async (dispatch, store) => {
   dispatch(exploreRequest());
   const professionsUrl = '/professions';
@@ -56,8 +60,12 @@ export const getProfessionals = (data) => async (dispatch, store) => {
 
 };
 
-export const getClients = (data) => async (dispatch, store) => {
+export const getClients = (data, filtersData) => async (dispatch, store) => {
   dispatch(exploreRequest());
+  if (filtersData) {
+    const { isSelected, filters } = filtersData;
+    dispatch(setFilters({dataForProfessionalFilter: { isSelected, filters }}));
+  }
   let url = '/clients';
   const { auth } = store();
   const options = {
