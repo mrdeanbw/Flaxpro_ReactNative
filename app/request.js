@@ -4,47 +4,29 @@ import { AsyncStorage } from 'react-native';
 import * as authActions from './Auth/actions';
 import { store } from './app';
 
-let urlsForRefresh = [];
 /**
  * Parses the JSON returned by a network request
  *
- * @param  {object} response A response from a network request
+ * @param  {object} response - A response from a network request,
+ *                             or a parsed JSON from the request if was refreshToken request
  *
- * @return {object}          The parsed JSON from the request
+ * @return {object} The parsed JSON from the request,
+ *                  or a response if was refreshToken request
  */
 function parseJSON(response) {
-  return response.json();
+  return response.json ? response.json() : response;
 }
 
 /**
- * Checks if a network request came back fine, and throws an error if not
+ * Create error from server response
  *
- * @param  {object} response   A response from a network request
+ * @param  {object} response A response from a network request
  *
- * @return {object|undefined} Returns either the response, or throws an error
+ * throws an Error
+ *
  */
-function checkStatus(response) {
-  console.log('checkStatus', response, urlsForRefresh);
-  if (response.status >= 200 && response.status < 300) {
-    urlsForRefresh.shift();
-    return response;
-  }
-  if (response.status === 401) {
-    if (urlsForRefresh.length){
-      store.dispatch(authActions.refreshToken())
-        .then(() => {
-          const { auth } = store.getState();
-          // urlsForRefresh.forEach( e => request(e.url, e.options, auth));
-          urlsForRefresh = [];
-          // return {};
-        });
-    } else {
-      Actions.Auth();
-      return {};
-    }
-  }
-
-  const error = new Error({message:response._bodyText});
+function createError(response) {
+  const error = new Error({message: response._bodyText});
   error.response = response;
   error.message = `Status: ${response.status}`;
   if(response._bodyText && typeof response._bodyText === 'string') {
@@ -55,8 +37,69 @@ function checkStatus(response) {
       error.message = response._bodyText;
     }
   }
-  urlsForRefresh.shift();
   throw error;
+}
+
+/**
+ * Refresh token and return response from a network request for repeat request
+ *
+ * @param  {object} response A response from a network request
+ *
+ * @return  {object} response - A response from a network request for repeat request
+ *
+ */
+function refreshToken(response) {
+  return store.dispatch(authActions.refreshToken()).then(() => response)
+}
+
+
+/**
+ * Repeat request after refresh token
+ *
+ * @param  {object} response A response from a network request
+ * @param  {object} options The options for repeat request
+ *
+ * @return  {function|undefined} if refresh token success - repeat request
+ *                           if refresh token failed -  throws an Error
+ *
+ */
+function repeatRequests(response, options) {
+  const _auth = store.getState().auth;
+
+  if(_auth.token){
+    const url = response.url.split('api')[1];
+    return request(url, options, _auth);
+  }
+  Actions.Auth();
+  createError(response);
+}
+
+/**
+ * Checks if a network request status 401 return response for refresh token, and throws an response(as error) if not
+ *
+ * @param  {object} response   A response from a network request
+ *
+ * @return {object|undefined} Returns either the response, or throws an error
+ */
+function checkAuthStatus(response) {
+  if (response.status === 401) {
+    return response;
+  }
+  throw response;
+}
+
+/**
+ * Checks if a network request came back fine, and throws an error if not
+ *
+ * @param  {object} response   A response from a network request
+ *
+ * @return {object|undefined} Returns either the response, or throws an error
+ */
+function checkSuccessStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  }
+  createError(response);
 }
 
 /**
@@ -68,10 +111,10 @@ function checkStatus(response) {
  * @return {object}           The response data
  */
 export default function request(url, options, authState) {
-  // const apiUrl = 'http://192.168.1.42:3000/api';
-  const apiUrl = 'http://localhost:3000/api';
+  // const apiUrl = 'http://192.168.88.226:3000/api';  // Dunice developing
+  // const apiUrl = 'http://localhost:3000/api';     // Local testing/developing
+  const apiUrl = 'http://13.59.22.166:3000/api';  // AWS common server
   AsyncStorage.setItem('apiUrl', apiUrl);
-  urlsForRefresh.unshift({url, options});
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -87,7 +130,10 @@ export default function request(url, options, authState) {
   };
 
   const result = fetch(apiUrl + url, requestOptions)
-    .then(checkStatus)
+    .then(checkAuthStatus)
+    .then(refreshToken)
+    .then((response) => repeatRequests(response, options))
+    .catch(checkSuccessStatus)
     .then(parseJSON);
 
   return result;

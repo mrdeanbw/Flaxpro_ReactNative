@@ -26,7 +26,6 @@ import {
 
 const background = require('../../../../Assets/images/background.png');
 
-
 export default class FilterForm extends Component {
 
   constructor(props) {
@@ -72,7 +71,6 @@ export default class FilterForm extends Component {
   onDone () {
     const { getProfessionals } = this.props;
     const data = this.prepareData();
-    console.log('===========data', data);
     getProfessionals(data);
     Actions.pop();
   }
@@ -94,7 +92,7 @@ export default class FilterForm extends Component {
   }
 
   onCertification(value) {
-    this.setState({ selectedCetification: value });
+    this.setState({ selected_cetification: value });
   }
 
   onLocation(value) {
@@ -133,9 +131,6 @@ export default class FilterForm extends Component {
   render() {
     const { status } = this.props;
     let scale = (width) / 104 ;
-    let filterCheckbox = (title)=> {
-
-    };
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -581,7 +576,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   dropdownWrapper: {
-    // flexDirection: 'row',
     height: 30,
     borderWidth: 1,
     borderColor: '#fff',

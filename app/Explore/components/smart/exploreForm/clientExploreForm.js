@@ -18,7 +18,6 @@ import LineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PopupDialog from 'react-native-popup-dialog';
-
 import R from 'ramda';
 
 import SearchBar from '../../../../Components/searchBar';
@@ -28,11 +27,13 @@ import ExploreListView from '../exploreListView';
 import { GymLocations } from '../../../../Components/dummyEntries';
 
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
+import GoogleAutocomplete from '../../../../Components/googleAutocomplete';
 
-import * as CommonConstant from '../../../../Components/commonConstant';
-const width = CommonConstant.WIDTH_SCREEN;
-const height = CommonConstant.HEIHT_SCREEN;
-const appColor = CommonConstant.APP_COLOR;
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor
+} from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
 const arrow = require('../../../../Assets/images/right_arrow.png');
@@ -72,6 +73,7 @@ class ClientExploreForm extends Component {
         date: '',
         locationType: 'nearby',
         address: '',
+        searchDetails: '',
       }
     };
     this.onFilterAutocomplete = this.onFilterAutocomplete.bind(this)
@@ -81,6 +83,20 @@ class ClientExploreForm extends Component {
     const { getExploreClient } = this.props;
     getExploreClient();
   }
+
+  componentDidMount() {
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+      };
+    });
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
 
   componentWillReceiveProps(newProps) {
     const { explore: { error } } = newProps;
@@ -119,7 +135,14 @@ class ClientExploreForm extends Component {
 
   openLocationPopup () {
     const { filter } = this.state;
-    this.setState({ filter: { ...filter, address: ''} });
+    this.setState({ filter: { ...filter, address: '', searchDetails: ''} });
+    navigator.geolocation.getCurrentPosition((position) => {
+      const location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      this.props.getCurrentAddress(location);
+    });
     this.popupDialogLocation.openDialog ();
   }
 
@@ -132,7 +155,7 @@ class ClientExploreForm extends Component {
     const { filter } = this.state;
 
     this.setState({ filter: {...filter, locationType }, locationText }, () => {
-      if(locationType === 'address') this.addressInput.focus();
+      // if(locationType === 'address') this.addressInput.focus();
     });
 
     switch(locationType) {
@@ -149,22 +172,15 @@ class ClientExploreForm extends Component {
     }
   }
 
-  filterByAddress(){
+  filterByAddress(data, details){
     const { filter } = this.state;
-    if(!filter.address) {
-      this.closeLocationPopup();
-      return Alert.alert('Alert',
-        'Please enter address',
-        [
-          {text: 'OK', onPress: () =>  this.openLocationPopup()}
-        ]
-      );
-    }
+    const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
+    this.setState({filter: {...filter, address: data.description, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } });
 
     const { getProfessionals } = this.props;
     const filterObj = {
       locationType: 'address',
-      address: filter.address,
+      address: data.description,
       date: filter.date,
     };
     this.closeLocationPopup();
@@ -172,19 +188,18 @@ class ClientExploreForm extends Component {
   }
 
   get dialogLocationClient () {
-    const { user } = this.props.auth;
+    const { currentAddress } = this.props.auth;
     const { filter } = this.state;
-    let originalAddress = '';
-    if (user.location) {
-      originalAddress = user.location.originalAddress
-    }
+    const originalAddress = currentAddress.formattedAddress;
+
     return (
       <PopupDialog
         ref={ (popupDialogLocation) => { this.popupDialogLocation = popupDialogLocation; }}
         width={ width * 0.95 }
         dialogStyle={ styles.dialogContainer }
       >
-        <View style={ styles.locationDialogContentContainer }>
+        <View style={ [styles.locationDialogContentContainer, filter.locationType === "address" && {height: height * 0.76}] }>
+
           <View style={ styles.locationDialogTopContainer }>
               <Text style={ styles.locationHeaderText }>
                 My location
@@ -240,23 +255,10 @@ class ClientExploreForm extends Component {
           {
             filter.locationType === "address" &&
             <View style={styles.locationInputContainer}>
+              <View style={ styles.locationMiddleContainer }>
               <Text style={ styles.locationBlueText }>Enter address</Text>
-              <View style={styles.addressInputContainer}>
-                <TextInput
-                  ref={(ref) => {this.addressInput = ref}}
-                  editable={ true }
-                  autoCapitalize="none"
-                  autoCorrect={ false }
-                  color="#000"
-                  style={ styles.textInput }
-                  onChangeText={ (text) => this.setState({filter: {...filter, address: text} }) }
-                />
               </View>
-              <TouchableOpacity onPress={ () => this.filterByAddress() }>
-                <View style={ styles.arrowButton }>
-                  <Image source={ arrow } style={ styles.imageArrow }/>
-                </View>
-              </TouchableOpacity>
+              <GoogleAutocomplete onPress={ (data, details) => this.filterByAddress(data, details) } />
             </View>
           }
 
@@ -697,6 +699,7 @@ class ClientExploreForm extends Component {
                 professionalsClients={ this.state.filteredProfessionals }
                 gymLocations={ this.state.gymLocations }
                 user={ user }
+                searchAddress={ this.state.filter.searchDetails }
               />
               :
               <ExploreListView
@@ -751,16 +754,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 15
   },
-  addressInputContainer: {
-    width: width * 0.8,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#f2f2f2',
-    marginTop: 5,
-  },
   locationInputContainer: {
     flexDirection: 'column',
     marginBottom: 20,
+    height: height* 0.44,
   },
 
   activeLocation: {
@@ -804,8 +801,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
     width: width * 0.95,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   locationDialogTopContainer: {
     paddingHorizontal: 10,
