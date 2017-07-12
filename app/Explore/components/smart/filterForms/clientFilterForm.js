@@ -19,18 +19,13 @@ import StarRating from 'react-native-stars-rating';
 import {
   WIDTH_SCREEN as width,
   HEIHT_SCREEN as height,
-  client_filter_labels as labels
+  PRICES as prices,
+  client_filter_labels as labels,
+  client_filter_names as stateNames,
 } from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
 
-const stateNames = ['gender', 'age', 'priceLevel', 'verified', 'experience', 'insured', 'rating', 'certification', 'profession', 'availability'];
-
-const prices = [
-  {item: '$', price: '$50-100', level: 1},
-  {item: '$$', price: '$100-300', level: 2},
-  {item: '$$$', price: '$300+', level: 3}
-];
 
 export default class FilterForm extends Component {
 

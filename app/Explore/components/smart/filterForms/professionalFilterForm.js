@@ -7,7 +7,6 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   ScrollView
 } from 'react-native';
 
@@ -17,24 +16,15 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import RadioButton from '../../../../Components/radioButton';
 import StarRating from 'react-native-stars-rating';
 
-const { width, height } = Dimensions.get('window');
-
 const background = require('../../../../Assets/images/background.png');
 
-const label = {
-  gender: ['Male', 'Female'],
-  clientType: ['New', 'Regular'],
-  age: [28],
-  rating: [2],
-};
-
-const stateNames = ['gender', 'age', 'priceLevel', 'rating', 'clientType'];
-
-const prices = [
-  {item: '$', price: '$50-100', level: 1},
-  {item: '$$', price: '$100-300', level: 2},
-  {item: '$$$', price: '$300+', level: 3}
-];
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  PRICES as prices,
+  professional_filter_labels as labels,
+  professional_filter_names as stateNames,
+} from '../../../../Components/commonConstant';
 
 export default class FilterForm extends Component {
 
@@ -56,7 +46,7 @@ export default class FilterForm extends Component {
       case 'priceLevel':
         return prices[0].level;
       default:
-        return label[stateName][0];
+        return labels[stateName][0];
     }
   }
 
@@ -142,7 +132,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Sex', stateName: 'gender'})}
                 <View style={ styles.cellValueContainer }>
                   {
-                    label.gender.map(value => {
+                    labels.gender.map(value => {
                       return (
                         <RadioButton
                           style={ styles.checkbox }
@@ -216,7 +206,7 @@ export default class FilterForm extends Component {
                 {this.generateFilterCheckbox({title: 'Client Type', stateName: 'clientType'})}
                 <View style={ [styles.touchBlock] }>
                   {
-                    label.clientType.map((item, index) =>(
+                    labels.clientType.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
                         <View style={ [styles.viewTwoTextPadding, item === this.state.selected.clientType ? styles.priceButtonChecked : styles.priceButton] }>
                           <Text style={ [styles.textSubTitle, item === this.state.selected.clientType ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>

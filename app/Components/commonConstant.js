@@ -13,6 +13,11 @@ export const FONT_STYLES =   {
   fontFamily: 'Open Sans',
   fontSize: 18,
 };
+export const PRICES = [
+  {item: '$', price: '$50-$100', level: 1},
+  {item: '$$', price: '$100-$300', level: 2},
+  {item: '$$$', price: '$300+', level: 3}
+];
 
 export const client_filter_labels = {
   gender: ['Male', 'Female'],
@@ -24,3 +29,12 @@ export const client_filter_labels = {
   availability: ['Meet at Home', 'One place'],
   profession: ['Pilates', 'Yoga trainers', 'Massage'],
 };
+export const client_filter_names = ['gender', 'age', 'priceLevel', 'verified', 'experience', 'insured', 'rating', 'certification', 'profession', 'availability'];
+
+export const professional_filter_labels = {
+  gender: ['Male', 'Female'],
+  clientType: ['New', 'Regular'],
+  age: [28],
+  rating: [2],
+};
+export const professional_filter_names = ['gender', 'age', 'priceLevel', 'rating', 'clientType'];
