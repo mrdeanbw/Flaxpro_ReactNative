@@ -21,10 +21,12 @@ const { width, height } = Dimensions.get('window');
 
 const background = require('../../../../Assets/images/background.png');
 
-const label_gender = ['Male', 'Female'];
-const label_clientType = ['New', 'Regular'];
-const label_age = [28];
-const label_rating = [2];
+const label = {
+  gender: ['Male', 'Female'],
+  clientType: ['New', 'Regular'],
+  age: [28],
+  rating: [2],
+};
 
 const stateNames = ['gender', 'age', 'priceLevel', 'rating', 'clientType'];
 
@@ -38,11 +40,14 @@ export default class FilterForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      filters: {},
+      selected: {},
+    };
 
     stateNames.map(stateName => {
-      this.state['filter_'  + stateName] = true;
-      this.state['selected_'+ stateName] = this.getDefaultState(stateName);
+      this.state.filters[stateName] = true;
+      this.state.selected[stateName] = this.getDefaultState(stateName);
     });
   }
 
@@ -51,7 +56,7 @@ export default class FilterForm extends Component {
       case 'priceLevel':
         return prices[0].level;
       default:
-        return eval('label_' + stateName)[0];
+        return label[stateName][0];
     }
   }
 
@@ -62,8 +67,8 @@ export default class FilterForm extends Component {
   onDone () {
     let data = {};
     stateNames.map(stateName => {
-      if (this.state['filter_' + stateName]) {
-        data[stateName] = this.state['selected_' + stateName];
+      if (this.state.filters[stateName]) {
+        data[stateName] = this.state.selected[stateName];
       }
     })
     const { getClients } = this.props;
@@ -72,62 +77,35 @@ export default class FilterForm extends Component {
   }
 
   onSex(value) {
-    this.setState({ selected_gender: value });
-  }
-
-  onVerified(value) {
-    this.setState({ selectedVerified: value });
-  }
-
-  onInsured(value) {
-    this.setState({ selectedInsured: value });
-  }
-
-  onAffiliation(value) {
-    this.setState({ selectedAffiliation: value });
+    this.setState({ selected: {...this.state.selected, gender: value } });
   }
 
   onLocation(value) {
-    this.setState({ selected_clientType: value });
+    this.setState({ selected: {...this.state.selected, clientType: value } });
   }
 
   onCheckPrice(value) {
-    this.setState({ selected_priceLevel: value });
+    this.setState({ selected: {...this.state.selected, priceLevel: value } });
   }
 
   onRating(value) {
-    this.setState({ selected_rating: value });
+    this.setState({ selected: {...this.state.selected, rating: value } });
   }
 
   generateFilterCheckbox (options) {
     const {title, stateName} = options;
-    let name = 'filter_' + stateName;
     return (
       <RadioButton
         style={ styles.leftCheckbox }
-        key={ name }
+        key={ stateName }
         label={ title }
-        checked={ this.state[name] }
-        onPress={ () => this.setState({[name]: !this.state[name]}) }
+        checked={ this.state.filters[stateName] }
+        onPress={ () => this.setState({filters: {...this.state.filters, [stateName]: !this.state.filters[stateName]} }) }
         size={18}
         labelStyle = {{paddingLeft: 10}}
       />
     )
   }
-
-  renderOption(option, selected, onSelect, index){
-    const styleText = selected ? styles.textSelectedCellValue : styles.textCellValue;
-    const styleView = selected ? styles.circleSelectNumberWrapper : styles.circleNumberWrapper;
-
-    return (
-      <TouchableWithoutFeedback onPress={ onSelect } key={ index }>
-        <View style={ styleView }>
-          <Text style={ styleText }>{ option }</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  }
-
 
   render() {
     const { status } = this.props;
@@ -160,17 +138,17 @@ export default class FilterForm extends Component {
           </View>
           <ScrollView>
             <View style={ styles.mainContainer }>
-              <View style={[ styles.cellContainer,  !this.state.filter_gender && styles.deactivatedContainer]}>
+              <View style={[ styles.cellContainer,  !this.state.filters.gender && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Sex', stateName: 'gender'})}
                 <View style={ styles.cellValueContainer }>
                   {
-                    label_gender.map(value => {
+                    label.gender.map(value => {
                       return (
                         <RadioButton
                           style={ styles.checkbox }
                           key={ value }
                           label={ value }
-                          checked={ this.state.selected_gender === value }
+                          checked={ this.state.selected.gender === value }
                           onPress={ () => this.onSex(value) }
                           size={23}
                         />
@@ -179,12 +157,12 @@ export default class FilterForm extends Component {
                   }
                 </View>
               </View>
-              <View style={[ styles.cellContainer,  !this.state.filter_age && styles.deactivatedContainer]}>
+              <View style={[ styles.cellContainer,  !this.state.filters.age && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Age', stateName: 'age'})}
                 <View style={ styles.viewSlider }>
-                  <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selected_age -15) * scale}] }>
+                  <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.selected.age -15) * scale}] }>
                     <Animated.View style={ styles.bubble }>
-                      <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonTextChecked] }>{ this.state.selected_age }</Animated.Text>
+                      <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonTextChecked] }>{ this.state.selected.age }</Animated.Text>
                     </Animated.View>
                     <Animated.View style={ styles.arrowBorder } />
                     <Animated.View style={ styles.arrow } />
@@ -198,20 +176,20 @@ export default class FilterForm extends Component {
                           minimumValue={ 15 }
                           maximumValue={ 85 }
                           step={ 1 }
-                          value = { this.state.selected_age }
-                          onValueChange={ (value) => this.setState({ selected_age: value }) }
+                          value = { this.state.selected.age }
+                          onValueChange={ (value) => this.setState({ selected: {...this.state.selected, age: value } }) }
                   />
                 </View>
               </View>
-              <View style={[ styles.cellContainer,  !this.state.filter_priceLevel && styles.deactivatedContainer]}>
+              <View style={[ styles.cellContainer,  !this.state.filters.priceLevel && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Offer', stateName: 'priceLevel'})}
                 <View style={ styles.touchBlock }>
                   {
                     prices.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onCheckPrice(item.level) }>
-                        <View style={ [styles.viewTwoText, item.level === this.state.selected_priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
-                          <Text style={ [styles.textCellTitle, item.level === this.state.selected_priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
-                          <Text style={ [styles.textSubTitle, item.level === this.state.selected_priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
+                        <View style={ [styles.viewTwoText, item.level === this.state.selected.priceLevel ? styles.priceButtonChecked : styles.priceButton] }>
+                          <Text style={ [styles.textCellTitle, item.level === this.state.selected.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.item }</Text>
+                          <Text style={ [styles.textSubTitle, item.level === this.state.selected.priceLevel ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item.price }</Text>
                         </View>
                       </TouchableOpacity>
                     ))
@@ -219,7 +197,7 @@ export default class FilterForm extends Component {
 
                 </View>
               </View>
-              <View style={[ styles.cellContainer,  !this.state.filter_rating && styles.deactivatedContainer]}>
+              <View style={[ styles.cellContainer,  !this.state.filters.rating && styles.deactivatedContainer]}>
                 <View style={ styles.starContainer }>
                   {this.generateFilterCheckbox({title: 'Reviews', stateName: 'rating'})}
                   <StarRating
@@ -228,20 +206,20 @@ export default class FilterForm extends Component {
                     rateMax={ 5 }
                     isHalfStarEnabled={ false }
                     onStarPress={ (rating) => this.onRating(rating) }
-                    rate={ this.state.selected_rating }
+                    rate={ this.state.selected.rating }
                     size={ 30 }
-                    rating={this.state.selected_rating}
+                    rating={this.state.selected.rating}
                   />
                 </View>
               </View>
-              <View style={[ styles.cellContainer,  !this.state.filter_clientType && styles.deactivatedContainer]}>
+              <View style={[ styles.cellContainer,  !this.state.filters.clientType && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Client Type', stateName: 'clientType'})}
                 <View style={ [styles.touchBlock] }>
                   {
-                    label_clientType.map((item, index) =>(
+                    label.clientType.map((item, index) =>(
                       <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onLocation(item) }>
-                        <View style={ [styles.viewTwoTextPadding, item === this.state.selected_clientType ? styles.priceButtonChecked : styles.priceButton] }>
-                          <Text style={ [styles.textSubTitle, item === this.state.selected_clientType ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
+                        <View style={ [styles.viewTwoTextPadding, item === this.state.selected.clientType ? styles.priceButtonChecked : styles.priceButton] }>
+                          <Text style={ [styles.textSubTitle, item === this.state.selected.clientType ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
                         </View>
                       </TouchableOpacity>
                     ))
