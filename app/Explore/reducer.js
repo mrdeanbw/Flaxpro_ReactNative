@@ -1,4 +1,9 @@
 import * as types from './actionTypes';
+import {
+  PRICES as prices,
+  professional_filter_labels as professionalLabels,
+  professional_filter_names as professionalStateNames,
+} from '../Components/commonConstant';
 
 const initialState = {
   loading: false,
@@ -6,7 +11,9 @@ const initialState = {
   professionals: [],
   clients: [],
   professions: [],
+  dataForProfessionalFilter: createData(professionalStateNames, professionalLabels)
 };
+
 
 export default function explore(state = initialState, action = {}) {
   switch (action.type) {
@@ -16,6 +23,11 @@ export default function explore(state = initialState, action = {}) {
         error: null,
         loading: true,
       };
+    case types.EXPLORE_SET_FILTERS:
+      return {
+        ...state,
+        dataForProfessionalFilter: action.dataForProfessionalFilter,
+      };
     case types.EXPLORE_GET_ERROR:
       return {
         ...state,
@@ -24,6 +36,7 @@ export default function explore(state = initialState, action = {}) {
       };
     case types.EXPLORE_GET_SUCCESS:
       return {
+        ...state,
         error: null,
         loading: false,
         clients: action.clients || state.clients,
@@ -33,4 +46,24 @@ export default function explore(state = initialState, action = {}) {
     default:
       return state;
   }
+}
+
+
+function getDefaultState(stateName, labels) {
+  if (stateName === 'priceLevel') {
+    return prices[0].level;
+  };
+  return labels[stateName][0];
+}
+
+function createData(list, labels){
+  const data = {
+    filters: {},
+    isSelected: {},
+  };
+  list.map(stateName => {
+    data.isSelected[stateName] = true;
+    data.filters[stateName] = getDefaultState(stateName, labels);
+  });
+  return data;
 }
