@@ -16,7 +16,6 @@ import {
 import ImageProgress from 'react-native-image-progress';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { SegmentedControls } from 'react-native-radio-buttons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Slider from 'react-native-slider';
@@ -24,31 +23,31 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import PopupDialog from 'react-native-popup-dialog';
 
 import RadioButton from '../../../../Components/radioButton';
 import UploadFromCameraRoll from '../../../../Components/imageUploader';
 import InputCenter from '../../../../Components/inputCenter';
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
+import GoogleAutocomplete from '../../../../Components/googleAutocomplete';
 import * as profileActions  from '../../../actions';
+import * as authActions  from '../../../../Auth/actions';
 
-const { width, height } = Dimensions.get('window');
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  PRICES as prices,
+  INFO_CALENDAR_OPTIONS as constantsOptions
+} from '../../../../Components/commonConstant';
+
 const background = require('../../../../Assets/images/background.png');
 const avatarDefault = require('../../../../Assets/images/avatar.png');
 const labelSex = ['Male', 'Female'];
-const prices = [
-  {item: '$', price: '$50-100', level: '1'},
-  {item: '$$', price: '$100-300', level: '2'},
-  {item: '$$$', price: '$300+', level: '3'}
-];
+
 const labelInsure = [{value:true, text:'Yes'}, {value: false, text:'No'}];
 const labelOwn = ['Go to client', 'Own space', 'Both'];
 const certificationsDefault = ['Certified personal trainer', 'Certified', 'No Certified'];
-
-//const variable
-const constants = {
-  BASIC_INFO: 'BASIC INFO',
-  CALENDAR: 'CALENDAR'
-};
 
 class EditProfile extends Component {
 
@@ -60,7 +59,7 @@ class EditProfile extends Component {
     this.state = {
       ...user,
       price: this.priceToFloat(user.price),
-      selectedOption: constants.BASIC_INFO,
+      selectedOption: constantsOptions.BASIC_INFO,
       professional: true,
       own: user.toClient && user.ownSpace ? 'Both' : (user.toClient ? 'Go to client' : 'Own space'),
       address: user.location.originalAddress,
@@ -296,6 +295,58 @@ class EditProfile extends Component {
     this.setState({ experience });
   }
 
+  onClosePopupAutocomplete () {
+    this.popupAutocomplete.closeDialog ();
+  }
+  onSetPopupAutocomplete (data, details) {
+    this.setState({ address: data.description || data.formatted_address });
+    this.popupAutocomplete.closeDialog ();
+  }
+  onOpenPopupAutocomplete () {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      this.props.getCurrentAddress(location);
+    });
+    this.popupAutocomplete.openDialog ();
+  }
+
+  get dialogAutocomplete () {
+    const { currentAddress } = this.props.auth;
+    const originalAddress = currentAddress.formattedAddress;
+
+    return (
+      <PopupDialog
+        ref={ (popupAutocomplete) => { this.popupAutocomplete = popupAutocomplete; } }
+        dialogStyle={ styles.dialogContainer }
+      >
+        <View style={ styles.locationDialogContentContainer }>
+
+          <View style={ styles.locationDialogTopContainer }>
+            <Text style={ styles.locationHeaderText }>
+              My location
+            </Text>
+            <EntypoIcons
+              style={ styles.locationClose }
+              onPress={ () => this.onClosePopupAutocomplete() }
+              name="circle-with-cross"
+              size={ 28 }
+            />
+            <Text>{ originalAddress }</Text>
+          </View>
+          <View style={styles.locationInputContainer}>
+            <View style={ styles.locationMiddleContainer }>
+              <Text style={ styles.locationBlueText }>Enter address</Text>
+            </View>
+            <GoogleAutocomplete onPress={ (data, details) => this.onSetPopupAutocomplete(data, details) } />
+          </View>
+        </View>
+      </PopupDialog>
+    );
+  }
+
   render() {
     const { avatar, user, updateRequest } = this.state;
     const { explore: { professions } } = this.props;
@@ -501,17 +552,15 @@ class EditProfile extends Component {
               </View>
               <View style={ styles.cellContainer }>
                 <Text style={ [styles.fontStyles, styles.textCellTitle] }>Location</Text>
-                <View style={ styles.viewInput }>
-                  <TextInput
-                    autoCapitalize="none"
-                    autoCorrect={ false }
-                    placeholder="Location"
-                    placeholderTextColor="#9e9e9e"
-                    style={ styles.textInputRight }
-                    value={ this.state.address }
-                    onChangeText={ (text) => this.setState({ address: text }) }
-                  />
-                </View>
+                <TouchableOpacity
+                  onPress={ () => this.onOpenPopupAutocomplete() }
+                >
+                  <View style={ styles.viewInput }>
+                    <Text style={ styles.textInputRight } >
+                      { this.state.address }
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </View>
               <View style={ styles.cellContainer }>
                 <View style={ styles.cellValueContainer }>
@@ -549,6 +598,7 @@ class EditProfile extends Component {
             </KeyboardAwareScrollView>
           </View>
         </Image>
+        { this.dialogAutocomplete }
         { updateRequest ? <FullScreenLoader/> : null }
       </View>
     );
@@ -748,14 +798,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 11,
   },
-  // viewInputCenter: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: '#e3e3e3',
-  //   marginHorizontal: 70,
-  // },
+
   viewInput: {
     // flex:1,
     flexDirection: 'row',
@@ -1029,6 +1072,62 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5
   },
+
+  locationInputContainer: {
+    flexDirection: 'column',
+    marginBottom: 20,
+    height: 290,
+  },
+
+  locationHeaderText: {
+    fontWeight: 'bold',
+    marginBottom: 4
+  },
+  locationClose: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    right: 5,
+    top: 10,
+    color: '#48c7f2'
+  },
+  locationDialogContentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    width: width * 0.95,
+    height: 375,
+    borderRadius: 10,
+  },
+  locationDialogTopContainer: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderColor: '#f2f2f2',
+    alignSelf: 'stretch',
+
+  },
+  locationMiddleContainer: {
+    paddingTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  locationBlueText: {
+    color: '#48c7f2'
+  },
+  dialogContainer: {
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    position: 'relative',
+    top: -125,
+  },
 });
 
 
@@ -1039,5 +1138,6 @@ export default connect(state => ({
   }),
     (dispatch) => ({
       updateProfile: (data) => dispatch(profileActions .updateProfile(data)),
+      getCurrentAddress: (data) => dispatch(authActions.getCurrentAddress(data)),
     })
 )(EditProfile);
