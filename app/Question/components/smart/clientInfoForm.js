@@ -6,11 +6,8 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
   TextInput,
-  Button,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Alert,
   Switch,
   ScrollView,
@@ -24,21 +21,24 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
 import ImageProgress from 'react-native-image-progress';
+import PopupDialog from 'react-native-popup-dialog';
 
-import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import RadioButton from '../../../Components/radioButton';
+import GoogleAutocomplete from '../../../Components/googleAutocomplete';
+
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  PRICES as prices,
+  user_client,
+} from '../../../Components/commonConstant';
 
 const background = require('../../../Assets/images/background.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
-const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
-const prices = [
-  {item: '$', price: '$50-100', level: 1},
-  {item: '$$', price: '$100-300', level: 2},
-  {item: '$$$', price: '$300+', level: 3}
-];
 
 class ClientInfoForm extends Component {
   constructor(props) {
@@ -65,7 +65,7 @@ class ClientInfoForm extends Component {
       return;
     }
     if (user && this.state.signUpRequest) {
-      Actions.Main({ user_mode: CommonConstant.user_client });
+      Actions.Main({ user_mode: user_client });
     }
     if (currentAddress && currentAddress.formattedAddress) {
       this.setState({ address: currentAddress.formattedAddress });
@@ -116,6 +116,51 @@ class ClientInfoForm extends Component {
   }
   addAvatarUri = (uri) => {
     this.setState({ avatar: '' }, () => this.setState({ avatar: uri }));
+  };
+
+  onClosePopupAutocomplete () {
+    this.popupAutocomplete.closeDialog ();
+  }
+  onSetPopupAutocomplete (data, details) {
+    this.setState({ address: data.description || data.formatted_address });
+    this.popupAutocomplete.closeDialog ();
+  }
+  onOpenPopupAutocomplete () {
+    this.popupAutocomplete.openDialog ();
+  }
+
+  get dialogAutocomplete () {
+    const { currentAddress } = this.props.auth;
+    const originalAddress = currentAddress.formattedAddress;
+
+    return (
+      <PopupDialog
+        ref={ (popupAutocomplete) => { this.popupAutocomplete = popupAutocomplete; } }
+        dialogStyle={ styles.dialogContainer }
+      >
+        <View style={ styles.locationDialogContentContainer }>
+
+          <View style={ styles.locationDialogTopContainer }>
+            <Text style={ styles.locationHeaderText }>
+              My location
+            </Text>
+            <EntypoIcons
+              style={ styles.locationClose }
+              onPress={ () => this.onClosePopupAutocomplete() }
+              name="circle-with-cross"
+              size={ 28 }
+            />
+            <Text>{ originalAddress }</Text>
+          </View>
+          <View style={styles.locationInputContainer}>
+            <View style={ styles.locationMiddleContainer }>
+              <Text style={ styles.locationBlueText }>Enter address</Text>
+            </View>
+            <GoogleAutocomplete onPress={ (data, details) => this.onSetPopupAutocomplete(data, details) } />
+          </View>
+        </View>
+      </PopupDialog>
+    );
   }
 
   render() {
@@ -249,17 +294,15 @@ class ClientInfoForm extends Component {
                   </View>
                   <View style={ styles.cellContainer }>
                     <Text style={ styles.textCellTitle }>Main Address</Text>
-                    <View style={ styles.viewInput }>
-                      <TextInput
-                        autoCapitalize="none"
-                        autoCorrect={ false }
-                        placeholder="Main Address"
-                        placeholderTextColor="#9e9e9e"
-                        style={ styles.textInputRight }
-                        value={ this.state.address }
-                        onChangeText={ (text) => this.setState({ address: text }) }
-                      />
-                    </View>
+                    <TouchableOpacity
+                      onPress={ () => this.onOpenPopupAutocomplete() }
+                    >
+                      <View style={ styles.viewInput }>
+                        <Text style={ styles.textInputRight } ellipsizeMode="tail">
+                          { this.state.address }
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
                   </View>
 
                 </View>
@@ -274,6 +317,7 @@ class ClientInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
+        { this.dialogAutocomplete }
         { signUpRequest ? <FullScreenLoader/> : null }
       </View>
     );
@@ -648,6 +692,62 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     borderBottomWidth: 1,
     borderBottomColor: '#10c7f9'
+  },
+
+  locationInputContainer: {
+    flexDirection: 'column',
+    marginBottom: 20,
+    height: 290,
+  },
+
+  locationHeaderText: {
+    fontWeight: 'bold',
+    marginBottom: 4
+  },
+  locationClose: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    right: 5,
+    top: 10,
+    color: '#48c7f2'
+  },
+  locationDialogContentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    width: width * 0.95,
+    height: 375,
+    borderRadius: 10,
+  },
+  locationDialogTopContainer: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderColor: '#f2f2f2',
+    alignSelf: 'stretch',
+
+  },
+  locationMiddleContainer: {
+    paddingTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  locationBlueText: {
+    color: '#48c7f2'
+  },
+  dialogContainer: {
+    backgroundColor: 'transparent',
+    position: 'relative',
+    top: -125,
+    alignItems: 'center',
   },
 });
 

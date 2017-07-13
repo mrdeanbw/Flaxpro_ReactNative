@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
 import {
   AsyncStorage,
-  Animated,
-  ActivityIndicator,
   StyleSheet,
   Text,
   View,
   Image,
   Dimensions,
   TextInput,
-  Button,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Alert,
-  Switch,
-  ScrollView,
 } from 'react-native';
 
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -24,15 +18,23 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import PopupDialog from 'react-native-popup-dialog';
 
-const { width, height } = Dimensions.get('window');
+import GoogleAutocomplete from '../../../Components/googleAutocomplete';
+
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  PRICES as prices,
+  user_professional,
+} from '../../../Components/commonConstant';
+
 const labelInsure = [{value:true, text:'Yes'}, {value: false, text:'No'}];
 const labelOwn = ['Go to client', 'Own space', 'Both'];
 const certificationsDefault = ['Certified personal trainer', 'Certified', 'No Certified'];
 
-
 import FullScreenLoader from '../../../Components/fullScreenLoader';
-import * as CommonConstant from '../../../Components/commonConstant';
 const background = require('../../../Assets/images/background.png');
 const avatar = require('../../../Assets/images/avatar.png');
 const edit_avatar = require('../../../Assets/images/edit_avatar.png');
@@ -81,7 +83,7 @@ class ProfessionalInfoForm extends Component {
       return;
     }
     if (user && this.state.signUpRequest) {
-      Actions.Main({ user_mode: CommonConstant.user_trainer });
+      Actions.Main({ user_mode: user_professional });
     }
     if (currentAddress && currentAddress.formattedAddress) {
       this.setState({ address: currentAddress.formattedAddress });
@@ -196,6 +198,51 @@ class ProfessionalInfoForm extends Component {
     return value.join('')
   }
 
+  onClosePopupAutocomplete () {
+    this.popupAutocomplete.closeDialog ();
+  }
+  onSetPopupAutocomplete (data, details) {
+    this.setState({ address: data.description || data.formatted_address });
+    this.popupAutocomplete.closeDialog ();
+  }
+  onOpenPopupAutocomplete () {
+    this.popupAutocomplete.openDialog ();
+  }
+
+  get dialogAutocomplete () {
+    const { currentAddress } = this.props.auth;
+    const originalAddress = currentAddress.formattedAddress;
+
+    return (
+      <PopupDialog
+        ref={ (popupAutocomplete) => { this.popupAutocomplete = popupAutocomplete; } }
+        dialogStyle={ styles.dialogContainer }
+      >
+        <View style={ styles.locationDialogContentContainer }>
+
+          <View style={ styles.locationDialogTopContainer }>
+            <Text style={ styles.locationHeaderText }>
+              My location
+            </Text>
+            <EntypoIcons
+              style={ styles.locationClose }
+              onPress={ () => this.onClosePopupAutocomplete() }
+              name="circle-with-cross"
+              size={ 28 }
+            />
+            <Text>{ originalAddress }</Text>
+          </View>
+          <View style={styles.locationInputContainer}>
+            <View style={ styles.locationMiddleContainer }>
+              <Text style={ styles.locationBlueText }>Enter address</Text>
+            </View>
+            <GoogleAutocomplete onPress={ (data, details) => this.onSetPopupAutocomplete(data, details) } />
+          </View>
+        </View>
+      </PopupDialog>
+    );
+  }
+
   render() {
     const { signUpRequest } = this.state;
     const { explore: { professions } } = this.props;
@@ -306,17 +353,15 @@ class ProfessionalInfoForm extends Component {
                 </View>
                 <View style={ styles.cellContainer }>
                   <Text style={ styles.textCellTitle }>Location</Text>
-                  <View style={ styles.viewInput }>
-                    <TextInput
-                      autoCapitalize="none"
-                      autoCorrect={ false }
-                      placeholder="Location"
-                      placeholderTextColor="#9e9e9e"
-                      style={ styles.textInputRight }
-                      value={ this.state.address }
-                      onChangeText={ (text) => this.setState({ address: text }) }
-                     />
-                  </View>
+                  <TouchableOpacity
+                    onPress={ () => this.onOpenPopupAutocomplete() }
+                  >
+                    <View style={ styles.viewInput }>
+                      <Text style={ styles.textInputRight } ellipsizeMode="tail">
+                        { this.state.address }
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
                 <View style={ styles.cellContainer }>
                   <View style={ styles.cellValueContainer }>
@@ -330,7 +375,7 @@ class ProfessionalInfoForm extends Component {
                             color="#19b8ff"
                             iconStyle={ styles.iconButton }
                             labelStyle={ styles.textInput }
-                            checked={ this.state.own == value }
+                            checked={ this.state.own === value }
                             onPress={ () => this.onOwn(value) }
                           />
                         );
@@ -363,6 +408,7 @@ class ProfessionalInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
+        { this.dialogAutocomplete }
         { signUpRequest ? <FullScreenLoader/> : null }
       </View>
     );
@@ -561,7 +607,63 @@ const styles = StyleSheet.create({
     fontFamily: 'Open Sans',
     textAlign: 'center',
     paddingHorizontal: 20
-  }
+  },
+
+  locationInputContainer: {
+    flexDirection: 'column',
+    marginBottom: 20,
+    height: 290,
+  },
+
+  locationHeaderText: {
+    fontWeight: 'bold',
+    marginBottom: 4
+  },
+  locationClose: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    right: 5,
+    top: 10,
+    color: '#48c7f2'
+  },
+  locationDialogContentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    width: width * 0.95,
+    height: 375,
+    borderRadius: 10,
+  },
+  locationDialogTopContainer: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderColor: '#f2f2f2',
+    alignSelf: 'stretch',
+
+  },
+  locationMiddleContainer: {
+    paddingTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  locationBlueText: {
+    color: '#48c7f2'
+  },
+  dialogContainer: {
+    backgroundColor: 'transparent',
+    position: 'relative',
+    top: -125,
+    alignItems: 'center',
+  },
 });
 
 export default connect(state => ({
