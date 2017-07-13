@@ -175,12 +175,12 @@ class ClientExploreForm extends Component {
   filterByAddress(data, details){
     const { filter } = this.state;
     const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
-    this.setState({filter: {...filter, address: data.description, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } });
+    this.setState({filter: {...filter, address: data.description || data.formatted_address, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } });
 
     const { getProfessionals } = this.props;
     const filterObj = {
       locationType: 'address',
-      address: data.description,
+      address: data.description || data.formatted_address,
       date: filter.date,
     };
     this.closeLocationPopup();
