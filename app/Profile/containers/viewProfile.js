@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import ProfessionalProfileForm from '../components/smart/professionalProfileForm';
 import ClientProfileForm from '../components/smart/clientProfileForm';
 import * as profileActions  from '../actions';
+import * as inboxActions from '../../Inbox/actions';
 import * as CommonConstant from '../../Components/commonConstant';
 
 class viewProfile extends Component {
@@ -18,12 +19,20 @@ class viewProfile extends Component {
   }
 
   render() {
-    const { auth, user, actions, editable } = this.props;
+    const { auth, user, actions, editable, inboxActions } = this.props;
     return (
       (user ? user.role : auth.user.role) === CommonConstant.user_client ?
-        <ClientProfileForm { ...actions } editable={ editable }/>
+        <ClientProfileForm
+         { ...actions } 
+         editable={ editable } 
+         inboxActions={ inboxActions }
+        />
         :
-        <ProfessionalProfileForm { ...actions } editable={ editable }/>
+        <ProfessionalProfileForm 
+          { ...actions }
+          editable={ editable } 
+          inboxActions={ inboxActions }
+        />
     );
   }
 }
@@ -33,6 +42,7 @@ export default connect(state => ({
     status: state.profile.status,
   }),
   (dispatch) => ({
-    actions: bindActionCreators(profileActions , dispatch)
+    actions: bindActionCreators(profileActions, dispatch),
+    inboxActions: bindActionCreators(inboxActions, dispatch),
   })
 )(viewProfile);

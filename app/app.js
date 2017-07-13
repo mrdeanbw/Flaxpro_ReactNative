@@ -21,7 +21,7 @@ import EditAvailability from './Profile/components/smart/editAvailabilityForm';
 import ViewProfile from './Profile/containers/viewProfile';
 import EditProfile from './Profile/containers/editProfile';
 import Sessions from './Profile/components/smart/sessions';
-import ChatForm from './Inbox/components/smart/chatForm';
+import ChatForm from './Inbox/containers/chat';
 import Contracts from './Contracts/containers/contracts';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -64,5 +64,3 @@ export default class App extends Component {
     );
   }
 }
-
-export { store };

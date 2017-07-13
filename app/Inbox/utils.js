@@ -1,11 +1,12 @@
 import * as constants from './constants';
+import { randomString } from '../Utils';
 
 export const mapChatResponseToState = (obj) => {
 
   const name = chooseChatName(obj),
         avatar = chooseAvatar(obj),
         group = createGroup(obj.users),
-        messages = Object.keys(obj.message).length === 0 ? [] : [mapMessageResponseToState(obj.message)];
+        message = Object.keys(obj.message).length === 0 ? null : mapMessageByType(obj.message);
 
   const newChat = {
     id: obj._id,
@@ -13,21 +14,35 @@ export const mapChatResponseToState = (obj) => {
     updatedAt: obj.message.updatedAt ? new Date(obj.message.updatedAt) : null,
     hasUnread: !obj.hasUnread,
     name,
-    messages,
+    message,
     avatar,
     group,
   };
   return newChat;
 };
 
-export const mapMessageByType = (obj, messageId) => {
+export const mapNewChatToState = (obj, username) => {
+  return {
+    id: obj.chatId,
+    createdAt: new Date(),
+    updatedAt: null,
+    hasUnread: false,
+    name: username,
+    messages: [],
+    avatar: null,
+    group: [],
+  }
+}
+
+export const mapMessageByType = (obj) => {
+  const _id = randomString(32);
   switch(obj.type) {
     case 'notification':
-      return mapNotificationResponseToState(obj, messageId);
+      return mapNotificationResponseToState(obj, _id);
     case 'chat':
-      return mapMessageResponseToState(obj, messageId);
+      return mapMessageResponseToState(obj, _id);
     default:
-      return mapMessageResponseToState(obj, messageId);
+      return mapMessageResponseToState(obj, _id);
   }
 }
 
@@ -42,6 +57,7 @@ const mapMessageResponseToState = (obj, messageId, messageType = 'chat') => {
       name: obj.user.name,
       avatar: obj.user.avatar, 
     },
+    chatId: obj.chat,
     type: obj.type,
   };
 }

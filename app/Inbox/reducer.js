@@ -1,11 +1,12 @@
 import * as types from './actionTypes';
 
 const initialState = {
-  status: null,
-  loading: false,
+  loadingChats: false,
+  loadingChat: false,
+  loadingMessages: false,
   chats: [],
-  activeChat: null,
   unreadChats: 0,
+  activeChat: {},
 }
 
 export default function inbox(state = initialState, action = {}) {
@@ -13,83 +14,115 @@ export default function inbox(state = initialState, action = {}) {
     case types.INBOX_REQUEST:
       return {
         ...state,
-        status: types.INBOX_REQUEST,
+        loadingChats: true,
       };
     case types.INBOX_SUCCESS:
       return {
         ...state,
-        status: types.INBOX_SUCCESS,
+        loadingChats: false,
         chats: action.chats,
       };
     case types.INBOX_ERROR:
       return {
         ...state,
-        status: types.INBOX_ERROR,
+        loadingChats: false,
       };
-    case types.CHAT_REQUEST: 
+    case types.INBOX_ADD:
+      return addChatToStore(state, action);
+    case types.INBOX_ACTIVATE_CHAT_REQUEST: 
       return {
         ...state,
-        loading: true,
-        status: types.CHAT_REQUEST,
+        loadingChat: true,
       };
-    case types.CHAT_SUCCESS:
-      return addMessagesToStore(state, action);
-    case types.CHAT_ERROR: 
+    case types.INBOX_ACTIVATE_CHAT_SUCCESS:
       return {
         ...state,
-        loading: false,
-        status: types.CHAT_ERROR
+        activeChat: {...action.chat},
+        loadingChat: false,
       };
-    case types.CHAT_CONCAT:
-      return addMessageToChat(state, action);
-    case types.CHAT_UNREAD_CHAT:
-      if (state.unreadChats === action.unreadChats) { return state };
+    case types.INBOX_ACTIVATE_CHAT_ERROR: 
       return {
         ...state,
-        status: types.CHAT_UNREAD_CHAT,
+        loadingChat: false,
+      }
+    case types.INBOX_DEACTIVATE_CHAT: 
+      return {
+        ...state,
+        activeChat: {},
+      }
+    case types.INBOX_UPDATE_WITH_NEW_MESSAGE: 
+      return addNewMessage(state, action);
+    case types.MESSAGES_REQUEST:
+      return {
+        ...state,
+        loadingMessages: true,
+      };
+    case types.MESSAGES_SUCCESS: 
+      let activeChat = {...state.activeChat, messages: action.messages};
+      return {
+        ...state,
+        activeChat,
+        loadingMessages: false,
+      };
+    case types.MESSAGES_UNREAD_EVENT:
+      if (state.unreadChats === action.unreadChats) { return state; };
+      return {
+        ...state,
         unreadChats: action.unreadChats,
       };
-    case types.CHAT_POST_REQUEST:
+    case types.MESSAGES_ADD_NEW:
+      if (Object.keys(state.activeChat).length === 0) { return state; }
+      if (action.message.chatId !== state.activeChat.id) { return state; }
+      const messages = [action.message].concat(state.activeChat.messages);
       return {
         ...state,
-        status: types.CHAT_POST_REQUEST,
+        activeChat: { ...state.activeChat, messages }
       };
-    default:
+    default: 
       return state;
-  };
+  }
 }
 
-const addMessagesToStore = (state, action) => {
-    const { chatId, messages } = action.payload;
-    let [ ...chats ] = state.chats,
-        chatIndex = chats.findIndex((chat) => chat.id === chatId);
-    
-    if (chatIndex === -1) { return state }
-    chats[chatIndex].messages = messages;
+
+const addNewMessage = (state, action) => {
+  const { message } = action;
+
+  const chatId = message.chatId,
+        chat = state.chats.find((chat) => chat.id === chatId);
+
+  if (chat) {
+    const newChat = updateChat(chat, message);
+    let newChats = state.chats.filter((chat) => chat.id !== newChat.id);
+    return {
+      ...state,
+      chats: [newChat].concat(newChats),
+    }
+  } else {
+    return state;
+  }
+};
+
+const updateChat = (chat, message) => {
+  let newChat = { ...chat };
+  newChat.message = message;
+  newChat.hasUnread = false;
+  return newChat;
+};
+
+const addChatToStore = (state, action) => {
+  const { chat } = action;
+  const { id } = chat;
+
+  let [ ...chats ] = state.chats,
+      chatIndex = chats.findIndex((chat) => chat.id === id);
+
+  if (chatIndex === -1) {
     return {
       ...state,
       loading: false,
-      status: types.CHAT_SUCCESS,
-      chats,
+      chats: [chat].concat(chats),
     };
-}
-
-const addMessageToChat = (state, action) => {
-    if (state.chats.length === 0) { return state }; 
-    
-    const { message } = action,
-          chatId = message.chat;
-    
-    let [ ...chats ] = state.chats;
-    const chatIndex = chats.findIndex((chat) => chat.id == chatId);
-    
-    if (chatIndex == -1) { return state };
-    const newMessages = [message].concat(chats[chatIndex].messages);
-    chats[chatIndex].messages = newMessages;
-    
-    return {
-      ...state,
-      status: types.CHAT_CONCAT,
-      chats,
-    }
+  } else {
+    return {...state, loading: false, };
+  }
 };

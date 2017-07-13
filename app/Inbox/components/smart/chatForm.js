@@ -18,7 +18,6 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import OfferMessage from './offerMessage';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 
-
 const { width, height } = Dimensions.get('window');
 
 const background = require('../../../Assets/images/background.png');
@@ -29,20 +28,18 @@ export default class ChatForm extends Component {
     super(props);
   }
 
-  componentWillReceiveProps(newProps) {
-  }
-
   componentWillMount() {
-    this.props.actions.getMessages(this.props.id);
+    this.props.getMessages(this.props.id);
   }
 
   componentWillUnmount() {
-    this.props.actions.getChats();
-    this.props.actions.deactivateChat();
+    if (this.props.unmountCallback) {
+      this.props.unmountCallback();
+    }
   }
 
   onSend(messages = []) {
-    this.props.actions.sendMessage(this.props.id, messages[0].text);
+    this.props.sendMessage(this.props.id, messages[0].text);
   }
 
   onBack() {
@@ -50,7 +47,7 @@ export default class ChatForm extends Component {
   }
 
   get getShowNavBar() {
-    const { userName } = this.props;
+    const { username } = this.props;
 
     return (
       <View style={ styles.navBarContainer }>
@@ -64,7 +61,7 @@ export default class ChatForm extends Component {
           />
         </TouchableOpacity>
 
-        <Text style={ styles.textTitle }>{ userName }</Text>
+        <Text style={ styles.textTitle }>{ username }</Text>
 
         <View style={ styles.navButtonWrapper }/>
       </View>
@@ -81,7 +78,7 @@ export default class ChatForm extends Component {
 
   render() {
     const { user } = this.props.auth.user;
-    return this.props.loading ?
+    return this.props.loadingMessages ?
       (
         <FullScreenLoader />
       )
@@ -93,7 +90,7 @@ export default class ChatForm extends Component {
             <View style={ styles.contentContainer }>
               <GiftedChat
                 messages={ this.props.messages }
-                onSend={ (messages = []) => this.onSend(messages) }
+                onSend={ this.onSend.bind(this) }
                 user={{
                   _id: user,
                 }}

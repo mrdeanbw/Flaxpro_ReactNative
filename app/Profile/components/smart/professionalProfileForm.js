@@ -121,7 +121,8 @@ class ProfessionalProfileForm extends Component {
   onMessage() {
     this.closeCommunicationPopup();
     this.onShowMoreLess(true);
-    Actions.ChatForm({ userName: this.user.name });
+    this.props.inboxActions.activateChatByUserId(this.props.user.user, this.props.user.name);
+    Actions.ChatForm();
   }
 
   onReferToFriend() {

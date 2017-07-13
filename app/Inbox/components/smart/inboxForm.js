@@ -19,6 +19,7 @@ import { tabs } from '../../../Main/constants';
 import * as statuses from '../../actionTypes';
 import InboxListCell from './inboxListCell';
 import ChatForm from './chatForm';
+import Chat from '../../containers/chat';
 
 const { width, height } = Dimensions.get('window');
 
@@ -33,30 +34,17 @@ export default class InboxForm extends Component {
     super(props);
     this.dataSource = new ListView.DataSource(
       { rowHasChanged: (r1, r2) => r1 !== r2 });
-    
-    this.state = {
-      activeChat: {
-        isActive: false,
-        chatIndex: -1,
-      },
-    };
   }
 
   componentDidMount() {
     this.props.getChats();
   }
-
-  componentWillUnmount() {
-    console.log('__inbox will destroyed__');
-  }
-
   renderInboxRow(rowData, sectionID, rowID) {
-
     const time = rowData.updatedAt ? 
       createFancyTime(new Date(rowData.updatedAt)) 
       : 
       createFancyTime(new Date(rowData.createdAt)),
-      message = rowData.messages.length > 0 ? rowData.messages[0].text : '';
+      message = rowData.message ? rowData.message.text : '';
 
     return (
       <InboxListCell
@@ -70,28 +58,6 @@ export default class InboxForm extends Component {
         onClick={ () => this.onCellPressed(rowID) }
       />
     );
-  }
-
-  componentWillUpdate(nextProps) {
-    console.log('__inbox will update__', nextProps.inbox.status);
-    switch(nextProps.inbox.status){
-      case statuses.INBOX_SUCCESS:
-        break;
-      case statuses.CHAT_SUCCESS:
-      case statuses.CHAT_CONCAT:
-        if (this.state.activeChat.isActive) {
-          const chatIndex = this.state.activeChat.chatIndex;
-          this.updateMessagesScreen(chatIndex);
-        }
-        break;
-      case statuses.CHAT_UNREAD_CHAT:
-        if (this.props.selectedTab === tabs.INBOX && !this.state.activeChat.isActive) {
-          this.props.getChats();
-        }
-        break;
-      default:
-        break;
-    };
   }
 
   renderInboxHiddenRow(data, secId, rowId, rowMap) {
@@ -118,10 +84,17 @@ export default class InboxForm extends Component {
   }
 
   onRemove(secId, rowId, rowMap) {
+
+    console.log(secId, rowId, rowMap);
+    const chatId = this.props.inbox.chats[rowId].id;
+    this.props.removeChat(chatId);
+
 		rowMap[`${secId}${rowId}`].closeRow();
- 		const newData = [...this.state.dataSourceInbox];
-		newData.splice(rowId, 1);
-		this.setState({ dataSourceInbox: newData });
+  }
+
+  chatCloseCallback() {
+    this.chatDeactivate();
+    this.props.getChats();
   }
 
   onCellPressed(index) {
@@ -134,19 +107,8 @@ export default class InboxForm extends Component {
     } else {
       messages = []; 
     }
-    Actions.ChatForm({
-      id: this.props.inbox.chats[index].id,
-      userName: this.props.inbox.chats[index].name,
-      messages: messages,
-      loading: this.props.inbox.loading,
-      auth: this.props.auth,
-      actions: {
-        getMessages: this.props.getMessages,
-        sendMessage: this.props.sendMessage,
-        getChats: this.props.getChats,
-        deactivateChat: this.chatDeactivate.bind(this),
-      }
-    });
+    this.props.activateChatByChatId(this.props.inbox.chats[index].id);
+    Actions.ChatForm({});
   }
 
   onEdit() {

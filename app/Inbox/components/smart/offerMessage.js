@@ -25,12 +25,12 @@ export default class OfferMessage extends Component {
             style={ styles.offerButton }
             onPress={ this.onClick.bind(this) }
             activeOpacity={ 50 }
-            underlayColor = { '#ffffff' }
+            underlayColor = { '#000' }
           >
             <Text
               style={ styles.offerText }
             >
-              Press me
+              SUMMARY
             </Text>
           </TouchableHighlight>
       )
@@ -42,18 +42,18 @@ export default class OfferMessage extends Component {
 
 const styles = StyleSheet.create({
   offerView: {
-    borderRadius: 0,
+    borderRadius: 20,
   },
   offerButton: {
     margin: 7,
     padding: 5,
-    backgroundColor: '#48d1cc',
-    borderRadius: 2,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: 'green',
   },
   offerText: {
-    color: '#ffffff',
+    color: '#94daf2',
     fontSize: 12,
     textAlign: 'center',
   },

@@ -13,7 +13,7 @@ class SocketController {
         this.user;
     }
 
-    init() {
+    init(userId) {
       if (this.socket.connected) {
         this.socket.off();
         this.socket.close();
@@ -21,13 +21,15 @@ class SocketController {
       this.socket.connect();
 
       this.subscribeSocket(this.socket);
-      let unsubsribe = store.subscribe(() => {
-        const { auth, inbox } = store.getState();
-        this.user = auth.user.user;
-        this.socket.emit('client:connect', this.user);
-        unsubsribe();
-      });
-    }
+      this.socket.emit('client:connect', userId);
+    };
+
+    close() {
+      if (this.socket.connected) {
+        this.socket.off();
+        this.socket.close();
+      };
+    };
 
     subscribeSocket(socket, auth, inbox) {
       const that = this;
@@ -41,6 +43,7 @@ class SocketController {
       socket.on('message', function(data) {
         if (data.type === 'message') {
           store.dispatch(actions.saveMessageToStore(data.message));
+          store.dispatch(actions.updateChatsWithMessage(data.message));
         }
       });
 
@@ -50,7 +53,7 @@ class SocketController {
 
       socket.on('disconnect', function() {
       });
-    }
+    };
 
 
 }

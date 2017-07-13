@@ -67,6 +67,7 @@ class ClientsProfessionals extends React.Component {
           {
             contractId: c._id,
             name: c[role].name,
+            userId: c[role].user,
             time: c.next ? Moment(c.next.from).format('MMM DD hh:mm A') : '',
             progress: c.sessionsPast,
             total: c.sessionsTotal,
@@ -148,7 +149,13 @@ class ClientsProfessionals extends React.Component {
         <ScrollView>
         {
           this.state.contracts.map( (data, index) => (
-            <ListProfession key={index} data={data} cancelContract={this.props.cancelContract} role={this.props.auth.user.role}/>
+            <ListProfession 
+              key={index} 
+              data={data} 
+              cancelContract={this.props.cancelContract} 
+              role={this.props.auth.user.role} 
+              startChat={this.props.startChat}
+            />
           ))
         }
         </ScrollView>

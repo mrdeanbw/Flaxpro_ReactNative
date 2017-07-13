@@ -57,7 +57,8 @@ export const login = (email, password, token = null) => async (dispatch, store) 
   try {
     const response = await request(url, options);
     dispatch(loginSuccess({...response}))
-    socket.init();
+    const userId = response.user.user;
+    socket.init(userId);
   } catch (error) {
     dispatch(loginError({error: error.message}))
   }
@@ -106,6 +107,7 @@ export const getCurrentAddress = (location) => async (dispatch, store) => {
 
 export const logout = () => async (dispatch, store) => {
   dispatch({ type: types.LOGOUT });
+  socket.close();
 };
 
 function generateUsers(count, prof) {
