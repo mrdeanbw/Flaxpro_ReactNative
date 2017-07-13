@@ -7,7 +7,7 @@ const initialState = {
   user: {},
   professions: [],
   professionalsClients: [],
-  currentAddress: '',
+  currentAddress: {},
 };
 
 export default function auth(state = initialState, action = {}) {

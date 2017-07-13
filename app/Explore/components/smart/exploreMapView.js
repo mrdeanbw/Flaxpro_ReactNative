@@ -171,6 +171,7 @@ class ExploreMapView extends Component {
       extrapolate: 'clamp',
     });
 
+    const locationForFocus = props.searchAddress || props.professionalsClients[0] || props.user;
     this.state = {
       panX,
       panY,
@@ -183,8 +184,8 @@ class ExploreMapView extends Component {
       selectedGymIndex: 0,
       selectedProfessionalClientIndex: 0,
       region: new MapView.AnimatedRegion({
-        latitude: props.user.coordinate.latitude,
-        longitude: props.user.coordinate.longitude,
+        latitude: locationForFocus.coordinate.latitude,
+        longitude: locationForFocus.coordinate.longitude,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       })
@@ -205,6 +206,16 @@ class ExploreMapView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.professionalsClients && nextProps.professionalsClients.length) {
+      const locationForFocus = nextProps.searchAddress || nextProps.professionalsClients[0];
+      let region = {
+        latitude: locationForFocus.coordinate.latitude,
+        longitude: locationForFocus.coordinate.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      };
+      this.onRegionChange(region);
+    }
     const cluster = this.createCluster(nextProps.professionalsClients);
     const markers = this.getMarkers(cluster, this.state.region);
 
@@ -271,16 +282,10 @@ class ExploreMapView extends Component {
 
   onRegionChange(region) {
     this.state.region.setValue(region);
-    if (this._regionChangeTimer !== null) {
-      clearTimeout(this._regionChangeTimer);
-    }
-    this._regionChangeTimer = setTimeout(() => {
-      this.setState({
-        region: this.state.region,
-        markers: this.getMarkers(this.state.cluster, this.state.region)
-      });
-      this._regionChangeTimer = null;
-    }, 150);
+    this.setState({
+      region: this.state.region,
+      markers: this.getMarkers(this.state.cluster, this.state.region)
+    });
   }
 
   onStartShouldSetPanResponder = (e) => {
