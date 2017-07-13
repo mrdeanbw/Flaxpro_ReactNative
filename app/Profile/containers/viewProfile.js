@@ -4,8 +4,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import ProfessionalProfileForm from '../components/smart/professionalProfileForm';
-import ClientProfileForm from '../components/smart/clientProfileForm';
+import ProfessionalProfileForm from '../components/smart/viewProfile/professionalProfileForm';
+import ClientProfileForm from '../components/smart/viewProfile/clientProfileForm';
 import * as profileActions  from '../actions';
 import * as CommonConstant from '../../Components/commonConstant';
 

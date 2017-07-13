@@ -17,22 +17,22 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import ImageProgress from 'react-native-image-progress';
 import R from 'ramda';
 
-import Calendar from './calendar/Calendar';
-import FullScreenLoader from '../../../Components/fullScreenLoader';
+import Calendar from '../calendar/Calendar';
+import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
-import * as CommonConstant from '../../../Components/commonConstant';
+import * as CommonConstant from '../../../../Components/commonConstant';
 const width = CommonConstant.WIDTH_SCREEN;
 const height = CommonConstant.HEIHT_SCREEN;
 const appColor = CommonConstant.APP_COLOR;
 
-const background = require('../../../Assets/images/background.png');
-const schedule = require('../../../Assets/images/schedule.png');
-const edit = require('../../../Assets/images/edit.png');
-const strengthTraining = require('../../../Assets/images/strength_training.png');
-const pilates = require('../../../Assets/images/pilates.png');
-const yoga = require('../../../Assets/images/yoga.png');
-const totalWorkout = require('../../../Assets/images/total_workout.png');
-const avatarDefault = require('../../../Assets/images/avatar.png');
+const background = require('../../../../Assets/images/background.png');
+const schedule = require('../../../../Assets/images/schedule.png');
+const edit = require('../../../../Assets/images/edit.png');
+const strengthTraining = require('../../../../Assets/images/strength_training.png');
+const pilates = require('../../../../Assets/images/pilates.png');
+const yoga = require('../../../../Assets/images/yoga.png');
+const totalWorkout = require('../../../../Assets/images/total_workout.png');
+const avatarDefault = require('../../../../Assets/images/avatar.png');
 
 const constants = {
   BASIC_INFO: 'BASIC INFO',
@@ -44,7 +44,7 @@ const prices = [
   {item: '$$$', price: '$300+', level: '3'}
 ];
 //auth redux store
-import { Reviews } from '../../../Components/dummyEntries'
+import { Reviews } from '../../../../Components/dummyEntries'
 
 class ClientProfileForm extends Component {
   static propTypes = {
