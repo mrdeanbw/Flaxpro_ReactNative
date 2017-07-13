@@ -13,3 +13,14 @@ export const FONT_STYLES =   {
   fontFamily: 'Open Sans',
   fontSize: 18,
 };
+
+export const PRICES = [
+  {item: '$', price: '$50-$100', level: '1'},
+  {item: '$$', price: '$100-$300', level: '2'},
+  {item: '$$$', price: '$300+', level: '3'}
+];
+
+export const INFO_CALENDAR_OPTIONS = {
+  BASIC_INFO: 'BASIC INFO',
+  CALENDAR: 'CALENDAR'
+};
