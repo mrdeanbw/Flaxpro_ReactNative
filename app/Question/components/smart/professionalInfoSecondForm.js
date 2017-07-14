@@ -17,13 +17,12 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-
+import R from 'ramda';
 
 import {
   WIDTH_SCREEN as width,
   HEIHT_SCREEN as height,
   APP_COLOR as appColor,
-  PRICES as prices,
   user_professional,
 } from '../../../Components/commonConstant';
 
@@ -45,11 +44,15 @@ class ProfessionalInfoForm extends Component {
     this.state = {
       price: this.priceToFloat(200),
       insured: true,
-      profession: props.explore && props.explore.professions && props.explore.professions[0] || {},
-      certification:
+      profession:
             props.explore &&
             props.explore.professions &&
-            props.explore.professions[0].certification &&
+            !R.isEmpty(props.explore.professions) &&
+            props.explore.professions[0] || {},
+      certification:
+            props.explore &&
+            !R.isEmpty(props.explore.professions) &&
+            !R.isEmpty(props.explore.professions[0].certification) &&
             props.explore.professions[0].certification[0] || certificationsDefault[0],
       address: props.auth.currentAddress.formattedAddress || '4 York st, Toronto',
       own: 'Both',
