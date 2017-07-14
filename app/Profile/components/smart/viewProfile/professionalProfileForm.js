@@ -1,13 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  AppRegistry,
   ActivityIndicator,
   StyleSheet,
   Text,
   View,
   Image,
-  Dimensions,
-  TextInput,
   ScrollView,
   TouchableOpacity,
   Alert,
@@ -22,10 +19,15 @@ import R from 'ramda';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import ImageProgress from 'react-native-image-progress';
 
-import Calendar from '../calendar/Calendar';
-import FullScreenLoader from '../../../../Components/fullScreenLoader';
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  PRICES as prices,
+  INFO_CALENDAR_OPTIONS as constants,
+} from '../../../../Components/commonConstant';
 
-const { width, height } = Dimensions.get('window');
+import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
 import PopupDialog from 'react-native-popup-dialog';
 
@@ -47,19 +49,12 @@ const referToFriends = require('../../../../Assets/images/refer_to_friends.png')
 const customOffer = require('../../../../Assets/images/custom_offer.png');
 const availability = require('../../../../Assets/images/avability.png');
 
-const strengthTraining = require('../../../../Assets/images/strength_training.png');
 const pilates = require('../../../../Assets/images/pilates.png');
 const yoga = require('../../../../Assets/images/yoga.png');
-const totalWorkout = require('../../../../Assets/images/total_workout.png');
 import { Reviews } from '../../../../Components/dummyEntries'
 import Moment from 'moment';
 
-const constants = {
-  BASIC_INFO: 'BASIC INFO',
-  CALENDAR: 'CALENDAR'
-};
-
-class ProfessionalProfileForm extends Component {
+export default class ProfessionalProfileForm extends Component {
 
   static propTypes = {
     editable: PropTypes.bool,
@@ -77,17 +72,6 @@ class ProfessionalProfileForm extends Component {
     };
   }
 
-  componentWillReceiveProps(newProps) {
-
-    if (newProps.status == 'ClientProfileRequest') {
-
-    } else if (newProps.status == 'ClientProfileSuccess') {
-
-    } else if (newProps.status == 'ClientProfileError') {
-
-    }
-  }
-
   onSchedule() {
     this.onShowMoreLess(true);
     Actions.ScheduleForm();
@@ -101,9 +85,9 @@ class ProfessionalProfileForm extends Component {
   onChangeOptions(option) {
     const { selectedOption } = this.state;
 
-    if (selectedOption != option) {
+    if (selectedOption !== option) {
       const { getMySessions } = this.props;
-      getMySessions({byField: 'day'})
+      getMySessions({byField: 'day'});
       this.onSchedule();
       this.setState({ selectedOption });
     }
@@ -115,7 +99,7 @@ class ProfessionalProfileForm extends Component {
 
   onCall() {
     this.closeCommunicationPopup();
-    Alert.alert( 'Tapped onCall!');
+    Alert.alert('Coming soon!');
   }
 
   onMessage() {
@@ -126,7 +110,7 @@ class ProfessionalProfileForm extends Component {
 
   onReferToFriend() {
     this.closeCommunicationPopup();
-    Alert.alert( 'Tapped onReferToFriend!');
+    Alert.alert('Coming soon!');
   }
 
   onHire() {
@@ -137,6 +121,13 @@ class ProfessionalProfileForm extends Component {
   onMakeAnOffer() {
     this.onShowMoreLess(true);
     Actions.Contract({ user: this.user, editable: true });
+  }
+
+  onGetAvailability() {
+    this.onShowMoreLess(true);
+    const { getScheduleById, profile: { user } } = this.props;
+    getScheduleById({ user });
+    Actions.ScheduleForm();
   }
 
   onBack() {
@@ -200,7 +191,7 @@ class ProfessionalProfileForm extends Component {
                 <Text style={ styles.communicationBtnText }>Refer to friends</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.closeCommunicationPopup()} >
+            <TouchableOpacity onPress={() => this.onGetAvailability()} >
               <View style={ styles.communicationBtnContainer }>
                 <Image
                   source={ availability }
@@ -377,7 +368,7 @@ class ProfessionalProfileForm extends Component {
   }
 
   render() {
-    const { editable, user } = this.props;
+    const { editable, profile: { user } } = this.props;
     const { showMoreOrLess } = this.state;
     this.user = user;
     const reviews = (user.reviews && user.reviews.length) ? user.reviews : Reviews;
@@ -865,9 +856,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(state => ({
-    auth: state.auth,
-    explore: state.explore,
-    user: state.profile.user,
-  })
-)(ProfessionalProfileForm);
+// export default connect(state => ({
+//     auth: state.auth,
+//     explore: state.explore,
+//     user: state.profile.user,
+//   })
+// )(ProfessionalProfileForm);

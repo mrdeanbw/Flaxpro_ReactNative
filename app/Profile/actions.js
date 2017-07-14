@@ -58,24 +58,21 @@ export const getMySessions = (data) => async (dispatch, store) => {
 
 };
 
-export const getSessionsById = (data) => async (dispatch, store) => {
+export const getScheduleById = (data) => async (dispatch, store) => {
   if (!data.user) return;
+  dispatch(profileRequest());
   const { auth } = store();
-  let url = `/sessions/${data.user.role.toLowerCase()}/${data.user._id}`;
+  const url = `/schedules/${data.user.role.toLowerCase()}/${data.user._id}`;
   const options = {
     method: 'get',
   };
-  if(data.options){
-    const queryString = toQueryString(data.options);
-    url += '?' + queryString;
-  }
 
   try {
     const response = await request(url, options, auth);
     dispatch(updateProfileSuccess({sessions: response}));
   } catch (error) {
     const error =
-      `Profile Error: getMySessions()
+      `Profile Error: getScheduleById()
       Message: ${error.message}`;
     dispatch(profileError(error));
   }

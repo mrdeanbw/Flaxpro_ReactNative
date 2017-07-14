@@ -18,19 +18,20 @@ class viewProfile extends Component {
   }
 
   render() {
-    const { auth, user, actions, editable } = this.props;
+    const { auth, user, actions, editable, profile } = this.props;
     return (
       (user ? user.role : auth.user.role) === CommonConstant.user_client ?
         <ClientProfileForm { ...actions } editable={ editable }/>
         :
-        <ProfessionalProfileForm { ...actions } editable={ editable }/>
+        <ProfessionalProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile }/>
     );
   }
 }
 
 export default connect(state => ({
     auth: state.auth,
-    status: state.profile.status,
+    explore: state.explore,
+    profile: state.profile,
   }),
   (dispatch) => ({
     actions: bindActionCreators(profileActions , dispatch)
