@@ -18,12 +18,12 @@ class viewProfile extends Component {
   }
 
   render() {
-    const { auth, user, actions, editable, profile } = this.props;
+    const { auth, user, actions, editable, profile, explore } = this.props;
     return (
       (user ? user.role : auth.user.role) === CommonConstant.user_client ?
-        <ClientProfileForm { ...actions } editable={ editable }/>
+        <ClientProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile } explore={ explore }/>
         :
-        <ProfessionalProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile }/>
+        <ProfessionalProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile } explore={ explore }/>
     );
   }
 }

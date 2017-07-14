@@ -325,6 +325,7 @@ class ScheduleForm extends Component {
   render() {
     const { user, profile: { sessions } } = this.props;
 
+    console.log('==========', sessions);
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -351,13 +352,13 @@ class ScheduleForm extends Component {
                     <Text style={ styles.textSectionTitle }>{day.date}</Text>
                   </View>
                   {
-                    day.sessions.map((session) => (
+                    (day.sessions || day.schedules).map((session) => (
                     user.role === CommonConstant.user_client ?
                       <View style={ styles.timeMainContainer } key={session._id}>
                         <View style={ styles.timeRowContainer}>
                           <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
                           <View style={ styles.separator}>
-                            <Text style={ [styles.textSectionTitle] }>{session.profession.name}</Text>
+                            <Text style={ [styles.textSectionTitle] }>{session.profession && session.profession.name}</Text>
                           </View>
                         </View>
                         <View style={ styles.timeRowContainer}>
