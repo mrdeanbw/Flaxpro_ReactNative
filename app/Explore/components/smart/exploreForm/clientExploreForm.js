@@ -656,7 +656,7 @@ class ClientExploreForm extends Component {
 
   render() {
     const { user } = this.props.auth;
-    const { listFiltered } = this.state.professions;
+    const { listFiltered, selected } = this.state.professions;
     const explore = this.props.explore;
   return (
       <View style={ styles.container }>
@@ -707,6 +707,7 @@ class ClientExploreForm extends Component {
                 onList={ () => this.onMap() }
                 professionalsClients={ this.state.filteredProfessionals }
                 user={ user }
+                selectedProfessionName={ selected.name }
               />
           }
         </Image>
