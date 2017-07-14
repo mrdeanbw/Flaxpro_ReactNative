@@ -12,20 +12,23 @@ import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import PopupDialog from 'react-native-popup-dialog';
+import EntypoIcons from 'react-native-vector-icons/Entypo';
 
 import { SegmentedControls } from 'react-native-radio-buttons';
-import SearchBar from '../../../../Components/searchBar';
 import ExploreMapView from '../exploreMapView';
 import ExploreListView from '../exploreListView';
 
 import { GymLocations } from '../../../../Components/dummyEntries';
-
+import SearchBar from '../../../../Components/searchBar';
+import GoogleAutocomplete from '../../../../Components/googleAutocomplete';
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
-import * as CommonConstant from '../../../../Components/commonConstant';
-const width = CommonConstant.WIDTH_SCREEN;
-const height = CommonConstant.HEIHT_SCREEN;
-const appColor = CommonConstant.APP_COLOR;
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor
+} from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
 
@@ -74,9 +77,8 @@ class ExploreForm extends Component {
   }
 
   onFilter () {
-    const { getProfessionals, explore: { professions } } = this.props;
-
-    Actions.FilterProfessionalForm({ getProfessionals, professions });
+    const { getClients, explore: { clients, dataForProfessionalFilter } } = this.props;
+    Actions.FilterProfessionalForm({ getClients, clients, dataForProfessionalFilter });
   }
 
   onMap () {
@@ -107,6 +109,10 @@ class ExploreForm extends Component {
     }
     this.setState({ filteredClients, gymLocations })
   };
+
+  closeLocationPopup () {
+    this.popupDialogLocation.closeDialog ();
+  }
 
   onSelectLocationFilterMode(option) {
     const { getClients } = this.props;
@@ -142,30 +148,72 @@ class ExploreForm extends Component {
     );
   }
 
-  today() {
-    return (new Date()).toDateString();
-  }
   onFilterByDate(date) {
     const { getClients } = this.props;
     const { filter } = this.state;
     this.setState({filter: {...filter, date}});
     getClients({...filter, date, locationType: filter.locationType.toLowerCase()});
   }
-  filterByAddress(){
+
+  filterByAddress(data, details){
     const { filter } = this.state;
     const { getClients } = this.props;
-    if(!filter.address) {
-      this.setState({filter: {...filter, locationType: 'ALL', address:''}});
-      getClients({...filter, locationType: 'ALL', address:''});
-      return;
-    }
+    const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
+    this.setState({filter: {...filter, address: data.description || data.formatted_address, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } });
 
     const filterObj = {
       locationType: 'address',
-      address: filter.address,
+      address: data.description || data.formatted_address,
       date: filter.date,
     };
+    this.closeLocationPopup();
     getClients(filterObj);
+  }
+  
+  openLocationPopup () {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      this.props.getCurrentAddress(location);
+    });
+    this.popupDialogLocation.openDialog ();
+  }
+
+  get dialogLocation () {
+    const { currentAddress } = this.props.auth;
+    const originalAddress = currentAddress.formattedAddress;
+
+    return (
+      <PopupDialog
+        ref={ (popupDialogLocation) => { this.popupDialogLocation = popupDialogLocation; }}
+        width={ width * 0.95 }
+        dialogStyle={ styles.dialogContainer }
+      >
+        <View style={ styles.locationDialogContentContainer }>
+
+          <View style={ styles.locationDialogTopContainer }>
+            <Text style={ styles.locationHeaderText }>
+              My location
+            </Text>
+            <EntypoIcons
+              style={ styles.locationClose }
+              onPress={ () => this.closeLocationPopup() }
+              name="chevron-small-up"
+              size={ 28 }
+            />
+            <Text style={ styles.locationStreetText } >{ originalAddress }</Text>
+          </View>
+          <View style={styles.locationInputContainer}>
+            <View style={ styles.locationMiddleContainer }>
+              <Text style={ styles.locationBlueText }>Enter address</Text>
+            </View>
+            <GoogleAutocomplete onPress={ (data, details) => this.filterByAddress(data, details) } />
+          </View>
+        </View>
+      </PopupDialog>
+    );
   }
 
   get showFullTopBar () {
@@ -173,19 +221,22 @@ class ExploreForm extends Component {
     return (
       <View style={ styles.navContainer }>
         <View style={ styles.searchBarWrap }>
-          <SearchBar
-                onSearchChange={ (text) => this.setState({filter: {...filter, address: text, locationType: 'address'} }) }
-                value={ filter.address }
-                height={ 20 }
-                autoCorrect={ false }
-                returnKeyType={ "search" }
-                iconSearchName={ "location" }
-                placeholder="Prefered Location"
-                iconColor={ "#fff" }
-                placeholderColor={ "#fff" }
-                paddingTop={ 20 }
-                onBlur={ () => this.filterByAddress() }
-              />
+          <TouchableOpacity
+            onPress={ () => this.openLocationPopup() }
+          >
+            <SearchBar
+              height={ 20 }
+              value={ this.state.filter.address }
+              autoCorrect={ false }
+              editable={ false }
+              returnKeyType={ "search" }
+              iconSearchName={ "location" }
+              placeholder="Prefered Location"
+              iconColor={ "#fff" }
+              placeholderColor={ "#fff" }
+              paddingTop={ 20 }
+            />
+          </TouchableOpacity>
         </View>
         <View style={ styles.calendarBarWrap } >
           <EvilIcons
@@ -312,6 +363,7 @@ class ExploreForm extends Component {
               />
           }
         </Image>
+        { this.dialogLocation }
         { explore.loading ? <FullScreenLoader/> : null }
       </View>
     );
@@ -365,6 +417,7 @@ const styles = StyleSheet.create({
   locationInputContainer: {
     flexDirection: 'column',
     marginBottom: 20,
+    height:height* 0.44,
   },
 
   activeLocation: {
@@ -408,8 +461,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
     width: width * 0.95,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    height: height * 0.56,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   locationDialogTopContainer: {
     paddingHorizontal: 10,

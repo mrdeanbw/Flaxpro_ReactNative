@@ -6,11 +6,8 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
   TextInput,
-  Button,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Alert,
   Switch,
   ScrollView,
@@ -25,20 +22,22 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
 import ImageProgress from 'react-native-image-progress';
 
-import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import RadioButton from '../../../Components/radioButton';
+import DialogGoogleAutocomplete from '../../../Components/dialogGoogleAutocomplete';
+
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  PRICES as prices,
+  user_client,
+} from '../../../Components/commonConstant';
 
 const background = require('../../../Assets/images/background.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
-const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
-const prices = [
-  {item: '$', price: '$50-100', level: 1},
-  {item: '$$', price: '$100-300', level: 2},
-  {item: '$$$', price: '$300+', level: 3}
-];
 
 class ClientInfoForm extends Component {
   constructor(props) {
@@ -65,7 +64,7 @@ class ClientInfoForm extends Component {
       return;
     }
     if (user && this.state.signUpRequest) {
-      Actions.Main({ user_mode: CommonConstant.user_client });
+      Actions.Main({ user_mode: user_client });
     }
     if (currentAddress && currentAddress.formattedAddress) {
       this.setState({ address: currentAddress.formattedAddress });
@@ -116,6 +115,27 @@ class ClientInfoForm extends Component {
   }
   addAvatarUri = (uri) => {
     this.setState({ avatar: '' }, () => this.setState({ avatar: uri }));
+  };
+
+  onClosePopupAutocomplete () {
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
+  }
+  onSetPopupAutocomplete (data, details) {
+    this.setState({ address: data.description || data.formatted_address });
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
+  }
+  onOpenPopupAutocomplete () {
+    this.dialogGoogleAutocomplete.popupAutocomplete.openDialog ();
+  }
+
+  get dialogAutocomplete () {
+    return (
+      <DialogGoogleAutocomplete
+        currentAddress={this.props.auth.currentAddress}
+        onSetPopupAutocomplete={(data, details) => this.onSetPopupAutocomplete(data, details) }
+        ref={ (dialogGoogleAutocomplete) => { this.dialogGoogleAutocomplete = dialogGoogleAutocomplete; } }
+      />
+    );
   }
 
   render() {
@@ -249,17 +269,15 @@ class ClientInfoForm extends Component {
                   </View>
                   <View style={ styles.cellContainer }>
                     <Text style={ styles.textCellTitle }>Main Address</Text>
-                    <View style={ styles.viewInput }>
-                      <TextInput
-                        autoCapitalize="none"
-                        autoCorrect={ false }
-                        placeholder="Main Address"
-                        placeholderTextColor="#9e9e9e"
-                        style={ styles.textInputRight }
-                        value={ this.state.address }
-                        onChangeText={ (text) => this.setState({ address: text }) }
-                      />
-                    </View>
+                    <TouchableOpacity
+                      onPress={ () => this.onOpenPopupAutocomplete() }
+                    >
+                      <View style={ styles.viewInput }>
+                        <Text style={ styles.textInputRight } ellipsizeMode="tail">
+                          { this.state.address }
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
                   </View>
 
                 </View>
@@ -274,6 +292,7 @@ class ClientInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
+        { this.dialogAutocomplete }
         { signUpRequest ? <FullScreenLoader/> : null }
       </View>
     );

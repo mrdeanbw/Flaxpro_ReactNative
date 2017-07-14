@@ -4,8 +4,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import ClientEditProfile from '../components/smart/clientEditProfile';
-import ProfessionalEditProfile from '../components/smart/professionalEditProfile';
+import ClientEditProfile from '../components/smart/editProfile/clientEditProfile';
+import ProfessionalEditProfile from '../components/smart/editProfile/professionalEditProfile';
 import * as CommonConstant from '../../Components/commonConstant';
 import * as editProfileActions from '../actions';
 import * as exploreActions from '../../Explore/actions';

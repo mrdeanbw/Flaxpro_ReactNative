@@ -22,36 +22,36 @@ import R from 'ramda';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import ImageProgress from 'react-native-image-progress';
 
-import Calendar from './calendar/Calendar';
-import FullScreenLoader from '../../../Components/fullScreenLoader';
+import Calendar from '../calendar/Calendar';
+import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
 const { width, height } = Dimensions.get('window');
 
 import PopupDialog from 'react-native-popup-dialog';
 
-const background = require('../../../Assets/images/background.png');
-const schedule = require('../../../Assets/images/schedule.png');
-const edit = require('../../../Assets/images/edit.png');
-const call = require('../../../Assets/images/call.png');
-const message = require('../../../Assets/images/message.png');
-const refer = require('../../../Assets/images/refer.png');
-const hire = require('../../../Assets/images/hire.png');
-const offer = require('../../../Assets/images/offer.png');
-const verified = require('../../../Assets/images/verified.png');
-const avatarDefault = require('../../../Assets/images/avatar.png');
-const goToClient = require('../../../Assets/images/go_to_client.png');
-const ownSpace = require('../../../Assets/images/own_space.png');
+const background = require('../../../../Assets/images/background.png');
+const schedule = require('../../../../Assets/images/schedule.png');
+const edit = require('../../../../Assets/images/edit.png');
+const call = require('../../../../Assets/images/call.png');
+const message = require('../../../../Assets/images/message.png');
+const refer = require('../../../../Assets/images/refer.png');
+const hire = require('../../../../Assets/images/hire.png');
+const offer = require('../../../../Assets/images/offer.png');
+const verified = require('../../../../Assets/images/verified.png');
+const avatarDefault = require('../../../../Assets/images/avatar.png');
+const goToClient = require('../../../../Assets/images/go_to_client.png');
+const ownSpace = require('../../../../Assets/images/own_space.png');
 
-const callCircle = require('../../../Assets/images/call_circle.png');
-const referToFriends = require('../../../Assets/images/refer_to_friends.png');
-const customOffer = require('../../../Assets/images/custom_offer.png');
-const availability = require('../../../Assets/images/avability.png');
+const callCircle = require('../../../../Assets/images/call_circle.png');
+const referToFriends = require('../../../../Assets/images/refer_to_friends.png');
+const customOffer = require('../../../../Assets/images/custom_offer.png');
+const availability = require('../../../../Assets/images/avability.png');
 
-const strengthTraining = require('../../../Assets/images/strength_training.png');
-const pilates = require('../../../Assets/images/pilates.png');
-const yoga = require('../../../Assets/images/yoga.png');
-const totalWorkout = require('../../../Assets/images/total_workout.png');
-import { Reviews } from '../../../Components/dummyEntries'
+const strengthTraining = require('../../../../Assets/images/strength_training.png');
+const pilates = require('../../../../Assets/images/pilates.png');
+const yoga = require('../../../../Assets/images/yoga.png');
+const totalWorkout = require('../../../../Assets/images/total_workout.png');
+import { Reviews } from '../../../../Components/dummyEntries'
 import Moment from 'moment';
 
 const constants = {

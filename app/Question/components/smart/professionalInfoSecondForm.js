@@ -1,20 +1,13 @@
 import React, { Component } from 'react';
 import {
   AsyncStorage,
-  Animated,
-  ActivityIndicator,
   StyleSheet,
   Text,
   View,
   Image,
-  Dimensions,
   TextInput,
-  Button,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Alert,
-  Switch,
-  ScrollView,
 } from 'react-native';
 
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -25,14 +18,21 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 
-const { width, height } = Dimensions.get('window');
+
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  PRICES as prices,
+  user_professional,
+} from '../../../Components/commonConstant';
+
 const labelInsure = [{value:true, text:'Yes'}, {value: false, text:'No'}];
 const labelOwn = ['Go to client', 'Own space', 'Both'];
 const certificationsDefault = ['Certified personal trainer', 'Certified', 'No Certified'];
 
-
 import FullScreenLoader from '../../../Components/fullScreenLoader';
-import * as CommonConstant from '../../../Components/commonConstant';
+import DialogGoogleAutocomplete from '../../../Components/dialogGoogleAutocomplete';
 const background = require('../../../Assets/images/background.png');
 const avatar = require('../../../Assets/images/avatar.png');
 const edit_avatar = require('../../../Assets/images/edit_avatar.png');
@@ -81,7 +81,7 @@ class ProfessionalInfoForm extends Component {
       return;
     }
     if (user && this.state.signUpRequest) {
-      Actions.Main({ user_mode: CommonConstant.user_trainer });
+      Actions.Main({ user_mode: user_professional });
     }
     if (currentAddress && currentAddress.formattedAddress) {
       this.setState({ address: currentAddress.formattedAddress });
@@ -196,6 +196,27 @@ class ProfessionalInfoForm extends Component {
     return value.join('')
   }
 
+  onClosePopupAutocomplete () {
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
+  }
+  onSetPopupAutocomplete (data, details) {
+    this.setState({ address: data.description || data.formatted_address });
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
+  }
+  onOpenPopupAutocomplete () {
+    this.dialogGoogleAutocomplete.popupAutocomplete.openDialog ();
+  }
+
+  get dialogAutocomplete () {
+    return (
+      <DialogGoogleAutocomplete
+        currentAddress={this.props.auth.currentAddress}
+        onSetPopupAutocomplete={(data, details) => this.onSetPopupAutocomplete(data, details) }
+        ref={ (dialogGoogleAutocomplete) => { this.dialogGoogleAutocomplete = dialogGoogleAutocomplete; } }
+      />
+    );
+  }
+
   render() {
     const { signUpRequest } = this.state;
     const { explore: { professions } } = this.props;
@@ -306,17 +327,15 @@ class ProfessionalInfoForm extends Component {
                 </View>
                 <View style={ styles.cellContainer }>
                   <Text style={ styles.textCellTitle }>Location</Text>
-                  <View style={ styles.viewInput }>
-                    <TextInput
-                      autoCapitalize="none"
-                      autoCorrect={ false }
-                      placeholder="Location"
-                      placeholderTextColor="#9e9e9e"
-                      style={ styles.textInputRight }
-                      value={ this.state.address }
-                      onChangeText={ (text) => this.setState({ address: text }) }
-                     />
-                  </View>
+                  <TouchableOpacity
+                    onPress={ () => this.onOpenPopupAutocomplete() }
+                  >
+                    <View style={ styles.viewInput }>
+                      <Text style={ styles.textInputRight } ellipsizeMode="tail">
+                        { this.state.address }
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
                 <View style={ styles.cellContainer }>
                   <View style={ styles.cellValueContainer }>
@@ -330,7 +349,7 @@ class ProfessionalInfoForm extends Component {
                             color="#19b8ff"
                             iconStyle={ styles.iconButton }
                             labelStyle={ styles.textInput }
-                            checked={ this.state.own == value }
+                            checked={ this.state.own === value }
                             onPress={ () => this.onOwn(value) }
                           />
                         );
@@ -363,6 +382,7 @@ class ProfessionalInfoForm extends Component {
             </View>
           </Image>
         </KeyboardAwareScrollView>
+        { this.dialogAutocomplete }
         { signUpRequest ? <FullScreenLoader/> : null }
       </View>
     );
@@ -561,7 +581,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Open Sans',
     textAlign: 'center',
     paddingHorizontal: 20
-  }
+  },
 });
 
 export default connect(state => ({
