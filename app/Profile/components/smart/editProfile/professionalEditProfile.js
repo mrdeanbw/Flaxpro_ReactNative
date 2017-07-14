@@ -7,7 +7,6 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
   TouchableOpacity,
   TextInput,
   Switch,
@@ -23,13 +22,12 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import PopupDialog from 'react-native-popup-dialog';
 
 import RadioButton from '../../../../Components/radioButton';
 import UploadFromCameraRoll from '../../../../Components/imageUploader';
 import InputCenter from '../../../../Components/inputCenter';
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
-import GoogleAutocomplete from '../../../../Components/googleAutocomplete';
+import DialogGoogleAutocomplete from '../../../../Components/dialogGoogleAutocomplete';
 import * as profileActions  from '../../../actions';
 import * as authActions  from '../../../../Auth/actions';
 
@@ -37,8 +35,6 @@ import {
   WIDTH_SCREEN as width,
   HEIHT_SCREEN as height,
   APP_COLOR as appColor,
-  PRICES as prices,
-  INFO_CALENDAR_OPTIONS as constantsOptions
 } from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
@@ -59,7 +55,6 @@ class EditProfile extends Component {
     this.state = {
       ...user,
       price: this.priceToFloat(user.price),
-      selectedOption: constantsOptions.BASIC_INFO,
       professional: true,
       own: user.toClient && user.ownSpace ? 'Both' : (user.toClient ? 'Go to client' : 'Own space'),
       address: user.location.originalAddress,
@@ -113,17 +108,7 @@ class EditProfile extends Component {
     Actions.pop();
   }
 
-  onChangeOptions(option) {
-    const { selectedOption } = this.state;
-
-    if (selectedOption !== option) {
-      this.setState({selectedOption: option})
-    }
-  }
-
   get getShowNavBar() {
-    const { selectedOption } = this.state;
-
     return (
       <View style={ styles.navBarContainer }>
         <View style={ styles.navigateButtons }>
@@ -162,88 +147,7 @@ class EditProfile extends Component {
   addAvatarUri = (uri) => {
     const { user } = this.state;
     this.setState({ user: {...user, avatar: '' }}, () => this.setState({ user: {...user, avatar: uri }}));
-  }
-  /**
-   * Calls when user click on the profession in the dropdown list
-   *
-   * find profession by name and update it in "user.professions" array
-   *
-   * @param name {string} - name of profession
-   * @param index {number} - index of block where user selected profession
-   */
-  onSelectProfession(name, index) {
-    const { user } = this.state;
-    const newProfession = this.props.explore.professions.filter((e) => e.name === name)[0];
-    let professions = [...user.professions];
-    professions[index].profession = newProfession;
-    this.setState({ user: {...user, professions } });
-  }
-  /**
-   * Calls when user click on the one of the prices buttons
-   *
-   * find price by level and update it in "user.professions" array
-   *
-   * @param price {string} - name of profession
-   * @param index {number} - index of block where user selected profession
-   */
-  onSelectPrice(price, index) {
-    const { user } = this.state;
-    const newPrice = prices.filter((e) => e.level === price.level)[0];
-    let professions = [...user.professions];
-    professions[index].price = newPrice;
-    this.setState({ user: {...user, professions } });
-  }
-  /**
-   * Calls when user click on plus button for adding new "looking for" block
-   *
-   * find remaining professions(not added to "user.professions" array)
-   * and add first remaining profession with price to "user.professions" array
-   *
-   */
-  onAddProfession() {
-    const { user } = this.state;
-    const remainingProfessions = this.props.explore.professions.filter((e)=> {
-      const data = user.professions.filter((item) => (item.profession._id === e._id))
-      return !data.length
-    });
-    if(remainingProfessions[0]){
-      const professions = [...user.professions, {profession: remainingProfessions[0], price: prices[0]}];
-      this.setState({ user: {...user, professions } });
-    }
-  }
-  /**
-   * Calls when user click on cross button for remove some "looking for" block
-   *
-   * remove profession from "user.professions" array
-   * if user removed last block, adding default profession with price
-   *
-   * @param index {number} - index of block which user want remove
-   */
-  onRemoveProfession(index) {
-    const { user, defaultProfession } = this.state;
-    user.professions.splice(index, 1);
-    let professions = [...user.professions];
-    if(!professions.length){
-      professions = [{...defaultProfession}];
-    }
-    this.setState({ user: {...user, professions } });
-  }
-  /**
-   * Calls when user open dropdown menu
-   *
-   * find remaining professions(not added to "user.professions" array)
-   * and returned array from names of professions
-   *
-   */
-  onModalOptions() {
-    const { explore: { professions } } = this.props;
-    const { user } = this.state;
-
-    return professions.filter((e) => {
-      const data = user.professions.filter((item) => (item.profession._id === e._id));
-      return !data.length
-    }).map((e) => e.name)
-  }
+  };
   onChangePhone(text) {
     text = this.checkForNumber(...text)
     this.setState({ phone: text })
@@ -296,11 +200,11 @@ class EditProfile extends Component {
   }
 
   onClosePopupAutocomplete () {
-    this.popupAutocomplete.closeDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
   }
   onSetPopupAutocomplete (data, details) {
     this.setState({ address: data.description || data.formatted_address });
-    this.popupAutocomplete.closeDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
   }
   onOpenPopupAutocomplete () {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -310,7 +214,7 @@ class EditProfile extends Component {
       };
       this.props.getCurrentAddress(location);
     });
-    this.popupAutocomplete.openDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.openDialog ();
   }
 
   get dialogAutocomplete () {
@@ -318,32 +222,11 @@ class EditProfile extends Component {
     const originalAddress = currentAddress.formattedAddress;
 
     return (
-      <PopupDialog
-        ref={ (popupAutocomplete) => { this.popupAutocomplete = popupAutocomplete; } }
-        dialogStyle={ styles.dialogContainer }
-      >
-        <View style={ styles.locationDialogContentContainer }>
-
-          <View style={ styles.locationDialogTopContainer }>
-            <Text style={ styles.locationHeaderText }>
-              My location
-            </Text>
-            <EntypoIcons
-              style={ styles.locationClose }
-              onPress={ () => this.onClosePopupAutocomplete() }
-              name="circle-with-cross"
-              size={ 28 }
-            />
-            <Text>{ originalAddress }</Text>
-          </View>
-          <View style={styles.locationInputContainer}>
-            <View style={ styles.locationMiddleContainer }>
-              <Text style={ styles.locationBlueText }>Enter address</Text>
-            </View>
-            <GoogleAutocomplete onPress={ (data, details) => this.onSetPopupAutocomplete(data, details) } />
-          </View>
-        </View>
-      </PopupDialog>
+      <DialogGoogleAutocomplete
+        currentAddress={this.props.auth.currentAddress}
+        onSetPopupAutocomplete={(data, details) => this.onSetPopupAutocomplete(data, details) }
+        ref={ (dialogGoogleAutocomplete) => { this.dialogGoogleAutocomplete = dialogGoogleAutocomplete; } }
+      />
     );
   }
 
@@ -1071,62 +954,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 5
-  },
-
-  locationInputContainer: {
-    flexDirection: 'column',
-    marginBottom: 20,
-    height: 290,
-  },
-
-  locationHeaderText: {
-    fontWeight: 'bold',
-    marginBottom: 4
-  },
-  locationClose: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    right: 5,
-    top: 10,
-    color: '#48c7f2'
-  },
-  locationDialogContentContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    width: width * 0.95,
-    height: 375,
-    borderRadius: 10,
-  },
-  locationDialogTopContainer: {
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderColor: '#f2f2f2',
-    alignSelf: 'stretch',
-
-  },
-  locationMiddleContainer: {
-    paddingTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    paddingHorizontal: 10,
-    paddingBottom: 10,
-  },
-  locationBlueText: {
-    color: '#48c7f2'
-  },
-  dialogContainer: {
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    position: 'relative',
-    top: -125,
   },
 });
 

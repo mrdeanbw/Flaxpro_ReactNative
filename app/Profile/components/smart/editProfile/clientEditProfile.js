@@ -21,12 +21,11 @@ import Slider from 'react-native-slider';
 import ModalDropdown from 'react-native-modal-dropdown';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import PopupDialog from 'react-native-popup-dialog';
 
 import RadioButton from '../../../../Components/radioButton';
 import UploadFromCameraRoll from '../../../../Components/imageUploader';
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
-import GoogleAutocomplete from '../../../../Components/googleAutocomplete';
+import DialogGoogleAutocomplete from '../../../../Components/dialogGoogleAutocomplete';
 import * as profileActions  from '../../../actions';
 import * as authActions  from '../../../../Auth/actions';
 
@@ -35,7 +34,6 @@ import {
   HEIHT_SCREEN as height,
   APP_COLOR as appColor,
   PRICES as prices,
-  INFO_CALENDAR_OPTIONS as constantsOptions
 } from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
@@ -69,7 +67,6 @@ class EditProfile extends Component {
 
     this.state = {
       user,
-      selectedOption: constantsOptions.BASIC_INFO,
       defaultProfession
     };
   }
@@ -98,19 +95,7 @@ class EditProfile extends Component {
     Actions.pop();
   }
 
-  onChangeOptions(option) {
-    const { selectedOption } = this.state,
-      { auth: { user } } = this.props;
-
-
-    if (selectedOption != option) {
-      this.setState({selectedOption: option})
-    }
-  }
-
   get getShowNavBar() {
-    const { selectedOption } = this.state;
-
     return (
       <View style={ styles.navBarContainer }>
         <View style={ styles.navigateButtons }>
@@ -149,7 +134,7 @@ class EditProfile extends Component {
   addAvatarUri = (uri) => {
     const { user } = this.state;
     this.setState({ user: {...user, avatar: '' }}, () => this.setState({ user: {...user, avatar: uri }}));
-  }
+  };
   /**
    * Calls when user click on the profession in the dropdown list
    *
@@ -233,11 +218,11 @@ class EditProfile extends Component {
   }
 
   onClosePopupAutocomplete () {
-    this.popupAutocomplete.closeDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
   }
   onSetPopupAutocomplete (data, details) {
     this.setState({ user: {...this.state.user,  address: data.description || data.formatted_address }});
-    this.popupAutocomplete.closeDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
   }
   onOpenPopupAutocomplete () {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -247,40 +232,16 @@ class EditProfile extends Component {
       };
       this.props.getCurrentAddress(location);
     });
-    this.popupAutocomplete.openDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.openDialog ();
   }
   
   get dialogAutocomplete () {
-    const { currentAddress } = this.props.auth;
-    const originalAddress = currentAddress.formattedAddress;
-
     return (
-      <PopupDialog
-        ref={ (popupAutocomplete) => { this.popupAutocomplete = popupAutocomplete; } }
-        dialogStyle={ styles.dialogContainer }
-      >
-        <View style={ styles.locationDialogContentContainer }>
-
-          <View style={ styles.locationDialogTopContainer }>
-            <Text style={ styles.locationHeaderText }>
-              My location
-            </Text>
-            <EntypoIcons
-              style={ styles.locationClose }
-              onPress={ () => this.onClosePopupAutocomplete() }
-              name="circle-with-cross"
-              size={ 28 }
-            />
-            <Text>{ originalAddress }</Text>
-          </View>
-          <View style={styles.locationInputContainer}>
-            <View style={ styles.locationMiddleContainer }>
-              <Text style={ styles.locationBlueText }>Enter address</Text>
-            </View>
-            <GoogleAutocomplete onPress={ (data, details) => this.onSetPopupAutocomplete(data, details) } />
-          </View>
-        </View>
-      </PopupDialog>
+      <DialogGoogleAutocomplete
+        currentAddress={this.props.auth.currentAddress}
+        onSetPopupAutocomplete={(data, details) => this.onSetPopupAutocomplete(data, details) }
+        ref={ (dialogGoogleAutocomplete) => { this.dialogGoogleAutocomplete = dialogGoogleAutocomplete; } }
+      />
     );
   }
 
@@ -615,62 +576,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   //end inputWrap
-
-  locationInputContainer: {
-    flexDirection: 'column',
-    marginBottom: 20,
-    height: 290,
-  },
-
-  locationHeaderText: {
-    fontWeight: 'bold',
-    marginBottom: 4
-  },
-  locationClose: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    right: 5,
-    top: 10,
-    color: '#48c7f2'
-  },
-  locationDialogContentContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    width: width * 0.95,
-    height: 375,
-    borderRadius: 10,
-  },
-  locationDialogTopContainer: {
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderColor: '#f2f2f2',
-    alignSelf: 'stretch',
-
-  },
-  locationMiddleContainer: {
-    paddingTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    paddingHorizontal: 10,
-    paddingBottom: 10,
-  },
-  locationBlueText: {
-    color: '#48c7f2'
-  },
-  dialogContainer: {
-    backgroundColor: 'transparent',
-    position: 'relative',
-    top: -125,
-    alignItems: 'center',
-  },
   marginHorizontal20: {
     marginHorizontal: 20
   },
