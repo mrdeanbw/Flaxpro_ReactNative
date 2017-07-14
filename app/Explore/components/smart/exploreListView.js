@@ -84,11 +84,20 @@ class ExploreListView extends Component {
   }
 
   render() {
-    const { status } = this.props;
+    const { selectedProfessionName } = this.props;
 
     this.state = {
       dataSource: this.dataSource.cloneWithRows(this.props.professionalsClients),
     };
+    let errorMessage = `We couldn't find anybody that match those criteria`;
+    switch (true) {
+      case this.props.user.role === CommonConstant.user_client && !selectedProfessionName :
+        errorMessage = 'Nothing selected - please select a profession';
+        break;
+      case this.props.user.role === CommonConstant.user_client && selectedProfessionName && selectedProfessionName !== 'All' :
+        errorMessage = `No ${selectedProfessionName} found`;
+        break;
+    }
 
     return (
       <View style={ styles.container }>
@@ -101,14 +110,9 @@ class ExploreListView extends Component {
           />
           :
           <View>
-            {this.props.user.role == CommonConstant.user_professional ?
-              <Text style={ styles.textSectionTitle }>We couldn't find anybody that match those criteria</Text>
-              :
-              <Text style={ styles.textSectionTitle }>Nothing selected - please select a profession</Text>
-            }
+            <Text style={ styles.textSectionTitle }>{errorMessage}</Text>
           </View>
         }
-
 
         <View style={ styles.mainContentContainer }>
           <BottomBar
