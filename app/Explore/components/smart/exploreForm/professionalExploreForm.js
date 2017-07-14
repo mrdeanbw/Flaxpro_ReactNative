@@ -353,6 +353,7 @@ class ExploreForm extends Component {
                 professionalsClients={ this.state.filteredClients }
                 gymLocations={ this.state.gymLocations }
                 user={ user }
+                searchAddress={ this.state.filter.searchDetails }
               />
               :
               <ExploreListView
