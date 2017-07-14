@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import { connect } from 'react-redux';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import R from 'ramda';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import ImageProgress from 'react-native-image-progress';
+import PopupDialog from 'react-native-popup-dialog';
 
 import {
   WIDTH_SCREEN as width,
@@ -29,7 +29,6 @@ import {
 
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
-import PopupDialog from 'react-native-popup-dialog';
 
 const background = require('../../../../Assets/images/background.png');
 const schedule = require('../../../../Assets/images/schedule.png');
@@ -97,20 +96,10 @@ export default class ProfessionalProfileForm extends Component {
     this.setState({ showMoreOrLess: showMode });
   }
 
-  onCall() {
-    this.closeCommunicationPopup();
-    Alert.alert('Coming soon!');
-  }
-
   onMessage() {
     this.closeCommunicationPopup();
     this.onShowMoreLess(true);
     Actions.ChatForm({ userName: this.user.name });
-  }
-
-  onReferToFriend() {
-    this.closeCommunicationPopup();
-    Alert.alert('Coming soon!');
   }
 
   onHire() {
@@ -118,12 +107,24 @@ export default class ProfessionalProfileForm extends Component {
     Actions.Contract({ user: this.user, editable: false });
   }
 
+  onCall() {
+    this.closeCommunicationPopup();
+    Alert.alert('Coming soon!');
+  }
+
+  onReferToFriend() {
+    this.closeCommunicationPopup();
+    Alert.alert('Coming soon!');
+  }
+
   onMakeAnOffer() {
+    this.closeCommunicationPopup();
     this.onShowMoreLess(true);
     Actions.Contract({ user: this.user, editable: true });
   }
 
   onGetAvailability() {
+    this.closeCommunicationPopup();
     this.onShowMoreLess(true);
     const { getScheduleById, profile: { user } } = this.props;
     getScheduleById({ user });
@@ -151,7 +152,7 @@ export default class ProfessionalProfileForm extends Component {
         dialogStyle={ styles.dialogContainer }
       >
         <View style={ styles.communicationDialogContainer }>
-          <View style={ styles.communicatioDialogTopContainer }>
+          <View style={ styles.communicationDialogTopContainer }>
             <EvilIcons
               style={ styles.communicationClose }
               onPress={ () => this.closeCommunicationPopup() }
@@ -581,7 +582,7 @@ const styles = StyleSheet.create({
     width: width * 0.7,
     borderRadius: 20,
   },
-  communicatioDialogTopContainer: {
+  communicationDialogTopContainer: {
     paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -855,10 +856,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-// export default connect(state => ({
-//     auth: state.auth,
-//     explore: state.explore,
-//     user: state.profile.user,
-//   })
-// )(ProfessionalProfileForm);

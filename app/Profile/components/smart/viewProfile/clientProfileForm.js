@@ -5,48 +5,46 @@ import {
   Text,
   View,
   Image,
+  Alert,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import { connect } from 'react-redux';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import Stars from 'react-native-stars-rating';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import ImageProgress from 'react-native-image-progress';
 import R from 'ramda';
+import PopupDialog from 'react-native-popup-dialog';
 
-import Calendar from '../calendar/Calendar';
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
 
-import * as CommonConstant from '../../../../Components/commonConstant';
-const width = CommonConstant.WIDTH_SCREEN;
-const height = CommonConstant.HEIHT_SCREEN;
-const appColor = CommonConstant.APP_COLOR;
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  PRICES as prices,
+  INFO_CALENDAR_OPTIONS as constants,
+} from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
 const schedule = require('../../../../Assets/images/schedule.png');
 const edit = require('../../../../Assets/images/edit.png');
-const strengthTraining = require('../../../../Assets/images/strength_training.png');
 const pilates = require('../../../../Assets/images/pilates.png');
 const yoga = require('../../../../Assets/images/yoga.png');
-const totalWorkout = require('../../../../Assets/images/total_workout.png');
 const avatarDefault = require('../../../../Assets/images/avatar.png');
 
-const constants = {
-  BASIC_INFO: 'BASIC INFO',
-  CALENDAR: 'CALENDAR'
-};
-const prices = [
-  {item: '$', price: '$50-100', level: '1'},
-  {item: '$$', price: '$100-300', level: '2'},
-  {item: '$$$', price: '$300+', level: '3'}
-];
+const callCircle = require('../../../../Assets/images/call_circle.png');
+const referToFriends = require('../../../../Assets/images/refer_to_friends.png');
+const messageCircle = require('../../../../Assets/images/message_circle.png');
+const availability = require('../../../../Assets/images/avability.png');
+
 //auth redux store
 import { Reviews } from '../../../../Components/dummyEntries'
 
-class ClientProfileForm extends Component {
+export default class ClientProfileForm extends Component {
   static propTypes = {
     editable: PropTypes.bool,
   };
@@ -62,17 +60,6 @@ class ClientProfileForm extends Component {
       showMoreOrLess: true,
       selectedOption: constants.BASIC_INFO,
     };
-  }
-
-  componentWillReceiveProps(newProps) {
-
-    if (newProps.status == 'ClientProfileRequest') {
-
-    } else if (newProps.status == 'ClientProfileSuccess') {
-
-    } else if (newProps.status == 'ClientProfileError') {
-
-    }
   }
 
   onSchedule() {
@@ -97,7 +84,7 @@ class ClientProfileForm extends Component {
   onChangeOptions(option) {
     const { selectedOption } = this.state;
 
-    if (selectedOption != option) {
+    if (selectedOption !== option) {
       const { getMySessions } = this.props;
       getMySessions({byField: 'day'})
       this.onSchedule();
@@ -136,26 +123,8 @@ class ClientProfileForm extends Component {
     );
   }
 
-  get showCalendar() {
-    return (
-      this.state.showMoreOrLess ?
-        <Calendar
-          customStyle={ customStyle }
-          dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-          eventDates={ ['2017-03-15', '2017-03-25', '2017-03-08'] }
-          nextButtonText={ '>' }
-          prevButtonText={ '<' }
-          showControls={ true }
-          showEventIndicators={ true }
-          isSelectableDay={ false }
-        />
-      :
-        null
-    );
-  }
-
   get getShowNavBar() {
-    const { editable, user } = this.props;
+    const { editable, profile: { user } } = this.props;
     const { selectedOption } = this.state;
 
     return (
@@ -199,12 +168,20 @@ class ClientProfileForm extends Component {
             />
           </TouchableOpacity>
           <Text style={ [styles.fontStyles, styles.textTitle] }>{ user.name && user.name.toUpperCase() }</Text>
-          <View style={ styles.navButtonWrapper }/>          
+          <TouchableOpacity
+            onPress={ () => this.openCommunicationPopup() }
+            style={ styles.navButtonWrapper }
+          >
+            <EntypoIcons
+              name="dots-three-vertical"  size={ 25 }
+              color="#fff"
+            />
+          </TouchableOpacity>
         </View>
     );
   }
   prepareProfessions() {
-    const { explore: { professions }, user } = this.props;
+    const { explore: { professions }, profile: { user } } = this.props;
     if(!user.professions) return [];
     const workouts = [...user.professions.map((e)=>(
       {
@@ -218,7 +195,7 @@ class ClientProfileForm extends Component {
 
   onCustomOffer() {
     this.onShowMoreLess(true);
-    Actions.Contract({ user: this.props.user });
+    Actions.Contract({ user: this.props.profile.user });
   }
 
   onShowSessions() {
@@ -228,8 +205,102 @@ class ClientProfileForm extends Component {
     Actions.Sessions();
   }
 
+  openCommunicationPopup () {
+    this.popupDialogCommunication.openDialog ();
+  }
+
+  closeCommunicationPopup () {
+    this.popupDialogCommunication.closeDialog ();
+  }
+  onCall() {
+    this.closeCommunicationPopup();
+    Alert.alert('Coming soon!');
+  }
+  onReferToFriend() {
+    this.closeCommunicationPopup();
+    Alert.alert('Coming soon!');
+  }
+  onMessage() {
+    this.closeCommunicationPopup();
+    this.onShowMoreLess(true);
+    Actions.ChatForm({ userName: this.props.profile.name });
+  }
+  onGetAvailability() {
+    this.closeCommunicationPopup();
+    this.onShowMoreLess(true);
+    const { getScheduleById, profile: { user } } = this.props;
+    getScheduleById({ user });
+    Actions.ScheduleForm();
+  }
+
+  get dialogCommunication () {
+    return (
+      <PopupDialog
+        ref={ (popupDialogCommunication) => { this.popupDialogCommunication = popupDialogCommunication; }}
+        width={ width * 0.7 }
+        dialogStyle={ styles.dialogContainer }
+      >
+        <View style={ styles.communicationDialogContainer }>
+          <View style={ styles.communicationDialogTopContainer }>
+            <EvilIcons
+              style={ styles.communicationClose }
+              onPress={ () => this.closeCommunicationPopup() }
+              name="close"
+              size={ 30 }
+            />
+          </View>
+          <View  style={ styles.communicationBtnBlock }>
+            <TouchableOpacity onPress={() => this.onCall()} >
+              <View style={ styles.communicationBtnContainer }>
+                <Image
+                  source={ callCircle }
+                  style={ styles.communicationBtnIcon }
+                />
+                <Text style={ styles.communicationBtnText }>Call</Text>
+              </View>
+
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.onMessage()} >
+              <View style={ styles.communicationBtnContainer }>
+                <Image
+                  source={ messageCircle }
+                  style={ styles.communicationBtnIcon }
+                />
+                <Text style={ styles.communicationBtnText }>Message</Text>
+              </View>
+
+            </TouchableOpacity>
+          </View>
+          <View  style={ styles.communicationBtnBlock }>
+            <TouchableOpacity onPress={() => this.onReferToFriend()} >
+              <View style={ styles.communicationBtnContainer }>
+                <Image
+                  source={ referToFriends }
+                  style={ styles.communicationBtnIcon }
+                />
+                <Text style={ styles.communicationBtnText }>Refer to friends</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.onGetAvailability()} >
+              <View style={ styles.communicationBtnContainer }>
+                <Image
+                  source={ availability }
+                  style={ styles.communicationBtnIcon }
+                />
+                <Text style={ styles.communicationBtnText }>Availability</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View  style={ styles.communicationBtnBlock }>
+
+          </View>
+        </View>
+      </PopupDialog>
+    );
+  }
+
   render() {
-    const { editable, user } = this.props;
+    const { editable, profile: { user } } = this.props;
     const { showMoreOrLess } = this.state;
     const workouts = this.prepareProfessions();
 
@@ -350,7 +421,8 @@ class ClientProfileForm extends Component {
             </View>
           </View>
         </Image>
-      </View>
+          { this.dialogCommunication }
+        </View>
     );
   }
 }
@@ -631,12 +703,47 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 15
-  }
+  },
+  communicationBtnText: {
+    marginTop: 5,
+    fontSize: 11
+  },
+  communicationBtnIcon: {
+    width: 60,
+    height: 60,
+  },
+  communicationBtnContainer: {
+    width: width * 0.3,
+    alignItems: 'center',
+  },
+  communicationBtnBlock: {
+    flexDirection: 'row',
+    marginTop: 20
+  },
+  communicationClose: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    position: 'absolute',
+    right: 7,
+    top: 7,
+    color: 'gray'
+  },
+  dialogContainer: {
+    backgroundColor: 'transparent',
+  },
+  communicationDialogContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    width: width * 0.7,
+    borderRadius: 20,
+  },
+  communicationDialogTopContainer: {
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
+    alignSelf: 'stretch',
+  },
 });
-
-export default connect(state => ({
-    auth: state.auth,
-    explore: state.explore,
-    user: state.profile.user,
-  })
-)(ClientProfileForm);
