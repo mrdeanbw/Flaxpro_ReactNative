@@ -5,7 +5,6 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
   TextInput,
   TouchableOpacity,
   Alert,
@@ -18,9 +17,7 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import PopupDialog from 'react-native-popup-dialog';
 
-import GoogleAutocomplete from '../../../Components/googleAutocomplete';
 
 import {
   WIDTH_SCREEN as width,
@@ -35,6 +32,7 @@ const labelOwn = ['Go to client', 'Own space', 'Both'];
 const certificationsDefault = ['Certified personal trainer', 'Certified', 'No Certified'];
 
 import FullScreenLoader from '../../../Components/fullScreenLoader';
+import DialogGoogleAutocomplete from '../../../Components/dialogGoogleAutocomplete';
 const background = require('../../../Assets/images/background.png');
 const avatar = require('../../../Assets/images/avatar.png');
 const edit_avatar = require('../../../Assets/images/edit_avatar.png');
@@ -199,47 +197,23 @@ class ProfessionalInfoForm extends Component {
   }
 
   onClosePopupAutocomplete () {
-    this.popupAutocomplete.closeDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
   }
   onSetPopupAutocomplete (data, details) {
     this.setState({ address: data.description || data.formatted_address });
-    this.popupAutocomplete.closeDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.closeDialog ();
   }
   onOpenPopupAutocomplete () {
-    this.popupAutocomplete.openDialog ();
+    this.dialogGoogleAutocomplete.popupAutocomplete.openDialog ();
   }
 
   get dialogAutocomplete () {
-    const { currentAddress } = this.props.auth;
-    const originalAddress = currentAddress.formattedAddress;
-
     return (
-      <PopupDialog
-        ref={ (popupAutocomplete) => { this.popupAutocomplete = popupAutocomplete; } }
-        dialogStyle={ styles.dialogContainer }
-      >
-        <View style={ styles.locationDialogContentContainer }>
-
-          <View style={ styles.locationDialogTopContainer }>
-            <Text style={ styles.locationHeaderText }>
-              My location
-            </Text>
-            <EntypoIcons
-              style={ styles.locationClose }
-              onPress={ () => this.onClosePopupAutocomplete() }
-              name="circle-with-cross"
-              size={ 28 }
-            />
-            <Text>{ originalAddress }</Text>
-          </View>
-          <View style={styles.locationInputContainer}>
-            <View style={ styles.locationMiddleContainer }>
-              <Text style={ styles.locationBlueText }>Enter address</Text>
-            </View>
-            <GoogleAutocomplete onPress={ (data, details) => this.onSetPopupAutocomplete(data, details) } />
-          </View>
-        </View>
-      </PopupDialog>
+      <DialogGoogleAutocomplete
+        currentAddress={this.props.auth.currentAddress}
+        onSetPopupAutocomplete={(data, details) => this.onSetPopupAutocomplete(data, details) }
+        ref={ (dialogGoogleAutocomplete) => { this.dialogGoogleAutocomplete = dialogGoogleAutocomplete; } }
+      />
     );
   }
 
@@ -607,62 +581,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Open Sans',
     textAlign: 'center',
     paddingHorizontal: 20
-  },
-
-  locationInputContainer: {
-    flexDirection: 'column',
-    marginBottom: 20,
-    height: 290,
-  },
-
-  locationHeaderText: {
-    fontWeight: 'bold',
-    marginBottom: 4
-  },
-  locationClose: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    right: 5,
-    top: 10,
-    color: '#48c7f2'
-  },
-  locationDialogContentContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    width: width * 0.95,
-    height: 375,
-    borderRadius: 10,
-  },
-  locationDialogTopContainer: {
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderColor: '#f2f2f2',
-    alignSelf: 'stretch',
-
-  },
-  locationMiddleContainer: {
-    paddingTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    paddingHorizontal: 10,
-    paddingBottom: 10,
-  },
-  locationBlueText: {
-    color: '#48c7f2'
-  },
-  dialogContainer: {
-    backgroundColor: 'transparent',
-    position: 'relative',
-    top: -125,
-    alignItems: 'center',
   },
 });
 
