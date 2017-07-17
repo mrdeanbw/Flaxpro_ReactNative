@@ -5,7 +5,6 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
   TouchableOpacity,
   ScrollView
 } from 'react-native';
@@ -13,6 +12,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import Slider from 'react-native-slider';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 import RadioButton from '../../../../Components/radioButton';
 import StarRating from 'react-native-stars-rating';
 
@@ -98,8 +98,8 @@ export default class FilterForm extends Component {
               onPress={ () => this.onClose() }
               style={ styles.closeButtonWrapper }
             >
-              <EvilIcons
-                name="close"  size={ 35 }
+              <IonIcons
+                name="md-close"  size={ 35 }
                 color="#fff"
               />
             </TouchableOpacity>
@@ -108,8 +108,8 @@ export default class FilterForm extends Component {
               onPress={ () => this.onDone() }
               style={ styles.closeButtonWrapper }
             >
-              <EvilIcons
-                name="check"  size={ 35 }
+              <IonIcons
+                name="md-checkmark"  size={ 35 }
                 color="#fff"
               />
             </TouchableOpacity>
