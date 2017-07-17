@@ -224,6 +224,7 @@ class EditProfile extends Component {
     return (
       <DialogGoogleAutocomplete
         currentAddress={this.props.auth.currentAddress}
+        onClosePopupAutocomplete={() => this.onClosePopupAutocomplete() }
         onSetPopupAutocomplete={(data, details) => this.onSetPopupAutocomplete(data, details) }
         ref={ (dialogGoogleAutocomplete) => { this.dialogGoogleAutocomplete = dialogGoogleAutocomplete; } }
       />

@@ -77,11 +77,13 @@ export default class DialogGoogleAutocomplete extends React.Component {
 
   static propTypes = {
     onSetPopupAutocomplete: PropTypes.func.isRequired,
+    onClosePopupAutocomplete: PropTypes.func.isRequired,
     currentAddress: PropTypes.object,
   };
 
   static defaultProps = {
     onSetPopupAutocomplete: () => {},
+    onClosePopupAutocomplete: () => {},
     currentAddress: {},
   };
 
@@ -92,6 +94,7 @@ export default class DialogGoogleAutocomplete extends React.Component {
   render() {
     const {
       onSetPopupAutocomplete,
+      onClosePopupAutocomplete,
       currentAddress,
     } = this.props;
     const originalAddress = currentAddress.formattedAddress;
@@ -109,7 +112,7 @@ export default class DialogGoogleAutocomplete extends React.Component {
             </Text>
             <EntypoIcons
               style={ styles.locationClose }
-              onPress={ () => this.onClosePopupAutocomplete() }
+              onPress={ () => onClosePopupAutocomplete() }
               name="circle-with-cross"
               size={ 28 }
             />
