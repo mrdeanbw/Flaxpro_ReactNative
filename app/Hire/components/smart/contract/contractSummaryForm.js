@@ -76,7 +76,8 @@ export default class ContractSummaryForm extends Component {
   }
   onBack() {
     const { changeContractForm } = this.props;
-    changeContractForm({ ...this.props.hire, ...{summaryForm: false, paymentForm: true} });
+    const prevForm = this.props.auth.user.role === professionalConst? 'secondForm' : 'paymentForm';
+    changeContractForm({ ...this.props.hire, [prevForm]: true });
   }
 
   render() {
