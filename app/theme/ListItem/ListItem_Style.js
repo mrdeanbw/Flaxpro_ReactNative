@@ -1,5 +1,5 @@
 import { StyleSheet} from 'react-native';
-import * as Constants from "../../Components/commonConstant"
+import { WIDTH_SCREEN } from "../../Components/commonConstant"
 export default StyleSheet.create({
   container: {
     borderBottomWidth:1,
@@ -8,7 +8,9 @@ export default StyleSheet.create({
   content:{
     flexDirection:"row",
     alignItems:"center",
-    margin:5
+    marginHorizontal:10,
+    marginBottom:10,
+    marginTop:5,
   },
   name:{
     textAlign:"center",
@@ -31,13 +33,13 @@ export default StyleSheet.create({
     width:15,
     height:15,
     bottom:42,
-    left:18,
+    left:22,
     resizeMode:"contain"
   },
   iconShowMoreLess: {
     position: 'absolute',
-    marginLeft: 0.5* Constants.WIDTH_SCREEN -10,
-    bottom: 0,
+    marginLeft: 0.5  * WIDTH_SCREEN - 10,
+    bottom: -5,
   },
   borderRow:{
     borderBottomWidth:1,
