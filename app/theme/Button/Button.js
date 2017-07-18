@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   iconImage:{
     width:25,
     height:25,
-    resizeMode:"center"
+    resizeMode:"contain"
   }
 });
 
