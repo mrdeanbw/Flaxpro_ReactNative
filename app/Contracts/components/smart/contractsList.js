@@ -123,6 +123,7 @@ class ClientsProfessionals extends React.Component {
   }
 
   render(){
+    const role = this.props.auth.user.role === userProfessional ? userClient.toLowerCase() : userProfessional.toLowerCase();
     return (
       <View style={styles.container}>
         <View style={styles.navi}>
@@ -140,28 +141,34 @@ class ClientsProfessionals extends React.Component {
           </View>
         </View>
 
-        <View style={styles.tabContainer}>
-          <View style={{flex:1,flexDirection:"row"}}>
-            <View style={{flex:0.5}}><Text style={styles.titleSection}>Name</Text></View>
-            <View style={{marginLeft:5,flex:0.5}}><Text style={styles.titleSection}>Next Appointment</Text></View>
-          </View>
-          <View style={{width:110}}>
-            <Text style={styles.titleSection}>Sessions</Text>
-          </View>
-        </View>
-        <ScrollView>
         {
-          this.state.contracts.map( (data, index) => (
-            <ListProfession
-              key={index}
-              data={data}
-              cancelContract={this.props.cancelContract}
-              role={this.props.auth.user.role}
-              color={appColor}
-              lastElement={this.state.contracts.length -1 === index}
-            />
-          ))
+          !this.state.contracts.length ?
+            <Text style={ styles.noRows }>No {role}s hired</Text>
+            :
+            <View style={styles.tabContainer}>
+              <View style={{flex:1,flexDirection:"row"}}>
+                <View style={{flex:0.5}}><Text style={styles.titleSection}>Name</Text></View>
+                <View style={{marginLeft:5,flex:0.5}}><Text style={styles.titleSection}>Next Appointment</Text></View>
+              </View>
+              <View style={{width:110}}>
+                <Text style={styles.titleSection}>Sessions</Text>
+              </View>
+            </View>
         }
+        <ScrollView>
+          {
+            this.state.contracts.map( (data, index) => (
+              <ListProfession
+                key={index}
+                data={data}
+                cancelContract={this.props.cancelContract}
+                role={this.props.auth.user.role}
+                color={appColor}
+                lastElement={this.state.contracts.length -1 === index}
+              />
+            ))
+          }
+
         </ScrollView>
 
         <View style={styles.bottomView}>

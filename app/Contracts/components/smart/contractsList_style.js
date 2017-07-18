@@ -1,5 +1,5 @@
 import {StyleSheet,Platform} from 'react-native';
-import * as Constants from "../../../Components/commonConstant"
+import { APP_COLOR, FONT_STYLES } from "../../../Components/commonConstant"
 
 export default StyleSheet.create({
   container: {
@@ -8,7 +8,7 @@ export default StyleSheet.create({
   },
   navi:{
     height:90,
-    backgroundColor:Constants.APP_COLOR,
+    backgroundColor:APP_COLOR,
     justifyContent:"flex-end"
   },
   searchContainer:{
@@ -80,12 +80,16 @@ export default StyleSheet.create({
     paddingLeft:10,
     paddingRight:10,
     borderRadius:13,
-    backgroundColor:Constants.APP_COLOR,
+    backgroundColor:APP_COLOR,
     justifyContent:"center"
   },
-
   allText:{
     textAlign:"center",
     color:"white"
-  }
+  },
+  noRows:{
+    ...FONT_STYLES,
+    textAlign:"center",
+    paddingVertical: 20,
+  },
 });
