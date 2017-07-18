@@ -67,16 +67,16 @@ class ListItem extends Component {
       <View style={[styles.list, styles.borderRow]}>
         <TouchableOpacity style={styles.content} onPress={()=>this.setState({isShow:!this.state.isShow})}>
           <View style={{flexDirection:"row",flex:1,alignItems:"center"}}>
-            <View style={{flexDirection:"row",alignItems:"center",flex:0.5}}>
-              <Avatar type={data.type} backgroundColor={data.backgroundColor} text={data.text} source={data.image}/>
-              <Text style={styles.name}>{data.name}</Text>
+            <Avatar type={data.type} backgroundColor={data.backgroundColor} text={data.text} source={data.image}/>
+            <View style={{flexDirection:"row",alignItems:"center",flex:0.4}}>
+              <Text style={styles.name} ellipsizeMode="tail" numberOfLines={2}>{data.name}</Text>
             </View>
             <View style={{marginLeft:5,flex:0.5}}>
-              <Text style={styles.time}>{data.time}</Text>
+              <Text style={styles.time} ellipsizeMode="tail" numberOfLines={2}>{data.time}</Text>
             </View>
           </View>
-          <Session style={{marginLeft:5}} progress={data.progress} total={data.total}/>
           { this.showMoreOrLessButton }
+          <Session style={{marginLeft:5}} progress={data.progress} total={data.total}/>
         </TouchableOpacity>
         {
           this.state.isShow && data.progress!==data.total &&
