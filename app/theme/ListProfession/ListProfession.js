@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { ListItem } from "../index"
 import styles from "./ListProfession_Style.js"
+import EntypoIcons from 'react-native-vector-icons/Entypo';
 
 class ListProfession extends Component {
 
@@ -12,10 +13,17 @@ class ListProfession extends Component {
     cancelContract: PropTypes.func.isRequired,
     data: PropTypes.object.isRequired,
     role: PropTypes.string.isRequired,
+    lastElement: PropTypes.bool,
+    color: PropTypes.string,
+  };
+
+  static defaultProps = {
+    lastElement: true,
+    color: '#16c1f6',
   };
 
   render(){
-    const {data} = this.props;
+    const {data, color, lastElement} = this.props;
     return (
       <View >
         <View style={[styles.borderRow,{backgroundColor: '#efefef'}]}>
@@ -29,6 +37,17 @@ class ListProfession extends Component {
               <ListItem data={rowData} cancelContract={this.props.cancelContract} role={this.props.role}/>
             </View>
           ))
+        }
+        {
+          !lastElement &&
+            <View style={ styles.borderRow }>
+          <EntypoIcons
+            name="dots-three-horizontal"
+            size={ 24 }
+            color={color}
+            style={ styles.dotsIcon }
+          />
+            </View>
         }
       </View>
     )
