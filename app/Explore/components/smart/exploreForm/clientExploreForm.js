@@ -81,7 +81,18 @@ class ClientExploreForm extends Component {
 
   componentWillMount(){
     const { getExploreClient } = this.props;
-    getExploreClient();
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const location = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
+        getExploreClient(location);
+      },
+      (error) => {
+        getExploreClient();
+      }
+    );
   }
 
   componentDidMount() {
@@ -90,7 +101,10 @@ class ClientExploreForm extends Component {
         latitude:       position.coords.latitude,
         longitude:      position.coords.longitude,
       };
-    });
+    },
+      (error) => {
+        console.log('navigator.geolocation.watchPosition: Error: ', error);
+      });
   }
 
   componentWillUnmount() {
@@ -142,7 +156,10 @@ class ClientExploreForm extends Component {
         longitude: position.coords.longitude,
       };
       this.props.getCurrentAddress(location);
-    });
+    },
+      (error) => {
+        console.log('navigator.geolocation.getCurrentPosition: Error: ', error);
+      });
     this.popupDialogLocation.openDialog ();
   }
 
@@ -190,7 +207,7 @@ class ClientExploreForm extends Component {
   get dialogLocationClient () {
     const { currentAddress } = this.props.auth;
     const { filter } = this.state;
-    const originalAddress = currentAddress.formattedAddress;
+    const originalAddress = currentAddress && currentAddress.formattedAddress || 'You denied access to location services.';
 
     return (
       <PopupDialog

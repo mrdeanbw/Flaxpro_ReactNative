@@ -2,13 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import {
   StyleSheet,
   View,
-  Dimensions,
   Animated,
   Text,
   TouchableOpacity,
   Image,
-  Alert,
-
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -38,8 +35,6 @@ const avatar = require('../../../Assets/images/avatar1.png');
 
 
 const ASPECT_RATIO = width / height;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
@@ -52,7 +47,6 @@ const SCALE_END = width / ITEM_WIDTH;
 const BREAKPOINT1 = 246;
 const BREAKPOINT2 = 350;
 const ONE = new Animated.Value(1);
-const SPACE = 0.014;
 
 function getMarkerState(panX, panY, scrollY, i) {
   
@@ -234,7 +228,10 @@ class ExploreMapView extends Component {
         longitudeDelta: LONGITUDE_DELTA,
       };
       this.onRegionChange(region);
-    });
+    },
+      (error) => {
+        console.log('navigator.geolocation.watchPosition: Error: ', error);
+      });
   }
 
   componentWillUnmount() {

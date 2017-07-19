@@ -73,6 +73,8 @@ class AuthForm extends Component {
         longitude: position.coords.longitude,
       };
       this.setState({ location })
+    }, (error) => {
+      console.log('navigator.geolocation.getCurrentPosition: Error: ', error);
     });
   }
 

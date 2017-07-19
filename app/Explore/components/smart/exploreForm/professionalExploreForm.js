@@ -177,13 +177,16 @@ class ExploreForm extends Component {
         longitude: position.coords.longitude,
       };
       this.props.getCurrentAddress(location);
-    });
+    },
+      (error) => {
+        console.log('navigator.geolocation.getCurrentPosition: Error: ', error);
+      });
     this.popupDialogLocation.openDialog ();
   }
 
   get dialogLocation () {
     const { currentAddress } = this.props.auth;
-    const originalAddress = currentAddress.formattedAddress;
+    const originalAddress = currentAddress && currentAddress.formattedAddress || 'You denied access to location services.';
 
     return (
       <PopupDialog
