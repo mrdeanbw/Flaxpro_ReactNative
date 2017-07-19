@@ -17,14 +17,18 @@ function setFilters(data) {
   return { type: types.EXPLORE_SET_FILTERS, ...data };
 }
 
-export const getExploreClient = () => async (dispatch, store) => {
+export const getExploreClient = (location) => async (dispatch, store) => {
   dispatch(exploreRequest());
   const professionsUrl = '/professions';
-  const professionalsUrl = '/professionals?locationType=nearby';
+  let professionalsUrl = '/professionals?locationType=nearby';
   const { auth } = store();
   const options = {
     method: 'get',
   };
+  if(location){
+    const queryString = toQueryString(location);
+    professionalsUrl += '&' + queryString;
+  }
   try {
     const [{ professions }, { professionals }] = await Promise.all([request(professionsUrl, options, auth), request(professionalsUrl, options, auth)]);
     dispatch(exploreSuccess({professions, professionals}));
