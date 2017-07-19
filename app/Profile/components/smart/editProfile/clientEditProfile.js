@@ -231,7 +231,10 @@ class EditProfile extends Component {
         longitude: position.coords.longitude,
       };
       this.props.getCurrentAddress(location);
-    });
+    },
+      (error) => {
+        console.log('navigator.geolocation.getCurrentPosition: Error: ', error);
+      });
     this.dialogGoogleAutocomplete.popupAutocomplete.openDialog ();
   }
   
