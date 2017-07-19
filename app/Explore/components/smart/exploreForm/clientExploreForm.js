@@ -74,6 +74,8 @@ class ClientExploreForm extends Component {
         locationType: 'nearby',
         address: '',
         searchDetails: '',
+        lat: '',
+        lon: '',
       }
     };
     this.onFilterAutocomplete = this.onFilterAutocomplete.bind(this)
@@ -148,8 +150,6 @@ class ClientExploreForm extends Component {
   }
 
   openLocationPopup () {
-    const { filter } = this.state;
-    this.setState({ filter: { ...filter, address: '', searchDetails: ''} });
     navigator.geolocation.getCurrentPosition((position) => {
       const location = {
         latitude: position.coords.latitude,
@@ -168,31 +168,39 @@ class ClientExploreForm extends Component {
   }
 
   onLocation (locationType, locationText) {
-    const { getProfessionals } = this.props;
+    const { getProfessionals, auth: {currentAddress} } = this.props;
     const { filter } = this.state;
 
-    this.setState({ filter: {...filter, locationType }, locationText }, () => {
-      // if(locationType === 'address') this.addressInput.focus();
-    });
+    this.setState({ locationText });
 
     switch(locationType) {
 
       case 'nearby':
         this.closeLocationPopup();
-        getProfessionals({...filter, locationType });
+        getProfessionals({...filter, locationType, lat: currentAddress.latitude, lon: currentAddress.longitude });
+        this.setState({ filter: { ...filter, address: '', searchDetails: '', lat: currentAddress.latitude, lon: currentAddress.longitude, locationType} });
         return;
       case 'address':
+        this.setState({ filter: { ...filter, locationType} });
         return;
       default:
         this.closeLocationPopup();
         getProfessionals({...filter, locationType });
+        this.setState({ filter: { ...filter, address: '', searchDetails: '', lat: '', lon: '', locationType} });
     }
   }
 
   filterByAddress(data, details){
     const { filter } = this.state;
     const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
-    this.setState({filter: {...filter, address: data.description || data.formatted_address, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } });
+    this.setState({filter: {
+      ...filter,
+      address: data.description || data.formatted_address,
+      locationType: 'address',
+      searchDetails: coordinate ? { coordinate } : '',
+      lat: coordinate.latitude,
+      lon: coordinate.longitude
+    } });
 
     const { getProfessionals } = this.props;
     const filterObj = {
