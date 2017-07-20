@@ -97,23 +97,6 @@ class ClientExploreForm extends Component {
     );
   }
 
-  componentDidMount() {
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      let region = {
-        latitude:       position.coords.latitude,
-        longitude:      position.coords.longitude,
-      };
-    },
-      (error) => {
-        console.log('navigator.geolocation.watchPosition: Error: ', error);
-      });
-  }
-
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
-  }
-
-
   componentWillReceiveProps(newProps) {
     const { explore: { error } } = newProps;
     let firstLoad = true;
@@ -195,7 +178,7 @@ class ClientExploreForm extends Component {
     const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
     this.setState({filter: {
       ...filter,
-      address: data.description || data.formatted_address,
+      // address: data.description || data.formatted_address,
       locationType: 'address',
       searchDetails: coordinate ? { coordinate } : '',
       lat: coordinate.latitude,
@@ -207,6 +190,8 @@ class ClientExploreForm extends Component {
       locationType: 'address',
       address: data.description || data.formatted_address,
       date: filter.date,
+      lat: coordinate.latitude,
+      lon: coordinate.longitude
     };
     this.closeLocationPopup();
     getProfessionals(filterObj);

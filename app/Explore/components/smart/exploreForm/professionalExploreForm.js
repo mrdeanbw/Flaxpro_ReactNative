@@ -27,16 +27,11 @@ import FullScreenLoader from '../../../../Components/fullScreenLoader';
 import {
   WIDTH_SCREEN as width,
   HEIHT_SCREEN as height,
-  APP_COLOR as appColor
+  APP_COLOR as appColor,
+  PRICES as prices
 } from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
-
-const prices = [
-  {item: '$', price: '$50-$100', level: '1'},
-  {item: '$$', price: '$100-$300', level: '2'},
-  {item: '$$$', price: '$300+', level: '3'}
-];
 
 class ExploreForm extends Component {
   constructor(props) {
@@ -52,6 +47,9 @@ class ExploreForm extends Component {
         date: '',
         locationType: 'ALL',
         address: '',
+        searchDetails: '',
+        lat: '',
+        lon: '',
       }
     };
   }
@@ -115,13 +113,13 @@ class ExploreForm extends Component {
   }
 
   onSelectLocationFilterMode(option) {
-    const { getClients } = this.props;
+    const { getClients, auth: {currentAddress} } = this.props;
     const { filter } = this.state;
     this.setState({ filter: {...filter, locationType: option, address: ''} });
     if(option === 'ALL'){
-      getClients({...filter, locationType: '', address: ''});
+      getClients({...filter, locationType: '', address: '', lat: '', lon: '', searchDetails: ''});
     } else {
-      getClients({...filter, locationType: option.toLowerCase(), address: ''})
+      getClients({...filter, locationType: option.toLowerCase(), address: '', searchDetails: '', lat: currentAddress.latitude, lon: currentAddress.longitude})
     }
   }
 
@@ -159,12 +157,21 @@ class ExploreForm extends Component {
     const { filter } = this.state;
     const { getClients } = this.props;
     const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
-    this.setState({filter: {...filter, address: data.description || data.formatted_address, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } });
+    this.setState({filter: {
+      ...filter,
+      address: data.description || data.formatted_address,
+      locationType: 'address',
+      searchDetails: coordinate ? { coordinate } : '' },
+      lat: coordinate.latitude,
+      lon: coordinate.longitude
+    });
 
     const filterObj = {
       locationType: 'address',
-      address: data.description || data.formatted_address,
+      // address: data.description || data.formatted_address,
       date: filter.date,
+      lat: coordinate.latitude,
+      lon: coordinate.longitude
     };
     this.closeLocationPopup();
     getClients(filterObj);

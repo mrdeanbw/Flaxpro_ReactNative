@@ -57,10 +57,11 @@ class AuthForm extends Component {
     }
     token && AsyncStorage.setItem('token', token);
     if (!R.isEmpty(user) && this.state.loginRequest) {
-        Actions.Main({ user_mode: user.role })
+      !R.isEmpty(this.state.location) && this.props.getCurrentAddress(this.state.location);
+      Actions.Main({ user_mode: user.role })
     }
     if (!R.isEmpty(user) && this.state.registerRequest) {
-      this.props.getCurrentAddress(this.state.location);
+      !R.isEmpty(this.state.location) && this.props.getCurrentAddress(this.state.location);
       Actions.WhoAreYou();
     }
     this.setState({ loginRequest: false, registerRequest: false });
