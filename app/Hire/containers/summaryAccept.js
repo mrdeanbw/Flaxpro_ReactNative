@@ -17,7 +17,6 @@ class SummaryAcceptForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    console.log('summary will receieve props');
     if (newProps.hire.error) {
       alert(newProps.hire.error);
     }
@@ -37,14 +36,6 @@ class SummaryAcceptForm extends Component {
           paymentMethod = this.props.hire.payment;
 
     this.props.actions.replyToContract(contractId, answer, paymentMethod, this.successReplyCallback.bind(this));
-  }
-
-  onAccept() {
-    this.onReply(true);
-  }
-
-  onDecline() {
-    this.onReply(false);
   }
 
   onBack() {
@@ -78,8 +69,7 @@ class SummaryAcceptForm extends Component {
               role={ this.props.auth.user.role }
               blockedConfirm={ this.state.blockedConfirm }
               formType={ this.props.formType }
-              onAccept={ this.onAccept.bind(this) }
-              onDecline={ this.onDecline.bind(this) }
+              onReply={ this.onReply.bind(this) }
             />
       );
   }

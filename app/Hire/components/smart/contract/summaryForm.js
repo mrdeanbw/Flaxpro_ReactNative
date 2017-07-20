@@ -29,7 +29,6 @@ export default class SummaryForm extends Component {
       payment: props.payment,
       buttonDisabled: false,
     };
-
   };
 
   render() {
@@ -141,24 +140,25 @@ const button = (buttonText, callback) => {
 const chooseButtons = (props, formType) => {
   switch(formType) {
     case SUMMARY_FORM_TYPES.ACCEPT: {
+      const isProf = props.role === professionalConst;
+      let callbackAccept, callbackDecline;
+      if (isProf) {
+        callbackAccept = () => props.onReply(true);
+        callbackDecline = () => props.onReply(false);
+      } else {
+        callbackAccept = () => alert('coming soon for client');
+        callbackDecline = callbackAccept;
+      }
       return (<View style={ styles.bottomButtonWrapper }>
-              { button('accept', () => props.onAccept()) }
-              { button('decline', () => props.onDecline()) }
+              { button('accept', callbackAccept) }
+              { button('decline', callbackDecline) }
             </View>);
     }
     case SUMMARY_FORM_TYPES.VIEW: {
       return null;
     }
     case SUMMARY_FORM_TYPES.CREATE: {
-      const isProf = this.props.role === professionalConst;
-      let callback;
-
-      if (isProf) {
-        callback = props.onNext(props.payment, props.price, props.userLocation);
-      } else {
-        callback = () => alert('coming soon for client');
-      }
-
+      callback = props.onNext(props.payment, props.price, props.userLocation);
       return (<View>
                 { button('confirm offer', callback) }
             </View>)
