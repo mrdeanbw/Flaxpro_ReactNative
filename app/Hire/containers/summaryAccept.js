@@ -27,14 +27,18 @@ class SummaryAcceptForm extends Component {
   }
 
   onAccept() {
-    const contractId = this.props.contractId,
-          paymentMethod = this.props.hire.payment,
-          accept = true;
+    // const contractId = this.props.contractId,
+    //       paymentMethod = this.props.hire.payment,
+    //       accept = true;
 
-    this.props.actions.replyToContract(contractId, accept, paymentMethod);
+    // this.props.actions.replyToContract(contractId, accept, paymentMethod);
+
+    alert('accepting coming soon');
+
   }
 
   onDecline() {
+    alert('decline coming soon');
   }
 
   onBack() {

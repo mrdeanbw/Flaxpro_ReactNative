@@ -157,7 +157,6 @@ export default class InboxForm extends Component {
   }
 
   render() {
-    const { status } = this.props;
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">

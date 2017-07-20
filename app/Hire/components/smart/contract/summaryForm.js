@@ -130,9 +130,6 @@ export default class SummaryForm extends Component {
 };
 
 const button = (buttonText, callback) => {
-
-  // onPress={ () => props.onNext(paymentMethod, props.price, props.userLocation) }
-
   return (
           <View style={ styles.bottomButtonWrapper }>
             <TouchableOpacity 

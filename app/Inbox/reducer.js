@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 
 const initialState = {
-  loadingChats: false,
+  loadingInbox: false,
   loadingChat: false,
   loadingMessages: false,
   chats: [],
@@ -14,18 +14,18 @@ export default function inbox(state = initialState, action = {}) {
     case types.INBOX_REQUEST:
       return {
         ...state,
-        loadingChats: true,
+        loadingInbox: true,
       };
     case types.INBOX_SUCCESS:
       return {
         ...state,
-        loadingChats: false,
+        loadingInbox: false,
         chats: action.chats,
       };
     case types.INBOX_ERROR:
       return {
         ...state,
-        loadingChats: false,
+        loadingInbox: false,
       };
     case types.INBOX_ADD:
       return addChatToStore(state, action);
