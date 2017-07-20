@@ -73,6 +73,7 @@ export default function hire(state = initialState, action = {}) {
       return {
         ...state,
         loading: true,
+        error: null,
       };
     case types.PAYMENT_SUCCESS:
       return {

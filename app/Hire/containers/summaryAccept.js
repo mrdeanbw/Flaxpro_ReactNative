@@ -14,12 +14,10 @@ class SummaryAcceptForm extends Component {
     this.state = {
       blockedConfirm: true,
     };
-
-    console.log('summary props', props);
-
   }
 
   componentWillReceiveProps(newProps) {
+    console.log('summary will receieve props');
     if (newProps.hire.error) {
       alert(newProps.hire.error);
     }
