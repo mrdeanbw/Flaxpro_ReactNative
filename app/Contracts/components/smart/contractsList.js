@@ -13,7 +13,11 @@ import Moment from 'moment';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import { ListProfession } from "../../../theme"
 import styles from "./contractsList_style"
-import * as Constants from "../../../Components/commonConstant"
+import { 
+  user_client as userClient,
+  user_professional as userProfessional,
+  APP_COLOR as appColor,
+} from "../../../Components/commonConstant"
 
 const days = [
   {active: true, name: 'All Days', value: ''},
@@ -49,15 +53,15 @@ class ClientsProfessionals extends React.Component {
     };
   }
   componentWillMount(){
-    if(this.props.auth.user.role === Constants.user_client) this.props.getMyProfessionals();
-    if(this.props.auth.user.role === Constants.user_professional) this.props.getMyClients();
+    if(this.props.auth.user.role === userClient) this.props.getMyProfessionals();
+    if(this.props.auth.user.role === userProfessional) this.props.getMyClients();
   }
   componentWillReceiveProps(newProps) {
     if(newProps.contracts.loading) return;
     if(newProps.contracts.error) return Alert.alert(newProps.contracts.error);
 
     const {contracts: {contracts}} = newProps;
-    const role = newProps.auth.user.role === Constants.user_professional ? Constants.user_client.toLowerCase() : Constants.user_professional.toLowerCase();
+    const role = newProps.auth.user.role === userProfessional ? userClient.toLowerCase() : userProfessional.toLowerCase();
 
     const data = contracts.map( e => (
       {
@@ -114,11 +118,12 @@ class ClientsProfessionals extends React.Component {
       day: this.state.days.filter(e=>e.active)[0].value,
       name: this.state.search,
     };
-    if(this.props.auth.user.role === Constants.user_client) this.props.getMyProfessionals(data);
-    if(this.props.auth.user.role === Constants.user_professional) this.props.getMyClients(data);
+    if(this.props.auth.user.role === userClient) this.props.getMyProfessionals(data);
+    if(this.props.auth.user.role === userProfessional) this.props.getMyClients(data);
   }
 
   render(){
+    const role = this.props.auth.user.role === userProfessional ? userClient.toLowerCase() : userProfessional.toLowerCase();
     return (
       <View style={styles.container}>
         <View style={styles.navi}>
@@ -136,21 +141,34 @@ class ClientsProfessionals extends React.Component {
           </View>
         </View>
 
-        <View style={styles.tabContainer}>
-          <View style={{flex:1,flexDirection:"row"}}>
-            <View style={{flex:0.5}}><Text style={styles.titleSection}>Name</Text></View>
-            <View style={{marginLeft:5,flex:0.5}}><Text style={styles.titleSection}>Next Appointment</Text></View>
-          </View>
-          <View style={{width:110}}>
-            <Text style={styles.titleSection}>Sessions</Text>
-          </View>
-        </View>
-        <ScrollView>
         {
-          this.state.contracts.map( (data, index) => (
-            <ListProfession key={index} data={data} cancelContract={this.props.cancelContract} role={this.props.auth.user.role}/>
-          ))
+          !this.state.contracts.length ?
+            <Text style={ styles.noRows }>No {role}s hired</Text>
+            :
+            <View style={styles.tabContainer}>
+              <View style={{flex:1,flexDirection:"row"}}>
+                <View style={{flex:0.5}}><Text style={styles.titleSection}>Name</Text></View>
+                <View style={{marginLeft:5,flex:0.5}}><Text style={styles.titleSection}>Next Appointment</Text></View>
+              </View>
+              <View style={{width:110}}>
+                <Text style={styles.titleSection}>Sessions</Text>
+              </View>
+            </View>
         }
+        <ScrollView>
+          {
+            this.state.contracts.map( (data, index) => (
+              <ListProfession
+                key={index}
+                data={data}
+                cancelContract={this.props.cancelContract}
+                role={this.props.auth.user.role}
+                color={appColor}
+                lastElement={this.state.contracts.length -1 === index}
+              />
+            ))
+          }
+
         </ScrollView>
 
         <View style={styles.bottomView}>
@@ -162,7 +180,7 @@ class ClientsProfessionals extends React.Component {
                   key={index}
                 >
                   <View style={[row.active && styles.all]}>
-                    <Text style={[row.active && styles.allText, !row.active && {color:Constants.APP_COLOR}]}>{row.name}</Text>
+                    <Text style={[row.active && styles.allText, !row.active && {color:appColor}]}>{row.name}</Text>
                   </View>
                 </TouchableOpacity>
               ))
@@ -176,7 +194,7 @@ class ClientsProfessionals extends React.Component {
                   key={index}
                 >
                   <View style={[row.active && styles.all]}>
-                    <Text style={[row.active && styles.allText, !row.active && {color:Constants.APP_COLOR}]}>{row.name}</Text>
+                    <Text style={[row.active && styles.allText, !row.active && {color:appColor}]}>{row.name}</Text>
                   </View>
                 </TouchableOpacity>
               ))
@@ -190,7 +208,7 @@ class ClientsProfessionals extends React.Component {
                   key={index}
                 >
                   <View style={[row.active && styles.all]}>
-                    <Text style={[row.active && styles.allText, !row.active && {color:Constants.APP_COLOR}]}>{row.name}</Text>
+                    <Text style={[row.active && styles.allText, !row.active && {color:appColor}]}>{row.name}</Text>
                   </View>
                 </TouchableOpacity>
               ))
