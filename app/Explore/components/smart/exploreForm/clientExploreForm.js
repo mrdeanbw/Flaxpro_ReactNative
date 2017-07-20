@@ -582,7 +582,7 @@ class ClientExploreForm extends Component {
                 showsHorizontalScrollIndicator={ false }
                 ref={(ref) => {this.searchProfessionScroll = ref}}
                 onContentSizeChange={(contentWidth, contentHeight)=>{
-                  const scrollToEnd = contentWidth - width -55 >0 ? contentWidth - width -55 :0;
+                  const scrollToEnd = contentWidth - width -48 >0 ? contentWidth - width -48 :0;
                   this.searchProfessionScroll.scrollTo({x: scrollToEnd});
                 }}
               >
@@ -913,7 +913,6 @@ const styles = StyleSheet.create({
   searchProfessionBlock: {
     flex:1,
     flexDirection: 'row',
-    alignItems: 'center',
   },
   searchProfessionCloseButon: {
     flex:1,
@@ -955,7 +954,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
-    alignItems: 'center',
     paddingVertical: 5,
     paddingHorizontal: 15
   },
