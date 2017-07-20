@@ -32,7 +32,8 @@ import GoogleAutocomplete from '../../../../Components/googleAutocomplete';
 import {
   WIDTH_SCREEN as width,
   HEIHT_SCREEN as height,
-  APP_COLOR as appColor
+  APP_COLOR as appColor,
+  FONT_STYLES as fontStyles
 } from '../../../../Components/commonConstant';
 
 const background = require('../../../../Assets/images/background.png');
@@ -74,6 +75,8 @@ class ClientExploreForm extends Component {
         locationType: 'nearby',
         address: '',
         searchDetails: '',
+        lat: '',
+        lon: '',
       }
     };
     this.onFilterAutocomplete = this.onFilterAutocomplete.bind(this)
@@ -81,22 +84,19 @@ class ClientExploreForm extends Component {
 
   componentWillMount(){
     const { getExploreClient } = this.props;
-    getExploreClient();
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const location = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
+        getExploreClient(location);
+      },
+      (error) => {
+        getExploreClient();
+      }
+    );
   }
-
-  componentDidMount() {
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      let region = {
-        latitude:       position.coords.latitude,
-        longitude:      position.coords.longitude,
-      };
-    });
-  }
-
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
-  }
-
 
   componentWillReceiveProps(newProps) {
     const { explore: { error } } = newProps;
@@ -134,15 +134,16 @@ class ClientExploreForm extends Component {
   }
 
   openLocationPopup () {
-    const { filter } = this.state;
-    this.setState({ filter: { ...filter, address: '', searchDetails: ''} });
     navigator.geolocation.getCurrentPosition((position) => {
       const location = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       };
       this.props.getCurrentAddress(location);
-    });
+    },
+      (error) => {
+        console.log('navigator.geolocation.getCurrentPosition: Error: ', error);
+      });
     this.popupDialogLocation.openDialog ();
   }
 
@@ -151,37 +152,47 @@ class ClientExploreForm extends Component {
   }
 
   onLocation (locationType, locationText) {
-    const { getProfessionals } = this.props;
+    const { getProfessionals, auth: {currentAddress} } = this.props;
     const { filter } = this.state;
 
-    this.setState({ filter: {...filter, locationType }, locationText }, () => {
-      // if(locationType === 'address') this.addressInput.focus();
-    });
+    this.setState({ locationText });
 
     switch(locationType) {
 
       case 'nearby':
         this.closeLocationPopup();
-        getProfessionals({...filter, locationType });
+        getProfessionals({...filter, locationType, lat: currentAddress.latitude, lon: currentAddress.longitude });
+        this.setState({ filter: { ...filter, address: '', searchDetails: '', lat: currentAddress.latitude, lon: currentAddress.longitude, locationType} });
         return;
       case 'address':
+        this.setState({ filter: { ...filter, locationType} });
         return;
       default:
         this.closeLocationPopup();
         getProfessionals({...filter, locationType });
+        this.setState({ filter: { ...filter, address: '', searchDetails: '', lat: '', lon: '', locationType} });
     }
   }
 
   filterByAddress(data, details){
     const { filter } = this.state;
     const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
-    this.setState({filter: {...filter, address: data.description || data.formatted_address, locationType: 'address', searchDetails: coordinate ? { coordinate } : '' } });
+    this.setState({filter: {
+      ...filter,
+      // address: data.description || data.formatted_address,
+      locationType: 'address',
+      searchDetails: coordinate ? { coordinate } : '',
+      lat: coordinate.latitude,
+      lon: coordinate.longitude
+    } });
 
     const { getProfessionals } = this.props;
     const filterObj = {
       locationType: 'address',
       address: data.description || data.formatted_address,
       date: filter.date,
+      lat: coordinate.latitude,
+      lon: coordinate.longitude
     };
     this.closeLocationPopup();
     getProfessionals(filterObj);
@@ -190,7 +201,7 @@ class ClientExploreForm extends Component {
   get dialogLocationClient () {
     const { currentAddress } = this.props.auth;
     const { filter } = this.state;
-    const originalAddress = currentAddress.formattedAddress;
+    const originalAddress = currentAddress && currentAddress.formattedAddress || 'You denied access to location services.';
 
     return (
       <PopupDialog
@@ -542,11 +553,12 @@ class ClientExploreForm extends Component {
             {
               !professions.searchMode && professions.listSelected.length>0 &&
               <View style={styles.professionSearchContainer}>
-              <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={ [styles.buttonWrapper,
                   {
                     backgroundColor: professions.selected._id === allLabel._id ? allLabel.color : '#fff',
                     marginHorizontal:5,
+                    marginTop:1,
                     borderColor: '#4dc7fd',
                   }
                 ] }>
@@ -670,7 +682,7 @@ class ClientExploreForm extends Component {
                     listFiltered.map((item) => (
                       <TouchableOpacity key={item._id} activeOpacity={ .5 }
                                         onPress={ (r) => this.onSelectProfession(item) }>
-                        <Text style={styles.dropdownText}>{item.name} </Text>
+                        <Text style={[fontStyles, styles.dropdownText]}>{item.name} </Text>
                         <View style={styles.dropdownSeparator}/>
 
                       </TouchableOpacity>
@@ -847,7 +859,7 @@ const styles = StyleSheet.create({
   },
   searchBarWrap: {
     backgroundColor: 'transparent',
-    marginHorizontal: 10,
+    marginHorizontal: 15,
     marginVertical: 5,
   },
   calendarBarWrap: {
@@ -855,7 +867,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#5bd5f9',
-    marginHorizontal: 10,
+    marginHorizontal: 15,
     marginTop: 5,
     marginBottom: 10,
   },
@@ -901,6 +913,7 @@ const styles = StyleSheet.create({
   searchProfessionBlock: {
     flex:1,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   searchProfessionCloseButon: {
     flex:1,
@@ -942,8 +955,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 5,
-    paddingHorizontal: 10
+    paddingHorizontal: 15
   },
   buttonWrapper: {
     marginHorizontal: 2,
@@ -976,13 +990,13 @@ const styles = StyleSheet.create({
   },
   //end scroll view
   dropdownText: {
-    paddingHorizontal:6,
+    paddingHorizontal:15,
     paddingVertical: 10,
-    fontSize: 11,
+    fontSize: 13,
     textAlignVertical: 'center',
   },
   dropdownSeparator:{
-    marginHorizontal:5,
+    marginHorizontal:15,
     borderWidth:0.5,
     borderColor: '#d3d3d3',
   },
@@ -990,16 +1004,16 @@ const styles = StyleSheet.create({
     borderColor: '#d3d3d3',
     backgroundColor: '#fff',
     overflow:'hidden',
-    borderRadius: 3,
-    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
     justifyContent: 'center',
-    left: 10,
-    width:width-20,
+    left: 0,
+    width:width,
     zIndex: 3,
     position: 'absolute',
   },
   dropdownLimitHeight: {
-    height: 210,
+    height: 215,
   },
   dropdownWrapper: {
     position: 'absolute',
@@ -1011,7 +1025,7 @@ const styles = StyleSheet.create({
   dropdownBackground:{
     zIndex: 2,
     position: 'relative',
-    backgroundColor: '#a3a4a7',
+    backgroundColor: '#000',
     opacity: 0.5,
     width,
     height: height-140}

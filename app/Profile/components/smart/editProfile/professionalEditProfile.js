@@ -213,14 +213,14 @@ class EditProfile extends Component {
         longitude: position.coords.longitude,
       };
       this.props.getCurrentAddress(location);
-    });
+    },
+      (error) => {
+        console.log('navigator.geolocation.getCurrentPosition: Error: ', error);
+      });
     this.dialogGoogleAutocomplete.popupAutocomplete.openDialog ();
   }
 
   get dialogAutocomplete () {
-    const { currentAddress } = this.props.auth;
-    const originalAddress = currentAddress.formattedAddress;
-
     return (
       <DialogGoogleAutocomplete
         currentAddress={this.props.auth.currentAddress}
