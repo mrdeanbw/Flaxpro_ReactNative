@@ -14,6 +14,9 @@ class SummaryAcceptForm extends Component {
     this.state = {
       blockedConfirm: true,
     };
+
+    console.log('summary props', props);
+
   }
 
   componentWillReceiveProps(newProps) {
@@ -26,19 +29,24 @@ class SummaryAcceptForm extends Component {
     this.props.resetHire();
   }
 
+  successReplyCallback() {
+    alert('Success');
+    Actions.pop();
+  }
+
+  onReply(answer) {
+    const contractId = this.props.contractId,
+          paymentMethod = this.props.hire.payment;
+
+    this.props.actions.replyToContract(contractId, answer, paymentMethod, this.successReplyCallback.bind(this));
+  }
+
   onAccept() {
-    // const contractId = this.props.contractId,
-    //       paymentMethod = this.props.hire.payment,
-    //       accept = true;
-
-    // this.props.actions.replyToContract(contractId, accept, paymentMethod);
-
-    alert('accepting coming soon');
-
+    this.onReply(true);
   }
 
   onDecline() {
-    alert('decline coming soon');
+    this.onReply(false);
   }
 
   onBack() {

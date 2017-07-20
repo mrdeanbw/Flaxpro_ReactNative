@@ -38,7 +38,6 @@ export default class SummaryForm extends Component {
           paymentMethod = !isProf ? 
             (typeof(payment) === 'string' ? payment : 'Card  ...' + payment.last4) : null;
           disabledConfirm = this.props.blockedConfirm ? true : false;
-
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -93,13 +92,8 @@ export default class SummaryForm extends Component {
                 </View>
               </View>
 
-              {!isProf &&
-                <View style={ [styles.borderBottom, styles.rowContainer] }>
-                  <Text style={ [fontStyles, styles.textDescription] }>Payment Method</Text>
-                  <View style={ [styles.valueWrapper] }>
-                    <Text style={ [styles.textBidDescription] }>{ paymentMethod }</Text>
-                  </View>
-                </View>
+              {
+                getPaymentMethodBlock(paymentMethod, isProf)
               }
 
             </View>
@@ -145,7 +139,6 @@ const button = (buttonText, callback) => {
 };
 
 const chooseButtons = (props, formType) => {
-  console.log('chooseButton props', props);
   switch(formType) {
     case SUMMARY_FORM_TYPES.ACCEPT: {
       return (<View style={ styles.bottomButtonWrapper }>
@@ -157,8 +150,15 @@ const chooseButtons = (props, formType) => {
       return null;
     }
     case SUMMARY_FORM_TYPES.CREATE: {
-      console.log('__switch form create');
-      const callback = props.onNext(props.payment, props.price, props.userLocation);
+      const isProf = this.props.role === professionalConst;
+      let callback;
+
+      if (isProf) {
+        callback = props.onNext(props.payment, props.price, props.userLocation);
+      } else {
+        callback = () => alert('coming soon for client');
+      }
+
       return (<View>
                 { button('confirm offer', callback) }
             </View>)
@@ -171,6 +171,20 @@ const chooseButtons = (props, formType) => {
     }
   };
 };
+
+const getPaymentMethodBlock = (paymentMethod, isProf) => {
+    if (!isProf && !paymentMethod) {
+    return (
+        <View style={ [styles.borderBottom, styles.rowContainer] }>
+          <Text style={ [fontStyles, styles.textDescription] }>Payment Method</Text>
+          <View style={ [styles.valueWrapper] }>
+            <Text style={ [styles.textBidDescription] }>{ paymentMethod }</Text>
+          </View>
+      </View>
+    );
+  } 
+  return null;
+}
 
 const styles = StyleSheet.create({
   container: {

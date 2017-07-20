@@ -111,7 +111,7 @@ export const getContractForAccept = (contractId) => async (dispatch, store) => {
   }
 };
 
-export const replyToContract = (contractId, accept, paymentMethod) => async (dispatch, store) => {
+export const replyToContract = (contractId, accept, paymentMethod, cb) => async (dispatch, store) => {
   dispatch({type: hireTypes.PAYMENT_LOADING});
   
   const url = `/contracts/${contractId}`;
@@ -133,6 +133,7 @@ export const replyToContract = (contractId, accept, paymentMethod) => async (dis
   try {
     const contract  = await request(url, options, auth);
     dispatch(updateHireSuccess({}));
+    cb();
   } catch (error) {
     console.log('reply to contract error', error);
     dispatch(updateHireError(error));
