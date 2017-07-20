@@ -38,7 +38,6 @@ const accountSelectedIcon = require('../../../Assets/images/selected_account.png
 class MainForm extends Component {
   constructor(props) {
     super(props);
-    console.log('main props', props);
     // this.state = {
     //   selectedTab: 'explore',
     // };

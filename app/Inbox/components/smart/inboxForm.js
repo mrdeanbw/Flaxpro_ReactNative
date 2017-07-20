@@ -84,8 +84,6 @@ export default class InboxForm extends Component {
   }
 
   onRemove(secId, rowId, rowMap) {
-
-    console.log(secId, rowId, rowMap);
     const chatId = this.props.inbox.chats[rowId].id;
     this.props.removeChat(chatId);
 

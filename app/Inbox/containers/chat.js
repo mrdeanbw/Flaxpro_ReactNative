@@ -6,21 +6,16 @@ import ChatForm from '../components/smart/chatForm';
 import * as inboxActions from '../actions';
 import { connect } from 'react-redux';
 import Loader from '../../Components/fullScreenLoader'
+import { getContractForAccept } from '../../Contracts/actions';
 
 class Chat extends Component {
   constructor(props) {
     super(props);
   }
-
-  componentWillReceiveProps(newProps) {
-    console.log('chats props', newProps)
-  }
-
+  
   componentWillUnmount() {
-    // console.log('chat unmount props', this.props);
     const chatId = this.props.inbox.activeChat.id;
     this.props.actions.deactivateChat(chatId);
-    // this.props.actions.getChats(chatId);
   }
 
   render() {
@@ -47,6 +42,9 @@ export default connect(state => ({
     auth: state.auth,
   }),
   (dispatch) => ({
-    actions: bindActionCreators(inboxActions, dispatch)
+    actions: {
+      ...bindActionCreators(inboxActions, dispatch),
+      getContractForAccept: (contractId) => dispatch(getContractForAccept(contractId)),
+    }
   })
 )(Chat);

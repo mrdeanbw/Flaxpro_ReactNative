@@ -1,5 +1,6 @@
 import * as constants from './constants';
 import { randomString } from '../Utils';
+import { SUMMARY_FORM_TYPES } from '../Hire/constants';
 
 export const mapChatResponseToState = (obj) => {
 
@@ -59,11 +60,19 @@ const mapMessageResponseToState = (obj, messageId, messageType = 'chat') => {
     },
     chatId: obj.chat,
     type: obj.type,
+    isMe: obj.user.isMe,
   };
 }
 
 const mapNotificationResponseToState = (obj, messageId, messageType = 'notification') => {
   let notification = mapMessageResponseToState(obj, messageId, 'notification');
+  
+  notification.object = obj.object;
+  notification.buttonName = obj.buttonName;
+  
+  let isConfirmable = chooseConfirmable(notification.object, notification.isMe);
+
+  notification.formType = isConfirmable ? SUMMARY_FORM_TYPES.ACCEPT : SUMMARY_FORM_TYPES.VIEW;
   notification.link = obj.link;
   return notification;
 }
@@ -73,8 +82,8 @@ const mapNotificationResponseToState = (obj, messageId, messageType = 'notificat
 */
 export const createFancyTime = (date) => {
   let hours = date.getHours(),
-      minutes = date.getMinutes();
-  let ampm = hours >= 12 ? 'PM' : 'AM';
+      minutes = date.getMinutes(),
+      ampm = hours >= 12 ? 'PM' : 'AM';
   
   hours = hours % 12;
   hours = hours ? hours : 12;
@@ -115,6 +124,24 @@ const createAvatar = (url) => {
   return {
     uri: url,
   };
+};
+
+const chooseConfirmable = (type, isMe) => {
+  let isConfirmable;
+  
+  if (type === 'contract') {
+    isConfirmable = false;
+  } else if (type === 'transaction') {
+    isConfirmable = true;
+  } else {
+    isConfirmable = false;
+  };
+
+  if (!isMe) {
+    isConfirmable = !isConfirmable;
+  };
+
+  return isConfirmable;
 };
 
 const createGroupObject = (user) => {

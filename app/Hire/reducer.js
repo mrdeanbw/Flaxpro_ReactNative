@@ -15,12 +15,18 @@ const initialState = {
   loading: false,
   creditCardsList: [],
   paymentForm: false,
-  payment: null
+  payment: null,
+  loadingForm: false,
 };
 
 export default function hire(state = initialState, action = {}) {
   switch (action.type) {
 
+    case types.CONTRACT_REQUEST:
+      return {
+        ...state,
+        loadingForm: true,
+      };
     case types.CONTRACT_CHANGEFORM:
       return {
         ...state,
@@ -35,6 +41,15 @@ export default function hire(state = initialState, action = {}) {
         selectedTimes: action.selectedTimes,
         offerPrice: action.offerPrice,
         payment: action.payment,
+        loadingForm: action.loadingForm,
+      };
+    case types.CONTRACT_CHOOSE_SCREEN: 
+      return {
+        ...state,
+        firstForm: action.firstForm,
+        secondForm: action.secondForm,
+        paymentForm: action.paymentForm,
+        summaryForm: action.summaryForm,
       };
     case types.HIRE_SUCCESS:
       return {

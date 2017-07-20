@@ -11,15 +11,21 @@ import { Actions } from 'react-native-router-flux';
 export default class OfferMessage extends Component {
   constructor(props) {
     super(props);
-
   }
 
   onClick() {
-    alert('onClickWorks!');
+    const formType = this.props.currentMessage.formType,
+          contractId = this.props.currentMessage.link;
+    this.props.actions.getContractForAccept(contractId);
+    Actions.SummaryAcceptForm({
+      formType: formType,
+      contractId,
+    });
   }
 
   render() {
     if (this.props.currentMessage.type === 'notification') {
+      const text = this.props.currentMessage.buttonName;
       return (
           <TouchableHighlight
             style={ styles.offerButton }
@@ -30,7 +36,7 @@ export default class OfferMessage extends Component {
             <Text
               style={ styles.offerText }
             >
-              SUMMARY
+            { text.toUpperCase() }
             </Text>
           </TouchableHighlight>
       )

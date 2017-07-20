@@ -90,6 +90,9 @@ export default class ChatForm extends Component {
             <View style={ styles.contentContainer }>
               <GiftedChat
                 messages={ this.props.messages }
+                actions={ 
+                  { getContractForAccept: this.props.getContractForAccept }
+                }
                 onSend={ this.onSend.bind(this) }
                 user={{
                   _id: user,

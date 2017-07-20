@@ -23,6 +23,7 @@ import EditProfile from './Profile/containers/editProfile';
 import Sessions from './Profile/components/smart/sessions';
 import ChatForm from './Inbox/containers/chat';
 import Contracts from './Contracts/containers/contracts';
+import SummaryAcceptForm from './Hire/containers/summaryAccept';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
@@ -47,6 +48,7 @@ const scenes = Actions.create(
     <Scene key="ChatForm" component={ ChatForm } />
     <Scene key="EditProfile" component={ EditProfile }/>
     <Scene key="Sessions" component={ Sessions }/>
+    <Scene key="SummaryAcceptForm" component={ SummaryAcceptForm }/>
   </Scene>
 );
 
