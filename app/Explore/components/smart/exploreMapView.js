@@ -165,7 +165,7 @@ class ExploreMapView extends Component {
       extrapolate: 'clamp',
     });
 
-    const locationForFocus = props.searchAddress || props.professionalsClients[0] || props.user;
+    const locationForFocus = R.isEmpty(props.currentLocation.coordinate) ? props.user : props.currentLocation;
     this.state = {
       panX,
       panY,
@@ -175,6 +175,9 @@ class ExploreMapView extends Component {
       scrollX,
       scale,
       translateY,
+      professionalsClients: props.professionalsClients,
+      searchAddress: props.searchAddress,
+      currentLocation: props.currentLocation,
       selectedGymIndex: 0,
       selectedProfessionalClientIndex: 0,
       region: new MapView.AnimatedRegion({
@@ -182,7 +185,8 @@ class ExploreMapView extends Component {
         longitude: locationForFocus.coordinate.longitude,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
-      })
+      }),
+      markers: [],
     };
     this.onTapMap = this.onTapMap.bind(this);
     this.onList = this.onList.bind(this);
@@ -193,30 +197,41 @@ class ExploreMapView extends Component {
     this.getZoomLevel = this.getZoomLevel.bind(this);
 
     const cluster = this.createCluster(props.professionalsClients);
-    const markers = this.getMarkers(cluster, this.state.region);
-
     this.state['cluster'] = cluster;
-    this.state['markers'] = markers;
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.professionalsClients && nextProps.professionalsClients.length) {
-      const locationForFocus = nextProps.searchAddress || nextProps.professionalsClients[0];
-      let region = {
-        latitude: locationForFocus.coordinate.latitude,
-        longitude: locationForFocus.coordinate.longitude,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-      };
-      this.onRegionChange(region);
+    if (nextProps.professionalsClients && nextProps.professionalsClients.length && nextProps.professionalsClients!==this.state.professionalsClients) {
+      const cluster = this.createCluster(nextProps.professionalsClients);
+      const regionValue = this.state.region.__getValue();
+      this.setState({
+        cluster: cluster,
+      });
+      this.onRegionChange(regionValue)
     }
-    const cluster = this.createCluster(nextProps.professionalsClients);
-    const markers = this.getMarkers(cluster, this.state.region);
+    let locationForFocus = {};
+    switch (true) {
+      case nextProps.searchAddress &&  nextProps.searchAddress!==this.state.searchAddress :
+        locationForFocus =  nextProps.searchAddress;
+        this.setState({ searchAddress: locationForFocus });
+        break;
+      case nextProps.currentLocation &&  nextProps.currentLocation!==this.state.currentLocation :
+        locationForFocus =  nextProps.currentLocation;
+        this.setState({ currentLocation: locationForFocus });
+        break;
+      default: return;
+    }
+    this.setRegion(locationForFocus);
+  }
 
-    this.setState({
-      cluster: cluster,
-      markers: markers
-    });
+  setRegion(locationForFocus){
+    let region = {
+      latitude: locationForFocus.coordinate.latitude,
+      longitude: locationForFocus.coordinate.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
+    };
+    this.onRegionChange(region);
   }
 
   componentDidMount() {

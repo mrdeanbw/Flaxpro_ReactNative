@@ -168,7 +168,6 @@ class ExploreForm extends Component {
 
     const filterObj = {
       locationType: 'address',
-      // address: data.description || data.formatted_address,
       date: filter.date,
       lat: coordinate.latitude,
       lon: coordinate.longitude

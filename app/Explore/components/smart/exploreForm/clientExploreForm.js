@@ -77,6 +77,9 @@ class ClientExploreForm extends Component {
         searchDetails: '',
         lat: '',
         lon: '',
+      },
+      currentLocation: {
+        coordinate: {},
       }
     };
     this.onFilterAutocomplete = this.onFilterAutocomplete.bind(this)
@@ -90,6 +93,7 @@ class ClientExploreForm extends Component {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         };
+        this.setState({currentLocation: {coordinate: position.coords}});
         getExploreClient(location);
       },
       (error) => {
@@ -179,7 +183,7 @@ class ClientExploreForm extends Component {
     const coordinate = details.geometry && details.geometry.location ? { latitude: details.geometry.location.lat, longitude: details.geometry.location.lng } : '';
     this.setState({filter: {
       ...filter,
-      // address: data.description || data.formatted_address,
+      address: data.description || data.formatted_address,
       locationType: 'address',
       searchDetails: coordinate ? { coordinate } : '',
       lat: coordinate.latitude,
@@ -189,7 +193,6 @@ class ClientExploreForm extends Component {
     const { getProfessionals } = this.props;
     const filterObj = {
       locationType: 'address',
-      address: data.description || data.formatted_address,
       date: filter.date,
       lat: coordinate.latitude,
       lon: coordinate.longitude
@@ -712,6 +715,7 @@ class ClientExploreForm extends Component {
                 gymLocations={ this.state.gymLocations }
                 user={ user }
                 searchAddress={ this.state.filter.searchDetails }
+                currentLocation={ this.state.currentLocation }
               />
               :
               <ExploreListView
