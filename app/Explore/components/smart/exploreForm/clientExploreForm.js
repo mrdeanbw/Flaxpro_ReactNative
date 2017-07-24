@@ -156,8 +156,9 @@ class ClientExploreForm extends Component {
   }
 
   onLocation (locationType, locationText) {
-    const { getProfessionals, auth: {currentAddress} } = this.props;
+    const { getProfessionals, auth: {currentAddress, user} } = this.props;
     const { filter } = this.state;
+    const defaultAddress = { coordinate: R.isEmpty(currentAddress) ? user.coordinate : currentAddress};
 
     this.setState({ locationText });
 
@@ -166,7 +167,7 @@ class ClientExploreForm extends Component {
       case 'nearby':
         this.closeLocationPopup();
         getProfessionals({...filter, locationType, lat: currentAddress.latitude, lon: currentAddress.longitude });
-        this.setState({ filter: { ...filter, address: '', searchDetails: '', lat: currentAddress.latitude, lon: currentAddress.longitude, locationType} });
+        this.setState({ filter: { ...filter, address: '', searchDetails: defaultAddress, lat: currentAddress.latitude, lon: currentAddress.longitude, locationType} });
         return;
       case 'address':
         this.setState({ filter: { ...filter, locationType} });
@@ -174,7 +175,7 @@ class ClientExploreForm extends Component {
       default:
         this.closeLocationPopup();
         getProfessionals({...filter, locationType });
-        this.setState({ filter: { ...filter, address: '', searchDetails: '', lat: '', lon: '', locationType} });
+        this.setState({ filter: { ...filter, address: '', searchDetails: defaultAddress, lat: '', lon: '', locationType} });
     }
   }
 
@@ -186,8 +187,8 @@ class ClientExploreForm extends Component {
       address: data.description || data.formatted_address,
       locationType: 'address',
       searchDetails: coordinate ? { coordinate } : '',
-      lat: coordinate.latitude,
-      lon: coordinate.longitude
+      lat: coordinate ? coordinate.latitude : '',
+      lon: coordinate ? coordinate.longitude : ''
     } });
 
     const { getProfessionals } = this.props;

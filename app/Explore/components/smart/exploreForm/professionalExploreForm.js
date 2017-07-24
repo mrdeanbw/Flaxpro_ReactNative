@@ -14,6 +14,7 @@ import DatePicker from 'react-native-datepicker';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import PopupDialog from 'react-native-popup-dialog';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import R from 'ramda';
 
 import { SegmentedControls } from 'react-native-radio-buttons';
 import ExploreMapView from '../exploreMapView';
@@ -50,6 +51,9 @@ class ExploreForm extends Component {
         searchDetails: '',
         lat: '',
         lon: '',
+      },
+      currentLocation: {
+        coordinate: {},
       }
     };
   }
@@ -57,6 +61,13 @@ class ExploreForm extends Component {
   componentWillMount(){
     const { getClients } = this.props;
     getClients();
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({currentLocation: {coordinate: position.coords}});
+      },
+      (error) => {
+      }
+    );
   }
 
   componentWillReceiveProps(newProps) {
@@ -113,13 +124,17 @@ class ExploreForm extends Component {
   }
 
   onSelectLocationFilterMode(option) {
-    const { getClients, auth: {currentAddress} } = this.props;
+    const { getClients, auth: {currentAddress, user} } = this.props;
     const { filter } = this.state;
+    const defaultAddress = { coordinate: R.isEmpty(currentAddress) ? user.coordinate : currentAddress};
     this.setState({ filter: {...filter, locationType: option, address: ''} });
+
     if(option === 'ALL'){
-      getClients({...filter, locationType: '', address: '', lat: '', lon: '', searchDetails: ''});
+      this.setState({ filter: { ...filter, address: '', searchDetails: defaultAddress, lat: '', lon: '', locationType: option,} });
+      getClients({...filter, locationType: '', address: '', lat: '', lon: ''});
     } else {
-      getClients({...filter, locationType: option.toLowerCase(), address: '', searchDetails: '', lat: currentAddress.latitude, lon: currentAddress.longitude})
+      this.setState({ filter: { ...filter, address: '', searchDetails: defaultAddress, lat: currentAddress.latitude, lon: currentAddress.longitude, locationType: option,} });
+      getClients({...filter, locationType: option.toLowerCase(), address: '', lat: currentAddress.latitude, lon: currentAddress.longitude})
     }
   }
 
@@ -162,8 +177,8 @@ class ExploreForm extends Component {
       address: data.description || data.formatted_address,
       locationType: 'address',
       searchDetails: coordinate ? { coordinate } : '' },
-      lat: coordinate.latitude,
-      lon: coordinate.longitude
+      lat: coordinate ? coordinate.latitude : '',
+      lon: coordinate ? coordinate.longitude : ''
     });
 
     const filterObj = {
@@ -363,6 +378,7 @@ class ExploreForm extends Component {
                 gymLocations={ this.state.gymLocations }
                 user={ user }
                 searchAddress={ this.state.filter.searchDetails }
+                currentLocation={ this.state.currentLocation }
               />
               :
               <ExploreListView
