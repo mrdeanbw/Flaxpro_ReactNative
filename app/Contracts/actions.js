@@ -100,6 +100,7 @@ export const getContractForAccept = (contractId) => async (dispatch, store) => {
       offerPrice: response.rate,
       payment: response.paymentMethod,
       loadingForm: false,
+      status: response.status,
     };
 
     dispatch({

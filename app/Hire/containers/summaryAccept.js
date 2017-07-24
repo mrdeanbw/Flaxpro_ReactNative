@@ -52,7 +52,8 @@ class SummaryAcceptForm extends Component {
             numberOfPeople, 
             selectedTimes,
             offerPrice,
-            payment
+            payment,
+            status
           } = hire;
     
     const price = offerPrice || user.price;
@@ -70,6 +71,7 @@ class SummaryAcceptForm extends Component {
               blockedConfirm={ this.state.blockedConfirm }
               formType={ this.props.formType }
               onReply={ this.onReply.bind(this) }
+              status={ status }
             />
       );
   }

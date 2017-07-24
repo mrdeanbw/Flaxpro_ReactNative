@@ -137,12 +137,13 @@ export default class SummaryForm extends Component {
   };
 };
 
-const button = (buttonText, callback) => {
+const button = (buttonText, buttonDisabled, callback) => {
   return (
           <View style={ styles.bottomButtonWrapper }>
             <TouchableOpacity 
               activeOpacity={ .5 } 
               onPress={ callback }
+              disabled={ buttonDisabled }
             >
               <View style={ styles.saveButton }>
                 <Text style={ styles.whiteText }>{buttonText.toUpperCase()}</Text>
@@ -153,6 +154,7 @@ const button = (buttonText, callback) => {
 };
 
 const chooseButtons = (props, state, setState) => {
+  const buttonDisabled = props.status ? props.status !== 'Pending' : false;
   switch(props.formType) {
     case SUMMARY_FORM_TYPES.ACCEPT: {
       const isProf = props.role === professionalConst;
@@ -172,23 +174,23 @@ const chooseButtons = (props, state, setState) => {
         callbackDecline = () => props.onReply(false, state.paymentMethod);
       }
       return (<View style={ styles.bottomButtonWrapper }>
-              { button('accept', callbackAccept) }
-              { button('decline', callbackDecline) }
+              { button('accept', buttonDisabled, callbackAccept) }
+              { button('decline', buttonDisabled, callbackDecline) }
             </View>);
     }
     case SUMMARY_FORM_TYPES.VIEW: {
       return null;
     }
     case SUMMARY_FORM_TYPES.CREATE: {
-      callback = props.onNext(props.payment, props.price, props.userLocation);
+      callback = props.onNext(props.payment, propsbuttonDisabled.price, props.userLocation);
       return (<View>
-                { button('confirm offer', callback) }
+                { button('confirm offer', buttonDisabled, callback) }
             </View>)
     }
     default: {
       const callback = () => props.onNext(props.payment, props.price, props.userLocation);
       return (<View>
-                { button('confirm offer', callback) }
+                { button('confirm offer', buttonDisabled, callback) }
             </View>)
     }
   };

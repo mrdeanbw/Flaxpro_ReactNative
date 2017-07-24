@@ -42,6 +42,7 @@ export default function hire(state = initialState, action = {}) {
         offerPrice: action.offerPrice,
         payment: action.payment,
         loadingForm: action.loadingForm,
+        status: action.status,
       };
     case types.CONTRACT_CHOOSE_SCREEN: 
       return {
