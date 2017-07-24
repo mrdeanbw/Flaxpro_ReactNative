@@ -49,6 +49,10 @@ export default class Payment extends Component {
   }
 
   onBack () {
+    if (this.props.onBack) {
+      return this.props.onBack();
+    }
+
     const { changeContractForm } = this.props;
     this.props.editable ?
       Actions.pop()
@@ -57,6 +61,10 @@ export default class Payment extends Component {
   }
 
   onSelectPaymentMethod(payment) {
+    if (this.props.onSelected) {
+      return this.props.onSelected(payment);
+    }
+    
     if (!this.props.editable) {
       const { changeContractForm } = this.props;
       changeContractForm({ ...this.props.hire, ...{summaryForm: true, paymentForm: false, payment} });

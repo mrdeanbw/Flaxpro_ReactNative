@@ -31,9 +31,8 @@ class SummaryAcceptForm extends Component {
     Actions.pop();
   }
 
-  onReply(answer) {
-    const contractId = this.props.contractId,
-          paymentMethod = this.props.hire.payment;
+  onReply(answer, paymentMethod) {
+    const contractId = this.props.contractId;
 
     this.props.actions.replyToContract(contractId, answer, paymentMethod, this.successReplyCallback.bind(this));
   }
@@ -52,7 +51,8 @@ class SummaryAcceptForm extends Component {
           { numberOfSessions, 
             numberOfPeople, 
             selectedTimes,
-            offerPrice
+            offerPrice,
+            payment
           } = hire;
     
     const price = offerPrice || user.price;
@@ -60,7 +60,7 @@ class SummaryAcceptForm extends Component {
     return (
             <SummaryForm
               price={ price }
-              payment={ offerPrice }
+              payment={ payment }
               userLocation={ location }
               numberOfSessions={ numberOfSessions }
               numberOfPeople={ numberOfPeople }

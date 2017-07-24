@@ -5,8 +5,8 @@ import * as actions from './Inbox/actions';
 
 class SocketController {
     constructor() {
-        // const url = 'ws://13.59.22.166:3000';
-        const url = 'ws://192.168.88.226:3000';
+        const url = 'ws://13.59.22.166:3000'; //AWS server
+        // const url = 'ws://192.168.88.226:3000'; //Dunice server 
         this.socket = new socketio(url, {
           jsonp: false,
           autoConnect: false,

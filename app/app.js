@@ -16,6 +16,7 @@ import FilterClientForm from './Explore/components/smart/filterForms/clientFilte
 import FilterProfessionalForm from './Explore/components/smart/filterForms/professionalFilterForm';
 import Contract from './Hire/containers/contract';
 import Payment from './Hire/containers/payment';
+import SummaryAcceptForm from './Hire/containers/summaryAccept';
 import ScheduleForm from './Profile/components/smart/scheduleForm';
 import EditAvailability from './Profile/components/smart/editAvailabilityForm';
 import ViewProfile from './Profile/containers/viewProfile';
@@ -23,7 +24,6 @@ import EditProfile from './Profile/containers/editProfile';
 import Sessions from './Profile/components/smart/sessions';
 import ChatForm from './Inbox/containers/chat';
 import Contracts from './Contracts/containers/contracts';
-import SummaryAcceptForm from './Hire/containers/summaryAccept';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);

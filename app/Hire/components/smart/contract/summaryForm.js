@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Actions } from 'react-native-router-flux';
 import {
   View,
   Image,
@@ -22,21 +23,35 @@ const professionalConst = CommonConstant.user_professional;
 export default class SummaryForm extends Component {
   constructor(props) {
     super(props);
+    const isProf = props.role === CommonConstant.professionalConst;
+    let paymentMethod = this.getPaymentMethod(props.payment, isProf);
     this.state = {
       numberOfSessions: props.numberOfSessions,
       numberOfPeople: props.numberOfPeople,
       selectedTimes: props.selectedTimes,
       payment: props.payment,
       buttonDisabled: false,
+      paymentMethod,
     };
   };
 
+  getPaymentMethod(payment, isProf) {
+
+    if (!payment) { return null; }
+
+    return !isProf ? 
+        (typeof(payment) === 'string' ? 
+          payment 
+          : 
+          'Card  ...' + payment.last4) 
+        :
+        null;
+  }
+
   render() {
-    const isProf = this.props.role === professionalConst;
-    const { payment } = this.state,
-          paymentMethod = !isProf ? 
-            (typeof(payment) === 'string' ? payment : 'Card  ...' + payment.last4) : null;
-          disabledConfirm = this.props.blockedConfirm ? true : false;
+    const isProf = this.props.role === professionalConst,
+          { payment, paymentMethod } = this.state;
+
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -112,7 +127,7 @@ export default class SummaryForm extends Component {
                 ))
               }
               </ScrollView>
-              { chooseButtons(this.props, this.props.formType) }
+              { chooseButtons(this.props, this.state, this.setState.bind(this)) }
             </View>
 
           </View>
@@ -137,17 +152,24 @@ const button = (buttonText, callback) => {
         );
 };
 
-const chooseButtons = (props, formType) => {
-  switch(formType) {
+const chooseButtons = (props, state, setState) => {
+  switch(props.formType) {
     case SUMMARY_FORM_TYPES.ACCEPT: {
       const isProf = props.role === professionalConst;
       let callbackAccept, callbackDecline;
-      if (isProf) {
-        callbackAccept = () => props.onReply(true);
-        callbackDecline = () => props.onReply(false);
+      if (!isProf && !state.paymentMethod) {
+        callbackAccept = () => {
+          Actions.Payment({
+            onBack: () => Actions.pop(),
+            onSelected: (paymentMethod) => {
+              Actions.pop();
+              setState({paymentMethod: paymentMethod})
+            },
+          });
+        }
       } else {
-        callbackAccept = () => alert('coming soon for client');
-        callbackDecline = callbackAccept;
+        callbackAccept = () => props.onReply(true, state.paymentMethod);
+        callbackDecline = () => props.onReply(false, state.paymentMethod);
       }
       return (<View style={ styles.bottomButtonWrapper }>
               { button('accept', callbackAccept) }
@@ -173,7 +195,7 @@ const chooseButtons = (props, formType) => {
 };
 
 const getPaymentMethodBlock = (paymentMethod, isProf) => {
-    if (!isProf && !paymentMethod) {
+    if (!isProf && paymentMethod) {
     return (
         <View style={ [styles.borderBottom, styles.rowContainer] }>
           <Text style={ [fontStyles, styles.textDescription] }>Payment Method</Text>
