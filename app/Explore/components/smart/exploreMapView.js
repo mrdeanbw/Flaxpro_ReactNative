@@ -201,18 +201,18 @@ class ExploreMapView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.professionalsClients && nextProps.professionalsClients.length && nextProps.professionalsClients!==this.state.professionalsClients) {
+    if (nextProps.professionalsClients && nextProps.professionalsClients!==this.state.professionalsClients) {
       const cluster = this.createCluster(nextProps.professionalsClients);
-      const regionValue = this.state.region.__getValue();
+      const markers = this.getMarkers(cluster, this.state.region);
       this.setState({
-        cluster: cluster,
+        cluster,
+        markers,
       });
-      this.onRegionChange(regionValue)
     }
-    let locationForFocus = {};
+    let locationForFocus = { coordinate: this.state.region.__getValue()};
     switch (true) {
       case nextProps.searchAddress &&  nextProps.searchAddress!==this.state.searchAddress :
-        locationForFocus =  nextProps.searchAddress;
+        locationForFocus = nextProps.searchAddress;
         this.setState({ searchAddress: locationForFocus });
         break;
       case nextProps.currentLocation &&  nextProps.currentLocation!==this.state.currentLocation :
@@ -294,9 +294,10 @@ class ExploreMapView extends Component {
 
   onRegionChange(region) {
     this.state.region.setValue(region);
+    const markers = this.getMarkers(this.state.cluster, this.state.region);
     this.setState({
       region: this.state.region,
-      markers: this.getMarkers(this.state.cluster, this.state.region)
+      markers
     });
   }
 
@@ -384,9 +385,6 @@ class ExploreMapView extends Component {
           duration: 0,
         }).start();
       }
-      this.setState({
-        markers: this.getMarkers(this.state.cluster, this.state.region)
-      });
     }
   };
 
@@ -568,14 +566,15 @@ class ExploreMapView extends Component {
       panY,
       canMoveHorizontal,
       scrollX,
-      scrollY
+      scrollY,
+      markers
     } = this.state;
 
     const { professionalsClients=[], gymLocations, user } = this.props;
 
     const animations = professionalsClients.map( (item, index) =>
       getMarkerState(panX, panY, scrollY, index)
-    );
+    ) || [];
 
     if(professionalsClients.length){
 
@@ -623,7 +622,7 @@ class ExploreMapView extends Component {
             onLongPress={ () => this.onTapMap() }
           >
             {
-              this.state.markers.map( (marker, i) => {
+              professionalsClients.length > 0 && markers.map( (marker, i) => {
                 let selected,
                   markerOpacity,
                   markerScale,
