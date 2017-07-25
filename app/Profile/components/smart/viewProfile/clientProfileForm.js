@@ -85,8 +85,8 @@ export default class ClientProfileForm extends Component {
     const { selectedOption } = this.state;
 
     if (selectedOption !== option) {
-      const { getMySessions } = this.props;
-      getMySessions({byField: 'day'})
+      const { getSchedule } = this.props;
+      getSchedule();
       this.onSchedule();
       this.setState({ selectedOption });
     }
@@ -230,7 +230,7 @@ export default class ClientProfileForm extends Component {
     this.onShowMoreLess(true);
     const { getScheduleById, profile: { user } } = this.props;
     getScheduleById({ user });
-    Actions.ScheduleForm();
+    Actions.ScheduleForm({ editable: false });
   }
 
   get dialogCommunication () {

@@ -1,34 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
   Dimensions,
-  TextInput,
   ScrollView,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import DatePicker from 'react-native-datepicker';
 import { connect } from 'react-redux';
 
 import Calendar from './calendar/Calendar';
 
-import Ramda from 'ramda';
+import R from 'ramda';
 import Moment from 'moment';
 
 const { width, height } = Dimensions.get('window');
 import * as CommonConstant from '../../../Components/commonConstant';
 const background = require('../../../Assets/images/background.png');
-const downArrow = require('../../../Assets/images/down_arrow.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
 const edit = require('../../../Assets/images/edit.png');
 
@@ -36,135 +29,23 @@ const constants = {
   BASIC_INFO: 'BASIC INFO',
   CALENDAR: 'CALENDAR'
 };
-const schedules = [
-  {
-    date: '2017-06-10',
-    times: [
-      {
-        start: '08:00 AM',
-        end: '10:00 AM',
-      },
-      {
-        start: '08:10 AM',
-        end: '10:10 AM',
-      },
-    ],
-  },
-  {
-    date: '2017-06-15',
-    times: [
-      {
-        start: '08:30 AM',
-        end: '10:30 AM',
-      },
-      {
-        start: '08:40 AM',
-        end: '10:40 AM',
-      },
-    ],
-  },
-  {
-    date: '2017-06-20',
-    times: [
-      {
-        start: '08:20 AM',
-        end: '10:20 AM',
-      },
-      {
-        start: '08:30 AM',
-        end: '10:30 AM',
-      },
-    ],
-  },
-  
-];
 
 class ScheduleForm extends Component {
+
+  static propTypes = {
+    editable: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    editable: true,
+  };
 
   constructor(props) {
     super(props);
     this.state = {
-      schedules: props.sessions,
       selectedDates: [Moment().format('YYYY-MM-DD')],
       selectedOption: constants.CALENDAR,
     };
-  }
-
-  componentWillReceiveProps(newProps) {
-
-    if (newProps.status == 'ClientScheduleRequest') {
-
-    } else if (newProps.status == 'ClientScheduleSuccess') {
-
-    } else if (newProps.status == 'ClientScheduleError') {
-
-    }
-  }
-
-  addTimeTemplate() {
-    return(
-      <View>
-        <View style={ styles.sectionTitleContainer }>
-          <Ionicons
-            name="ios-time-outline"
-            size={ 30 }
-            color="#565656"
-            style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
-          />
-          <Text style={ styles.textSectionTitle }>Select Time</Text>
-        </View>
-
-        <View style={ styles.timeMainContainer }>
-          <ScrollView>
-            { this.showSchedule() }
-
-            <View style={ styles.buttonWrapper }>
-              <TouchableOpacity
-                onPress={ () => this.onAddTime() }
-              >
-                <Ionicons
-                  name="ios-add-circle-outline"
-                  size={ 40 }
-                  color="#717171"
-                  style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
-                />
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </View>
-
-        <View style={ styles.buttonWrapper }>
-          <TouchableOpacity activeOpacity={ .5 } onPress={ () => this.onSetSchedule() }>
-            <View style={ styles.scheduleButton }>
-              <Text style={ styles.buttonText }>Set Schedule</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  }
-
-  onAddTime() {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDates))(this.state.schedules);
-
-    const { schedules } = this.state;
-      
-    if (index == -1 ) {
-      const data = {
-        date: this.state.selectedDates,
-        times: [
-          {
-            start: '08:00 AM',
-            end: '09:00 AM',
-          }
-        ]
-      };
-      schedules.push( data );
-    } else {
-      schedules[index].times.push({ start: '08:00 AM', end: '09:00 AM' });
-    }
-
-    this.setState({ schedules: schedules });
   }
 
   onSelectDate(date) {
@@ -178,34 +59,13 @@ class ScheduleForm extends Component {
     this.setState({ selectedDates });
   }
 
-  onChangeStartTime(time, entryIndex) {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
-
-    const { schedules } = this.state;
-    schedules[index].times[entryIndex].start = time;
-    this.setState({ schedules: schedules });
-  }
-
-  onChangeEndTime(time, entryIndex) {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules);
-
-    const { schedules } = this.state;
-    schedules[index].times[entryIndex].end = time;
-    this.setState({ schedules: schedules });
-  }
-
-
-  onSetSchedule() {
-    Actions.pop();
-  }
-
   onBack() {
     Actions.pop();
   }
   onChangeOptions(option) {
     const { selectedOption } = this.state;
 
-    if (selectedOption != option) {
+    if (selectedOption !== option) {
       Actions.pop();
     }
   }
@@ -230,12 +90,18 @@ class ScheduleForm extends Component {
 
           <Text style={ styles.textTitle }>SCHEDULE</Text>
 
-          <TouchableOpacity
-            onPress={ () => this.onEdit() }
-            style={ styles.navButtonWrapper }
-          >
-            <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
-          </TouchableOpacity>
+          {
+            this.props.editable ?
+              <TouchableOpacity
+                onPress={ () => this.onEdit() }
+                style={ styles.navButtonWrapper }
+              >
+                <Image source={ edit } style={ styles.imageEdit } resizeMode="cover"/>
+              </TouchableOpacity>
+              :
+              <View style={ styles.navButtonWrapper }/>
+          }
+
         </View>
 
         <View style={ styles.navigateButtons }>
@@ -255,77 +121,9 @@ class ScheduleForm extends Component {
     );
   }
 
-  showSchedule() {
-    let index = Ramda.findIndex(Ramda.propEq('date', this.state.selectedDate))(this.state.schedules)
-    
-    if (index == -1)
-      return null;
-
-    return this.state.schedules[index].times.map((entry, index) => {
-      return (
-        <View key={ index } style={ styles.timeRowContainer }>
-          <DatePicker
-            date={ entry.start }
-            mode="time"
-            format="hh:mm A"
-            confirmBtnText="Done"
-            cancelBtnText="Cancel"
-            is24Hour={ false }
-            iconSource={ downArrow }
-            style = { styles.calendarTime }
-            customStyles={{
-              dateInput: {
-                borderColor: "transparent",
-                alignItems: "center",
-                height: 25,
-              },
-              dateText: {
-                color: "#4d4d4d",
-                fontSize: 20,
-              },
-              dateIcon: {
-                width: 18,
-                height: 10,
-              },
-            }}
-            onDateChange={ (time) => this.onChangeStartTime(time, index) }
-          />
-          <Text style={ styles.textTimeTo }>To</Text>
-          <DatePicker
-            date={ entry.end }
-            mode="time"
-            format="hh:mm A"
-            confirmBtnText="Done"
-            cancelBtnText="Cancel"
-            is24Hour={ false }
-            iconSource={ downArrow }
-            style = { styles.calendarTime }
-            customStyles={{
-              dateInput: {
-                borderColor: "transparent",
-                alignItems: "center",
-                height: 25,
-              },
-              dateText: {
-                color: "#4d4d4d",
-                fontSize: 20,
-              },
-              dateIcon: {
-                width: 18,
-                height: 10,
-              },
-            }}
-            onDateChange={ (time) => this.onChangeEndTime(time, index) }
-          />
-        </View>
-      );
-    });    
-  }
-
   render() {
-    const { user, profile: { sessions } } = this.props;
+    const { auth, profile: { schedule, user } } = this.props;
 
-    console.log('==========', sessions);
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -335,7 +133,7 @@ class ScheduleForm extends Component {
             <Calendar
               customStyle={ customStyle }
               dayHeadings={ ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ] }
-              eventDates={ Ramda.pluck('date')(sessions) }
+              eventDates={ R.pluck('date')(schedule) }
               nextButtonText={ '>' }
               prevButtonText={'<'}
               showControls={ true }
@@ -345,15 +143,15 @@ class ScheduleForm extends Component {
             />
             <ScrollView showsVerticalScrollIndicator={true}>
             {
-              sessions.filter((e)=>this.state.selectedDates.includes(Moment(new Date(e.date)).format('YYYY-MM-DD'))).map((day, index) => (
+              schedule.filter((e)=>this.state.selectedDates.includes(Moment(new Date(e.date)).format('YYYY-MM-DD'))).map((day, index) => (
                 <View key={index}>
                   <View style={ styles.sectionTitleContainer }>
 
                     <Text style={ styles.textSectionTitle }>{day.date}</Text>
                   </View>
                   {
-                    (day.sessions || day.schedules).map((session) => (
-                    user.role === CommonConstant.user_client ?
+                    day.schedules.map((session) => (
+                      auth.user.role === CommonConstant.user_client ?
                       <View style={ styles.timeMainContainer } key={session._id}>
                         <View style={ styles.timeRowContainer}>
                           <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
@@ -363,7 +161,7 @@ class ScheduleForm extends Component {
                         </View>
                         <View style={ styles.timeRowContainer}>
                           <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
-                          <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_client ? 'professional': 'client'].name || 'No Name'}</Text>
+                          <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_professional ? 'professional': 'client'].name || 'No Name'}</Text>
                         </View>
                       </View>
                       :
@@ -373,7 +171,7 @@ class ScheduleForm extends Component {
                           <View style={ styles.separator}>
                             <View style={ styles.timeRowContainer}>
                               <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
-                              <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_client ? 'professional': 'client'].name || 'No Name'}</Text>
+                              <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_professional ? 'professional': 'client'].name || 'No Name'}</Text>
                             </View>
                           </View>
                         </View>
@@ -584,8 +382,6 @@ const styles = StyleSheet.create({
 });
 export default connect(state => ({
     profile: state.profile,
-    user: state.auth.user,
-  }),
-  (dispatch) => ({
+    auth: state.auth,
   })
 )(ScheduleForm);
