@@ -169,6 +169,7 @@ class EditAvailabilityForm extends Component {
     if (this.checkSchedule()) return Alert.alert(`Selected time "from" should be less than time "to". Please check your schedule`);
     this.state.schedule.forEach(e => data.push(...e.schedules));
     this.props.createSchedule(data);
+    Actions.pop();
   }
 
   onBack() {
