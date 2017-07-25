@@ -69,7 +69,7 @@ export const getScheduleById = (data) => async (dispatch, store) => {
 
   try {
     const response = await request(url, options, auth);
-    dispatch(updateProfileSuccess({sessions: response}));
+    dispatch(updateProfileSuccess({schedule: response}));
   } catch (error) {
     const error =
       `Profile Error: getScheduleById()
