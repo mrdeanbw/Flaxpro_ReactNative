@@ -87,7 +87,7 @@ export default class FilterForm extends Component {
 
   render() {
     const { status } = this.props;
-    let scale = (width) / 104 ;
+    let scale = (width) / 110  ;
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -123,7 +123,7 @@ export default class FilterForm extends Component {
                     labels.gender.map(value => {
                       return (
                         <RadioButton
-                          style={ styles.checkbox }
+                          iconStyle={ styles.checkbox }
                           key={ value }
                           label={ value }
                           checked={ this.state.filters.gender === value }
@@ -138,7 +138,7 @@ export default class FilterForm extends Component {
               <View style={[ styles.cellContainer,  !this.state.isSelected.age && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Age', stateName: 'age'})}
                 <View style={ styles.viewSlider }>
-                  <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.filters.age -15) * scale}] }>
+                  <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.filters.age -9) * scale}] }>
                     <Animated.View style={ styles.bubble }>
                       <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonTextChecked] }>{ this.state.filters.age }</Animated.Text>
                     </Animated.View>
@@ -217,7 +217,6 @@ const styles = StyleSheet.create({
     opacity: .5,
   },
   checkbox: {
-    marginRight: -8,
     marginLeft: 30,
     paddingVertical: 0,
   },
@@ -295,7 +294,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 5,
     flex: 0,
-    alignSelf: 'flex-start',
+    // alignSelf: 'flex-start',
     backgroundColor: '#fff',
     borderRadius: 5,
     borderColor: '#fff',

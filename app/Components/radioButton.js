@@ -5,7 +5,7 @@ import React, {
 
 import {
   Text,
-  View,
+  TouchableOpacity,
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,8 +18,12 @@ export default function RadioButton(props) {
       color: '#fff',
     },
     icon: {
-      marginLeft: -10,
+      // marginLeft: -10,
     },
+    content: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    }
   });
 
   function onPress() {
@@ -27,24 +31,21 @@ export default function RadioButton(props) {
   }
 
   return (
-    <Icon.Button
-      {...props}
-      name={ iconName }
-      size={ props.size }
-      backgroundColor={ props.backgroundColor }
-      color={ props.color }
-      iconStyle={ [styles.icon, props.iconStyle, props.checked && props.checkedIconStyle] }
-      onPress={ onPress }
-      activeOpacity={ props.activeOpacity }
-      underlayColor={ props.underlayColor }
-      borderRadius={ props.borderRadius }
-    >
-      <Text
-        style={ [styles.label, props.labelStyle] }
-      >
+    <TouchableOpacity onPress={ onPress } style={styles.content}>
+      <Icon
+        name={ iconName }
+        size={ props.size }
+        backgroundColor={ props.backgroundColor }
+        color={ props.color }
+        style={ [styles.icon, props.iconStyle, props.checked && props.checkedIconStyle] }
+        activeOpacity={ props.activeOpacity }
+        underlayColor={ props.underlayColor }
+        borderRadius={ props.borderRadius }
+      />
+      <Text style={ [styles.label, props.labelStyle] } >
         {props.label}
       </Text>
-    </Icon.Button>
+    </TouchableOpacity>
   );
 }
 
