@@ -43,7 +43,7 @@ class ScheduleForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedDates: [Moment().format('YYYY-MM-DD')],
+      selectedDates: [],
       selectedOption: constants.CALENDAR,
     };
   }
@@ -140,6 +140,9 @@ class ScheduleForm extends Component {
               showEventIndicators={ true }
               isSelectableDay={ true }
               onDateSelect={ (date) => this.onSelectDate(date) }
+              selectedDate={this.state.selectedDates}
+              onTouchNext={()=> { this.setState({selectedDates: []}) } }
+              onTouchPrev={()=> { this.setState({selectedDates: []}) } }
             />
             <ScrollView showsVerticalScrollIndicator={true}>
             {
