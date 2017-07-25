@@ -17,6 +17,7 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { GiftedChat } from 'react-native-gifted-chat';
 import OfferMessage from './offerMessage';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
+import Send from './chat-components/Send';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,7 +39,7 @@ export default class ChatForm extends Component {
     }
   }
 
-  onSend(messages = []) {
+  onSend(messages) {
     this.props.sendMessage(this.props.id, messages[0].text);
   }
 
@@ -76,6 +77,32 @@ export default class ChatForm extends Component {
     );
   }
 
+  renderSend(data) {
+    const text = data.text.trim();
+    let buttonDisabled = true,
+        buttonStyle = styles.sendButtonBlocked;
+    
+    if (text) {
+      buttonDisabled = false;
+      buttonStyle = styles.sendButton;
+    }
+
+    return (
+      <TouchableOpacity
+        style={ styles.sendButtonWrapper }
+        onPress={ () => {
+          data.onSend({text: data.text.trim()}, true);
+        }}
+        disabled={ buttonDisabled }
+      >
+        <Image 
+          source={require('../../../Assets/images/send_message.png')}
+          style={ buttonStyle }
+        />
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     const { user } = this.props.auth.user;
     return this.props.loadingMessages ?
@@ -97,7 +124,8 @@ export default class ChatForm extends Component {
                 user={{
                   _id: user,
                 }}
-                renderCustomView={this.renderCustomView}
+                renderCustomView={ this.renderCustomView }
+                renderSend={ this.renderSend }
               />
             </View>
           </Image>
@@ -136,5 +164,17 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 9.2,
     backgroundColor: '#fff',
+  },
+  sendButton: {
+    width: 30,
+    height: 30,
+  },
+  sendButtonBlocked: {
+    width: 30,
+    height: 30,
+    opacity: 0.3,
+  },
+  sendButtonWrapper: {
+    alignSelf: 'center',
   },
 });
