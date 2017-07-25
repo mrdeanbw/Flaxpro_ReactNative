@@ -17,7 +17,6 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { GiftedChat } from 'react-native-gifted-chat';
 import OfferMessage from './offerMessage';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
-import Send from './chat-components/Send';
 
 const { width, height } = Dimensions.get('window');
 
