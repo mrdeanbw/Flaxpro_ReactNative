@@ -40,6 +40,7 @@ class EditAvailabilityForm extends Component {
     this.state = {
       schedule: [...props.profile.schedule],
       selectedDates: [],
+      equalTimes: [],
     };
   }
 
@@ -72,12 +73,13 @@ class EditAvailabilityForm extends Component {
           existDate ? existDate.schedules.push(time) : schedule.push({date, schedules: [time]});
           break;
         case Number.isInteger(start) :
-          existDate.schedules[index].from = time.from;
+          existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") === this.state.equalTimes[index].from)[0].from = time.from;
           break;
         case Number.isInteger(end) :
-          existDate.schedules[index].to = time.to;
+          existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") === this.state.equalTimes[index].from)[0].to = time.to;
           break;
       }
+      this.findEqualTimes(selectedDates);
       this.setState({schedule})
     };
 
@@ -131,8 +133,9 @@ class EditAvailabilityForm extends Component {
     if (selectedDates.length && Ramda.find(Ramda.propEq('date', day))(selectedDates)){
       selectedDates.splice(Ramda.findIndex(Ramda.propEq('date', day))(selectedDates), 1)
     } else {
-      selectedDates.push(existDate ? {date:day, schedules:[...existDate.schedules]} : {date:day, schedules:[]})
+      selectedDates.push({date:day, schedules: existDate ? [...existDate.schedules] : []})
     }
+    this.findEqualTimes(selectedDates);
     this.setState({ selectedDates });
   }
 
@@ -148,13 +151,14 @@ class EditAvailabilityForm extends Component {
 
   onRemoveTime(entry) {
     const selectedDates = [...this.state.selectedDates];
-    const schedule = [...this.state.schedule];
+    let schedule = [...this.state.schedule];
 
     selectedDates.forEach( selected => {
-      const existDate = Ramda.find(Ramda.propEq('date', selected.date))(schedule);
-      selected.schedules = selected.schedules.filter(e => Moment(e.from).format("hh:mm A") !== Moment(entry.from).format("hh:mm A"));
-      existDate.schedules = existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") !== Moment(entry.from).format("hh:mm A"));
+      const existDate = Ramda.find(Ramda.propEq('date', selected.date))(schedule) ;
+      selected.schedules = selected.schedules.filter(e => Moment(e.from).format("hh:mm A") !== entry.from);
+      if(existDate) existDate.schedules = existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") !== entry.from);
     });
+    schedule = schedule.filter(e => !Ramda.isEmpty(e.schedules));
     this.setState({ selectedDates, schedule });
 
   }
@@ -196,81 +200,98 @@ class EditAvailabilityForm extends Component {
     );
   }
 
-  get showSchedule() {
-    return this.state.selectedDates.map((day, indexDays) => (
-      <View key={indexDays}>
-        {
-          day.schedules.map((entry, index) => (
-              <View key={ index } style={ [styles.timeRowContainer, styles.timeBlock] }>
+  findEqualTimes(selectedDates) {
+    let arr = selectedDates.filter(e => Ramda.isEmpty(e.schedules));
+    if(arr.length) return [];
 
-                <DatePicker
-                  date={ new Date(entry.from) }
-                  mode="time"
-                  format="hh:mm A"
-                  confirmBtnText="Done"
-                  cancelBtnText="Cancel"
-                  is24Hour={ false }
-                  iconSource={ downArrow }
-                  style = { styles.calendarTime }
-                  customStyles={{
-                    dateInput: {
-                      borderColor: "transparent",
-                      alignItems: "center",
-                      height: 25,
-                    },
-                    dateText: {
-                      color: "#4d4d4d",
-                      fontSize: 20,
-                    },
-                    dateIcon: {
-                      width: 18,
-                      height: 10,
-                    },
-                  }}
-                  onDateChange={ (time) => this.onChangeStartTime(time, index) }
-                />
-                <Text style={ styles.textTimeTo }>To</Text>
-                <DatePicker
-                  date={ new Date(entry.to) }
-                  mode="time"
-                  format="hh:mm A"
-                  confirmBtnText="Done"
-                  cancelBtnText="Cancel"
-                  is24Hour={ false }
-                  iconSource={ downArrow }
-                  style = { styles.calendarTime }
-                  customStyles={{
-                    dateInput: {
-                      borderColor: "transparent",
-                      alignItems: "center",
-                      height: 25,
-                    },
-                    dateText: {
-                      color: "#4d4d4d",
-                      fontSize: 20,
-                    },
-                    dateIcon: {
-                      width: 18,
-                      height: 10,
-                    },
-                  }}
-                  onDateChange={ (time) => this.onChangeEndTime(time, index) }
-                />
-                <TouchableOpacity
-                  onPress={ () => this.onRemoveTime(entry) }
-                >
-                  <EntypoIcons
-                    name="circle-with-cross"
-                    size={ 15 }
-                    color="#8d99a6"
-                    style={{position: 'relative', bottom: 10, left: 5}}
-                  />
-                </TouchableOpacity>
-              </View>
-            ))
-        }
+    let uniqArr = [];
+    selectedDates.forEach(e => {
+      uniqArr = Ramda.uniq([...uniqArr, ...e.schedules.map(s => ({
+          from: Moment(s.from).format("hh:mm A"),
+          to: Moment(s.to).format("hh:mm A")
+        }))
+      ]);
+    });
+    selectedDates.forEach(e => {
+      uniqArr = Ramda.intersectionWith(Ramda.eqBy(Ramda.prop('from')), uniqArr, e.schedules.map(s => ({
+          from: Moment(s.from).format("hh:mm A"),
+          to: Moment(s.to).format("hh:mm A")
+        }))
+      );
+    });
+    this.setState({equalTimes: uniqArr})
+  }
+
+  get showSchedule() {
+    return this.state.equalTimes.map((entry, index) => (
+      <View key={ index } style={ [styles.timeRowContainer, styles.timeBlock] }>
+
+        <DatePicker
+          date={ entry.from }
+          mode="time"
+          format="hh:mm A"
+          confirmBtnText="Done"
+          cancelBtnText="Cancel"
+          is24Hour={ false }
+          iconSource={ downArrow }
+          style = { styles.calendarTime }
+          customStyles={{
+            dateInput: {
+              borderColor: "transparent",
+              alignItems: "center",
+              height: 25,
+            },
+            dateText: {
+              color: "#4d4d4d",
+              fontSize: 20,
+            },
+            dateIcon: {
+              width: 18,
+              height: 10,
+            },
+          }}
+          onDateChange={ (time) => this.onChangeStartTime(time, index) }
+        />
+        <Text style={ styles.textTimeTo }>To</Text>
+        <DatePicker
+          date={ entry.to }
+          mode="time"
+          format="hh:mm A"
+          confirmBtnText="Done"
+          cancelBtnText="Cancel"
+          is24Hour={ false }
+          iconSource={ downArrow }
+          style = { styles.calendarTime }
+          customStyles={{
+            dateInput: {
+              borderColor: "transparent",
+              alignItems: "center",
+              height: 25,
+            },
+            dateText: {
+              color: "#4d4d4d",
+              fontSize: 20,
+            },
+            dateIcon: {
+              width: 18,
+              height: 10,
+            },
+          }}
+          onDateChange={ (time) => this.onChangeEndTime(time, index) }
+        />
+        <TouchableOpacity
+          onPress={ () => this.onRemoveTime(entry) }
+        >
+          <EntypoIcons
+            name="circle-with-cross"
+            size={ 15 }
+            color="#8d99a6"
+            style={{position: 'relative', bottom: 10, left: 5}}
+          />
+        </TouchableOpacity>
       </View>
     ))
+
   }
 
   render() {
@@ -300,6 +321,9 @@ class EditAvailabilityForm extends Component {
               showEventIndicators={ true }
               isSelectableDay={ true }
               onDateSelect={ (date) => this.onSelectDate(date) }
+              selectedDate={this.state.selectedDates.map(e => e.date)}
+              onTouchNext={()=> { this.setState({selectedDates: []}) } }
+              onTouchPrev={()=> { this.setState({selectedDates: []}) } }
             />
             <View style={ styles.sectionTitleContainer }>
               <Ionicons
@@ -308,7 +332,7 @@ class EditAvailabilityForm extends Component {
                 color="#565656"
                 style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
               />
-              <Text style={ styles.textSectionTitle }>Select Time</Text>
+              <Text style={ styles.textSectionTitle }>Select Time {this.state.selectedDates.length>1 && '(same for all selected dates)'}</Text>
             </View>
 
             <View style={ styles.timeMainContainer }>
