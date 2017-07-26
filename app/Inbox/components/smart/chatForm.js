@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 9.2,
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f4f4',
   },
   sendButton: {
     width: 30,
