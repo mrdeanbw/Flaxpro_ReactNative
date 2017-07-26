@@ -29,7 +29,8 @@ export default class OfferMessage extends Component {
       const buttonText = this.props.currentMessage.buttonName,
             notificationText = this.props.currentMessage.text,
             textStyles = this.props.position === 'left' ? styles.offerTextLeft : styles.offerTextRight,
-            textHeadStyles = this.props.position === 'left' ? styles.offerHeadTextLeft : styles.offerHeadTextRight;
+            textHeadStyles = this.props.position === 'left' ? styles.offerHeadTextLeft : styles.offerHeadTextRight,
+            username = this.props.currentMessage.user.name;
       
       return (
         <View
@@ -38,7 +39,7 @@ export default class OfferMessage extends Component {
           <Text
             style={ textHeadStyles }
           >
-            You received a proposal from Sara
+            { `You received a proposal from ${username}` }
           </Text>
           <Text
             style={ textStyles }
