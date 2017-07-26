@@ -202,7 +202,7 @@ class EditAvailabilityForm extends Component {
 
   findEqualTimes(selectedDates) {
     let arr = selectedDates.filter(e => Ramda.isEmpty(e.schedules));
-    if(arr.length) return [];
+    if(arr.length) return this.setState({equalTimes: []});
 
     let uniqArr = [];
     selectedDates.forEach(e => {
