@@ -14,7 +14,7 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, MessageText, Bubble } from 'react-native-gifted-chat';
 import OfferMessage from './offerMessage';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 
@@ -76,6 +76,38 @@ export default class ChatForm extends Component {
     );
   }
 
+  renderMessageText(props) {
+
+    switch (props.currentMessage.type) {
+      case 'chat': {
+        if (props.currentMessage.text) {
+          const {containerStyle, wrapperStyle, ...messageTextProps} = props;
+          return <MessageText
+            {...messageTextProps}
+            textStyle={
+              textMessageStyles.textStyle
+            }
+          />;
+        }
+        return null;
+      }
+      case 'notification': 
+        return null;
+      default: 
+        return null;
+    }
+  }
+
+  renderBubble(props) {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={ bubbleStyles.wrapperStyle }
+        textStyle={ bubbleStyles.textStyle }
+      /> 
+    );
+  }
+
   renderSend(data) {
     const text = data.text.trim();
     let buttonDisabled = true,
@@ -125,6 +157,8 @@ export default class ChatForm extends Component {
                 }}
                 renderCustomView={ this.renderCustomView }
                 renderSend={ this.renderSend }
+                renderMessageText={ this.renderMessageText }
+                renderBubble={ this.renderBubble }
               />
             </View>
           </Image>
@@ -177,3 +211,35 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
+const bubbleStyles = {
+  wrapperStyle: {
+    left: {
+      backgroundColor: '#4ac4fb',
+    },
+    right: {
+      backgroundColor: '#e5e5e5'
+    }
+  },
+  textStyle: {
+    left: {
+      color: 'white',
+    },
+    right: {
+      color: 'black',
+    },
+  }
+};
+
+export const textMessageStyles = {
+  textStyle: {
+    left: {
+      color: 'white',
+      fontSize: 14,
+    },
+    right: {
+      color: 'black',
+      fontSize: 14,
+    },
+  },
+}
