@@ -32,8 +32,6 @@ class SocketController {
     };
 
     subscribeSocket(socket, auth, inbox) {
-      const that = this;
-
       socket.on('connect', function() {
       });
 
@@ -46,6 +44,11 @@ class SocketController {
 
       socket.on('server:unreadCount', function(data) {
         store.dispatch(actions.updateUnreadChats(data.count)); 
+      });
+
+      socket.on('server:newChat', function(data) {
+        const newChat = data;
+        store.dispatch(actions.addNewChatResponse(newChat));
       });
 
       socket.on('disconnect', function() {

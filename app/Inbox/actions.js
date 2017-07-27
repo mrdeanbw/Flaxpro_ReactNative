@@ -36,6 +36,11 @@ const addNewChat = (chat) => {
   }
 };
 
+export const addNewChatResponse = (response) => {
+  const newChat = mapChatResponseToState(response.chat);
+  return addNewChat(newChat);
+};
+
 export const updateChatsWithMessage = (response) => {
   const message = mapMessageByType(response);
   return {
