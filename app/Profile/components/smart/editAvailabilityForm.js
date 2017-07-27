@@ -159,6 +159,7 @@ class EditAvailabilityForm extends Component {
       if(existDate) existDate.schedules = existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") !== entry.from);
     });
     schedule = schedule.filter(e => !Ramda.isEmpty(e.schedules));
+    this.findEqualTimes(selectedDates);
     this.setState({ selectedDates, schedule });
 
   }

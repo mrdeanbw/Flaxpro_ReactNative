@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Image,
-  Dimensions,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
@@ -19,16 +18,18 @@ import Calendar from './calendar/Calendar';
 import R from 'ramda';
 import Moment from 'moment';
 
-const { width, height } = Dimensions.get('window');
-import * as CommonConstant from '../../../Components/commonConstant';
+import {
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  user_client as userClient,
+  user_professional as userProfessional,
+  INFO_CALENDAR_OPTIONS as constants,
+} from '../../../Components/commonConstant';
+
 const background = require('../../../Assets/images/background.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
 const edit = require('../../../Assets/images/edit.png');
-
-const constants = {
-  BASIC_INFO: 'BASIC INFO',
-  CALENDAR: 'CALENDAR'
-};
 
 class ScheduleForm extends Component {
 
@@ -154,7 +155,7 @@ class ScheduleForm extends Component {
                   </View>
                   {
                     day.schedules.map((session) => (
-                      auth.user.role === CommonConstant.user_client ?
+                      auth.user.role === userClient ?
                       <View style={ styles.timeMainContainer } key={session._id}>
                         <View style={ styles.timeRowContainer}>
                           <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
@@ -164,7 +165,7 @@ class ScheduleForm extends Component {
                         </View>
                         <View style={ styles.timeRowContainer}>
                           <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
-                          <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_professional ? 'professional': 'client'].name || 'No Name'}</Text>
+                          <Text style={ styles.textSectionTitle }>{session[user.role === userProfessional ? 'professional': 'client'].name || 'No Name'}</Text>
                         </View>
                       </View>
                       :
@@ -174,7 +175,7 @@ class ScheduleForm extends Component {
                           <View style={ styles.separator}>
                             <View style={ styles.timeRowContainer}>
                               <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
-                              <Text style={ styles.textSectionTitle }>{session[user.role === CommonConstant.user_professional ? 'professional': 'client'].name || 'No Name'}</Text>
+                              <Text style={ styles.textSectionTitle }>{session[user.role === userProfessional ? 'professional': 'client'].name || 'No Name'}</Text>
                             </View>
                           </View>
                         </View>
