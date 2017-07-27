@@ -87,13 +87,14 @@ class ClientExploreForm extends Component {
 
   componentWillMount(){
     const { getExploreClient } = this.props;
+    const { filter } = this.state;
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const location = {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         };
-        this.setState({currentLocation: {coordinate: position.coords}});
+        this.setState({currentLocation: {coordinate: position.coords}, filter: {...filter, ...location}});
         getExploreClient(location);
       },
       (error) => {
@@ -471,9 +472,6 @@ class ClientExploreForm extends Component {
     this.setState({ professions });
   }
 
-  today() {
-    return (new Date()).toDateString();
-  }
   onFilterByDate(date) {
     const { getProfessionals } = this.props;
     const { filter } = this.state;
