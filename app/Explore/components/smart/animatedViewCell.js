@@ -27,6 +27,7 @@ const propTypes = {
   name: PropTypes.string,
   description: PropTypes.string,
   rating: PropTypes.number,
+  experience: PropTypes.number,
   amount: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -47,7 +48,7 @@ class AnimatedViewCell extends Component {
   }
 
   render() {
-    const { width, height, avatar, name, description, rating, amount, user, profession = {} } = this.props;
+    const { width, height, avatar, name, description, experience, rating, amount, user, profession = {} } = this.props;
     const client = user.role === roleClient;
 
     const professionalClientData = {
@@ -80,6 +81,7 @@ class AnimatedViewCell extends Component {
         type: avatar ? "url" : "image",
         source: avatar,
       },
+      description: client ? `${experience} years experience` : description,
     };
 
     return (
@@ -102,7 +104,7 @@ class AnimatedViewCell extends Component {
               numberOfLines={ 1 }
               ellipsizeMode="tail"
             >
-              { description }
+              { professionalClientData.description }
             </Text>
             {
               professionalClientData.professionalProfessionBlock

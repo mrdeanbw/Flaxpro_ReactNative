@@ -44,6 +44,7 @@ class ExploreListView extends Component {
         rating={ rowData.rating }
         name={ rowData.name }
         description={ rowData.description }
+        experience={ rowData.experience }
         amount={ rowData.price }
         onPress={ () => this.onClickAnimatedViewCell(rowData) }
         user={ this.props.user }
