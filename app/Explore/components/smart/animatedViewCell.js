@@ -95,7 +95,7 @@ class AnimatedViewCell extends Component {
                     type={ professionalClientData.avatar.type }
                     avatarStyle={ { width: width * 0.36,height: height * 0.36,borderRadius: height * 0.18 } }
             />
-            <Text style={ styles.textName }>{ name }</Text>
+            <Text ellipsizeMode="tail" numberOfLines={1} style={ styles.textName }>{ name }</Text>
             {
               professionalClientData.professionalStarsBlock
             }
