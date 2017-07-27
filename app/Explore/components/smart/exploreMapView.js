@@ -23,6 +23,7 @@ import R from 'ramda';
 
 import BottomBar from './bottomBar';
 import MapClusterMarker from './mapClusterMarker';
+import { Avatar } from '../../../theme';
 
 import {
   WIDTH_SCREEN as width,
@@ -501,8 +502,9 @@ class ExploreMapView extends Component {
         <View style={ styles.professionalDialogContentContainer }>
           <View style={ styles.professionalDialogTopContainer }>
 
-            <Image source={ professionalClient.avatar }
-                   style={ styles.avatar }/>
+            <Avatar source={ professionalClient.avatar }
+                    type={ professionalClient.avatar ? "url" : "image" }
+                    avatarStyle={ { width: 70, height: 70, borderRadius: 35 } }/>
             <View style={ styles.professionalTopSubContainer }>
               <View style={ styles.professionalNameRatingContainer }>
                 <Text style={ styles.textName }>{ professionalClient.name }</Text>

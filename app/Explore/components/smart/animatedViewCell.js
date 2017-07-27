@@ -10,13 +10,20 @@ import {
 } from 'react-native';
 
 import Stars from 'react-native-stars-rating';
-import * as CommonConstant from '../../../Components/commonConstant';
+import {
+  user_client as roleClient,
+  WIDTH_SCREEN as width,
+  HEIHT_SCREEN as height,
+  APP_COLOR as appColor,
+  FONT_STYLES as fontStyles
+} from '../../../Components/commonConstant';
+import { Avatar } from '../../../theme';
 
 const propTypes = {
   style: PropTypes.array,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
-  avatar: PropTypes.number,
+  avatar: PropTypes.string,
   name: PropTypes.string,
   description: PropTypes.string,
   rating: PropTypes.number,
@@ -25,6 +32,7 @@ const propTypes = {
     PropTypes.number,
   ]),
   onPress: PropTypes.func,
+  user: PropTypes.object,
 };
 
 class AnimatedViewCell extends Component {
@@ -40,7 +48,7 @@ class AnimatedViewCell extends Component {
 
   render() {
     const { width, height, avatar, name, description, rating, amount, user, profession = {} } = this.props;
-    const client = user.role === CommonConstant.user_client
+    const client = user.role === roleClient;
 
     const professionalClientData = {
       backgroundColor: client && profession.name ? profession.color : '#45c7f1',
@@ -68,6 +76,10 @@ class AnimatedViewCell extends Component {
           size={ 12 }
           color="white"
         />,
+      avatar: {
+        type: avatar ? "url" : "image",
+        source: avatar,
+      },
     };
 
     return (
@@ -77,7 +89,10 @@ class AnimatedViewCell extends Component {
           style={ [{ width: width }, { height: height }] }
         >
           <View style={ styles.topContainer }>
-            <Image source={ avatar } style={ [{ width: width * 0.36 }, { height: height * 0.36 }, { borderRadius: height * 0.18 }] } />
+            <Avatar source={ professionalClientData.avatar.source }
+                    type={ professionalClientData.avatar.type }
+                    avatarStyle={ { width: width * 0.36,height: height * 0.36,borderRadius: height * 0.18 } }
+            />
             <Text style={ styles.textName }>{ name }</Text>
             {
               professionalClientData.professionalStarsBlock
