@@ -157,7 +157,8 @@ const chooseButtons = (props, state, setState) => {
   const buttonDisabled = props.status ? props.status !== 'Pending' : false;
   switch(props.formType) {
     case SUMMARY_FORM_TYPES.ACCEPT: {
-      const isProf = props.role === professionalConst;
+      const isProf = props.role === professionalConst,
+            shouldDisplay = !buttonDisabled;
       let callbackAccept, callbackDecline;
       if (!isProf && !state.paymentMethod) {
         callbackAccept = () => {
@@ -173,10 +174,14 @@ const chooseButtons = (props, state, setState) => {
         callbackAccept = () => props.onReply(true, state.paymentMethod);
         callbackDecline = () => props.onReply(false, state.paymentMethod);
       }
-      return (<View style={ styles.bottomButtonWrapper }>
-              { button('accept', buttonDisabled, callbackAccept) }
-              { button('decline', buttonDisabled, callbackDecline) }
-            </View>);
+      return shouldDisplay ? (
+              <View style={ styles.bottomButtonWrapper }>
+                { button('accept', buttonDisabled, callbackAccept) }
+                { button('decline', buttonDisabled, callbackDecline) }
+              </View>
+            )
+            :
+            null;
     }
     case SUMMARY_FORM_TYPES.VIEW: {
       return null;
