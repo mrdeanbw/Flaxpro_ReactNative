@@ -18,6 +18,7 @@ function getAddressSuccess(data) {
 }
 
 function createUserSuccess(data) {
+  socket.init(data.user._id);
   return {
     type: types.CREATE_USER_SUCCESS, ...data
   };
