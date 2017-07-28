@@ -570,10 +570,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20
   },
-  communicationClose: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    position: 'absolute',
+  communicationClose: {position: 'absolute',
     right: 7,
     top: 7,
     color: 'gray'

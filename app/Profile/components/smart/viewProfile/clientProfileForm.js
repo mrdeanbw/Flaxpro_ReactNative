@@ -727,8 +727,6 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   communicationClose: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
     position: 'absolute',
     right: 7,
     top: 7,
