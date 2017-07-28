@@ -53,6 +53,11 @@ class MainForm extends Component {
 
   };
 
+  checkProfile(){
+    const { auth: { user }, profile, getFullProfile } = this.props;
+    if(user._id !== profile.user._id) getFullProfile();
+  }
+
   render() {
     const { auth: {user} } = this.props;
     let tabNavigator = [
@@ -96,7 +101,10 @@ class MainForm extends Component {
         selected: this.state.selectedTab === "profile",
         renderIcon: () => (<Image source={ profileIcon } style={ styles.iconTabbarProfile }/>),
         renderSelectedIcon: () => (<Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/>),
-        onPress: () => this.setState({ selectedTab: 'profile' }),
+        onPress: () => {
+          this.setState({ selectedTab: 'profile' });
+          this.checkProfile();
+        },
         children: <ViewProfile/>,
       },
       /* Account*/
