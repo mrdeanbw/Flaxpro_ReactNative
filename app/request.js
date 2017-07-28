@@ -96,7 +96,6 @@ function checkAuthStatus(response) {
  * @return {object|undefined} Returns either the response, or throws an error
  */
 function checkSuccessStatus(response) {
-  console.log('========', response)
   if (response.status >= 200 && response.status < 300) {
     return response;
   }

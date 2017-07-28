@@ -37,9 +37,9 @@ class AuthForm extends Component {
     super(props);
 
     this.state = {
-      email : 'client@mail.com', //TODO: for testing
-      password : 'password', //TODO: for testing
-      confirmPassword: 'password',
+      email : '',
+      password : '',
+      confirmPassword: '',
       selectedButton: 2,
       loginRequest: false,
       registerRequest: false,
@@ -82,9 +82,9 @@ class AuthForm extends Component {
   onShowLogIn() {
     this.setState({
       selectedButton: 2,
-      email : 'pro@mail.com',
-      password : 'password',
-      confirmPassword : 'password',
+      email : '',
+      password : '',
+      confirmPassword : '',
       loginRequest: false,
       registerRequest: false
     });

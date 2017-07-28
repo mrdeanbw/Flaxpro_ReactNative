@@ -127,7 +127,7 @@ export default class ChatForm extends Component {
         disabled={ buttonDisabled }
       >
         <Image 
-          source={require('../../../Assets/images/send_messag.png')}
+          source={require('../../../Assets/images/send_message.png')}
           style={ buttonStyle }
         />
       </TouchableOpacity>
