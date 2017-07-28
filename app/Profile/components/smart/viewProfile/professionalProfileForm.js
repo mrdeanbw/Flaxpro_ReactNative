@@ -402,12 +402,12 @@ export default class ProfessionalProfileForm extends Component {
                     </View>
                     :
                     <View style={ styles.actionBtnContainer }>
-                      <TouchableOpacity onPress={() => this.onMessage()} >
-                        <View style={ styles.emptyGreenBtn }>
+                      <View style={ styles.emptyGreenBtn }>
+                        <TouchableOpacity onPress={() => this.onMessage()} >
                           <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
                           <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
-                        </View>
-                      </TouchableOpacity>
+                        </TouchableOpacity>
+                      </View>
                       <View style={ styles.greenBtn }>
                         <TouchableOpacity
                           onPress={ () => this.onHire() }
@@ -636,20 +636,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   greenBtn: {
+    flex:1,
     flexDirection: 'column',
     backgroundColor: '#b5e07b',
     borderRadius: 20,
-    width: 180,
-    padding:5
-
+    paddingVertical:5,
+    paddingHorizontal:10,
+    marginHorizontal: 5,
   },
   emptyGreenBtn: {
     borderWidth: 1,
     borderColor: '#b5e07b',
-    width: 180,
+    flex:1,
+    flexDirection: 'column',
     borderRadius: 20,
-    padding:5,
-
+    paddingVertical:5,
+    paddingHorizontal:10,
+    marginHorizontal: 5,
   },
   actionBtnContainer: {
     flexDirection: 'row',
