@@ -436,7 +436,12 @@ export default class ProfessionalProfileForm extends Component {
                     <View style={ styles.infoRowContainer }>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Location : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }>{this.user.location.originalAddress || this.user.location.city}</Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle, styles.container] }
+                              ellipsizeMode="tail"
+                              numberOfLines={1}
+                        >
+                          {this.user.location.originalAddress || this.user.location.city} sdjlkjfsd s;jdnf;sjdnf sdkjfbn;skdjbf skdjfblshrbgu fse
+                        </Text>
                       </View>
                     </View>
                     <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>
@@ -610,7 +615,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#0fcefc',
     borderRadius: 10,
-    paddingVertical: 2,
     paddingHorizontal: 10,
   },
   btnTextHeader: {
@@ -795,6 +799,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   infoRowContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

@@ -359,11 +359,16 @@ export default class ClientProfileForm extends Component {
                       </View>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Age : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.age}</Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.age} years old</Text>
                       </View>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Address : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue, !editable && styles.borderStyle] }>{user.location.originalAddress || user.location.city}</Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue, !editable && styles.borderStyle, styles.container] }
+                              ellipsizeMode="tail"
+                              numberOfLines={1}
+                        >
+                          {user.location.originalAddress || user.location.city}
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -591,10 +596,11 @@ const styles = StyleSheet.create({
     paddingTop: 5,
   },
    columnContainer: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingTop: 5,
+     flex: 1,
+     flexDirection: 'column',
+     justifyContent: 'flex-start',
+     alignItems: 'flex-start',
+     paddingTop: 5,
   },
   infoRowLeftContainer: {
     flex: 1,
