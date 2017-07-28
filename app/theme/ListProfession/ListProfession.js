@@ -34,7 +34,7 @@ class ListProfession extends Component {
         {
           data.contracts.map( (rowData, index) => (
             <View style={styles.list} key={index}>
-              <ListItem data={rowData} cancelContract={this.props.cancelContract} role={this.props.role}/>
+              <ListItem data={rowData} cancelContract={this.props.cancelContract} role={this.props.role} startChat={ this.props.startChat }/>
             </View>
           ))
         }

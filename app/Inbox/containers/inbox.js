@@ -12,15 +12,22 @@ class Inbox extends Component {
   }
 
   render() {
-    const { actions, status } = this.props;
+    const { actions, inbox, auth, selectedTab } = this.props;
     return (
-      <InboxForm { ...actions } status/>
+      <InboxForm 
+        { ...actions }
+        inbox={ inbox }
+        auth={ auth }
+        selectedTab={ selectedTab }
+      />
     );
   }
 }
 
 export default connect(state => ({
-    status: state.auth.status
+    inbox: state.inbox,
+    auth: state.auth,
+    selectedTab: state.main.selectedTab,
   }),
   (dispatch) => ({
     actions: bindActionCreators(inboxActions, dispatch)

@@ -5,6 +5,8 @@ import hire from './Hire/reducer';
 import account from './Account/reducer';
 import profile from './Profile/reducer';
 import contracts from './Contracts/reducer';
+import inbox from './Inbox/reducer';
+import main from './Main/reducer';
 
 export {
   auth,
@@ -14,4 +16,6 @@ export {
   account,
   profile,
   contracts,
+  inbox,
+  main,
 };

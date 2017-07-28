@@ -8,15 +8,24 @@ import * as mainActions from '../actions';
 import * as profileActions from '../../Profile/actions';
 
 const Main = (props) => {
-    const { actions, auth, profileActions, profile } = props;
+    const { actions, auth, unreadChats, main, profileActions, profile } = props;
     return (
-      <MainForm { ...actions }  auth={ auth } { ...profileActions }  profile={ profile }/>
+      <MainForm
+        { ...actions }  
+        auth={ auth }
+        unreadChats={ unreadChats }
+        main={ main }
+        { ...profileActions }
+        profile={ profile }
+      />
     );
 };
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
   profile: state.profile,
+  unreadChats: state.inbox.unreadChats,
+  main: state.main,
 });
 
 const mapDispatchToProps = (dispatch) => ({

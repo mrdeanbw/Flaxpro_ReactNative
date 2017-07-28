@@ -1,0 +1,1 @@
+export const MAIN_UPDATE_TAB = 'MAIN_UPDATE_TAB';

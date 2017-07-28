@@ -14,7 +14,9 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, MessageText, Bubble } from 'react-native-gifted-chat';
+import OfferMessage from './offerMessage';
+import FullScreenLoader from '../../../Components/fullScreenLoader';
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,46 +26,20 @@ const background = require('../../../Assets/images/background.png');
 export default class ChatForm extends Component {
   constructor(props) {
     super(props);
-     
-    this.state = {
-      messages: [],
-    };
-  }
-
-  componentWillReceiveProps(newProps) {
-
-    if (newProps.status == 'ChatRequest') {
-
-    } else if (newProps.status == 'ChatSuccess') {
-
-    } else if (newProps.status == 'ChatError') {
-
-    }
   }
 
   componentWillMount() {
-    this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: 'This is the greatest fitness app on earth and your avatar looks amazing',
-          createdAt: new Date(Date.UTC(2017, 2, 14, 17, 20, 0)),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
-          },
-        },
-      ],
-    });
+    this.props.getMessages(this.props.id);
   }
 
-  onSend(messages = []) {
-    this.setState( (previousState) => {
-      return {
-        messages: GiftedChat.append(previousState.messages, messages),
-      };
-    });
+  componentWillUnmount() {
+    if (this.props.unmountCallback) {
+      this.props.unmountCallback();
+    }
+  }
+
+  onSend(messages) {
+    this.props.sendMessage(this.props.id, messages[0].text);
   }
 
   onBack() {
@@ -71,7 +47,7 @@ export default class ChatForm extends Component {
   }
 
   get getShowNavBar() {
-    const { userName } = this.props;
+    const { username } = this.props;
 
     return (
       <View style={ styles.navBarContainer }>
@@ -85,34 +61,109 @@ export default class ChatForm extends Component {
           />
         </TouchableOpacity>
 
-        <Text style={ styles.textTitle }>{ userName }</Text>
+        <Text style={ styles.textTitle }>{ username }</Text>
 
         <View style={ styles.navButtonWrapper }/>
       </View>
     );
   }
 
-  render() {
-    const { status } = this.props;
+  renderCustomView(props) {
+    return (
+      <OfferMessage
+        {...props}
+      /> 
+    );
+  }
+
+  renderMessageText(props) {
+
+    switch (props.currentMessage.type) {
+      case 'chat': {
+        if (props.currentMessage.text) {
+          const {containerStyle, wrapperStyle, ...messageTextProps} = props;
+          return <MessageText
+            {...messageTextProps}
+            textStyle={
+              textMessageStyles.textStyle
+            }
+          />;
+        }
+        return null;
+      }
+      case 'notification': 
+        return null;
+      default: 
+        return null;
+    }
+  }
+
+  renderBubble(props) {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={ bubbleStyles.wrapperStyle }
+        textStyle={ bubbleStyles.textStyle }
+      /> 
+    );
+  }
+
+  renderSend(data) {
+    const text = data.text.trim();
+    let buttonDisabled = true,
+        buttonStyle = styles.sendButtonBlocked;
+    
+    if (text) {
+      buttonDisabled = false;
+      buttonStyle = styles.sendButton;
+    }
 
     return (
-      <View style={ styles.container }>
-        <Image source={ background } style={ styles.background } resizeMode="cover">
-          { this.getShowNavBar }
-          <View style={ styles.contentContainer }>
-            
-            <GiftedChat
-              messages={ this.state.messages }
-              onSend={ (messages = []) => this.onSend(messages) }
-              user={{
-                _id: 1,
-              }}
-            />
-
-          </View>
-        </Image>
-      </View>
+      <TouchableOpacity
+        style={ styles.sendButtonWrapper }
+        onPress={ () => {
+          data.onSend({text: data.text.trim()}, true);
+        }}
+        disabled={ buttonDisabled }
+      >
+        <Image 
+          source={require('../../../Assets/images/send_message.png')}
+          style={ buttonStyle }
+        />
+      </TouchableOpacity>
     );
+  }
+
+  render() {
+    const { user } = this.props.auth.user;
+    return this.props.loadingMessages ?
+      (
+        <FullScreenLoader />
+      )
+      :
+      ( 
+        <View style={ styles.container }>
+          <Image source={ background } style={ styles.background } resizeMode="cover">
+            { this.getShowNavBar }
+            <View style={ styles.contentContainer }>
+              <GiftedChat
+                messages={ this.props.messages }
+                actions={ 
+                  { getContractForAccept: this.props.getContractForAccept }
+                }
+                onSend={ this.onSend.bind(this) }
+                user={{
+                  _id: user,
+                }}
+                renderCustomView={ this.renderCustomView }
+                renderSend={ this.renderSend }
+                renderMessageText={ this.renderMessageText }
+                renderBubble={ this.renderBubble }
+              />
+            </View>
+          </Image>
+        </View>
+      )
   }
 }
 
@@ -145,6 +196,50 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 9.2,
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f4f4',
+  },
+  sendButton: {
+    width: 30,
+    height: 30,
+  },
+  sendButtonBlocked: {
+    width: 30,
+    height: 30,
+    opacity: 0.3,
+  },
+  sendButtonWrapper: {
+    alignSelf: 'center',
   },
 });
+
+const bubbleStyles = {
+  wrapperStyle: {
+    left: {
+      backgroundColor: '#4ac4fb',
+    },
+    right: {
+      backgroundColor: '#e5e5e5'
+    }
+  },
+  textStyle: {
+    left: {
+      color: 'white',
+    },
+    right: {
+      color: 'black',
+    },
+  }
+};
+
+export const textMessageStyles = {
+  textStyle: {
+    left: {
+      color: 'white',
+      fontSize: 14,
+    },
+    right: {
+      color: 'black',
+      fontSize: 14,
+    },
+  },
+}

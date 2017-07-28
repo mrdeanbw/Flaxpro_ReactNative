@@ -22,11 +22,25 @@ class Payment extends Component {
   }
 
   render() {
-    const { actions, status, user, hire } = this.props;
-
+    const { actions, status, user, hire, onBack, onSelected } = this.props;
+    
     switch(true) {
-      case hire.addCardForm: return <AddCardForm { ...actions } user={ user } hire={ hire }/>;
-      default: return <PaymentForm { ...actions } status user={user} hire={ hire } editable={this.props.editable}/>
+      case hire.addCardForm: 
+        return <AddCardForm
+            { ...actions }
+            user={ user }
+            hire={ hire }
+          />;
+      default: 
+        return <PaymentForm 
+          { ...actions } 
+          status 
+          user={user} 
+          hire={ hire }
+          onBack={ onBack }
+          onSelected={ onSelected }
+          editable={this.props.editable}
+        />
     }
   }
 }

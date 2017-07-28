@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import request, { toQueryString } from '../request';
 
+import socket from '../sockets';
 import { tempProfileData, allProfessions } from '../Components/tempDataUsers';
 
 
@@ -17,6 +18,7 @@ function getAddressSuccess(data) {
 }
 
 function createUserSuccess(data) {
+  socket.init(data.user._id);
   return {
     type: types.CREATE_USER_SUCCESS, ...data
   };
@@ -56,6 +58,8 @@ export const login = (email, password, token = null) => async (dispatch, store) 
   try {
     const response = await request(url, options);
     dispatch(loginSuccess({...response}))
+    const userId = response.user.user;
+    socket.init(userId);
   } catch (error) {
     dispatch(loginError({error: error.message}))
   }
@@ -104,6 +108,7 @@ export const getCurrentAddress = (location) => async (dispatch, store) => {
 
 export const logout = () => async (dispatch, store) => {
   dispatch({ type: types.LOGOUT });
+  socket.close();
 };
 
 function generateUsers(count, prof) {

@@ -43,6 +43,7 @@
     "redux": "3.5.2",
     "redux-actions": "0.11.0",
     "redux-thunk": "2.1.0",
+    "socket.io-client": "^2.0.3",
     "supercluster": "^2.3.0",
     "vanilla-masker": "^1.2.0"
   },
