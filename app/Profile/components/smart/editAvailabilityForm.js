@@ -287,7 +287,7 @@ class EditAvailabilityForm extends Component {
             name="circle-with-cross"
             size={ 15 }
             color="#8d99a6"
-            style={{position: 'relative', bottom: 10, left: 5}}
+            style={{position: 'relative', bottom: 10, left: 5, padding: 5}}
           />
         </TouchableOpacity>
       </View>
@@ -331,7 +331,7 @@ class EditAvailabilityForm extends Component {
                 name="ios-time-outline"
                 size={ 30 }
                 color="#565656"
-                style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
+                style={{ paddingTop:5, paddingHorizontal: 5 }}
               />
               <Text style={ styles.textSectionTitle }>Select Time {this.state.selectedDates.length>1 && '(same for all selected dates)'}</Text>
             </View>
@@ -350,7 +350,7 @@ class EditAvailabilityForm extends Component {
                           name="ios-add-circle-outline"
                           size={ 40 }
                           color="#717171"
-                          style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
+                          style={{ paddingTop:10, paddingHorizontal: 5 }}
                         />
                       </TouchableOpacity>
                     </View>
@@ -524,14 +524,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textTimeTo: {
-    paddingHorizontal: 20,
+    paddingRight: 5,
+    paddingLeft: 25,
     textAlign: 'center',
     color: '#565656',
   },
   timeBlock: {
-    paddingTop: 20,
+    paddingTop: 15,
     paddingLeft: 5,
-    paddingRight: 15,
+    paddingRight: 5,
   },
 });
 
