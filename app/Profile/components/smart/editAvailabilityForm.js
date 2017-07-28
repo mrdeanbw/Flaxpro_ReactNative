@@ -62,20 +62,20 @@ class EditAvailabilityForm extends Component {
 
   }
 
-  setTime({start, end, index}) {
+  setTime({start = {}, end = {}, index}) {
     const selectedDates = [...this.state.selectedDates];
     const schedule = [...this.state.schedule];
 
     const updateSchedule = (date, time) => {
       const existDate = Ramda.find(Ramda.propEq('date', date))(schedule);
       switch (true) {
-        case Number.isInteger(start) && Number.isInteger(end) :
+        case Number.isInteger(start.hours) && Number.isInteger(end.hours) :
           existDate ? existDate.schedules.push(time) : schedule.push({date, schedules: [time]});
           break;
-        case Number.isInteger(start) :
+        case Number.isInteger(start.hours) :
           existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") === this.state.equalTimes[index].from)[0].from = time.from;
           break;
-        case Number.isInteger(end) :
+        case Number.isInteger(end.hours) :
           existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") === this.state.equalTimes[index].from)[0].to = time.to;
           break;
       }
@@ -89,22 +89,22 @@ class EditAvailabilityForm extends Component {
       const setNewTime = ( offset = 0 ) => {
         if (offset > 12) return;
         const defaultTime = {
-          from: Number.isInteger(start) ? new Date(day.setHours(start + offset)) : new Date(),
-          to: Number.isInteger(end) ? new Date(day.setHours(end + offset)) : new Date(),
+          from: Number.isInteger(start.hours) ? new Date(day.setHours(start.hours + offset, start.minutes)) : new Date(),
+          to: Number.isInteger(end.hours) ? new Date(day.setHours(end.hours + offset, end.minutes)) : new Date(),
         };
 
-        if (Number.isInteger(start) && selected.schedules.length) {
+        if (Number.isInteger(start.hours) && selected.schedules.length) {
           const el = selected.schedules.filter(schedule => Moment(schedule.from).format() === Moment(defaultTime.from).format());
           if (el.length) {
             setNewTime(++offset)
           } else {
-            if (Number.isInteger(start) && Number.isInteger(end)) {
+            if (Number.isInteger(start.hours) && Number.isInteger(end.hours)) {
               selected.schedules.push(defaultTime);
             }
             updateSchedule(selected.date, defaultTime);
           }
         } else {
-          if (Number.isInteger(start) && Number.isInteger(end)) {
+          if (Number.isInteger(start.hours) && Number.isInteger(end.hours)) {
             selected.schedules.push(defaultTime);
           }
           updateSchedule(selected.date, defaultTime);
@@ -119,8 +119,8 @@ class EditAvailabilityForm extends Component {
   onAddTime() {
     if (!this.state.selectedDates.length) return;
 
-    const timeStart = 8;
-    const timeEnd = 9;
+    const timeStart = {hours:8, minutes:0};
+    const timeEnd = {hours:9, minutes:0};
 
     this.setTime({start: timeStart, end: timeEnd})
   }
@@ -140,12 +140,12 @@ class EditAvailabilityForm extends Component {
   }
 
   onChangeStartTime(time, entryIndex) {
-    const startTime = +Moment(time, "hh:mm A").get('hour');
+    const startTime = {hours: +Moment(time, "hh:mm A").get('hour'), minutes:+Moment(time, "hh:mm A").get('minute')};
     this.setTime({start: startTime, index: entryIndex})
   }
 
   onChangeEndTime(time, entryIndex) {
-    const endTime = +Moment(time, "hh:mm A").get('hour');
+    const endTime = {hours: +Moment(time, "hh:mm A").get('hour'), minutes:+Moment(time, "hh:mm A").get('minute')};
     this.setTime({end: endTime, index: entryIndex});
   }
 
