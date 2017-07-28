@@ -34,8 +34,12 @@ class ListItem extends Component {
     Alert.alert('Coming soon');
   }
   onMessage(){
-    if(this.props.data.fake) return Alert.alert('It\'s fake data');
-    Actions.ChatForm({ userName: this.props.data.name });
+    if (this.props.data.fake) return Alert.alert('It\'s fake data');
+
+    const userId = this.props.data.userId,
+          username = this.props.data.name;
+    this.props.startChat(userId, username);
+    Actions.ChatForm({});
   }
   onRefund(){
     Alert.alert('Coming soon');
