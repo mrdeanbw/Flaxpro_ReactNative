@@ -338,7 +338,7 @@ export default class ClientProfileForm extends Component {
               }
             </View>
 
-            <View style={ [styles.contentMainContainer, { paddingBottom: 50 }] }>
+            <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
               <ScrollView>
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
                   {
