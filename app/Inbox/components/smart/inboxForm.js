@@ -228,6 +228,7 @@ const styles = StyleSheet.create({
   imageAction: {
     width: 75,
     height: 75,
+    alignSelf: 'center',
   },
 
 });

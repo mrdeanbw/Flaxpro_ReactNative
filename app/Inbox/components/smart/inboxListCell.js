@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f3f3f3',
     padding: 10,
+    height: 70,
   },
   avatarContainer: {
     flexDirection: 'row',
