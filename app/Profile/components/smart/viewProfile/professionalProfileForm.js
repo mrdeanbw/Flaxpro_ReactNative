@@ -355,14 +355,19 @@ export default class ProfessionalProfileForm extends Component {
             <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.affiliation || 'Gym'}</Text>
           </View>
         </View>
-        <View style={ [styles.columnContainer, styles.leftPadding] }>
+        <View style={ [styles.columnContainer, styles.leftPadding, styles.container] }>
           <View style={ styles.infoRowLeftContainer }>
             <Text style={ [styles.fontStyles, styles.textInfoField] }>Years of experience : </Text>
             <Text style={ [styles.fontStyles, styles.textInfoValue] }>{Moment().format('Y') - this.user.experience}</Text>
           </View>
           <View style={ styles.infoRowLeftContainer }>
             <Text style={ [styles.fontStyles, styles.textInfoField] }>Certification : </Text>
-            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.certification}</Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue, styles.container] }
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+            >
+              {this.user.certification}
+            </Text>
           </View>
         </View>
       </View>
@@ -441,7 +446,7 @@ export default class ProfessionalProfileForm extends Component {
                               ellipsizeMode="tail"
                               numberOfLines={1}
                         >
-                          {this.user.location.originalAddress || this.user.location.city} sdjlkjfsd s;jdnf;sjdnf sdkjfbn;skdjbf skdjfblshrbgu fse
+                          {this.user.location.originalAddress || this.user.location.city}
                         </Text>
                       </View>
                     </View>
@@ -465,7 +470,7 @@ export default class ProfessionalProfileForm extends Component {
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
                     <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                    <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.description}</Text>
+                    <Text style={ [styles.fontStyles, styles.textInfoValue] } numberOfLines={8}>{user.description}</Text>
                   </View>
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
