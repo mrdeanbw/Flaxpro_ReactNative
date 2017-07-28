@@ -512,6 +512,7 @@ const styles = StyleSheet.create({
   },
   calendarTime: {
     height: 30,
+    width: 130,
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 1,
@@ -524,13 +525,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textTimeTo: {
-    paddingHorizontal: 20,
+    paddingLeft: 25,
+    paddingRight: 15,
     textAlign: 'center',
     color: '#565656',
   },
   timeBlock: {
     paddingTop: 20,
-    paddingLeft: 5,
+    paddingLeft: 15,
     paddingRight: 15,
   },
 });
