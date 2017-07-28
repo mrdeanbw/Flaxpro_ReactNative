@@ -22,9 +22,9 @@ class viewProfile extends Component {
     const { auth, user, actions, editable, profile, explore, inboxActions } = this.props;
     return (
       (user ? user.role : auth.user.role) === CommonConstant.user_client ?
-        <ClientProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile } explore={ explore } inboxActions={ inboxActions }/>
+        <ClientProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile } explore={ explore } user={ user } inboxActions={ inboxActions }/>
         :
-        <ProfessionalProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile } explore={ explore } inboxActions={ inboxActions }/>
+        <ProfessionalProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile } explore={ explore } user={ user } inboxActions={ inboxActions }/>
     );
   }
 }
