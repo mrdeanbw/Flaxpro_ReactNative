@@ -9,9 +9,7 @@ import {
   Image,
   Dimensions,
   TextInput,
-  Button,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Alert,
   Switch,
   ScrollView,
@@ -23,12 +21,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import ImageProgress from 'react-native-image-progress';
-// import ProgressBar from 'react-native-progress/Bar';
 
 const { width, height } = Dimensions.get('window');
 const labelSex = ['Male', 'Female'];
 
-import * as CommonConstant from '../../../Components/commonConstant';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 const background = require('../../../Assets/images/background.png');
 const avatarDefault = require('../../../Assets/images/avatar.png');
@@ -190,7 +186,7 @@ class ProfessionalInfoForm extends Component {
                               color="#19b8ff"
                               iconStyle={ styles.iconButton }
                               labelStyle={ styles.textInput }
-                              checked={ this.state.gender == value }
+                              checked={ this.state.gender === value }
                               onPress={ () => this.onSex(value) }
                             />
                           );
@@ -479,7 +475,7 @@ const styles = StyleSheet.create({
   iconButton: {
     fontSize: 20,
     marginRight: 5,
-    marginLeft: -5,
+    marginLeft: 15,
   },
   animateContainer: {
     flexDirection: 'column',
