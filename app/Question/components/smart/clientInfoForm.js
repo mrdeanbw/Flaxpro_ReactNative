@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Animated,
   ActivityIndicator,
   StyleSheet,
   Text,
@@ -13,7 +12,6 @@ import {
   ScrollView,
 } from 'react-native';
 
-import Slider from 'react-native-slider';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { Actions } from 'react-native-router-flux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -22,6 +20,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { connect } from 'react-redux';
 import ImageProgress from 'react-native-image-progress';
 
+import SliderWithCounter from '../../../Components/sliderWithCounter';
 import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import RadioButton from '../../../Components/radioButton';
@@ -142,7 +141,6 @@ class ClientInfoForm extends Component {
   render() {
     const { signUpRequest, avatar } = this.state;
     const { explore: { professions } } = this.props;
-    let scale = (width * 3/4 -75) / 72 ;
     return (
       <View style={ styles.container }>
         <KeyboardAwareScrollView>
@@ -208,27 +206,13 @@ class ClientInfoForm extends Component {
                     </View>
                   </View>
 
-                  <View style={ styles.cellContainer }>
+                  <View style={ [styles.cellContainer, {paddingRight:10}] }>
                     <Text style={ styles.textCellTitle }>Age</Text>
                     <View style={ styles.viewSlider }>
-                      <Animated.View style={ [styles.animateContainer, {paddingLeft: (this.state.age -15) * scale}] }>
-                        <Animated.View style={ styles.bubble }>
-                          <Animated.Text style={ [styles.textAboveSlider, styles.priceButtonText] }>{ this.state.age }</Animated.Text>
-                        </Animated.View>
-                        <Animated.View style={ styles.arrowBorder } />
-                        <Animated.View style={ styles.arrow } />
-                      </Animated.View>
-                      <Slider style={ styles.slider }
-                              maximumTrackTintColor="#9be5ff"
-                              minimumTrackTintColor="#10c7f9"
-                              trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);'}}
-                              thumbTouchSize={{width: 40, height: 60}}
-                              thumbStyle={ styles.thumbStyle }
-                              minimumValue={ 15 }
-                              maximumValue={ 85 }
-                              step={ 1 }
-                              value = { this.state.age }
-                              onValueChange={ (value) => this.setState({ age: value }) }
+                      <SliderWithCounter
+                        counter={this.state.age}
+                        additionalOffset={-3}
+                        onSlidingComplete={ (value) => this.setState({ age: value }) }
                       />
                     </View>
                   </View>
@@ -458,7 +442,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
     backgroundColor: '#fff',
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     paddingVertical: 11,
   },
   viewTwoText: {
@@ -540,60 +524,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginRight: 5,
     marginLeft: 15,
-  },
-  animateContainer: {
-    flexDirection: 'column',
-    alignSelf: 'flex-start',
-    marginRight: 6,
-    marginLeft: -6,
-  },
-  bubble: {
-    flexDirection: 'column',
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 5,
-    flex: 0,
-    alignSelf: 'flex-start',
-    backgroundColor: '#19b8ff',
-    borderRadius: 5,
-    borderColor: '#19b8ff',
-    borderWidth: 1,
-  },
-  arrow: {
-    backgroundColor: 'transparent',
-    borderWidth: 6,
-    borderColor: 'transparent',
-    borderTopColor: '#19b8ff',
-    alignSelf: 'center',
-    marginTop: -15,
-  },
-  arrowBorder: {
-    backgroundColor: 'transparent',
-    borderWidth: 6,
-    borderColor: 'transparent',
-    borderTopColor: '#19b8ff',
-    alignSelf: 'center',
-    marginTop: -0.5,
-  },
-  slider: {
-    marginRight: 15,
-    height: 20,
-    marginBottom: -8,
-  },
-  textAboveSlider: {
-    textAlign: 'center',
-    height: 15,
-    width: 20,
-    color: '#6b6b6b',
-    fontSize: 13,
-  },
-  thumbStyle:{
-    top:11,
-    width: 20,
-    height: 20,
-    backgroundColor: '#fff',
-    borderColor: '#10c7f9',
-    borderWidth: 1
   },
   dropdownWrapper: {
     flexDirection: 'row',
