@@ -720,7 +720,7 @@ const styles = StyleSheet.create({
   iconButton: {
     fontSize: 25,
     marginRight: 5,
-    marginLeft: -5,
+    marginLeft: 20,
   },
 
   viewSlider:{
