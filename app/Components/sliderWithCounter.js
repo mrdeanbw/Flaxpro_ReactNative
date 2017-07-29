@@ -62,7 +62,7 @@ export default class SliderWithCounter extends Component {
         <Slider style={ styles.slider }
                 maximumTrackTintColor={ maximumTrackTintColor }
                 minimumTrackTintColor={ minimumTrackTintColor }
-                trackStyle= { trackStyle }
+                trackStyle= { [styles.trackStyle, trackStyle] }
                 thumbTouchSize={{width: 40, height: 60}}
                 thumbStyle={ styles.thumbStyle }
                 minimumValue={ minimumValue }
@@ -99,13 +99,16 @@ SliderWithCounter.defaultProps = {
   maximumValue: 85,
   additionalOffset: 0,
   sliderWidth: width * 0.75,
-  trackStyle: {backgroundColor: 'rgba(173, 230, 254, 0.5);'},
   maximumTrackTintColor: "#9be5ff",
   minimumTrackTintColor: "#10c7f9",
 };
 
 const styles = StyleSheet.create({
   viewSlider:{},
+  trackStyle:{
+    backgroundColor: 'rgba(173, 230, 254, 0.5)',
+    marginTop: -4
+  },
   slider: {
     marginRight: 15,
     height: 20,
