@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
   iconButton: {
     fontSize: 20,
     marginRight: 5,
-    marginLeft: -5,
+    marginLeft: 15,
   },
   animateContainer: {
     flexDirection: 'column',
