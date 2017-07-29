@@ -437,17 +437,17 @@ export default class ProfessionalProfileForm extends Component {
                     {
                       editable ? this.showEditableInfo : this.showNoEditableInfo
                     }
-
-
                     <View style={ styles.infoRowContainer }>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Location : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle, styles.container] }
-                              ellipsizeMode="tail"
-                              numberOfLines={1}
-                        >
-                          {this.user.location.originalAddress || this.user.location.city}
-                        </Text>
+                        <View style={ [styles.container, styles.rowDirection] }>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }
+                                ellipsizeMode="tail"
+                                numberOfLines={1}
+                          >
+                            {this.user.location.originalAddress || this.user.location.city}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                     <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>
@@ -479,7 +479,7 @@ export default class ProfessionalProfileForm extends Component {
                       if (showMoreOrLess && index >= 1) return null;
                       return (
                         <View style={ styles.columnContainer } key={index}>
-                          <View style={ styles.starContainer }>
+                          <View style={ styles.rowDirection }>
                             <Text style={ styles.textProfessionalName }>{ review.author }</Text>
                             <Stars
                               isActive={ false }
@@ -835,7 +835,7 @@ const styles = StyleSheet.create({
   textInfoValue: {
     fontSize: 14,
   },
-  starContainer: {
+  rowDirection: {
     flexDirection: 'row',
   },
   textProfessionalName: {
