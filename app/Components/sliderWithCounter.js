@@ -34,27 +34,35 @@ export default class SliderWithCounter extends Component {
       minimumValue,
       maximumValue,
       sliderWidth,
+      additionalOffset,
+      trackStyle,
+      maximumTrackTintColor,
+      minimumTrackTintColor,
+      bubbleStyle,
+      textAboveSliderStyle,
+      arrowBorderStyle,
+      arrowStyle,
     } = this.props;
 
     const ageInitialValue = minimumValue;
     const numberDivisions = maximumValue - minimumValue + 1;
-    const allPaddingsMargings = 85;
+    const allPaddingsMargings = 85 + additionalOffset;
     const scale = (sliderWidth - allPaddingsMargings) / numberDivisions ;
     const paddingLeft =(this.state.counter - ageInitialValue) * scale;
 
     return (
       <View style={ styles.viewSlider }>
         <Animated.View style={ [styles.animateContainer, {paddingLeft: paddingLeft}] }>
-          <Animated.View style={ styles.bubble }>
-            <Animated.Text style={ [styles.textAboveSlider] }>{ this.state.counter }</Animated.Text>
+          <Animated.View style={ [styles.bubble, bubbleStyle] }>
+            <Animated.Text style={ [styles.textAboveSliderStyle, textAboveSliderStyle] }>{ this.state.counter }</Animated.Text>
           </Animated.View>
-          <Animated.View style={ styles.arrowBorder } />
-          <Animated.View style={ styles.arrow } />
+          <Animated.View style={ [styles.arrowBorder, arrowBorderStyle] } />
+          <Animated.View style={ [styles.arrow, arrowStyle] } />
         </Animated.View>
         <Slider style={ styles.slider }
-                maximumTrackTintColor={"#9be5ff"}
-                minimumTrackTintColor={"#10c7f9"}
-                trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);'}}
+                maximumTrackTintColor={ maximumTrackTintColor }
+                minimumTrackTintColor={ minimumTrackTintColor }
+                trackStyle= { trackStyle }
                 thumbTouchSize={{width: 40, height: 60}}
                 thumbStyle={ styles.thumbStyle }
                 minimumValue={ minimumValue }
@@ -74,14 +82,26 @@ SliderWithCounter.propTypes = {
   minimumValue: PropTypes.number,
   maximumValue: PropTypes.number,
   sliderWidth: PropTypes.number,
+  additionalOffset: PropTypes.number,
   onSlidingComplete: PropTypes.func.isRequired,
+  trackStyle: PropTypes.object,
+  maximumTrackTintColor: PropTypes.string,
+  minimumTrackTintColor: PropTypes.string,
+  bubbleStyle: PropTypes.object,
+  textAboveSliderStyle: PropTypes.object,
+  arrowBorderStyle: PropTypes.object,
+  arrowStyle: PropTypes.object,
 };
 
 SliderWithCounter.defaultProps = {
   counter: 15,
   minimumValue: 15,
   maximumValue: 85,
+  additionalOffset: 0,
   sliderWidth: width * 0.75,
+  trackStyle: {backgroundColor: 'rgba(173, 230, 254, 0.5);'},
+  maximumTrackTintColor: "#9be5ff",
+  minimumTrackTintColor: "#10c7f9",
 };
 
 const styles = StyleSheet.create({
@@ -126,7 +146,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: -0.5,
   },
-  textAboveSlider: {
+  textAboveSliderStyle: {
     textAlign: 'center',
     height: 15,
     width: 20,
