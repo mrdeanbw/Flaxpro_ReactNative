@@ -338,7 +338,7 @@ export default class ClientProfileForm extends Component {
               }
             </View>
 
-            <View style={ [styles.contentMainContainer, { paddingBottom: 50 }] }>
+            <View style={ [styles.contentMainContainer, editable ? { paddingBottom: 50 } : { paddingBottom: 0 }]}>
               <ScrollView>
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
                   {
@@ -359,11 +359,18 @@ export default class ClientProfileForm extends Component {
                       </View>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Age : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.age}</Text>
+                        <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.age} years old</Text>
                       </View>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Address : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue, !editable && styles.borderStyle] }>{user.location.originalAddress || user.location.city}</Text>
+                        <View style={ [styles.container, styles.rowDirection] }>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue, !editable && styles.borderStyle] }
+                                ellipsizeMode="tail"
+                                numberOfLines={1}
+                          >
+                            {user.location.originalAddress || user.location.city}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   </View>
@@ -389,7 +396,7 @@ export default class ClientProfileForm extends Component {
                 }
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
                   <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                  <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.description}</Text>
+                  <Text style={ [styles.fontStyles, styles.textInfoValue] } numberOfLines={8}>{user.description}</Text>
                 </View>
 
                 <View style={ [styles.infoContainer, styles.infoBlock] }>
@@ -398,7 +405,7 @@ export default class ClientProfileForm extends Component {
                     if (showMoreOrLess && index >= 1) return null;
                     return (
                       <View style={ styles.columnContainer } key={index}>
-                        <View style={ styles.starContainer }>
+                        <View style={ styles.rowDirection }>
                           <Text style={ styles.textProfessionalName }>{ review.author }</Text>
                           <Stars
                             isActive={ false }
@@ -591,10 +598,11 @@ const styles = StyleSheet.create({
     paddingTop: 5,
   },
    columnContainer: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingTop: 5,
+     flex: 1,
+     flexDirection: 'column',
+     justifyContent: 'flex-start',
+     alignItems: 'flex-start',
+     paddingTop: 5,
   },
   infoRowLeftContainer: {
     flex: 1,
@@ -632,7 +640,7 @@ const styles = StyleSheet.create({
   textInfoValue: {
     fontSize: 14,
   },
-  starContainer: {
+  rowDirection: {
     flexDirection: 'row',
   },
   textProfessionalName: {
@@ -721,8 +729,6 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   communicationClose: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
     position: 'absolute',
     right: 7,
     top: 7,

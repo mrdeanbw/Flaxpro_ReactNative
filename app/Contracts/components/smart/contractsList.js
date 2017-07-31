@@ -71,6 +71,7 @@ class ClientsProfessionals extends React.Component {
           {
             contractId: c._id,
             name: c[role].name,
+            userId: c[role].user,
             time: c.next ? Moment(c.next.from).format('MMM DD hh:mm A') : '',
             progress: c.sessionsPast,
             total: c.sessionsTotal,
@@ -154,6 +155,7 @@ class ClientsProfessionals extends React.Component {
                 <Text style={styles.titleSection}>Sessions</Text>
               </View>
             </View>
+
         }
         <ScrollView>
           {
@@ -165,6 +167,7 @@ class ClientsProfessionals extends React.Component {
                 role={this.props.auth.user.role}
                 color={appColor}
                 lastElement={this.state.contracts.length -1 === index}
+                startChat={this.props.startChat}
               />
             ))
           }

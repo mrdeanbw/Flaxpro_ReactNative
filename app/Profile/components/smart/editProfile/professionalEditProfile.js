@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Slider from 'react-native-slider';
+import SliderWithCounter from '../../../../Components/sliderWithCounter';
 import ModalDropdown from 'react-native-modal-dropdown';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -232,15 +232,8 @@ class EditProfile extends Component {
   }
 
   render() {
-    const { avatar, user, updateRequest } = this.state;
+    const { updateRequest } = this.state;
     const { explore: { professions } } = this.props;
-
-    const sliderWidth = width * 1/4;
-    const ageInitialValue = 15;
-    const numberDivisions = 72;
-    const allPaddingsMargings = 85;
-    let scale = (width - sliderWidth - allPaddingsMargings) / numberDivisions ;
-    const paddingLeft =(this.state.age - ageInitialValue) * scale;
 
     return (
       <View style={ styles.container }>
@@ -315,24 +308,9 @@ class EditProfile extends Component {
               <View style={ styles.cellContainer }>
                 <Text style={ [styles.fontStyles, styles.textCellTitle] }>Age</Text>
                 <View style={ styles.viewSlider }>
-                  <Animated.View style={ [styles.animateContainer, {paddingLeft: paddingLeft}] }>
-                    <Animated.View style={ styles.bubble }>
-                      <Animated.Text style={ [styles.textAboveSlider] }>{ this.state.age }</Animated.Text>
-                    </Animated.View>
-                    <Animated.View style={ styles.arrowBorder } />
-                    <Animated.View style={ styles.arrow } />
-                  </Animated.View>
-                  <Slider style={ styles.slider }
-                          maximumTrackTintColor="#9be5ff"
-                          minimumTrackTintColor="#10c7f9"
-                          trackStyle= {{backgroundColor: 'rgba(173, 230, 254, 0.5);'}}
-                          thumbTouchSize={{width: 40, height: 60}}
-                          thumbStyle={ styles.thumbStyle }
-                          minimumValue={ 15 }
-                          maximumValue={ 85 }
-                          step={ 1 }
-                          value = { this.state.age }
-                          onValueChange={ (value) => this.setState({ age: value }) }
+                  <SliderWithCounter
+                    counter={this.state.age}
+                    onSlidingComplete={ (value) => this.setState({ age: value }) }
                   />
                 </View>
               </View>
@@ -720,76 +698,13 @@ const styles = StyleSheet.create({
   iconButton: {
     fontSize: 25,
     marginRight: 5,
-    marginLeft: -5,
+    marginLeft: 20,
   },
 
   viewSlider:{
     flex: 1,
     flexDirection: 'column',
     marginLeft: width/4,
-  },
-  slider: {
-    marginRight: 15,
-    height: 20,
-    marginBottom: -8,
-  },
-  animateContainer: {
-    flexDirection: 'column',
-    alignSelf: 'flex-start',
-    marginRight: 6,
-    marginLeft: -6,
-  },
-
-  bubble: {
-    flexDirection: 'column',
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 5,
-    flex: 0,
-    alignSelf: 'flex-start',
-    backgroundColor: '#19b8ff',
-    borderRadius: 5,
-    borderColor: '#19b8ff',
-    borderWidth: 1,
-  },
-  arrow: {
-    backgroundColor: 'transparent',
-    borderWidth: 6,
-    borderColor: 'transparent',
-    borderTopColor: '#19b8ff',
-    alignSelf: 'center',
-    marginTop: -15,
-  },
-  arrowBorder: {
-    backgroundColor: 'transparent',
-    borderWidth: 6,
-    borderColor: 'transparent',
-    borderTopColor: '#19b8ff',
-    alignSelf: 'center',
-    marginTop: -0.5,
-  },
-  textAboveSlider: {
-    textAlign: 'center',
-    height: 15,
-    width: 20,
-    color: '#fff',
-    fontSize: 13,
-  },
-  thumbStyle:{
-    top:11,
-    width: 20,
-    height: 20,
-    backgroundColor: '#fff',
-    borderColor: '#10c7f9',
-    borderWidth: 1
-  },
-
-  withoutBorder:{
-    borderWidth: 0,
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
-    borderRightWidth: 0,
-    borderLeftWidth: 0,
   },
   dropdownWrapper: {
     flexDirection: 'row',

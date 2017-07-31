@@ -62,20 +62,20 @@ class EditAvailabilityForm extends Component {
 
   }
 
-  setTime({start, end, index}) {
+  setTime({start = {}, end = {}, index}) {
     const selectedDates = [...this.state.selectedDates];
     const schedule = [...this.state.schedule];
 
     const updateSchedule = (date, time) => {
       const existDate = Ramda.find(Ramda.propEq('date', date))(schedule);
       switch (true) {
-        case Number.isInteger(start) && Number.isInteger(end) :
+        case Number.isInteger(start.hours) && Number.isInteger(end.hours) :
           existDate ? existDate.schedules.push(time) : schedule.push({date, schedules: [time]});
           break;
-        case Number.isInteger(start) :
+        case Number.isInteger(start.hours) :
           existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") === this.state.equalTimes[index].from)[0].from = time.from;
           break;
-        case Number.isInteger(end) :
+        case Number.isInteger(end.hours) :
           existDate.schedules.filter(e => Moment(e.from).format("hh:mm A") === this.state.equalTimes[index].from)[0].to = time.to;
           break;
       }
@@ -89,22 +89,22 @@ class EditAvailabilityForm extends Component {
       const setNewTime = ( offset = 0 ) => {
         if (offset > 12) return;
         const defaultTime = {
-          from: Number.isInteger(start) ? new Date(day.setHours(start + offset)) : new Date(),
-          to: Number.isInteger(end) ? new Date(day.setHours(end + offset)) : new Date(),
+          from: Number.isInteger(start.hours) ? new Date(day.setHours(start.hours + offset, start.minutes)) : new Date(),
+          to: Number.isInteger(end.hours) ? new Date(day.setHours(end.hours + offset, end.minutes)) : new Date(),
         };
 
-        if (Number.isInteger(start) && selected.schedules.length) {
+        if (Number.isInteger(start.hours) && selected.schedules.length) {
           const el = selected.schedules.filter(schedule => Moment(schedule.from).format() === Moment(defaultTime.from).format());
           if (el.length) {
             setNewTime(++offset)
           } else {
-            if (Number.isInteger(start) && Number.isInteger(end)) {
+            if (Number.isInteger(start.hours) && Number.isInteger(end.hours)) {
               selected.schedules.push(defaultTime);
             }
             updateSchedule(selected.date, defaultTime);
           }
         } else {
-          if (Number.isInteger(start) && Number.isInteger(end)) {
+          if (Number.isInteger(start.hours) && Number.isInteger(end.hours)) {
             selected.schedules.push(defaultTime);
           }
           updateSchedule(selected.date, defaultTime);
@@ -119,8 +119,8 @@ class EditAvailabilityForm extends Component {
   onAddTime() {
     if (!this.state.selectedDates.length) return;
 
-    const timeStart = 8;
-    const timeEnd = 9;
+    const timeStart = {hours:8, minutes:0};
+    const timeEnd = {hours:9, minutes:0};
 
     this.setTime({start: timeStart, end: timeEnd})
   }
@@ -140,12 +140,12 @@ class EditAvailabilityForm extends Component {
   }
 
   onChangeStartTime(time, entryIndex) {
-    const startTime = +Moment(time, "hh:mm A").get('hour');
+    const startTime = {hours: +Moment(time, "hh:mm A").get('hour'), minutes:+Moment(time, "hh:mm A").get('minute')};
     this.setTime({start: startTime, index: entryIndex})
   }
 
   onChangeEndTime(time, entryIndex) {
-    const endTime = +Moment(time, "hh:mm A").get('hour');
+    const endTime = {hours: +Moment(time, "hh:mm A").get('hour'), minutes:+Moment(time, "hh:mm A").get('minute')};
     this.setTime({end: endTime, index: entryIndex});
   }
 
@@ -287,7 +287,7 @@ class EditAvailabilityForm extends Component {
             name="circle-with-cross"
             size={ 15 }
             color="#8d99a6"
-            style={{position: 'relative', bottom: 10, left: 5}}
+            style={{position: 'relative', bottom: 10, left: 5, padding: 5}}
           />
         </TouchableOpacity>
       </View>
@@ -331,7 +331,7 @@ class EditAvailabilityForm extends Component {
                 name="ios-time-outline"
                 size={ 30 }
                 color="#565656"
-                style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
+                style={{ paddingTop:5, paddingHorizontal: 5 }}
               />
               <Text style={ styles.textSectionTitle }>Select Time {this.state.selectedDates.length>1 && '(same for all selected dates)'}</Text>
             </View>
@@ -350,7 +350,7 @@ class EditAvailabilityForm extends Component {
                           name="ios-add-circle-outline"
                           size={ 40 }
                           color="#717171"
-                          style={[{ paddingTop:5 }, { paddingHorizontal: 5 }]}
+                          style={{ paddingTop:10, paddingHorizontal: 5 }}
                         />
                       </TouchableOpacity>
                     </View>
@@ -512,6 +512,7 @@ const styles = StyleSheet.create({
   },
   calendarTime: {
     height: 30,
+    width: 130,
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: 1,
@@ -524,13 +525,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textTimeTo: {
-    paddingHorizontal: 20,
+    paddingLeft: 25,
+    paddingRight: 15,
     textAlign: 'center',
     color: '#565656',
   },
   timeBlock: {
     paddingTop: 20,
-    paddingLeft: 5,
+    paddingLeft: 15,
     paddingRight: 15,
   },
 });

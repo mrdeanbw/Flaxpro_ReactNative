@@ -99,7 +99,8 @@ export default class ProfessionalProfileForm extends Component {
   onMessage() {
     this.closeCommunicationPopup();
     this.onShowMoreLess(true);
-    Actions.ChatForm({ userName: this.user.name });
+    this.props.inboxActions.activateChatByUserId(this.props.user.user, this.props.user.name);
+    Actions.ChatForm();
   }
 
   onHire() {
@@ -354,14 +355,19 @@ export default class ProfessionalProfileForm extends Component {
             <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.affiliation || 'Gym'}</Text>
           </View>
         </View>
-        <View style={ [styles.columnContainer, styles.leftPadding] }>
+        <View style={ [styles.columnContainer, styles.leftPadding, styles.container] }>
           <View style={ styles.infoRowLeftContainer }>
             <Text style={ [styles.fontStyles, styles.textInfoField] }>Years of experience : </Text>
             <Text style={ [styles.fontStyles, styles.textInfoValue] }>{Moment().format('Y') - this.user.experience}</Text>
           </View>
           <View style={ styles.infoRowLeftContainer }>
             <Text style={ [styles.fontStyles, styles.textInfoField] }>Certification : </Text>
-            <Text style={ [styles.fontStyles, styles.textInfoValue] }>{this.user.certification}</Text>
+            <Text style={ [styles.fontStyles, styles.textInfoValue, styles.container] }
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+            >
+              {this.user.certification}
+            </Text>
           </View>
         </View>
       </View>
@@ -401,12 +407,12 @@ export default class ProfessionalProfileForm extends Component {
                     </View>
                     :
                     <View style={ styles.actionBtnContainer }>
-                      <TouchableOpacity onPress={() => this.onMessage()} >
-                        <View style={ styles.emptyGreenBtn }>
+                      <View style={ styles.emptyGreenBtn }>
+                        <TouchableOpacity onPress={() => this.onMessage()} >
                           <Text style={ [styles.greenBtnText, styles.btnTextHeader, styles.textGreen] } >MESSAGE</Text>
                           <Text style={ [styles.greenBtnText, styles.btnText, styles.textGreen] }>TO DISSCUS CUSTOM ORDER</Text>
-                        </View>
-                      </TouchableOpacity>
+                        </TouchableOpacity>
+                      </View>
                       <View style={ styles.greenBtn }>
                         <TouchableOpacity
                           onPress={ () => this.onHire() }
@@ -431,12 +437,17 @@ export default class ProfessionalProfileForm extends Component {
                     {
                       editable ? this.showEditableInfo : this.showNoEditableInfo
                     }
-
-
                     <View style={ styles.infoRowContainer }>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Location : </Text>
-                        <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }>{this.user.location.originalAddress || this.user.location.city}</Text>
+                        <View style={ [styles.container, styles.rowDirection] }>
+                          <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }
+                                ellipsizeMode="tail"
+                                numberOfLines={1}
+                          >
+                            {this.user.location.originalAddress || this.user.location.city}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                     <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>
@@ -459,7 +470,7 @@ export default class ProfessionalProfileForm extends Component {
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
                     <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                    <Text style={ [styles.fontStyles, styles.textInfoValue] }>{user.description}</Text>
+                    <Text style={ [styles.fontStyles, styles.textInfoValue] } numberOfLines={8}>{user.description}</Text>
                   </View>
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
@@ -468,7 +479,7 @@ export default class ProfessionalProfileForm extends Component {
                       if (showMoreOrLess && index >= 1) return null;
                       return (
                         <View style={ styles.columnContainer } key={index}>
-                          <View style={ styles.starContainer }>
+                          <View style={ styles.rowDirection }>
                             <Text style={ styles.textProfessionalName }>{ review.author }</Text>
                             <Stars
                               isActive={ false }
@@ -564,10 +575,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20
   },
-  communicationClose: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    position: 'absolute',
+  communicationClose: {position: 'absolute',
     right: 7,
     top: 7,
     color: 'gray'
@@ -610,7 +618,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#0fcefc',
     borderRadius: 10,
-    paddingVertical: 2,
     paddingHorizontal: 10,
   },
   btnTextHeader: {
@@ -631,20 +638,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   greenBtn: {
+    flex:1,
     flexDirection: 'column',
     backgroundColor: '#b5e07b',
     borderRadius: 20,
-    width: 180,
-    padding:5
-
+    paddingVertical:5,
+    paddingHorizontal:10,
+    marginHorizontal: 5,
   },
   emptyGreenBtn: {
     borderWidth: 1,
     borderColor: '#b5e07b',
-    width: 180,
+    flex:1,
+    flexDirection: 'column',
     borderRadius: 20,
-    padding:5,
-
+    paddingVertical:5,
+    paddingHorizontal:10,
+    marginHorizontal: 5,
   },
   actionBtnContainer: {
     flexDirection: 'row',
@@ -795,6 +805,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   infoRowContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -824,7 +835,7 @@ const styles = StyleSheet.create({
   textInfoValue: {
     fontSize: 14,
   },
-  starContainer: {
+  rowDirection: {
     flexDirection: 'row',
   },
   textProfessionalName: {

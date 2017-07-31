@@ -1,4 +1,5 @@
 import * as types from './actionTypes';
+import { FORM_NAMES } from './constants';
 import request, { toQueryString } from '../request';
 
 export function updateHireSuccess(data) {
@@ -101,6 +102,39 @@ export const getCards = () => async (dispatch, store) => {
     dispatch(updateHireError(error));
   }
 };
+
 export const resetProps = () => async (dispatch, store) => {
   dispatch({type: types.HIRE_RESET});
+};
+
+export const chooseForm = (formName) => {
+  let formsBundle = {
+    firstForm: false,
+    secondForm: false,
+    summaryForm: false,
+    paymentForm: false,
+  };
+
+  switch (formName) {
+    case FORM_NAMES.FIRST_FORM:
+      formsBundle.firstForm = true;
+      break;
+    case FORM_NAMES.SECOND_FORM:
+      formsBundle.secondForm = true;
+      break;
+    case FORM_NAMES.PAYMENT_FORM:
+      formsBundle.paymentForm = true;
+      break;
+    case FORM_NAMES.SUMMARY_FORM:
+      formsBundle.summaryForm = true;
+      break;
+    default: 
+      formsBundle.firstForm = true;
+      break;
+  };
+
+  return {
+    ...formsBundle,
+    type: types.CONTRACT_CHOOSE_SCREEN,
+  };
 };

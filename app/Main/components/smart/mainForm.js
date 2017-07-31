@@ -17,6 +17,7 @@ import ViewProfile from '../../../Profile/containers/viewProfile';
 import Inbox from '../../../Inbox/containers/inbox';
 
 import * as CommonConstant from '../../../Components/commonConstant';
+import { tabs } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,11 +39,6 @@ class MainForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      selectedTab: 'explore',
-      badge: '0',
-    };
-
     if (Platform.OS === 'ios') {
       StatusBar.setBarStyle('light-content', false);
     }
@@ -50,8 +46,12 @@ class MainForm extends Component {
 
   static propTypes = {
     auth: PropTypes.object.isRequired,
-
   };
+
+  checkProfile(){
+    const { auth: { user }, profile, getFullProfile } = this.props;
+    if(user._id !== profile.user._id) getFullProfile();
+  }
 
   render() {
     const { auth: {user} } = this.props;
@@ -59,16 +59,16 @@ class MainForm extends Component {
       /* Explore */
       {
         title: "EXPLORE",
-        selected: this.state.selectedTab === "explore",
+        selected: this.props.main.selectedTab === tabs.EXPLORE,
         renderIcon: () => (<Image source={ exploreIcon } style={ styles.iconTabbarGeneral }/>),
         renderSelectedIcon: () => (<Image source={ exploreSelectedIcon } style={ styles.iconTabbarGeneral }/>),
-        onPress: () => this.setState({ selectedTab: 'explore' }),
+        onPress: () => { this.props.updateTab(tabs.EXPLORE) },
         children: <Explore/>,
       },
       /* smart or Professional */
       {
         title: user.role === CommonConstant.user_client ? "PROS" : "CLIENTS",
-        selected: this.state.selectedTab === "clients_professionals",
+        selected: this.props.main.selectedTab === tabs.CLIENT_PRO,
         renderIcon: () => (
           <Image source={ user.role === CommonConstant.user_client ? professionalsIcon : clientsIcon }
                  style={ user.role === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
@@ -77,35 +77,38 @@ class MainForm extends Component {
           <Image source={ user.role === CommonConstant.user_client ? professionalsSelectedIcon : clientsSelectedIcon }
                  style={ user.role === CommonConstant.user_client ? styles.iconTabbarProfessionals : styles.iconTabbarClients }/>
         ),
-        onPress: () => this.setState({ selectedTab: 'clients_professionals' }),
+        onPress: () => { this.props.updateTab(tabs.CLIENT_PRO) },
         children: <Schedule/>,
       },
       /* Inbox */
       {
         title: "INBOX",
-        selected: this.state.selectedTab === "inbox",
+        selected: this.props.main.selectedTab === tabs.INBOX,
         renderIcon: () => (<Image source={ inboxIcon } style={ styles.iconTabbarGeneral }/>),
         renderSelectedIcon: () => (<Image source={ inboxSelectedIcon } style={ styles.iconTabbarGeneral }/>),
-        onPress: () => this.setState({ selectedTab: 'inbox' }),
-        badgeText: this.state.badge,
+        onPress: () => { this.props.updateTab(tabs.INBOX) },
+        badgeText: this.props.unreadChats,
         children: <Inbox/>,
       },
       /* Profile */
       {
         title: "PROFILE",
-        selected: this.state.selectedTab === "profile",
+        selected: this.props.main.selectedTab === tabs.PROFILE,
         renderIcon: () => (<Image source={ profileIcon } style={ styles.iconTabbarProfile }/>),
         renderSelectedIcon: () => (<Image source={ profileSelectedIcon } style={ styles.iconTabbarProfile }/>),
-        onPress: () => this.setState({ selectedTab: 'profile' }),
+        onPress: () => {
+          this.props.updateTab(tabs.PROFILE);
+          this.checkProfile();
+        },
         children: <ViewProfile/>,
       },
       /* Account*/
       {
         title: "ACCOUNT",
-        selected: this.state.selectedTab === "account",
+        selected: this.props.main.selectedTab === tabs.ACCOUNT,
         renderIcon: () => (<Image source={ accountIcon } style={ styles.iconTabbarGeneral }/>),
         renderSelectedIcon: () => (<Image source={ accountSelectedIcon } style={ styles.iconTabbarGeneral }/>),
-        onPress: () => this.setState({ selectedTab: 'account' }),
+        onPress: () => { this.props.updateTab(tabs.ACCOUNT) },
         children: <Account/>,
       },
     ];
