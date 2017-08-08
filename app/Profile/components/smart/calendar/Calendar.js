@@ -158,6 +158,14 @@ export default class Calendar extends Component {
     this.props.onTouchNext && this.props.onTouchNext(newMoment);
   }
 
+  getDayCount = (type) => {
+    let newMoment = moment(this.state.currentMonthMoment).subtract(1, 'month');
+    if(type == 1) newMoment = moment(this.state.currentMonthMoment).add(1, 'month');
+    let newMonth = moment(newMoment);
+    let dayCount = newMonth.daysInMonth();
+    return dayCount;
+  }
+
   scrollToItem(itemIndex) {
     const scrollToX = itemIndex * this.props.width;
     if (this.props.scrollEnabled) {
@@ -190,6 +198,8 @@ export default class Calendar extends Component {
       renderIndex = 0,
       weekRows = [],
       days = [],
+      prevMonthCount = this.getDayCount(0),
+      nextMonthCount = this.getDayCount(1),
       startOfArgMonthMoment = argMoment.startOf('month');
 
     const
@@ -230,8 +240,12 @@ export default class Calendar extends Component {
             onlyEvent={ this.props.onlyEvent }
           />
         ));
-      } else {
-        days.push(<Day key={ `${ renderIndex }`} filler customStyle={ this.props.customStyle } />);
+      } 
+      else if (dayIndex <0 ) {
+        days.push(<Day key={ `${ renderIndex }`} caption={ `${ prevMonthCount + dayIndex + 1}` } isCurrentMonth = {false}  customStyle={ this.props.customStyle } />);
+      }
+      else {
+        days.push(<Day key={ `${ renderIndex }`} caption={ `${ dayIndex + 1-argMonthDaysCount}` } isCurrentMonth = {false} customStyle={ this.props.customStyle } />);
       }
       if (renderIndex % 7 === 6) {
         weekRows.push(
