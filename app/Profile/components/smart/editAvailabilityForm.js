@@ -350,7 +350,7 @@ class EditAvailabilityForm extends Component {
                           name="ios-add-circle-outline"
                           size={ 40 }
                           color="#717171"
-                          style={{ paddingTop:10, paddingHorizontal: 5 }}
+                          style={{ paddingTop:10, paddingHorizontal: 5, marginRight:12 }}
                         />
                       </TouchableOpacity>
                     </View>

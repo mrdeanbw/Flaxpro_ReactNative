@@ -19,7 +19,7 @@ class viewProfile extends Component {
   }
 
   render() {
-    const { auth, user, actions, editable, profile, explore, inboxActions } = this.props;
+    const { auth, user, actions, editable, profile, explore, inboxActions, contracts } = this.props;
     return (
       (user ? user.role : auth.user.role) === CommonConstant.user_client ?
         <ClientProfileForm { ...actions } editable={ editable } auth={ auth } profile={ profile } explore={ explore } user={ user } inboxActions={ inboxActions }/>

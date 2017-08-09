@@ -232,6 +232,7 @@ export default class Calendar extends Component {
               this.selectDate(moment(startOfArgMonthMoment).set('date', dayIndex + 1));
             }}
             caption={ `${dayIndex + 1}` }
+            isCurrentMonth = {true}
             isToday={ argMonthIsToday && (dayIndex === todayIndex) }
             isSelected={ this.props.isSelectableDay ? selectedIndex.includes(dayIndex) : false }
             event={ events && events[dayIndex] }

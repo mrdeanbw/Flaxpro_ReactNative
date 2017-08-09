@@ -12,6 +12,8 @@ import { Actions } from 'react-native-router-flux';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as contractsActions from '../../../Contracts/actions';
 
 import Calendar from './calendar/Calendar';
 
@@ -46,7 +48,54 @@ class ScheduleForm extends Component {
     this.state = {
       selectedDates: [],
       selectedOption: constants.CALENDAR,
+      contracts: [],
     };
+  }
+
+  componentWillMount(){
+    if(this.props.auth.user.role === userClient) this.props.actions.getMyProfessionals();
+    if(this.props.auth.user.role === userProfessional) this.props.actions.getMyClients();
+  }
+  componentWillReceiveProps(newProps) {
+    if(newProps.contracts.loading) return;
+    if(newProps.contracts.error) return Alert.alert(newProps.contracts.error);
+
+    const {contracts: {contracts}} = newProps;
+    const role = newProps.auth.user.role === userProfessional ? userClient.toLowerCase() : userProfessional.toLowerCase();
+    const data = contracts.map( e => (
+      {
+        profession: e.profession.name,
+        professionColor: e.profession.color,
+        contracts: e.contracts.map(c => (
+          {
+            contractId: c._id,
+            name: c[role].name,
+            userId: c[role].user,
+            date: c.next ? c.next.from : '',
+            progress: c.sessionsPast,
+            total: c.sessionsTotal,
+            text: !c[role].avatar ? c[role].name[0].toUpperCase() : '',
+            backgroundColor: !c[role].avatar ? '#43c6f0' : '',
+            type: c[role].avatar ? 'url' : 'text',
+            image: c[role].avatar || null
+          })
+        )
+      })
+    );
+    this.setState({contracts:data[0].contracts});
+  }
+
+  getName (date) {
+    let temp = this.state.contracts.filter((e)=>e.date===date);
+    if(temp[0]) return (<Text style={ styles.textSectionTitle } >{temp[0].name}</Text>);
+    return (<Text style={ styles.textSectionTitle }> No Name</Text>);
+    
+  }
+
+  getImage (date) {
+    let temp = this.state.contracts.filter((e)=>e.date===date);
+    if(temp[0]) return (<Image source={ temp[0].image? {uri:temp[0].image}:avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>);
+    return (<Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>);
   }
 
   onSelectDate(date) {
@@ -124,7 +173,6 @@ class ScheduleForm extends Component {
 
   render() {
     const { auth, profile: { schedule, user } } = this.props;
-
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -153,35 +201,22 @@ class ScheduleForm extends Component {
 
                     <Text style={ styles.textSectionTitle }>{day.date}</Text>
                   </View>
-                  {
+                   {
                     day.schedules.map((session) => (
-                      auth.user.role === userClient ?
                       <View style={ styles.timeMainContainer } key={session._id}>
-                        <View style={ styles.timeRowContainer}>
+                        <View style={ [styles.timeRowContainer, {flex:2.3, justifyContent:'space-between'}]}>
                           <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
                           <View style={ styles.separator}>
                             <Text style={ [styles.textSectionTitle] }>{session.profession && session.profession.name}</Text>
                           </View>
                         </View>
-                        <View style={ styles.timeRowContainer}>
-                          <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
-                          <Text style={ styles.textSectionTitle }>{session[user.role === userProfessional ? 'professional': 'client'].name || 'No Name'}</Text>
-                        </View>
-                      </View>
-                      :
-                      <View style={ styles.timeMainContainer } key={session._id}>
-                        <View style={ styles.timeRowContainer}>
-                          <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
-                          <View style={ styles.separator}>
-                            <View style={ styles.timeRowContainer}>
-                              <Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>
-                              <Text style={ styles.textSectionTitle }>{session[user.role === userProfessional ? 'professional': 'client'].name || 'No Name'}</Text>
-                            </View>
-                          </View>
+                        <View style={ [styles.timeRowContainer, {flex:3, justifyContent:auth.user.role === userClient ?'flex-end': 'flex-start'}] }>
+                          {this.getImage(session.from)}
+                          {this.getName(session.from)}
                         </View>
                       </View>
                     ))
-                  }
+                  } 
                 </View>
               ))
             }
@@ -384,8 +419,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
 });
-export default connect(state => ({
-    profile: state.profile,
-    auth: state.auth,
-  })
+
+const mapStateToProps = (state) => ({
+  profile: state.profile,
+  auth: state.auth,
+   contracts: state.contracts,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(contractsActions, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
 )(ScheduleForm);
+
