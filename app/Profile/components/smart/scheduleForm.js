@@ -50,7 +50,7 @@ class ScheduleForm extends Component {
   }
 
   onSelectDate(date) {
-    const day = Moment(date).format('YYYY-MM-DD');
+    const day = Moment(date).format('ddd, D MMM YYYY');
     const selectedDates = [...this.state.selectedDates];
     if(selectedDates.includes(day)){
       selectedDates.splice(selectedDates.indexOf(day), 1)
@@ -147,7 +147,7 @@ class ScheduleForm extends Component {
             />
             <ScrollView showsVerticalScrollIndicator={true}>
             {
-              schedule.filter((e)=>this.state.selectedDates.includes(Moment(new Date(e.date)).format('YYYY-MM-DD'))).map((day, index) => (
+              schedule.filter((e)=>this.state.selectedDates.includes(Moment(new Date(e.date)).format('ddd, D MMM YYYY'))).map((day, index) => (
                 <View key={index}>
                   <View style={ styles.sectionTitleContainer }>
 
