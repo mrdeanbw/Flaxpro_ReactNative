@@ -49,6 +49,8 @@ class ScheduleForm extends Component {
       selectedDates: [],
       selectedOption: constants.CALENDAR,
       contracts: [],
+      contractsDates:[],
+      filterStatus: false
     };
   }
 
@@ -68,34 +70,31 @@ class ScheduleForm extends Component {
         professionColor: e.profession.color,
         contracts: e.contracts.map(c => (
           {
-            contractId: c._id,
             name: c[role].name,
-            userId: c[role].user,
             date: c.next ? c.next.from : '',
-            progress: c.sessionsPast,
-            total: c.sessionsTotal,
-            text: !c[role].avatar ? c[role].name[0].toUpperCase() : '',
-            backgroundColor: !c[role].avatar ? '#43c6f0' : '',
-            type: c[role].avatar ? 'url' : 'text',
             image: c[role].avatar || null
           })
         )
       })
     );
-    this.setState({contracts:data[0].contracts});
+    let dates = [];
+    data[0].contracts.map((item) => {
+      dates.push(item.date);
+    })
+    this.setState({contracts:data[0].contracts, contractsDates:dates});
   }
 
   getName (date) {
     let temp = this.state.contracts.filter((e)=>e.date===date);
     if(temp[0]) return (<Text style={ styles.textSectionTitle } >{temp[0].name}</Text>);
-    return (<Text style={ styles.textSectionTitle }> No Name</Text>);
+    else return (<Text style={ styles.textSectionTitle }> Available time </Text>);
     
   }
 
   getImage (date) {
     let temp = this.state.contracts.filter((e)=>e.date===date);
     if(temp[0]) return (<Image source={ temp[0].image? {uri:temp[0].image}:avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>);
-    return (<Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>);
+    else return (<Image source={ avatarDefault } style={ styles.imageAvatar } resizeMode="cover"/>);
   }
 
   onSelectDate(date) {
@@ -193,17 +192,20 @@ class ScheduleForm extends Component {
               onTouchNext={()=> { this.setState({selectedDates: []}) } }
               onTouchPrev={()=> { this.setState({selectedDates: []}) } }
             />
+            <TouchableOpacity style={styles.fllterBtn} onPress={(e)=>this.setState((prev) => {return { filterStatus: !prev.filterStatus }})} >
+              <Text> { this.state.filterStatus?"show only booking":"show only availability"} </Text>
+            </TouchableOpacity>
             <ScrollView showsVerticalScrollIndicator={true}>
             {
               schedule.filter((e)=>this.state.selectedDates.includes(Moment(new Date(e.date)).format('ddd, D MMM YYYY'))).map((day, index) => (
+                  day.schedules.filter((e)=> this.state.filterStatus?!this.state.contractsDates.includes(e.from):this.state.contractsDates.includes(e.from)).length>0 &&
                 <View key={index}>
                   <View style={ styles.sectionTitleContainer }>
-
                     <Text style={ styles.textSectionTitle }>{day.date}</Text>
                   </View>
                    {
-                    day.schedules.map((session) => (
-                      <View style={ styles.timeMainContainer } key={session._id}>
+                    day.schedules.filter((e)=> this.state.filterStatus?!this.state.contractsDates.includes(e.from):this.state.contractsDates.includes(e.from)).map((session, index) => (
+                      <View style={ styles.timeMainContainer } key={index}>
                         <View style={ [styles.timeRowContainer, {flex:2.3, justifyContent:'space-between'}]}>
                           <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
                           <View style={ styles.separator}>
@@ -211,7 +213,7 @@ class ScheduleForm extends Component {
                           </View>
                         </View>
                         <View style={ [styles.timeRowContainer, {flex:3, justifyContent:auth.user.role === userClient ?'flex-end': 'flex-start'}] }>
-                          {this.getImage(session.from)}
+                          { !this.state.filterStatus && this.getImage(session.from)}
                           {this.getName(session.from)}
                         </View>
                       </View>
@@ -320,6 +322,15 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
   },
+
+  fllterBtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding:10,
+    borderColor: '#d9d9d9',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+  },  
   textSectionTitle: {
     paddingVertical: 10,
     paddingHorizontal: 5,

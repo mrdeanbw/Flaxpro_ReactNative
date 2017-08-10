@@ -57,7 +57,7 @@ export default function auth(state = initialState, action = {}) {
         error: action.error,
       };
     case types.LOGOUT:
-      return initialState;
+      return {...state};
     default:
       return state;
   }

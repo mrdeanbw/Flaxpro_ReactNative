@@ -26,7 +26,6 @@ import * as authActions from '../../../Auth/actions';
 class AccountForm extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       bNotification: true,
     };
