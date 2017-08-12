@@ -44,28 +44,34 @@ export default class Day extends Component {
     return dayCircleStyle;
   }
 
-  dayTextStyle = ({isWeekend, isSelected, isToday, event, onlyEvent, isCurrentMonth}) => {
+  dayTextStyle = ({isWeekend, isSelected, isToday, event, onlyEvent, isCurrentMonth, isSchedule, filterStatus}) => {
     const { customStyle } = this.props;
     const dayTextStyle = [styles.day, customStyle.day];
 
     switch (true) {
-      case isSelected && !onlyEvent:
+      case isSelected && !event:
         dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
         break;
-      case isSelected && !!event:
+      case isSelected && !!event && !isSchedule && !filterStatus:
+        dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
+        break;
+      case isSelected && !!event && isSchedule && filterStatus && !isToday:
         dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
         break;
       case isToday:
         dayTextStyle.push(styles.currentDayText, customStyle.currentDayText);
         break;
-      case !!event:
-        dayTextStyle.push(styles.hasEventText, customStyle.hasEventText, event.hasEventText)
-        break;
-      case isWeekend:
+      case isWeekend && !isSchedule:
         dayTextStyle.push(styles.weekendDayText, customStyle.weekendDayText);
         break;
       case !isCurrentMonth:
         dayTextStyle.push({color:'#cccccc'});
+        break;
+      case isSchedule && !filterStatus && !!event:
+        dayTextStyle.push({color:'#ff0000', fontWeight:'bold'});
+        break;
+      case !isSchedule && filterStatus && !!event:
+        dayTextStyle.push({color:'#00ff47', fontWeight:'bold'});
         break;
     }
     return dayTextStyle;
@@ -81,7 +87,9 @@ export default class Day extends Component {
       isToday,
       onlyEvent,
       showEventIndicators,
-      isCurrentMonth
+      isCurrentMonth,
+      isSchedule,
+      filterStatus
     } = this.props;
 
     return filler
@@ -96,7 +104,7 @@ export default class Day extends Component {
       <TouchableOpacity onPress={ this.props.onPress }>
         <View style={ [styles.dayButton, customStyle.dayButton] }>
           <View style={ this.dayCircleStyle({isWeekend, isSelected, isToday, event, onlyEvent}) }>
-            <Text style={ this.dayTextStyle({isWeekend, isSelected, isToday, event, onlyEvent, isCurrentMonth}) }>{ caption }</Text>
+            <Text style={ this.dayTextStyle({isWeekend, isSelected, isToday, event, onlyEvent, isCurrentMonth, isSchedule, filterStatus}) }>{ caption }</Text>
           </View>
         </View>
       </TouchableOpacity>

@@ -204,6 +204,7 @@ export default class Calendar extends Component {
 
     const
       selectedMoment = this.state.selectedMoment.map(e => moment(new  Date(e))),
+      contractsMoment = this.props.contractsDate?this.props.contractsDate.map(e => moment(new  Date(e))):[],
       weekStart = this.props.weekStart,
       selectedDates = this.props.selectedDates,
       todayMoment = moment(this.props.today),
@@ -211,9 +212,8 @@ export default class Calendar extends Component {
       argMonthDaysCount = argMoment.daysInMonth(),
       offset = (startOfArgMonthMoment.isoWeekday() - weekStart + 7) % 7,
       argMonthIsToday = argMoment.isSame(todayMoment, 'month'),
-      selectedIndex = selectedMoment.map(e => moment(e).date() - 1)
-      // selectedMonthIsArg = selectedMoment.map(e => e.isSame(argMoment, 'month'));
-
+      selectedIndex = selectedMoment.map(e => moment(e).date() - 1),
+      contractsIndex = contractsMoment.map(e => moment(e).date() - 1)
     const events = (eventsMap !== null)
       ? eventsMap[argMoment.startOf('month').format()]
       : null;
@@ -235,6 +235,8 @@ export default class Calendar extends Component {
             isCurrentMonth = {true}
             isToday={ argMonthIsToday && (dayIndex === todayIndex) }
             isSelected={ this.props.isSelectableDay ? selectedIndex.includes(dayIndex) : false }
+            isSchedule={contractsIndex.includes(dayIndex)}
+            filterStatus={this.props.filterStatus}
             event={ events && events[dayIndex] }
             showEventIndicators={ this.props.showEventIndicators }
             customStyle={ this.props.customStyle }

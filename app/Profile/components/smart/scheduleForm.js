@@ -46,11 +46,13 @@ class ScheduleForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedDates: [],
+      selectedDates: [Moment(Moment()).format('ddd, D MMM YYYY')],
       selectedOption: constants.CALENDAR,
       contracts: [],
       contractsDates:[],
-      filterStatus: false
+      contractsFromDates:[],
+      filterStatus: false,
+      isAll:false
     };
   }
 
@@ -78,10 +80,13 @@ class ScheduleForm extends Component {
       })
     );
     let dates = [];
+    let fromDates = [];
     data[0].contracts.map((item) => {
-      dates.push(item.date);
+      dates.push(Moment(item.date).format('ddd, D MMM YYYY'));
+      fromDates.push(item.date);
     })
-    this.setState({contracts:data[0].contracts, contractsDates:dates});
+    console.log(dates);
+    this.setState({contracts:data[0].contracts, contractsDates:dates, contractsFromDates:fromDates});
   }
 
   getName (date) {
@@ -172,6 +177,7 @@ class ScheduleForm extends Component {
 
   render() {
     const { auth, profile: { schedule, user } } = this.props;
+    console.log(schedule)
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -187,24 +193,48 @@ class ScheduleForm extends Component {
               showControls={ true }
               showEventIndicators={ true }
               isSelectableDay={ true }
+              filterStatus={this.state.filterStatus}
               onDateSelect={ (date) => this.onSelectDate(date) }
               selectedDate={this.state.selectedDates}
+              contractsDate={this.state.contractsDates}
               onTouchNext={()=> { this.setState({selectedDates: []}) } }
               onTouchPrev={()=> { this.setState({selectedDates: []}) } }
             />
-            <TouchableOpacity style={styles.fllterBtn} onPress={(e)=>this.setState((prev) => {return { filterStatus: !prev.filterStatus }})} >
-              <Text> { this.state.filterStatus?"show only booking":"show only availability"} </Text>
-            </TouchableOpacity>
+            <View style={[styles.sectionTitleContainer, { paddingVertical:10, justifyContent:'space-between' }]}>
+              <View style={{flexDirection:'row'}}>
+              <Text> Selected dates: { ' ' + Moment().format('MMM') + ' '}</Text>
+              {
+                this.state.selectedDates.sort((a,b) => {return (new Date(a) > new Date(b)) ? 1 : ((new Date(b) > new Date(a)) ? -1 : 0);} ).map((e, index)=>{
+                  return <TouchableOpacity key={index} onPress={(ee)=>this.onSelectDate(Moment(Moment(new Date(e))))}
+                  style={[customStyle.selectedDayCircle,{ marginLeft:5, width: 24, height: 24, borderRadius: 12, justifyContent:'center', alignItems:'center'}]} >
+                    <Text style={{color:'#fff'}} >{ Moment(Moment(new Date(e))).date()}</Text>
+                  </TouchableOpacity>
+                })
+              }
+              </View>
+              <TouchableOpacity onPress={(e)=>this.setState((prev)=>{return {isAll:!prev.isAll}})}>
+                <Text style={{color: this.state.isAll?'#565656':'#8d99a6', fontWeight: this.state.isAll?'600':'300'}} > { this.state.isAll?'ALL DATES':'all dates'}</Text>  
+              </TouchableOpacity>
+
+            </View>
+            <View style={[styles.sectionTitleContainer, { paddingVertical:5 }]}>
+              <TouchableOpacity style={[styles.filterBtn, {borderRightWidth:1, borderColor:'#d9d9d9'}]} onPress={(e)=>this.setState({filterStatus:false})} >
+                <Text style={{ color: '#45c7f1', fontWeight:this.state.filterStatus?'300':'600' }} >{this.state.filterStatus?'show booking':'BOOKING'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.filterBtn} onPress={(e)=>this.setState({filterStatus:true})} >
+                <Text style={{ color: this.state.filterStatus?'#565656':'#8d99a6', fontWeight:this.state.filterStatus?'600':'300' }} >{this.state.filterStatus?'AVAILABILITY':'show availability'}</Text>
+              </TouchableOpacity>
+              </View>
             <ScrollView showsVerticalScrollIndicator={true}>
             {
               schedule.filter((e)=>this.state.selectedDates.includes(Moment(new Date(e.date)).format('ddd, D MMM YYYY'))).map((day, index) => (
-                  day.schedules.filter((e)=> this.state.filterStatus?!this.state.contractsDates.includes(e.from):this.state.contractsDates.includes(e.from)).length>0 &&
+                day.schedules.filter((e)=> this.state.filterStatus?!this.state.contractsFromDates.includes(e.from):this.state.contractsFromDates.includes(e.from)).length>0 &&
                 <View key={index}>
                   <View style={ styles.sectionTitleContainer }>
                     <Text style={ styles.textSectionTitle }>{day.date}</Text>
                   </View>
                    {
-                    day.schedules.filter((e)=> this.state.filterStatus?!this.state.contractsDates.includes(e.from):this.state.contractsDates.includes(e.from)).map((session, index) => (
+                    day.schedules.filter((e)=> this.state.filterStatus?!this.state.contractsFromDates.includes(e.from):this.state.contractsFromDates.includes(e.from)).map((session, index) => (
                       <View style={ styles.timeMainContainer } key={index}>
                         <View style={ [styles.timeRowContainer, {flex:2.3, justifyContent:'space-between'}]}>
                           <Text style={ [styles.textSectionTitle, styles.segmentedControlsOptions] }>{Moment(session.from).format('LT')} To {Moment(session.to).format('LT')}</Text>
@@ -248,6 +278,7 @@ const customStyle = {
   },
   currentDayText: {
     color: '#000',
+    fontWeight:'bold'
   },
   day: {
     color: '#8d99a6',
@@ -322,15 +353,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
   },
-
-  fllterBtn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding:10,
-    borderColor: '#d9d9d9',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-  },  
+  filterBtn:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+    padding:5
+  },
   textSectionTitle: {
     paddingVertical: 10,
     paddingHorizontal: 5,
