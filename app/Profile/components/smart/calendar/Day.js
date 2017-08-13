@@ -31,11 +31,8 @@ export default class Day extends Component {
     const dayCircleStyle = [styles.dayCircleFiller, customStyle.dayCircleFiller];
 
     switch (true) {
-      case isSelected && !!event:
+      case isSelected:
         dayCircleStyle.push(styles.hasEventDaySelectedCircle, customStyle.selectedDayCircle);
-        break;
-      case isSelected && !onlyEvent:
-        dayCircleStyle.push(styles.selectedDayCircle, customStyle.selectedDayCircle);
         break;
       case !!event:
         dayCircleStyle.push(styles.hasEventCircle, customStyle.hasEventCircle, event.hasEventCircle);
@@ -44,37 +41,32 @@ export default class Day extends Component {
     return dayCircleStyle;
   }
 
-  dayTextStyle = ({isWeekend, isSelected, isToday, event, onlyEvent, isCurrentMonth, isSchedule, filterStatus}) => {
+  dayTextStyle = ({isWeekend, isSelected, isToday, event, onlyEvent, isCurrentMonth}) => {
     const { customStyle } = this.props;
     const dayTextStyle = [styles.day, customStyle.day];
 
     switch (true) {
-      case isSelected && !event:
-        dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
-        break;
-      case isSelected && !!event && !isSchedule && !filterStatus:
-        dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
-        break;
-      case isSelected && !!event && isSchedule && filterStatus && !isToday:
+      case isSelected:
         dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
         break;
       case isToday:
         dayTextStyle.push(styles.currentDayText, customStyle.currentDayText);
         break;
-      case isWeekend && !isSchedule:
+      case isWeekend:
         dayTextStyle.push(styles.weekendDayText, customStyle.weekendDayText);
         break;
       case !isCurrentMonth:
         dayTextStyle.push({color:'#cccccc'});
         break;
-      case isSchedule && !filterStatus && !!event:
-        dayTextStyle.push({color:'#ff0000', fontWeight:'bold'});
-        break;
-      case !isSchedule && filterStatus && !!event:
-        dayTextStyle.push({color:'#00ff47', fontWeight:'bold'});
-        break;
     }
     return dayTextStyle;
+  }
+
+  badgeStyle = ({ event, isSchedule, filterStatus}) => {
+    let badgeStye = [{position:'absolute', right:10, width:4, height:4, borderRadius:2 }];
+    if(isSchedule && !filterStatus && !!event) badgeStye.push({backgroundColor:'#ff0000'} );
+    if(filterStatus && !!event) badgeStye.push({backgroundColor:'#00ff47'} );
+    return badgeStye;
   }
 
   render() {
@@ -103,8 +95,12 @@ export default class Day extends Component {
     : (
       <TouchableOpacity onPress={ this.props.onPress }>
         <View style={ [styles.dayButton, customStyle.dayButton] }>
+          {
+            this.props.isNotEdit &&
+            <View style={ this.badgeStyle({event, isSchedule, filterStatus }) } />
+          }
           <View style={ this.dayCircleStyle({isWeekend, isSelected, isToday, event, onlyEvent}) }>
-            <Text style={ this.dayTextStyle({isWeekend, isSelected, isToday, event, onlyEvent, isCurrentMonth, isSchedule, filterStatus}) }>{ caption }</Text>
+            <Text style={ this.dayTextStyle({isWeekend, isSelected, isToday, event, onlyEvent, isCurrentMonth}) }>{ caption }</Text>
           </View>
         </View>
       </TouchableOpacity>

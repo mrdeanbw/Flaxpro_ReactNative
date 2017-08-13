@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -45,20 +46,24 @@ class ScheduleForm extends Component {
 
   constructor(props) {
     super(props);
+    let schedule = this.props.profile.schedule;
+    this.events = R.pluck('date')(schedule);
     this.state = {
-      selectedDates: [Moment(Moment()).format('ddd, D MMM YYYY')],
+      selectedDates: this.events.includes(Moment(Moment()).format('ddd, D MMM YYYY'))?[Moment(Moment()).format('ddd, D MMM YYYY')]:[],
       selectedOption: constants.CALENDAR,
       contracts: [],
       contractsDates:[],
       contractsFromDates:[],
       filterStatus: false,
-      isAll:false
+      isAll:false,
+      allDates:[]
     };
   }
 
   componentWillMount(){
     if(this.props.auth.user.role === userClient) this.props.actions.getMyProfessionals();
     if(this.props.auth.user.role === userProfessional) this.props.actions.getMyClients();
+    
   }
   componentWillReceiveProps(newProps) {
     if(newProps.contracts.loading) return;
@@ -85,7 +90,6 @@ class ScheduleForm extends Component {
       dates.push(Moment(item.date).format('ddd, D MMM YYYY'));
       fromDates.push(item.date);
     })
-    console.log(dates);
     this.setState({contracts:data[0].contracts, contractsDates:dates, contractsFromDates:fromDates});
   }
 
@@ -175,9 +179,37 @@ class ScheduleForm extends Component {
     );
   }
 
+  onClickAll = () => {
+    let dates = [];
+    let data = this.state.filterStatus?this.events:this.events.filter((e)=> this.state.contractsDates.includes(e));
+    if(!this.state.isAll)
+      data.map((item)=>{
+        const day = Moment(Moment(new Date(item))).format('ddd, D MMM YYYY');
+        dates.push(day);
+      })
+    this.setState({allDates:dates});
+    this.setState((prev)=>{return {isAll:!prev.isAll}});
+  }
+
+  onClickFilter = (value) =>{
+    let dates = [];
+    let data = !this.state.filterStatus?this.events:this.events.filter((e)=> this.state.contractsDates.includes(e));
+    if(value!==this.state.filterStatus) this.setState({selectedDates:[]})
+    if(this.state.isAll){
+      data.map((item)=>{
+        const day = Moment(Moment(new Date(item))).format('ddd, D MMM YYYY');
+        dates.push(day);
+      })
+    }
+    else{
+      dates = this.state.selectedDates;
+    }
+      this.setState({filterStatus:value, allDates:dates});
+  }
+
+
   render() {
     const { auth, profile: { schedule, user } } = this.props;
-    console.log(schedule)
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -193,6 +225,7 @@ class ScheduleForm extends Component {
               showControls={ true }
               showEventIndicators={ true }
               isSelectableDay={ true }
+              isNotEdit={true}
               filterStatus={this.state.filterStatus}
               onDateSelect={ (date) => this.onSelectDate(date) }
               selectedDate={this.state.selectedDates}
@@ -204,7 +237,7 @@ class ScheduleForm extends Component {
               <View style={{flexDirection:'row'}}>
               <Text> Selected dates: { ' ' + Moment().format('MMM') + ' '}</Text>
               {
-                this.state.selectedDates.sort((a,b) => {return (new Date(a) > new Date(b)) ? 1 : ((new Date(b) > new Date(a)) ? -1 : 0);} ).map((e, index)=>{
+                !this.state.isAll && this.state.selectedDates.sort((a,b) => {return (new Date(a) > new Date(b)) ? 1 : ((new Date(b) > new Date(a)) ? -1 : 0);} ).map((e, index)=>{
                   return <TouchableOpacity key={index} onPress={(ee)=>this.onSelectDate(Moment(Moment(new Date(e))))}
                   style={[customStyle.selectedDayCircle,{ marginLeft:5, width: 24, height: 24, borderRadius: 12, justifyContent:'center', alignItems:'center'}]} >
                     <Text style={{color:'#fff'}} >{ Moment(Moment(new Date(e))).date()}</Text>
@@ -212,22 +245,22 @@ class ScheduleForm extends Component {
                 })
               }
               </View>
-              <TouchableOpacity onPress={(e)=>this.setState((prev)=>{return {isAll:!prev.isAll}})}>
+              <TouchableOpacity onPress={(e)=>{this.onClickAll()}}>
                 <Text style={{color: this.state.isAll?'#565656':'#8d99a6', fontWeight: this.state.isAll?'600':'300'}} > { this.state.isAll?'ALL DATES':'all dates'}</Text>  
               </TouchableOpacity>
 
             </View>
             <View style={[styles.sectionTitleContainer, { paddingVertical:5 }]}>
-              <TouchableOpacity style={[styles.filterBtn, {borderRightWidth:1, borderColor:'#d9d9d9'}]} onPress={(e)=>this.setState({filterStatus:false})} >
+              <TouchableOpacity style={[styles.filterBtn, {borderRightWidth:1, borderColor:'#d9d9d9'}]} onPress={(e)=>{this.onClickFilter(false)}} >
                 <Text style={{ color: '#45c7f1', fontWeight:this.state.filterStatus?'300':'600' }} >{this.state.filterStatus?'show booking':'BOOKING'}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.filterBtn} onPress={(e)=>this.setState({filterStatus:true})} >
+              <TouchableOpacity style={styles.filterBtn} onPress={(e)=>{this.onClickFilter(true)}} >
                 <Text style={{ color: this.state.filterStatus?'#565656':'#8d99a6', fontWeight:this.state.filterStatus?'600':'300' }} >{this.state.filterStatus?'AVAILABILITY':'show availability'}</Text>
               </TouchableOpacity>
               </View>
             <ScrollView showsVerticalScrollIndicator={true}>
             {
-              schedule.filter((e)=>this.state.selectedDates.includes(Moment(new Date(e.date)).format('ddd, D MMM YYYY'))).map((day, index) => (
+              schedule.filter((e)=>this.state.isAll?this.state.allDates.includes(Moment(new Date(e.date)).format('ddd, D MMM YYYY')):this.state.selectedDates.includes(Moment(new Date(e.date)).format('ddd, D MMM YYYY'))).map((day, index) => (
                 day.schedules.filter((e)=> this.state.filterStatus?!this.state.contractsFromDates.includes(e.from):this.state.contractsFromDates.includes(e.from)).length>0 &&
                 <View key={index}>
                   <View style={ styles.sectionTitleContainer }>

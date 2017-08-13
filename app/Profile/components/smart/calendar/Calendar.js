@@ -132,7 +132,9 @@ export default class Calendar extends Component {
     return parsedDates;
   }
 
-  selectDate(date) {
+  selectDate(date, event, isSchedule) {
+    if(this.props.isNotEdit && !event) return;
+    else if(this.props.isNotEdit && !this.props.filterStatus && !isSchedule) return;
     if (this.props.selectedDate === undefined) {
       const day = moment(date).format('YYYY-MM-DD');
       const selectedMoment = [...this.state.selectedMoment];
@@ -229,7 +231,7 @@ export default class Calendar extends Component {
             isWeekend={ isoWeekday === 0 || isoWeekday === 6 }
             key={ `${renderIndex}` }
             onPress={() => {
-              this.selectDate(moment(startOfArgMonthMoment).set('date', dayIndex + 1));
+              this.selectDate(moment(startOfArgMonthMoment).set('date', dayIndex + 1), events && events[dayIndex], contractsIndex.includes(dayIndex));
             }}
             caption={ `${dayIndex + 1}` }
             isCurrentMonth = {true}
@@ -238,6 +240,7 @@ export default class Calendar extends Component {
             isSchedule={contractsIndex.includes(dayIndex)}
             filterStatus={this.props.filterStatus}
             event={ events && events[dayIndex] }
+            isNotEdit={this.props.isNotEdit}
             showEventIndicators={ this.props.showEventIndicators }
             customStyle={ this.props.customStyle }
             onlyEvent={ this.props.onlyEvent }
