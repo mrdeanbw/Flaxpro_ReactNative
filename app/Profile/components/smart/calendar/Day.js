@@ -31,7 +31,7 @@ export default class Day extends Component {
     const dayCircleStyle = [styles.dayCircleFiller, customStyle.dayCircleFiller];
 
     switch (true) {
-      case isSelected:
+      case isSelected && !this.props.isAll:
         dayCircleStyle.push(styles.hasEventDaySelectedCircle, customStyle.selectedDayCircle);
         break;
       case !!event:
@@ -46,7 +46,7 @@ export default class Day extends Component {
     const dayTextStyle = [styles.day, customStyle.day];
 
     switch (true) {
-      case isSelected:
+      case isSelected && !this.props.isAll:
         dayTextStyle.push(styles.selectedDayText, customStyle.selectedDayText);
         break;
       case isToday:

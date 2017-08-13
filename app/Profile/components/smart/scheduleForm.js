@@ -192,7 +192,7 @@ class ScheduleForm extends Component {
   }
 
   onClickFilter = (value) =>{
-    let dates = [];
+    let dates = this.state.allDates;
     let data = !this.state.filterStatus?this.events:this.events.filter((e)=> this.state.contractsDates.includes(e));
     if(value!==this.state.filterStatus) this.setState({selectedDates:[]})
     if(this.state.isAll){
@@ -226,6 +226,7 @@ class ScheduleForm extends Component {
               showEventIndicators={ true }
               isSelectableDay={ true }
               isNotEdit={true}
+              isAll={this.state.isAll}
               filterStatus={this.state.filterStatus}
               onDateSelect={ (date) => this.onSelectDate(date) }
               selectedDate={this.state.selectedDates}

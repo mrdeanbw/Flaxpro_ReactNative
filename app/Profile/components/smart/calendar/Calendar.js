@@ -241,6 +241,7 @@ export default class Calendar extends Component {
             filterStatus={this.props.filterStatus}
             event={ events && events[dayIndex] }
             isNotEdit={this.props.isNotEdit}
+            isAll={this.props.isAll}
             showEventIndicators={ this.props.showEventIndicators }
             customStyle={ this.props.customStyle }
             onlyEvent={ this.props.onlyEvent }
