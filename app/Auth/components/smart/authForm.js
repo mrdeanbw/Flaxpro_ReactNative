@@ -58,16 +58,22 @@ class AuthForm extends Component {
     token && AsyncStorage.setItem('token', token);
     if (!R.isEmpty(user) && this.state.loginRequest) {
       !R.isEmpty(this.state.location) && this.props.getCurrentAddress(this.state.location);
+      this.setState({loginRequest:false});
       Actions.Main({ user_mode: user.role })
     }
     if (!R.isEmpty(user) && this.state.registerRequest) {
       !R.isEmpty(this.state.location) && this.props.getCurrentAddress(this.state.location);
+      this.setState({registerRequest:false}) 
       Actions.WhoAreYou();
     }
     this.setState({ loginRequest: false, registerRequest: false });
   }
 
   componentDidMount(){
+    this.onInit();
+  }
+
+  onInit = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       const location = {
         latitude: position.coords.latitude,
@@ -77,6 +83,7 @@ class AuthForm extends Component {
     }, (error) => {
       console.log('navigator.geolocation.getCurrentPosition: Error: ', error);
     });
+
   }
 
   onShowLogIn() {

@@ -49,7 +49,7 @@ function createError(response) {
  *
  */
 function refreshToken(response) {
-  return store.dispatch(authActions.refreshToken()).then(() => response)
+    return store.dispatch(authActions.refreshToken()).then(() => response)
 }
 
 
@@ -65,7 +65,6 @@ function refreshToken(response) {
  */
 function repeatRequests(response, options) {
   const _auth = store.getState().auth;
-
   if(_auth.token){
     const url = response.url.split('api')[1];
     return request(url, options, _auth);
@@ -83,7 +82,7 @@ function repeatRequests(response, options) {
  */
 function checkAuthStatus(response) {
   if (response.status === 401) {
-    return response;
+    createError(response);
   }
   throw response;
 }

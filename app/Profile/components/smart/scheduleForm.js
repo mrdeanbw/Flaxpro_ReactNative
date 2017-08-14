@@ -47,9 +47,9 @@ class ScheduleForm extends Component {
   constructor(props) {
     super(props);
     let schedule = this.props.profile.schedule;
-    this.events = R.pluck('date')(schedule);
+    let events = R.pluck('date')(schedule);
     this.state = {
-      selectedDates: this.events.includes(Moment(Moment()).format('ddd, D MMM YYYY'))?[Moment(Moment()).format('ddd, D MMM YYYY')]:[],
+      selectedDates: events.includes(Moment(Moment()).format('ddd, D MMM YYYY'))?[Moment(Moment()).format('ddd, D MMM YYYY')]:[],
       selectedOption: constants.CALENDAR,
       contracts: [],
       contractsDates:[],
@@ -180,8 +180,10 @@ class ScheduleForm extends Component {
   }
 
   onClickAll = () => {
+    let schedule = this.props.profile.schedule;
+    let events = R.pluck('date')(schedule);
     let dates = [];
-    let data = this.state.filterStatus?this.events:this.events.filter((e)=> this.state.contractsDates.includes(e));
+    let data = this.state.filterStatus?events:events.filter((e)=> this.state.contractsDates.includes(e));
     if(!this.state.isAll)
       data.map((item)=>{
         const day = Moment(Moment(new Date(item))).format('ddd, D MMM YYYY');
@@ -192,8 +194,10 @@ class ScheduleForm extends Component {
   }
 
   onClickFilter = (value) =>{
+    let schedule = this.props.profile.schedule;
+    let events = R.pluck('date')(schedule);
     let dates = this.state.allDates;
-    let data = !this.state.filterStatus?this.events:this.events.filter((e)=> this.state.contractsDates.includes(e));
+    let data = !this.state.filterStatus?events:events.filter((e)=> this.state.contractsDates.includes(e));
     if(value!==this.state.filterStatus) this.setState({selectedDates:[]})
     if(this.state.isAll){
       data.map((item)=>{
