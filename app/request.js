@@ -49,7 +49,7 @@ function createError(response) {
  *
  */
 function refreshToken(response) {
-    return store.dispatch(authActions.refreshToken()).then(() => response)
+  return store.dispatch(authActions.refreshToken()).then(() => response)
 }
 
 
@@ -65,6 +65,7 @@ function refreshToken(response) {
  */
 function repeatRequests(response, options) {
   const _auth = store.getState().auth;
+
   if(_auth.token){
     const url = response.url.split('api')[1];
     return request(url, options, _auth);
@@ -112,7 +113,7 @@ function checkSuccessStatus(response) {
 export default function request(url, options, authState) {
   // const apiUrl = 'http://192.168.88.226:3000/api';  // Dunice developing
   // const apiUrl = 'http://localhost:3000/api';     // Local testing/developing
-  const apiUrl = 'http://13.59.22.166:3000/api';  // AWS common server
+  const apiUrl = 'http://18.220.91.102:3000/api';  // AWS common server
   AsyncStorage.setItem('apiUrl', apiUrl);
   const headers = {
     Accept: 'application/json',

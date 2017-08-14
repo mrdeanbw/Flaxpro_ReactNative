@@ -19,7 +19,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ModalDropdown from 'react-native-modal-dropdown';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import Toast from '../../../../Components/ToastComponent';
 import RadioButton from '../../../../Components/radioButton';
 import SliderWithCounter from '../../../../Components/sliderWithCounter';
 import UploadFromCameraRoll from '../../../../Components/imageUploader';
@@ -66,7 +66,9 @@ class EditProfile extends Component {
 
     this.state = {
       user,
-      defaultProfession
+      defaultProfession,
+      showToast:false,
+      toastMessage:''
     };
   }
 
@@ -76,8 +78,11 @@ class EditProfile extends Component {
     if (error) {
       Alert.alert(error);
     } else if (this.state.updateRequest) {
-      Alert.alert('Update Successful');
-      this.onBack();
+      this.setState({showToast:true, toastMessage:'Update Successful'});
+      setTimeout(()=>{
+        this.setState({showToast:false});
+        this.onBack();
+      }, 2000); 
     }
     this.setState({updateRequest: false})
   }
@@ -415,6 +420,10 @@ class EditProfile extends Component {
         </Image>
         { this.dialogAutocomplete }
         { updateRequest ? <FullScreenLoader/> : null }
+        {
+          this.state.showToast &&
+          <Toast message={this.state.toastMessage} />  
+        }
       </View>
     );
   }

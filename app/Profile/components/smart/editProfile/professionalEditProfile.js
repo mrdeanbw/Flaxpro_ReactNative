@@ -24,6 +24,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import RadioButton from '../../../../Components/radioButton';
+import Toast from '../../../../Components/ToastComponent';
 import UploadFromCameraRoll from '../../../../Components/imageUploader';
 import InputCenter from '../../../../Components/inputCenter';
 import FullScreenLoader from '../../../../Components/fullScreenLoader';
@@ -58,7 +59,9 @@ class EditProfile extends Component {
       professional: true,
       own: user.toClient && user.ownSpace ? 'Both' : (user.toClient ? 'Go to client' : 'Own space'),
       address: user.location.originalAddress,
-      updateRequest: false
+      updateRequest: false,
+      showToast:false,
+      toastMessage:''
     }
 
   }
@@ -69,9 +72,11 @@ class EditProfile extends Component {
     if (error) {
       Alert.alert(error);
     } else if (this.state.updateRequest) {
-      Alert.alert('Update Successful');
-      this.onBack();
-
+      this.setState({showToast:true, toastMessage:'Update Successful'});
+      setTimeout(()=>{
+        this.setState({showToast:false});
+        this.onBack();
+      }, 2000);
     }
     this.setState({updateRequest: false})
   }
@@ -145,8 +150,7 @@ class EditProfile extends Component {
    * @param uri {string} - url from uploaded avatar image
    */
   addAvatarUri = (uri) => {
-    const { user } = this.state;
-    this.setState({ user: {...user, avatar: '' }}, () => this.setState({ user: {...user, avatar: uri }}));
+    this.setState({  avatar: '' }, () => this.setState({ avatar: uri }));
   };
   onChangePhone(text) {
     text = this.checkForNumber(...text)
@@ -462,6 +466,11 @@ class EditProfile extends Component {
         </Image>
         { this.dialogAutocomplete }
         { updateRequest ? <FullScreenLoader/> : null }
+        {
+          this.state.showToast &&
+          <Toast message={this.state.toastMessage} />  
+        }
+        
       </View>
     );
   }
