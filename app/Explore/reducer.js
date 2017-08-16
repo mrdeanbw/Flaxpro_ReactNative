@@ -43,6 +43,11 @@ export default function explore(state = initialState, action = {}) {
         professionals: action.professionals || state.professionals,
         professions: action.professions || state.professions,
       };
+    case types.EXPLORE_SET_DEFAULT:
+      return{
+        ...state,
+        error:null
+      };
     default:
       return state;
   }

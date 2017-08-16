@@ -104,12 +104,14 @@ class ClientExploreForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { explore: { error } } = newProps;
+    const { setDefault, explore: { error } } = newProps;
     let firstLoad = true;
     if (error) {
+      setDefault();
       Alert.alert(error);
       return;
     }
+    
     if(!newProps.explore.loading){
       if(newProps.explore.professionals !== this.props.explore.professionals && newProps.explore.professions !== this.props.explore.professions){
         this.setStateData(newProps, firstLoad)

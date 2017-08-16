@@ -71,8 +71,9 @@ class ExploreForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { explore: { error } } = newProps;
+    const { setDefault, explore: { error } } = newProps;
     if (error) {
+      setDefault();
       Alert.alert(error);
       return;
     }

@@ -115,3 +115,11 @@ export const getProfessions = (data) => async (dispatch, store) => {
   }
 
 };
+
+export const setDefault = (data) => async (dispatch, store) => {
+  dispatch(setDefaultState());
+}
+
+function setDefaultState() {
+  return { type: types.EXPLORE_SET_DEFAULT };
+}
