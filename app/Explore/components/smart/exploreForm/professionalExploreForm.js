@@ -245,70 +245,72 @@ class ExploreForm extends Component {
     const { filter } = this.state;
     return (
       <View style={ styles.navContainer }>
-        <View style={ styles.searchBarWrap }>
-          <TouchableOpacity
-            onPress={ () => this.openLocationPopup() }
-          >
-            <SearchBar
-              height={ 20 }
-              value={ this.state.filter.address }
-              autoCorrect={ false }
-              editable={ false }
-              returnKeyType={ "search" }
-              iconSearchName={ "location" }
-              placeholder="Prefered Location"
-              iconColor={ "#fff" }
-              placeholderColor={ "#fff" }
-              paddingTop={ 20 }
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={ styles.calendarBarWrap } >
-          <EvilIcons
-            name="calendar"
-            size={ 25 }
-            color="#fff"
-          />
-          <DatePicker
-            date={ filter.date }
-            mode="date"
-            placeholder="Current Date"
-            format="dddd, MMM DD, YYYY"
-            minDate="01/01/1900"
-            maxDate="12/31/2100"
-            confirmBtnText="Done"
-            cancelBtnText="Cancel"
-            showIcon={ false }
-            style = { [styles.calendar,filter.date && styles.datePickerWithCleanBtn] }
-            customStyles={{
-              dateInput: {
-                borderColor: "transparent",
-                alignItems: "flex-start",
-                height: 20,
-              },
-              dateText: {
-                color: "#fff",
-                fontFamily: 'Open Sans',
-                fontSize: 12,
-              },
-              placeholderText: {
-                color: "#fff",
-                fontFamily: 'Open Sans',
-                fontSize: 12,
-              },
-            }}
-            onDateChange={ (date) => this.onFilterByDate(date) }
-          />
-          {filter.date ?
-            <TouchableOpacity onPress={ () => this.onFilterByDate('') } >
-              <Icon
-                name="md-close-circle"
-                size={ 16 }
-                color={ "#fff" }
+        <View>
+          <View style={ styles.searchBarWrap }>
+            <TouchableOpacity
+              onPress={ () => this.openLocationPopup() }
+            >
+              <SearchBar
+                height={ 20 }
+                value={ this.state.filter.address }
+                autoCorrect={ false }
+                editable={ false }
+                returnKeyType={ "search" }
+                iconSearchName={ "location" }
+                placeholder="Prefered Location"
+                iconColor={ "#fff" }
+                placeholderColor={ "#fff" }
+                paddingTop={ 20 }
               />
             </TouchableOpacity>
-            : null
-          }
+          </View>
+          <View style={ styles.calendarBarWrap } >
+            <EvilIcons
+              name="calendar"
+              size={ 25 }
+              color="#fff"
+            />
+            <DatePicker
+              date={ filter.date }
+              mode="date"
+              placeholder="Current Date"
+              format="dddd, MMM DD, YYYY"
+              minDate="01/01/1900"
+              maxDate="12/31/2100"
+              confirmBtnText="Done"
+              cancelBtnText="Cancel"
+              showIcon={ false }
+              style = { [styles.calendar,filter.date && styles.datePickerWithCleanBtn] }
+              customStyles={{
+                dateInput: {
+                  borderColor: "transparent",
+                  alignItems: "flex-start",
+                  height: 20,
+                },
+                dateText: {
+                  color: "#fff",
+                  fontFamily: 'Open Sans',
+                  fontSize: 12,
+                },
+                placeholderText: {
+                  color: "#fff",
+                  fontFamily: 'Open Sans',
+                  fontSize: 12,
+                },
+              }}
+              onDateChange={ (date) => this.onFilterByDate(date) }
+            />
+            {filter.date ?
+              <TouchableOpacity onPress={ () => this.onFilterByDate('') } >
+                <Icon
+                  name="md-close-circle"
+                  size={ 16 }
+                  color={ "#fff" }
+                />
+              </TouchableOpacity>
+              : null
+            }
+          </View>
         </View>
         <View style={ styles.segmentsBlock }>
             <SegmentedControls
@@ -570,7 +572,7 @@ const styles = StyleSheet.create({
   segmentsBlock: {
     backgroundColor: '#fff',
     flexDirection: 'row',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
   },
   closeButtonWrapper: {

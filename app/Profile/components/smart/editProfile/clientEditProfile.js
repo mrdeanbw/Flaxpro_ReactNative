@@ -68,7 +68,8 @@ class EditProfile extends Component {
       user,
       defaultProfession,
       showToast:false,
-      toastMessage:''
+      toastMessage:'',
+      lastPress: 0
     };
   }
 
@@ -96,8 +97,20 @@ class EditProfile extends Component {
   }
 
   onBack() {
-    Actions.pop();
-  }
+    let delta = new Date().getTime() - this.state.lastPress;
+    if(delta < 500) {
+      console.log("double touched")
+      
+      Actions.Sessions();
+    }
+    else{
+        Actions.pop();
+      
+    }
+    this.setState({
+      lastPress: new Date().getTime()
+      })
+    }
 
   get getShowNavBar() {
     return (

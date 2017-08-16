@@ -278,7 +278,7 @@ class ExploreMapView extends Component {
   }
 
   getMarkers(cluster, region) {
-    const padding = 0;
+    const padding = 0.2;
     const regionValue = region.__getValue();
     return cluster.getClusters([
       regionValue.longitude - (regionValue.longitudeDelta * (0.5 + padding)),
@@ -571,7 +571,6 @@ class ExploreMapView extends Component {
       scrollY,
       markers
     } = this.state;
-
     const { professionalsClients=[], gymLocations, user } = this.props;
 
     const animations = professionalsClients.map( (item, index) =>
@@ -686,12 +685,12 @@ class ExploreMapView extends Component {
 
           </MapView.Animated>
 
-          <View style={ [styles.mainContentContainer] }>
+           <View style={ [styles.mainContentContainer] }>
             <BottomBar
               onList={ () => this.onList() }
               onFilter={ () => this.onFilter() }
             />
-          </View>
+          </View> 
           {
             this.props.mapStandardMode ?
               <View style={ [styles.itemContainer, { height: 0 }] }/>
