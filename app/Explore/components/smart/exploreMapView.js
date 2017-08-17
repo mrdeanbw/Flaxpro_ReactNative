@@ -684,8 +684,7 @@ class ExploreMapView extends Component {
             }
 
           </MapView.Animated>
-
-           <View style={ [styles.mainContentContainer] }>
+          <View style={ [styles.mainContentContainer, this.props.mapStandardMode?{bottom:60}:{bottom:ITEM_PREVIEW_HEIGHT+80}] }>
             <BottomBar
               onList={ () => this.onList() }
               onFilter={ () => this.onFilter() }
