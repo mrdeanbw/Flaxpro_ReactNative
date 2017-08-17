@@ -97,20 +97,8 @@ class EditProfile extends Component {
   }
 
   onBack() {
-    let delta = new Date().getTime() - this.state.lastPress;
-    if(delta < 500) {
-      console.log("double touched")
-      
-      Actions.Sessions();
-    }
-    else{
-        Actions.pop();
-      
-    }
-    this.setState({
-      lastPress: new Date().getTime()
-      })
-    }
+    Actions.pop();
+  }
 
   get getShowNavBar() {
     return (

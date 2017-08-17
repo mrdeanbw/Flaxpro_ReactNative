@@ -516,7 +516,7 @@ class ExploreMapView extends Component {
                   size={ 20 }
                 />
               </View>
-              <Text style={ styles.dialogText2 }>{ professionalClient.description }</Text>
+              <Text style={ styles.dialogText2 } numberOfLines={5} >{ professionalClient.description }</Text>
             </View>
           </View>
           <View style = { styles.professionalMiddleContainer }>
@@ -872,12 +872,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textName: {
+    paddingLeft:10,
     fontSize: 18,
     color: '#585858'
   },
   dialogText2: {
     color: '#585858',
-    paddingVertical: 10,
+    paddingTop: 20,
+    paddingBottom:10
   },
   professionalMiddleContainer: {
     flexDirection: 'row',

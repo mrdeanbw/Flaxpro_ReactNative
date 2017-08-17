@@ -470,7 +470,7 @@ export default class ProfessionalProfileForm extends Component {
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
                     <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                    <Text style={ [styles.fontStyles, styles.textInfoValue] } numberOfLines={8}>{user.description}</Text>
+                    <Text style={ [styles.fontStyles, styles.textInfoValue] } numberOfLines={8}>{user.description.replace(/^\s+/g,'').replace(/\s+$/g,'').replace(/\s+/g,' ')}</Text>
                   </View>
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
