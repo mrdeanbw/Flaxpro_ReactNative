@@ -39,13 +39,16 @@ export default class UploadFromCameraRoll extends React.Component {
   }
 
   componentDidMount() {
-    DeviceEventEmitter.addListener('RNUploaderProgress', (data) => {
+    this.emitter = DeviceEventEmitter.addListener('RNUploaderProgress', (data) => {
       let bytesWritten = data.totalBytesWritten;
       let bytesTotal   = data.totalBytesExpectedToWrite;
       let progress     = data.progress;
       this.setState({uploadProgress: progress, uploadTotal: bytesTotal, uploadWritten: bytesWritten});
     });
     this.loadInitialState().done();
+  }
+  componentWillUnmount(){
+    this.emitter.remove();
   }
 
   loadInitialState = async () => {
