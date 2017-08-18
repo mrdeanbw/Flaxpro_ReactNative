@@ -469,7 +469,7 @@ export default class ProfessionalProfileForm extends Component {
                   </View>
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
-                    <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
+                  <Text style={ styles.textInfoTitle }>{ editable?'ABOUT ME': user.name && 'ABOUT '+ user.name.toUpperCase()}</Text>
                     <Text style={ [styles.fontStyles, styles.textInfoValue] } numberOfLines={8}>{user.description.replace(/^\s+/g,'').replace(/\s+$/g,'').replace(/\s+/g,' ')}</Text>
                   </View>
 
