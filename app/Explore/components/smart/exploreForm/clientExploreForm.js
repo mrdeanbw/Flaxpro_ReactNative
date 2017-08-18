@@ -399,6 +399,7 @@ class ClientExploreForm extends Component {
    * @param selected{Object} - profession (also can be 'otherLabel' or 'allLabel')
    */
   onSelectInListProfession(selected) {
+    console.log(selected);
     let filteredProfessionals = this.props.explore.professionals.filter((e)=>(e.profession && e.profession._id===selected._id));
     if(selected._id === this.state.professions.selected._id) {
       filteredProfessionals = [];

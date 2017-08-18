@@ -42,6 +42,7 @@ class ProfessionalInfoForm extends Component {
     super(props);
 
     this.state = {
+      signUpRequest:false,
       price: this.priceToFloat(200),
       insured: true,
       profession:
@@ -56,7 +57,8 @@ class ProfessionalInfoForm extends Component {
             props.explore.professions[0].certification[0] || certificationsDefault[0],
       address: props.auth.currentAddress.formattedAddress || '4 York st, Toronto',
       own: 'Both',
-      experience: 5
+      experience: 5,
+      description:' '
     };
   }
 
@@ -68,7 +70,7 @@ class ProfessionalInfoForm extends Component {
     try {
       const value = await AsyncStorage.getItem('professionalSecondForm');
       if (value !== null){
-        this.setState({ ...JSON.parse(value), price: this.priceToFloat(JSON.parse(value).price)});
+        this.setState({ ...JSON.parse(value),signUpRequest:false, price: this.priceToFloat(JSON.parse(value).price)});
       }
     } catch (error) {
       Alert.alert('AsyncStorage error: ' + error.message);
@@ -77,13 +79,13 @@ class ProfessionalInfoForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { auth: { user, currentAddress }, question: { error } } = nextProps;
-
     if (error) {
       Alert.alert(error);
       this.setState({ signUpRequest: false })
       return;
     }
     if (user && this.state.signUpRequest) {
+      AsyncStorage.multiRemove(['professionalFirstForm', 'professionalSecondForm']);
       Actions.Main({ user_mode: user_professional });
     }
     if (currentAddress && currentAddress.formattedAddress) {
@@ -122,7 +124,7 @@ class ProfessionalInfoForm extends Component {
     /**
      * 'profession' to {String} name
      */
-    this.state.profession = this.state.profession && this.state.profession.name;
+    this.state.profession = this.state.profession && this.state.profession.name || {};
 
     if(this.state.own === 'Both') {
       this.state.toClient = true;
@@ -140,8 +142,7 @@ class ProfessionalInfoForm extends Component {
      */
     AsyncStorage.getItem('professionalFirstForm')
       .then((data) => {
-        AsyncStorage.multiRemove(['professionalFirstForm', 'professionalSecondForm']);
-
+        console.log(data);
         this.setState({ signUpRequest: true }, () => createRole({ ...JSON.parse(data), ...this.state }) );
       })
   }
