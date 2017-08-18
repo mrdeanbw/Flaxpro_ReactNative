@@ -303,7 +303,6 @@ export default class ClientProfileForm extends Component {
     const { editable, profile: { user } } = this.props;
     const { showMoreOrLess } = this.state;
     const workouts = this.prepareProfessions();
-
     const reviews = (user.reviews && user.reviews.length) ? user.reviews : Reviews;
 
     return (
