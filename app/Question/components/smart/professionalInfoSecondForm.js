@@ -55,7 +55,7 @@ class ProfessionalInfoForm extends Component {
             !R.isEmpty(props.explore.professions) &&
             !R.isEmpty(props.explore.professions[0].certification) &&
             props.explore.professions[0].certification[0] || certificationsDefault[0],
-      address: props.auth.currentAddress.formattedAddress || '4 York st, Toronto',
+      address: props.auth.currentAddress.formattedAddress || '',
       own: 'Both',
       experience: 5,
       description:' '
@@ -142,7 +142,6 @@ class ProfessionalInfoForm extends Component {
      */
     AsyncStorage.getItem('professionalFirstForm')
       .then((data) => {
-        console.log(data);
         this.setState({ signUpRequest: true }, () => createRole({ ...JSON.parse(data), ...this.state }) );
       })
   }
