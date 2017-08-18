@@ -30,12 +30,11 @@ export const client_filter_labels = {
   verified: ['Yes', 'No'],
   insured: ['Yes', 'No'],
   affiliation: ['Gym', 'Independent', 'All'],
-  experience: ['2004', '2005', '2006'],
+  experience: ['2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016'],
   certification: ['Certified Personal Professional1', 'Certified Personal Professional2', 'Certified Personal Professional3'],
   availability: ['Meet at Home', 'One place'],
-  profession: ['Pilates', 'Yoga trainers', 'Massage'],
 };
-export const client_filter_names = ['gender', 'age', 'priceLevel', 'verified', 'experience', 'insured', 'rating', 'certification', 'profession', 'availability'];
+export const client_filter_names = ['gender', 'age', 'priceLevel', 'verified', 'experience', 'insured', 'rating', 'certification', 'availability'];
 
 export const professional_filter_labels = {
   gender: ['Male', 'Female'],

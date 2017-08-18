@@ -56,13 +56,20 @@ export default class FilterForm extends Component {
   }
   prepareData(){
     let data = {};
+    const { professions } = this.props;
+    console.log(this.props)
     stateNames.map(stateName => {
       const stateField = this.state['selected_' + stateName];
       if (this.state['filter_' + stateName]) {
         if (stateName === 'availability') {
           if(stateField === 'Meet at Home') data.toClient = true;
           if(stateField === 'One place') data.ownSpace = true;
-        } else { data[stateName] = stateField }
+        } 
+        else if(stateName === 'profession'){
+          let pro = professions.filter((item)=>item.name===stateField);
+          data.profession = pro.length>0?pro[0]._id:''
+        }
+        else { data[stateName] = stateField }
       }
     });
     return data;
@@ -295,26 +302,6 @@ export default class FilterForm extends Component {
                   rating={this.state.selected_rating}
                 />
               </View>
-              <View style={[ styles.cellContainerBlock,  !this.state.filter_profession && styles.deactivatedContainer]}>
-                {this.generateFilterCheckbox({title: 'Profession', stateName: 'profession'})}
-                <View style={ [styles.touchBlock, {marginTop: 10}] }>
-                  {
-                    labels.profession.map((item, index) =>(
-                      <TouchableOpacity key={ index } activeOpacity={ .5 } onPress={ () => this.onProfession(item) }>
-                        <View style={ [styles.viewTwoTextPadding, styles.marginRight_15, item === this.state.selected_profession ? styles.priceButtonChecked : styles.priceButton] }>
-                          <Text style={ [styles.textSubTitle, item === this.state.selected_profession ? styles.priceButtonTextChecked : styles.priceButtonText] }>{ item }</Text>
-                        </View>
-                      </TouchableOpacity>
-                    ))
-                  }
-                  <EvilIcons
-                    name="plus"
-                    size={ 35 }
-                    color="#fff"
-                    style={ styles.addButton }
-                  />
-                </View>
-              </View>
               <View style={[ styles.cellContainerBlock,  !this.state.filter_certification && styles.deactivatedContainer]}>
                 {this.generateFilterCheckbox({title: 'Certification', stateName: 'certification'})}
                 <View style={ [styles.dropdownWrapper] }>
@@ -370,7 +357,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0,
     borderBottomColor: '#f0f0f0',
   },
   touchBlock: {
@@ -465,9 +452,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex:0,
     justifyContent: 'space-between',
-    paddingVertical: 7,
+    paddingVertical: 10,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0,
     borderBottomColor: '#f0f0f0',
 
   },
