@@ -50,7 +50,7 @@ class AnimatedViewCell extends Component {
   render() {
     const { width, height, avatar, name, description, experience, amount, user, profession = {} } = this.props;
     let rating = this.props.rating;
-    if(rating<1) rating = -1;
+    if(rating < 1) rating = -1;
     const client = user.role === roleClient;
 
     const professionalClientData = {

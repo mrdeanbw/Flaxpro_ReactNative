@@ -83,7 +83,8 @@ function repeatRequests(response, options) {
  */
 function checkAuthStatus(response) {
   if (response.status === 401) {
-    createError(response);
+    // createError(response);
+    return response
   }
   throw response;
 }

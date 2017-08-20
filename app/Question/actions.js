@@ -56,7 +56,7 @@ export const createRole = (userData) => async (dispatch, store) => {
     let errorMsg =
       `Question Error: createRole(${userData.professional ? 'Professional' : 'Client'})
       Message: ${error.message}`;
-    if(error.response.status===422){
+    if(error.response.status === 422){
       errorMsg = 'Some fields are missing or incorrect'
     }
     dispatch(questionError(errorMsg));

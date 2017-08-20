@@ -110,7 +110,7 @@ class ClientInfoForm extends Component {
     this.setState({ gender: value });
   }
   onSelectProfession(value) {
-    if(value!=='other') {
+    if(value !== 'other') {
        let profession = this.props.explore.professions.filter(e => e.name === value)[0];
        this.setState({ profession });
     }

@@ -90,9 +90,9 @@ class ProfessionalInfoForm extends Component {
     this.setState({ avatar: '' }, () => this.setState({ avatar: uri }));
   }
   onChangePhone(text) {
-    if(text.length>12) return;
-    if(text.length===3 && this.state.phone.length<3) text = text + "-";
-    if(text.length===7 && this.state.phone.length<7) text = text + "-";
+    if(text.length > 12) return;
+    if(text.length === 3 && this.state.phone.length<3) text = text + "-";
+    if(text.length === 7 && this.state.phone.length<7) text = text + "-";
     text = this.checkForNumber(...text)
     this.setState({ phone: text })
   }

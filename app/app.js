@@ -31,11 +31,11 @@ export const store = createStoreWithMiddleware(reducer);
 
 const scenes = Actions.create(
   <Scene key="root">
-    <Scene key="Auth" component={ Auth } type={ ActionConst.REST } />
+    <Scene key="Auth" panHandlers={null} component={ Auth } type={ ActionConst.REST } />
     <Scene key="ClientInfo" component={ ClientInfo } />
     <Scene key="ProfessionalInfo" component={ ProfessionalInfo } />
     <Scene key="WhoAreYou" component={ WhoAreYou } />
-    <Scene key="Main" component={ Main } />
+    <Scene key="Main" panHandlers={null} component={ Main } />
     <Scene key="ExploreMapView" component={ ExploreMapView } />
     <Scene key="FilterClientForm" component={ FilterClientForm } direction="vertical" />
     <Scene key="FilterProfessionalForm" component={ FilterProfessionalForm } direction="vertical" />
