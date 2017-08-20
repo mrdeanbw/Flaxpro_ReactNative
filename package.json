@@ -30,6 +30,7 @@
     "react-native-maps": "0.15.2",
     "react-native-modal-dropdown": "^0.4.1",
     "react-native-popup-dialog": "^0.5.19",
+    "react-native-prompt": "^1.0.0",
     "react-native-radio-buttons": "^0.14.0",
     "react-native-router-flux": "3.37.0",
     "react-native-slider": "^0.9.1",

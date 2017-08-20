@@ -25,6 +25,7 @@ import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import RadioButton from '../../../Components/radioButton';
 import DialogGoogleAutocomplete from '../../../Components/dialogGoogleAutocomplete';
+import Prompt from 'react-native-prompt'
 
 import {
   WIDTH_SCREEN as width,
@@ -52,6 +53,8 @@ class ClientInfoForm extends Component {
       priceLevel : prices[0].level,
       signUpRequest: false,
       description:' ',
+      otherProfession:'',
+      promptVisible:false
     };
   }
 
@@ -107,11 +110,21 @@ class ClientInfoForm extends Component {
     this.setState({ gender: value });
   }
   onSelectProfession(value) {
-    let profession = {};
-    if(value!=='other') profession = this.props.explore.professions.filter((e)=>e.name===value)[0];
-    else profession = {_id: 0, name: "Other", color: "#000000", icon: "../../Assets/images/sport.png"}
-    this.setState({ profession });
+    if(value!=='other'){
+       let profession = this.props.explore.professions.filter((e)=>e.name===value)[0];
+       this.setState({ profession });
+    }
+    else {
+      this.setState({promptVisible:true});
+    }
+    
   }
+
+  onYes = (value) =>{
+    let profession = {_id: '0', name: value, color: "#000000", icon: "../../Assets/images/sport.png"};
+    this.setState({promptVisible:false, profession});
+  }
+
   onCheckPrice(value) {
     this.setState({ priceLevel: value });
   }
@@ -148,6 +161,12 @@ class ClientInfoForm extends Component {
     proList.push("other");
     return (
       <View style={ styles.container }>
+        <Prompt
+          title="Please input custom profession"
+          visible={this.state.promptVisible}
+          onCancel={()=>this.setState({promptVisible:false})}
+          onSubmit={(value)=>this.onYes(value)}
+        />
         <KeyboardAwareScrollView>
           <Image source={ background } style={ styles.background } resizeMode="cover">
             { this.getShowNavBar }

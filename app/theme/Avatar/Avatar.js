@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { StyleSheet, Text ,View, Image, ActivityIndicator} from 'react-native';
 import ImageProgress from 'react-native-image-progress';
 const avatarDefault = require('../../Assets/images/avatar.png');
@@ -15,14 +15,51 @@ const defaultProps = {
   avatarStyle: {},
 };
 
-const Avatar = (props) => {
+class Avatar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      profilePic:props.type==='url'?{uri:props.source}:props.source || avatarDefault,
+      status:true
+    }
+  }
+
+  componentWillMount(){
+    var profilePic = this.props.source;
+    var defaultPic = avatarDefault;
+    if (profilePic) {
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = (e) => {
+        if (request.readyState !== 4) {
+          return;
+        }
+  
+        if (request.status === 200) {
+          this.setState({
+            profilePic: {uri:profilePic}
+          })
+        } 
+        else {
+          this.setState({
+            profilePic: defaultPic,
+            status:false
+          })
+        }
+      };
+      request.open('GET', profilePic);
+      request.send();
+    }
+  
+  }
+  render(){
   return (
-      <View style={[styles.container,props.backgroundColor && {backgroundColor:props.backgroundColor}]}>
-        {props.type==="url" && <ImageProgress source={ {uri: props.source} } indicator={ActivityIndicator} style={ [styles.image, props.avatarStyle] } resizeMode="cover"/>}
-        {props.type==="image" && <Image source={props.source || avatarDefault} style={ [styles.image, props.avatarStyle] }/>}
-        {props.type==="text" && <Text style={styles.text}>{props.text}</Text>}
+      <View style={[styles.container,this.props.backgroundColor && {backgroundColor:this.props.backgroundColor}]}>
+        {(this.props.type==="url" && this.state.status) && <ImageProgress source={ this.state.profilePic } indicator={ActivityIndicator} style={ [styles.image, this.props.avatarStyle] } resizeMode="cover"/>}
+        {(this.props.type==="image" || !this.state.status) && <Image source={this.state.profilePic} style={ [styles.image, this.props.avatarStyle] }/>}
+        {this.props.type==="text" && <Text style={styles.text}>{this.props.text}</Text>}
       </View>
     )
+  }
 };
 const styles = StyleSheet.create({
   container: {
