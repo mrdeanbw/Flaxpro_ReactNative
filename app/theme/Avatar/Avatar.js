@@ -19,8 +19,8 @@ class Avatar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      profilePic:props.type==='url'?{uri:props.source}:props.source || avatarDefault,
-      status:true
+      profilePic: props.type === 'url' ? { uri:props.source } : props.source || avatarDefault,
+      status: true
     }
   }
 

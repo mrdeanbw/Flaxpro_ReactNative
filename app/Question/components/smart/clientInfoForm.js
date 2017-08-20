@@ -44,17 +44,17 @@ class ClientInfoForm extends Component {
     super(props);
     this.state = {
       name: ' ',
-      visibility : false,
-      phone:'111-111-1111',
-      gender : labelSex[0],
-      age : 28,
+      visibility: false,
+      phone: '111-111-1111',
+      gender: labelSex[0],
+      age: 28,
       address: props.auth.currentAddress.formattedAddress || '',
-      profession : props.explore && props.explore.professions && props.explore.professions[0] || {},
-      priceLevel : prices[0].level,
+      profession: props.explore && props.explore.professions && props.explore.professions[0] || {},
+      priceLevel: prices[0].level,
       signUpRequest: false,
-      description:' ',
-      otherProfession:'',
-      promptVisible:false
+      description: ' ',
+      otherProfession: '',
+      promptVisible: false
     };
   }
 
@@ -110,8 +110,8 @@ class ClientInfoForm extends Component {
     this.setState({ gender: value });
   }
   onSelectProfession(value) {
-    if(value!=='other'){
-       let profession = this.props.explore.professions.filter((e)=>e.name===value)[0];
+    if(value!=='other') {
+       let profession = this.props.explore.professions.filter(e => e.name === value)[0];
        this.setState({ profession });
     }
     else {
