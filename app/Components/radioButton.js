@@ -16,6 +16,7 @@ export default function RadioButton(props) {
     label: {
       fontSize: 14,
       color: '#fff',
+      paddingLeft:3
     },
     icon: {
       // marginLeft: -10,
@@ -23,6 +24,7 @@ export default function RadioButton(props) {
     content: {
       flexDirection: 'row',
       alignItems: 'center',
+      paddingHorizontal:5
     }
   });
 

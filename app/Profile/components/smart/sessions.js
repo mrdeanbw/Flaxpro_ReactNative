@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  ScrollView
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -56,7 +57,6 @@ class SessionsProfile extends Component {
 
   render() {
     const {profile: {sessions}} = this.props;
-
     return (
       <View style={ styles.container }>
         <Image source={ background } style={ styles.background } resizeMode="cover">
@@ -67,6 +67,7 @@ class SessionsProfile extends Component {
               <Text style={ [styles.fontStyles, styles.textInfoValue, styles.textGray] }>Total Workouts</Text>
             </View>
             <View style={ styles.infoRowLeftContainer }>
+              <ScrollView horizontal>
               {
                 sessions.map((item, index) => (
                   <View style={ [styles.columnContainer, styles.workoutBlock] } key={index}>
@@ -81,6 +82,7 @@ class SessionsProfile extends Component {
                   </View>
                 ))
               }
+              </ScrollView>
             </View>
           </View>
         </Image>

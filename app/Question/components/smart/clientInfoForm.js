@@ -25,6 +25,7 @@ import UploadFromCameraRoll from '../../../Components/imageUploader';
 import FullScreenLoader from '../../../Components/fullScreenLoader';
 import RadioButton from '../../../Components/radioButton';
 import DialogGoogleAutocomplete from '../../../Components/dialogGoogleAutocomplete';
+import Prompt from 'react-native-prompt'
 
 import {
   WIDTH_SCREEN as width,
@@ -41,16 +42,19 @@ const labelSex = ['Male', 'Female'];
 class ClientInfoForm extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      name: '',
-      visibility : false,
-      gender : labelSex[0],
-      age : 28,
-      address: props.auth.currentAddress.formattedAddress || '4 York st, Toronto',
-      profession : props.explore && props.explore.professions && props.explore.professions[0] || {},
-      priceLevel : prices[0].level,
-      signUpRequest: false
+      name: ' ',
+      visibility: false,
+      phone: '111-111-1111',
+      gender: labelSex[0],
+      age: 28,
+      address: props.auth.currentAddress.formattedAddress || '',
+      profession: props.explore && props.explore.professions && props.explore.professions[0] || {},
+      priceLevel: prices[0].level,
+      signUpRequest: false,
+      description: ' ',
+      otherProfession: '',
+      promptVisible: false
     };
   }
 
@@ -94,7 +98,7 @@ class ClientInfoForm extends Component {
 
   onContinue () {
     const { createRole } = this.props;
-    this.state.professions= [{profession: this.state.profession._id, priceLevel: this.state.priceLevel}];
+    this.state.professions= [{profession: this.state.profession._id, priceLevel: parseInt(this.state.priceLevel)}];
 
     this.setState({ signUpRequest: true }, () => createRole(this.state));
   }
@@ -106,9 +110,21 @@ class ClientInfoForm extends Component {
     this.setState({ gender: value });
   }
   onSelectProfession(value) {
-    const profession = this.props.explore.professions.filter((e)=>e.name===value)[0];
-    this.setState({ profession });
+    if(value !== 'other') {
+       let profession = this.props.explore.professions.filter(e => e.name === value)[0];
+       this.setState({ profession });
+    }
+    else {
+      this.setState({promptVisible:true});
+    }
+    
   }
+
+  onYes = (value) =>{
+    let profession = {_id: '0', name: value, color: "#000000", icon: "../../Assets/images/sport.png"};
+    this.setState({promptVisible:false, profession});
+  }
+
   onCheckPrice(value) {
     this.setState({ priceLevel: value });
   }
@@ -141,8 +157,16 @@ class ClientInfoForm extends Component {
   render() {
     const { signUpRequest, avatar } = this.state;
     const { explore: { professions } } = this.props;
+    let proList = professions.map((e)=>e.name);
+    proList.push("other");
     return (
       <View style={ styles.container }>
+        <Prompt
+          title="Please input custom profession"
+          visible={this.state.promptVisible}
+          onCancel={()=>this.setState({promptVisible:false})}
+          onSubmit={(value)=>this.onYes(value)}
+        />
         <KeyboardAwareScrollView>
           <Image source={ background } style={ styles.background } resizeMode="cover">
             { this.getShowNavBar }
@@ -221,11 +245,11 @@ class ClientInfoForm extends Component {
                     <Text style={ styles.textCellTitle }>Looking for</Text>
                     <View style={ styles.dropdownWrapper }>
                       <ModalDropdown
-                        options={ professions.map((e)=>e.name) }
+                        options={ proList }
                         dropdownStyle={ styles.dropdownStyle }
                         onSelect={ (rowId, rowData) => this.onSelectProfession(rowData) }
                       >
-                        <Text  numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession.name}</Text>
+                        <Text numberOfLines={1} style={ [styles.dropdown, styles.dropDownText] }>{this.state.profession.name}</Text>
                         <EvilIcons
                           style={ styles.iconDropDown }
                           name="chevron-down"

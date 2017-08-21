@@ -238,29 +238,34 @@ class ScheduleForm extends Component {
               onTouchNext={()=> { this.setState({selectedDates: []}) } }
               onTouchPrev={()=> { this.setState({selectedDates: []}) } }
             />
-            <View style={[styles.sectionTitleContainer, { paddingVertical:10, justifyContent:'space-between' }]}>
-              <View style={{flexDirection:'row'}}>
+            <View style={[styles.sectionTitleContainer, { paddingVertical:10, alignItems:'center', justifyContent:'space-between' }]}>
+              <View style={{flexDirection:'row', alignItems:'center', flex:1}}>
               <Text> Selected dates: { ' ' + Moment().format('MMM') + ' '}</Text>
               {
-                !this.state.isAll && this.state.selectedDates.sort((a,b) => {return (new Date(a) > new Date(b)) ? 1 : ((new Date(b) > new Date(a)) ? -1 : 0);} ).map((e, index)=>{
-                  return <TouchableOpacity key={index} onPress={(ee)=>this.onSelectDate(Moment(Moment(new Date(e))))}
-                  style={[customStyle.selectedDayCircle,{ marginLeft:5, width: 24, height: 24, borderRadius: 12, justifyContent:'center', alignItems:'center'}]} >
-                    <Text style={{color:'#fff'}} >{ Moment(Moment(new Date(e))).date()}</Text>
-                  </TouchableOpacity>
-                })
+                !this.state.isAll && 
+                  <ScrollView horizontal>
+                    {
+                      this.state.selectedDates.sort((a,b) => {return (new Date(a) > new Date(b)) ? 1 : ((new Date(b) > new Date(a)) ? -1 : 0);} ).map((e, index)=>{
+                        return <TouchableOpacity key={index} onPress={(ee)=>this.onSelectDate(Moment(Moment(new Date(e))))}
+                        style={[customStyle.selectedDayCircle,{ marginLeft:5, width: 24, height: 24, borderRadius: 12, justifyContent:'center', alignItems:'center'}]} >
+                          <Text style={{color:'#fff'}} >{ Moment(Moment(new Date(e))).date()}</Text>
+                        </TouchableOpacity>
+                      })
+                    }
+                  </ScrollView>
+
               }
               </View>
               <TouchableOpacity onPress={(e)=>{this.onClickAll()}}>
                 <Text style={{color: this.state.isAll?'#565656':'#8d99a6', fontWeight: this.state.isAll?'600':'300'}} > { this.state.isAll?'ALL DATES':'all dates'}</Text>  
               </TouchableOpacity>
-
             </View>
             <View style={[styles.sectionTitleContainer, { paddingVertical:5 }]}>
               <TouchableOpacity style={[styles.filterBtn, {borderRightWidth:1, borderColor:'#d9d9d9'}]} onPress={(e)=>{this.onClickFilter(false)}} >
-                <Text style={{ color: '#45c7f1', fontWeight:this.state.filterStatus?'300':'600' }} >{this.state.filterStatus?'show booking':'BOOKING'}</Text>
+                <Text style={{ color: !this.state.filterStatus?'#45c7f1':'#8d99a6', fontWeight:this.state.filterStatus?'300':'600' }} >{this.state.filterStatus?'show booking':'BOOKING'}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.filterBtn} onPress={(e)=>{this.onClickFilter(true)}} >
-                <Text style={{ color: this.state.filterStatus?'#565656':'#8d99a6', fontWeight:this.state.filterStatus?'600':'300' }} >{this.state.filterStatus?'AVAILABILITY':'show availability'}</Text>
+                <Text style={{ color: this.state.filterStatus?'#45c7f1':'#8d99a6', fontWeight:this.state.filterStatus?'600':'300' }} >{this.state.filterStatus?'AVAILABILITY':'show availability'}</Text>
               </TouchableOpacity>
               </View>
             <ScrollView showsVerticalScrollIndicator={true}>

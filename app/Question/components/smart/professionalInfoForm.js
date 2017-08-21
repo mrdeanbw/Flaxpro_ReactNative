@@ -83,7 +83,6 @@ class ProfessionalInfoForm extends Component {
   onContinue () {
     const { changeProfessionalForm } = this.props;
     AsyncStorage.setItem('professionalFirstForm', JSON.stringify(this.state));
-
     changeProfessionalForm({firstForm: false})
 
   }
@@ -91,11 +90,14 @@ class ProfessionalInfoForm extends Component {
     this.setState({ avatar: '' }, () => this.setState({ avatar: uri }));
   }
   onChangePhone(text) {
+    if(text.length > 12) return;
+    if(text.length === 3 && this.state.phone.length<3) text = text + "-";
+    if(text.length === 7 && this.state.phone.length<7) text = text + "-";
     text = this.checkForNumber(...text)
     this.setState({ phone: text })
   }
   checkForNumber(...value){
-    const numbers = '0123456789';
+    const numbers = '0123456789-';
 
     value = value.filter((e) => numbers.includes(e))
     return value.join('')

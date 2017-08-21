@@ -51,7 +51,6 @@ export const getProfessionals = (data) => async (dispatch, store) => {
     const queryString = toQueryString(data);
     url += '?' + queryString;
   }
-
   try {
     const response = await request(url, options, auth);
     dispatch(exploreSuccess(response));

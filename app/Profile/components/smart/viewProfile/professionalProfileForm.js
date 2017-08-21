@@ -137,6 +137,16 @@ export default class ProfessionalProfileForm extends Component {
     Actions.pop();
   }
 
+  onClickAddress = () => {
+    const filterObj = {
+      locationType: 'address',
+      lat: this.props.user.coordinate.latitude,
+      lon: this.props.user.coordinate.longitude
+    };
+    this.props.exploreActions.getProfessionals(filterObj);
+    Actions.pop();
+  }
+
   openCommunicationPopup () {
     this.popupDialogCommunication.openDialog ();
   }
@@ -440,6 +450,7 @@ export default class ProfessionalProfileForm extends Component {
                     <View style={ styles.infoRowContainer }>
                       <View style={ styles.infoRowLeftContainer }>
                         <Text style={ [styles.fontStyles, styles.textInfoField] }>Location : </Text>
+                        { editable?
                         <View style={ [styles.container, styles.rowDirection] }>
                           <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }
                                 ellipsizeMode="tail"
@@ -448,6 +459,16 @@ export default class ProfessionalProfileForm extends Component {
                             {this.user.location.originalAddress || this.user.location.city}
                           </Text>
                         </View>
+                        :
+                        <TouchableOpacity style={ [styles.container, styles.rowDirection] } onPress={(e)=>this.onClickAddress()} >
+                          <Text style={ [styles.fontStyles, styles.textInfoValue, styles.locationStyle] }
+                                ellipsizeMode="tail"
+                                numberOfLines={1}
+                          >
+                            {this.user.location.originalAddress || this.user.location.city}
+                          </Text>
+                        </TouchableOpacity>
+                        }
                       </View>
                     </View>
                     <View style={ [styles.infoRowContainer, styles.actionIconContainer] }>
@@ -469,8 +490,8 @@ export default class ProfessionalProfileForm extends Component {
                   </View>
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>
-                    <Text style={ styles.textInfoTitle }>ABOUT ME</Text>
-                    <Text style={ [styles.fontStyles, styles.textInfoValue] } numberOfLines={8}>{user.description}</Text>
+                  <Text style={ styles.textInfoTitle }>{ editable?'ABOUT ME': user.name && 'ABOUT '+ user.name.toUpperCase()}</Text>
+                    <Text style={ [styles.fontStyles, styles.textInfoValue] } numberOfLines={8}>{user.description.replace(/^\s+/g,'').replace(/\s+$/g,'').replace(/\s+/g,' ')}</Text>
                   </View>
 
                   <View style={ [styles.infoContainer, styles.infoBlock] }>

@@ -19,11 +19,11 @@ class ProfessionalInfo extends Component {
     <View style={{flex: 1, position: 'relative'}}>
       {
         firstForm &&
-        <ProfessionalInfoForm { ...actions } satus/>
+        <ProfessionalInfoForm { ...actions } status/>
       }
       {
         !firstForm &&
-        <ProfessionalInfoSecondForm { ...actions } satus/>
+        <ProfessionalInfoSecondForm { ...actions } status/>
       }
 
     </View>
